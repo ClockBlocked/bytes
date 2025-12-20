@@ -1,11 +1,15 @@
-class StorageAPI {
+const GITHUB_TOKEN = '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';
+const GITHUB_API_BASE = 'https://api.github.com';
+
+class GitHubAPI {
     constructor(options = {}) {
-        this.baseUrl = options.baseUrl || '/api';
+        this.token = options.token || GITHUB_TOKEN;
+        this.username = options.username || null;
         this.timeout = options.timeout || 30000;
         this.headers = {
-            'Content-Type': 'application/json',
-            'Accept': 'application/json',
-            ...options.headers
+            'Authorization': `token ${this.token}`,
+            'Accept': 'application/vnd.github.v3+json',
+            'Content-Type': 'application/json'
         };
         this.onError = options.onError || null;
         this.onRequest = options.onRequest || null;
@@ -15,14 +19,14 @@ class StorageAPI {
     }
 
     async request(endpoint, options = {}) {
-        const url = `${this.baseUrl}${endpoint}`;
+        const url = `${GITHUB_API_BASE}${endpoint}`;
         const controller = new AbortController();
         const timeoutId = setTimeout(() => controller.abort(), this.timeout);
 
         const config = {
             method: options.method || 'GET',
-            headers: { ...this.headers, ...options.headers },
-            signal: controller.signal
+            headers: { ...this.headers, ...options. headers },
+            signal: controller. signal
         };
 
         if (options.body && config.method !== 'GET') {
@@ -30,7 +34,7 @@ class StorageAPI {
         }
 
         if (this.onRequest) {
-            this.onRequest({ url, ...config });
+            this.onRequest({ url, ... config });
         }
 
         try {
@@ -50,11 +54,11 @@ class StorageAPI {
                 this.onResponse({ url, status: response.status, data });
             }
 
-            if (!response.ok) {
-                const error = new StorageAPIError(
-                    data.error || data.message || 'Request failed',
+            if (! response.ok) {
+                const error = new GitHubAPIError(
+                    data. message || 'Request failed',
                     response.status,
-                    data.errors || null
+                    data. errors || null
                 );
                 
                 if (this.onError) {
@@ -69,17 +73,17 @@ class StorageAPI {
         } catch (error) {
             clearTimeout(timeoutId);
 
-            if (error.name === 'AbortError') {
-                const timeoutError = new StorageAPIError('Request timeout', 408);
+            if (error. name === 'AbortError') {
+                const timeoutError = new GitHubAPIError('Request timeout', 408);
                 if (this.onError) this.onError(timeoutError);
                 throw timeoutError;
             }
 
-            if (error instanceof StorageAPIError) {
+            if (error instanceof GitHubAPIError) {
                 throw error;
             }
 
-            const networkError = new StorageAPIError(
+            const networkError = new GitHubAPIError(
                 error.message || 'Network error',
                 0
             );
@@ -102,7 +106,7 @@ class StorageAPI {
     }
 
     setCache(key, data) {
-        this.cache.set(key, { data, timestamp: Date.now() });
+        this.cache.set(key, { data, timestamp:  Date.now() });
     }
 
     clearCache(pattern = null) {
@@ -118,241 +122,240 @@ class StorageAPI {
         }
     }
 
+    async getUserInfo() {
+        const cacheKey = 'user:info';
+        const cached = this.getCached(cacheKey);
+        if (cached) return cached;
+
+        const result = await this.request('/user');
+        this.setCache(cacheKey, result);
+        return result;
+    }
+
     async listRepositories(options = {}) {
         const params = new URLSearchParams();
         
-        if (options.visibility) params.append('visibility', options.visibility);
-        if (options.ownerId) params.append('ownerId', options.ownerId);
-        if (options.search) params.append('q', options.search);
-        if (options.tags) params.append('tags', options.tags.join(','));
+        if (options.type) params.append('type', options.type);
         if (options.sort) params.append('sort', options.sort);
-        if (options.order) params.append('order', options.order);
-        if (options.limit) params.append('limit', options.limit);
-        if (options.offset) params.append('offset', options.offset);
+        if (options.direction) params.append('direction', options.direction);
+        if (options.per_page) params.append('per_page', options.per_page);
+        if (options.page) params.append('page', options.page);
 
         const query = params.toString();
-        const endpoint = `/repos${query ? `?${query}` : ''}`;
-
-        return this.request(endpoint);
-    }
-
-    async getRepository(repoId, options = {}) {
-        const params = new URLSearchParams();
-        
-        if (options.includeContent) {
-            params.append('content', 'true');
-        }
-
-        const query = params.toString();
-        const cacheKey = `repo:${repoId}:${query}`;
+        const endpoint = `/user/repos${query ?  `?${query}` : ''}`;
+        const cacheKey = `repos:${query}`;
 
         if (options.useCache !== false) {
             const cached = this.getCached(cacheKey);
             if (cached) return cached;
         }
 
-        const endpoint = `/repos/${repoId}${query ? `?${query}` : ''}`;
         const result = await this.request(endpoint);
+        this.setCache(cacheKey, result);
+        return result;
+    }
 
+    async getRepository(owner, repo, options = {}) {
+        const cacheKey = `repo:${owner}:${repo}`;
+
+        if (options.useCache !== false) {
+            const cached = this.getCached(cacheKey);
+            if (cached) return cached;
+        }
+
+        const result = await this.request(`/repos/${owner}/${repo}`);
         this.setCache(cacheKey, result);
         return result;
     }
 
     async createRepository(data) {
-        this.clearCache('repo');
-        
-        return this.request('/repos', {
-            method: 'POST',
+        this.clearCache('repos');
+
+        return this.request('/user/repos', {
+            method:  'POST',
             body: {
                 name: data.name,
                 description: data.description || '',
-                visibility: data.visibility || 'public',
-                tags: data.tags || [],
-                ownerId: data.ownerId || null,
-                files: data.files || []
+                private: data.private || false,
+                auto_init: true
             }
         });
     }
 
-    async updateRepository(repoId, data) {
-        this.clearCache(`repo:${repoId}`);
-        
-        return this.request(`/repos/${repoId}`, {
+    async updateRepository(owner, repo, data) {
+        this.clearCache(`repo:${owner}:${repo}`);
+        this.clearCache('repos');
+
+        return this.request(`/repos/${owner}/${repo}`, {
             method: 'PATCH',
-            body: data
-        });
-    }
-
-    async deleteRepository(repoId) {
-        this.clearCache(`repo:${repoId}`);
-        
-        return this.request(`/repos/${repoId}`, {
-            method: 'DELETE'
-        });
-    }
-
-    async duplicateRepository(repoId, newName = null) {
-        return this.request(`/repos/${repoId}/duplicate`, {
-            method: 'POST',
-            body: newName ? { name: newName } : {}
-        });
-    }
-
-    async starRepository(repoId) {
-        return this.request(`/repos/${repoId}/star`, {
-            method: 'POST'
-        });
-    }
-
-    async unstarRepository(repoId) {
-        return this.request(`/repos/${repoId}/star`, {
-            method: 'DELETE'
-        });
-    }
-
-    async recordView(repoId) {
-        return this.request(`/repos/${repoId}/view`, {
-            method: 'POST'
-        });
-    }
-
-    async listFiles(repoId) {
-        return this.request(`/repos/${repoId}/files`);
-    }
-
-    async getFile(repoId, fileId, options = {}) {
-        const params = new URLSearchParams();
-        
-        if (options.includeContent) {
-            params.append('content', 'true');
-        }
-
-        const query = params.toString();
-        const endpoint = `/repos/${repoId}/files/${fileId}${query ? `?${query}` : ''}`;
-
-        return this.request(endpoint);
-    }
-
-    async getFileContent(repoId, fileId) {
-        const endpoint = `/repos/${repoId}/files/${fileId}/content`;
-        return this.request(endpoint);
-    }
-
-    async getRawContent(repoId, fileId) {
-        const url = `${this.baseUrl}/repos/${repoId}/raw/${fileId}`;
-        
-        const response = await fetch(url, {
-            headers: this.headers
-        });
-
-        if (!response.ok) {
-            throw new StorageAPIError('Failed to fetch raw content', response.status);
-        }
-
-        return response.text();
-    }
-
-    async createFile(repoId, data) {
-        this.clearCache(`repo:${repoId}`);
-        
-        return this.request(`/repos/${repoId}/files`, {
-            method: 'POST',
             body: {
-                filename: data.filename,
-                content: data.content || ''
+                name: data.name || undefined,
+                description: data. description || undefined,
+                private:  data.private || undefined,
+                has_wiki: data.has_wiki !== undefined ? data.has_wiki :  undefined,
+                has_issues: data.has_issues !== undefined ? data.has_issues : undefined,
+                has_projects: data.has_projects !== undefined ? data.has_projects : undefined
             }
         });
     }
 
-    async updateFile(repoId, fileId, data) {
-        this.clearCache(`repo:${repoId}`);
-        
-        return this.request(`/repos/${repoId}/files/${fileId}`, {
-            method: 'PATCH',
-            body: data
-        });
-    }
+    async deleteRepository(owner, repo) {
+        this.clearCache(`repo:${owner}:${repo}`);
+        this.clearCache('repos');
 
-    async deleteFile(repoId, fileId) {
-        this.clearCache(`repo:${repoId}`);
-        
-        return this.request(`/repos/${repoId}/files/${fileId}`, {
+        return this.request(`/repos/${owner}/${repo}`, {
             method: 'DELETE'
         });
     }
 
-    async search(query, options = {}) {
+    async listRepositoryContents(owner, repo, path = '') {
+        const cacheKey = `repo:${owner}:${repo}:contents: ${path}`;
+        const cached = this.getCached(cacheKey);
+        if (cached) return cached;
+
+        const endpoint = path ? `/repos/${owner}/${repo}/contents/${path}` : `/repos/${owner}/${repo}/contents`;
+        const result = await this.request(endpoint);
+        this.setCache(cacheKey, result);
+        return result;
+    }
+
+    async getFileContent(owner, repo, path) {
+        const cacheKey = `repo:${owner}:${repo}:file:${path}`;
+        const cached = this.getCached(cacheKey);
+        if (cached) return cached;
+
+        const result = await this.request(`/repos/${owner}/${repo}/contents/${path}`);
+        this.setCache(cacheKey, result);
+        return result;
+    }
+
+    async createFile(owner, repo, path, data) {
+        this.clearCache(`repo:${owner}:${repo}`);
+        this.clearCache(`repo:${owner}:${repo}:contents`);
+
+        const message = data.message || `Create ${path}`;
+        const content = btoa(unescape(encodeURIComponent(data.content || '')));
+
+        return this.request(`/repos/${owner}/${repo}/contents/${path}`, {
+            method: 'PUT',
+            body: {
+                message:  message,
+                content: content,
+                branch: data.branch || 'main'
+            }
+        });
+    }
+
+    async updateFile(owner, repo, path, data) {
+        this.clearCache(`repo:${owner}:${repo}`);
+        this.clearCache(`repo:${owner}:${repo}:contents`);
+        this.clearCache(`repo:${owner}:${repo}: file:${path}`);
+
+        const fileInfo = await this.getFileContent(owner, repo, path);
+        const message = data.message || `Update ${path}`;
+        const content = btoa(unescape(encodeURIComponent(data.content || '')));
+
+        return this.request(`/repos/${owner}/${repo}/contents/${path}`, {
+            method: 'PUT',
+            body: {
+                message: message,
+                content:  content,
+                sha: fileInfo.sha,
+                branch: data.branch || 'main'
+            }
+        });
+    }
+
+    async deleteFile(owner, repo, path, data = {}) {
+        this.clearCache(`repo:${owner}:${repo}`);
+        this.clearCache(`repo:${owner}:${repo}:contents`);
+        this.clearCache(`repo:${owner}:${repo}:file:${path}`);
+
+        const fileInfo = await this.getFileContent(owner, repo, path);
+        const message = data.message || `Delete ${path}`;
+
+        return this.request(`/repos/${owner}/${repo}/contents/${path}`, {
+            method: 'DELETE',
+            body:  {
+                message: message,
+                sha: fileInfo.sha,
+                branch: data.branch || 'main'
+            }
+        });
+    }
+
+    async starRepository(owner, repo) {
+        return this.request(`/user/starred/${owner}/${repo}`, {
+            method: 'PUT'
+        });
+    }
+
+    async unstarRepository(owner, repo) {
+        this.clearCache(`repo:${owner}:${repo}`);
+
+        return this.request(`/user/starred/${owner}/${repo}`, {
+            method: 'DELETE'
+        });
+    }
+
+    async isRepositoryStarred(owner, repo) {
+        try {
+            await this.request(`/user/starred/${owner}/${repo}`);
+            return true;
+        } catch (error) {
+            if (error.status === 404) {
+                return false;
+            }
+            throw error;
+        }
+    }
+
+    async searchRepositories(query, options = {}) {
         const params = new URLSearchParams({ q: query });
         
-        if (options.limit) params.append('limit', options.limit);
-        if (options.offset) params.append('offset', options.offset);
+        if (options.sort) params.append('sort', options.sort);
+        if (options.order) params.append('order', options.order);
+        if (options.per_page) params.append('per_page', options.per_page);
+        if (options.page) params.append('page', options.page);
 
-        return this.request(`/search?${params.toString()}`);
+        const endpoint = `/search/repositories?${params.toString()}`;
+        return this.request(endpoint);
     }
 
-    async getStats() {
-        return this.request('/stats');
+    async getRateLimitStatus() {
+        return this.request('/rate_limit');
     }
 
-    async importRepository(repositoryData, ownerId = null) {
-        return this.request('/import', {
+    async forkRepository(owner, repo, data = {}) {
+        return this.request(`/repos/${owner}/${repo}/forks`, {
             method: 'POST',
             body: {
-                repository: repositoryData,
-                ownerId
+                owner: data.owner || undefined,
+                name: data.name || undefined,
+                description: data.description || undefined
             }
         });
-    }
-
-    getExportUrl(repoId, format = 'json') {
-        return `${this.baseUrl}/export.php?id=${repoId}&format=${format}`;
-    }
-
-    async exportRepository(repoId, format = 'json') {
-        const url = this.getExportUrl(repoId, format);
-        
-        const response = await fetch(url);
-        
-        if (!response.ok) {
-            throw new StorageAPIError('Export failed', response.status);
-        }
-
-        if (format === 'json') {
-            return response.json();
-        }
-
-        return response.blob();
-    }
-
-    downloadExport(repoId, format = 'json') {
-        const url = this.getExportUrl(repoId, format);
-        const link = document.createElement('a');
-        link.href = url;
-        link.download = '';
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
     }
 }
 
-class StorageAPIError extends Error {
+class GitHubAPIError extends Error {
     constructor(message, status, errors = null) {
         super(message);
-        this.name = 'StorageAPIError';
+        this.name = 'GitHubAPIError';
         this.status = status;
         this.errors = errors;
     }
 
     isNotFound() {
-        return this.status === 404;
+        return this. status === 404;
     }
 
     isValidationError() {
-        return this.status === 400;
+        return this. status === 400 || this.status === 422;
     }
 
     isServerError() {
-        return this.status >= 500;
+        return this. status >= 500;
     }
 
     isNetworkError() {
@@ -362,16 +365,24 @@ class StorageAPIError extends Error {
     isTimeout() {
         return this.status === 408;
     }
+
+    isUnauthorized() {
+        return this.status === 401;
+    }
+
+    isForbidden() {
+        return this.status === 403;
+    }
 }
 
-const storageAPI = new StorageAPI({
-    baseUrl: '/api',
+const githubAPI = new GitHubAPI({
+    token:  GITHUB_TOKEN,
     timeout: 30000,
     onError: (error) => {
-        console.error('[StorageAPI Error]', error.message, error.status);
+        console.error('[GitHub API Error]', error. message, error.status);
     }
 });
 
 if (typeof module !== 'undefined' && module.exports) {
-    module.exports = { StorageAPI, StorageAPIError, storageAPI };
+    module.exports = { GitHubAPI, GitHubAPIError, githubAPI };
 }
