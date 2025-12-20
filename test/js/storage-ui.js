@@ -12,11 +12,14 @@ class StorageUI {
             searchInput: options.searchInput || '#search-input',
             loadingOverlay: options.loadingOverlay || '#loading-overlay',
             notification: options.notification || '#notification',
-            ...options.selectors
+            userInfo: options.userInfo || '#user-info',
+            ... options.selectors
         };
         this.templates = options.templates || {};
         this.onAction = options.onAction || null;
         this.initialized = false;
+        this.currentOwner = null;
+        this. currentRepo = null;
     }
 
     init() {
@@ -28,9 +31,9 @@ class StorageUI {
 
     setupEventListeners() {
         document.addEventListener('click', (e) => {
-            const target = e.target.closest('[data-action]');
+            const target = e.target. closest('[data-action]');
             if (target) {
-                this.handleAction(target.dataset.action, target.dataset, e);
+                this. handleAction(target.dataset.action, target.dataset, e);
             }
         });
 
@@ -55,41 +58,56 @@ class StorageUI {
 
     setupManagerListeners() {
         this.manager.on('loading', (data) => {
-            this.showLoading(data.type);
+            this.showLoading(data. type);
         });
 
-        this.manager.on('repositoriesLoaded', (data) => {
+        this.manager.on('userLoaded', (user) => {
+            this.renderUserInfo(user);
+        });
+
+        this.manager.on('repositoriesLoaded', (repositories) => {
             this.hideLoading();
-            this.renderRepositoryList(data.data.repositories);
+            this.renderRepositoryList(repositories);
         });
 
         this.manager.on('repositoryLoaded', (repo) => {
             this.hideLoading();
+            this.currentOwner = repo.owner. login;
+            this.currentRepo = repo.name;
             this.renderRepositoryDetail(repo);
-            this.renderFileList(repo.files);
+            this.loadRepositoryContents(repo.owner.login, repo.name);
         });
 
-        this.manager.on('repositoryCreated', (repo) => {
+        this.manager. on('repositoryCreated', (repo) => {
             this.hideLoading();
             this.notify('Repository created successfully', 'success');
+            this.currentOwner = repo.owner.login;
+            this.currentRepo = repo.name;
             this.renderRepositoryDetail(repo);
-            this.renderFileList(repo.files);
+            this.loadRepositoryContents(repo.owner.login, repo. name);
         });
 
         this.manager.on('repositoryUpdated', (repo) => {
             this.hideLoading();
             this.notify('Repository updated', 'success');
+            this.renderRepositoryDetail(repo);
         });
 
         this.manager.on('repositoryDeleted', () => {
             this.hideLoading();
             this.notify('Repository deleted', 'success');
             this.clearRepositoryDetail();
+            this.currentOwner = null;
+            this.currentRepo = null;
+        });
+
+        this.manager.on('repositoryContentsLoaded', (contents) => {
+            this.renderFileList(contents);
         });
 
         this.manager.on('fileSelected', (file) => {
             this.hideLoading();
-            this.highlightActiveFile(file.id);
+            this.highlightActiveFile(file. path);
             this.updateFileInfo(file);
         });
 
@@ -97,7 +115,7 @@ class StorageUI {
             this.hideLoading();
             this.notify('File created', 'success');
             this.appendFileToList(file);
-            this.highlightActiveFile(file.id);
+            this.highlightActiveFile(file.path);
         });
 
         this.manager.on('fileSaved', (file) => {
@@ -110,21 +128,22 @@ class StorageUI {
         this.manager.on('fileDeleted', (data) => {
             this.hideLoading();
             this.notify('File deleted', 'success');
-            this.removeFileFromList(data.id);
+            this.removeFileFromList(data.path);
         });
 
         this.manager.on('fileChanged', (data) => {
-            this.markFileUnsaved(data.fileId, data.hasUnsavedChanges);
+            this.markFileUnsaved(data.path, data.hasUnsavedChanges);
         });
 
-        this.manager.on('error', (data) => {
+        this.manager. on('error', (data) => {
             this.hideLoading();
-            this.notify(data.error.message || 'An error occurred', 'error');
+            const errorMessage = data.error. message || 'An error occurred';
+            this.notify(errorMessage, 'error');
         });
 
         this.manager.on('searchCompleted', (data) => {
             this.hideLoading();
-            this.renderSearchResults(data.data.results);
+            this.renderRepositoryList(data.items);
         });
     }
 
@@ -135,39 +154,53 @@ class StorageUI {
         }
 
         switch (action) {
+            case 'load-user':
+                await this.manager.loadUser();
+                break;
+
             case 'load-repos':
-                await this.manager.loadRepositories();
+                await this.manager. loadRepositories();
                 break;
 
             case 'load-repo':
-                if (data.repoId) {
-                    await this.manager.loadRepository(data.repoId);
+                if (data.owner && data.repo) {
+                    await this.manager.loadRepository(data.owner, data.repo);
                 }
                 break;
 
             case 'create-repo':
-                await this.showCreateRepoDialog();
+                await this. showCreateRepoDialog();
                 break;
 
             case 'edit-repo':
-                await this.showEditRepoDialog();
+                await this. showEditRepoDialog();
                 break;
 
             case 'delete-repo':
                 await this.confirmDeleteRepo();
                 break;
 
-            case 'duplicate-repo':
-                await this.duplicateCurrentRepo();
+            case 'star-repo': 
+                if (this.currentOwner && this.currentRepo) {
+                    await this.manager.starRepository(this. currentOwner, this.currentRepo);
+                }
                 break;
 
-            case 'export-repo':
-                this.manager.exportRepository(null, data.format || 'download');
+            case 'unstar-repo':
+                if (this. currentOwner && this.currentRepo) {
+                    await this. manager.unstarRepository(this. currentOwner, this.currentRepo);
+                }
+                break;
+
+            case 'fork-repo':
+                if (this.currentOwner && this.currentRepo) {
+                    await this.manager.forkRepository(this.currentOwner, this.currentRepo);
+                }
                 break;
 
             case 'select-file':
-                if (data.fileId) {
-                    await this.manager.selectFile(data.fileId);
+                if (data.path && this.currentOwner && this.currentRepo) {
+                    await this.manager. selectFile(this.currentOwner, this.currentRepo, data. path);
                 }
                 break;
 
@@ -176,23 +209,27 @@ class StorageUI {
                 break;
 
             case 'rename-file':
-                if (data.fileId) {
-                    await this.showRenameFileDialog(data.fileId);
+                if (data.path && this.currentOwner && this.currentRepo) {
+                    await this.showRenameFileDialog(data. path);
                 }
                 break;
 
             case 'delete-file':
-                if (data.fileId) {
-                    await this.confirmDeleteFile(data.fileId);
+                if (data. path && this.currentOwner && this.currentRepo) {
+                    await this.confirmDeleteFile(data.path);
                 }
                 break;
 
-            case 'save-file':
-                await this.bridge.saveCurrentFile();
+            case 'save-file': 
+                if (this.currentOwner && this.currentRepo) {
+                    await this.bridge.saveCurrentFile(this.currentOwner, this.currentRepo);
+                }
                 break;
 
             case 'save-all':
-                await this.manager.saveAllPendingChanges();
+                if (this.currentOwner && this.currentRepo) {
+                    await this.manager.saveAllPendingChanges(this.currentOwner, this.currentRepo);
+                }
                 break;
 
             default:
@@ -204,14 +241,29 @@ class StorageUI {
         if (!query || query.length < 2) {
             return;
         }
-        await this.manager.search(query);
+        await this.manager.searchRepositories(query);
+    }
+
+    renderUserInfo(user) {
+        const container = document.querySelector(this.selectors.userInfo);
+        if (!container) return;
+
+        container.innerHTML = `
+            <div class="user-info">
+                <img src="${user.avatar_url}" alt="${user.login}" class="user-avatar">
+                <div class="user-details">
+                    <p class="user-name">${this.escapeHtml(user.name || user.login)}</p>
+                    <p class="user-login">@${this.escapeHtml(user. login)}</p>
+                </div>
+            </div>
+        `;
     }
 
     renderRepositoryList(repositories) {
         const container = document.querySelector(this.selectors.repoList);
         if (!container) return;
 
-        if (!repositories || repositories.length === 0) {
+        if (! repositories || repositories.length === 0) {
             container.innerHTML = this.templates.emptyRepos || `
                 <div class="empty-state">
                     <p>No repositories found</p>
@@ -232,19 +284,20 @@ class StorageUI {
             return this.templates.repoCard(repo);
         }
 
-        const languages = repo.languages ? repo.languages.slice(0, 3).join(', ') : '';
-        const updatedAt = this.formatDate(repo.updatedAt);
+        const language = repo.language || 'Unknown';
+        const updatedAt = this.formatDate(repo.updated_at);
+        const owner = repo.owner.login;
 
         return `
-            <div class="repo-card" data-action="load-repo" data-repo-id="${repo.id}">
+            <div class="repo-card" data-action="load-repo" data-owner="${owner}" data-repo="${repo.name}">
                 <div class="repo-card-header">
                     <h3 class="repo-name">${this.escapeHtml(repo.name)}</h3>
-                    <span class="repo-visibility">${repo.visibility}</span>
+                    <span class="repo-visibility">${repo.private ? 'Private' :  'Public'}</span>
                 </div>
-                ${repo.description ? `<p class="repo-description">${this.escapeHtml(repo.description)}</p>` : ''}
+                ${repo.description ? `<p class="repo-description">${this. escapeHtml(repo.description)}</p>` : ''}
                 <div class="repo-card-footer">
-                    <span class="repo-files">${repo.fileCount} file${repo.fileCount !== 1 ? 's' : ''}</span>
-                    ${languages ? `<span class="repo-languages">${languages}</span>` : ''}
+                    <span class="repo-language">${language}</span>
+                    <span class="repo-stars">⭐ ${repo.stargazers_count}</span>
                     <span class="repo-updated">${updatedAt}</span>
                 </div>
             </div>
@@ -260,7 +313,7 @@ class StorageUI {
     }
 
     clearRepositoryDetail() {
-        const nameEl = document.querySelector(this.selectors.repoName);
+        const nameEl = document.querySelector(this. selectors.repoName);
         const descEl = document.querySelector(this.selectors.repoDescription);
 
         if (nameEl) nameEl.textContent = '';
@@ -271,11 +324,11 @@ class StorageUI {
     }
 
     renderFileList(files) {
-        const container = document.querySelector(this.selectors.fileList);
+        const container = document.querySelector(this. selectors.fileList);
         if (!container) return;
 
         if (!files || files.length === 0) {
-            container.innerHTML = this.templates.emptyFiles || `
+            container. innerHTML = this.templates.emptyFiles || `
                 <div class="empty-state">
                     <p>No files in this repository</p>
                     <button data-action="create-file" class="btn btn-sm">
@@ -286,28 +339,43 @@ class StorageUI {
             return;
         }
 
-        const html = files.map(file => this.renderFileItem(file)).join('');
+        const fileItems = files.filter(item => item.type === 'file');
+        
+        if (fileItems.length === 0) {
+            container. innerHTML = this.templates.emptyFiles || `
+                <div class="empty-state">
+                    <p>No files in this repository</p>
+                    <button data-action="create-file" class="btn btn-sm">
+                        Add a file
+                    </button>
+                </div>
+            `;
+            return;
+        }
+
+        const html = fileItems.map(file => this.renderFileItem(file)).join('');
         container.innerHTML = html;
     }
 
     renderFileItem(file) {
         if (this.templates.fileItem) {
-            return this.templates.fileItem(file);
+            return this.templates. fileItem(file);
         }
 
         const size = this.formatBytes(file.size);
-        const icon = this.getFileIcon(file.language);
+        const ext = file.name.split('.').pop();
+        const icon = this.getFileIcon(ext);
 
         return `
-            <div class="file-item" data-file-id="${file.id}" data-action="select-file">
+            <div class="file-item" data-path="${this.escapeHtml(file. path)}" data-action="select-file">
                 <span class="file-icon">${icon}</span>
-                <span class="file-name">${this.escapeHtml(file.filename)}</span>
+                <span class="file-name">${this.escapeHtml(file.name)}</span>
                 <span class="file-size">${size}</span>
                 <div class="file-actions">
-                    <button data-action="rename-file" data-file-id="${file.id}" class="btn-icon" title="Rename">
+                    <button data-action="rename-file" data-path="${this.escapeHtml(file.path)}" class="btn-icon" title="Rename">
                         ✏️
                     </button>
-                    <button data-action="delete-file" data-file-id="${file.id}" class="btn-icon" title="Delete">
+                    <button data-action="delete-file" data-path="${this.escapeHtml(file.path)}" class="btn-icon" title="Delete">
                         🗑️
                     </button>
                 </div>
@@ -328,20 +396,20 @@ class StorageUI {
     }
 
     updateFileInList(file) {
-        const container = document.querySelector(this.selectors.fileList);
+        const container = document.querySelector(this. selectors.fileList);
         if (!container) return;
 
-        const fileEl = container.querySelector(`[data-file-id="${file.id}"]`);
+        const fileEl = container.querySelector(`[data-path="${this.escapeHtml(file.path)}"]`);
         if (fileEl) {
             fileEl.outerHTML = this.renderFileItem(file);
         }
     }
 
-    removeFileFromList(fileId) {
-        const container = document.querySelector(this.selectors.fileList);
+    removeFileFromList(path) {
+        const container = document.querySelector(this.selectors. fileList);
         if (!container) return;
 
-        const fileEl = container.querySelector(`[data-file-id="${fileId}"]`);
+        const fileEl = container.querySelector(`[data-path="${this.escapeHtml(path)}"]`);
         if (fileEl) {
             fileEl.remove();
         }
@@ -365,25 +433,25 @@ class StorageUI {
         }
     }
 
-    highlightActiveFile(fileId) {
-        const container = document.querySelector(this.selectors.fileList);
+    highlightActiveFile(path) {
+        const container = document.querySelector(this.selectors. fileList);
         if (!container) return;
 
-        container.querySelectorAll('.file-item').forEach(el => {
-            el.classList.remove('active');
+        container.querySelectorAll('. file-item').forEach(el => {
+            el.classList. remove('active');
         });
 
-        const activeEl = container.querySelector(`[data-file-id="${fileId}"]`);
+        const activeEl = container.querySelector(`[data-path="${this.escapeHtml(path)}"]`);
         if (activeEl) {
             activeEl.classList.add('active');
         }
     }
 
-    markFileUnsaved(fileId, unsaved) {
-        const container = document.querySelector(this.selectors.fileList);
+    markFileUnsaved(path, unsaved) {
+        const container = document.querySelector(this.selectors. fileList);
         if (!container) return;
 
-        const fileEl = container.querySelector(`[data-file-id="${fileId}"]`);
+        const fileEl = container.querySelector(`[data-path="${this.escapeHtml(path)}"]`);
         if (fileEl) {
             fileEl.classList.toggle('unsaved', unsaved);
         }
@@ -391,34 +459,24 @@ class StorageUI {
 
     updateFileInfo(file) {
         const infoEl = document.querySelector(this.selectors.fileInfo);
-        if (!infoEl) return;
+        if (! infoEl) return;
 
-        const size = this.formatBytes(file.size);
-        const lines = file.lines || 0;
-        const lang = file.language || 'plaintext';
+        const size = this.formatBytes(file. size);
+        const ext = file.path.split('.').pop();
 
         infoEl.innerHTML = `
-            <span class="info-language">${lang}</span>
-            <span class="info-lines">${lines} lines</span>
+            <span class="info-type">${ext}</span>
             <span class="info-size">${size}</span>
+            <span class="info-path">${this.escapeHtml(file.path)}</span>
         `;
     }
 
-    renderSearchResults(results) {
-        const container = document.querySelector(this.selectors.repoList);
-        if (!container) return;
-
-        if (!results || results.length === 0) {
-            container.innerHTML = `
-                <div class="empty-state">
-                    <p>No results found</p>
-                </div>
-            `;
-            return;
+    async loadRepositoryContents(owner, repo) {
+        try {
+            await this.manager.loadRepositoryContents(owner, repo);
+        } catch (error) {
+            console.error('Failed to load repository contents:', error);
         }
-
-        const html = results.map(repo => this.renderRepoCard(repo)).join('');
-        container.innerHTML = html;
     }
 
     async showCreateRepoDialog() {
@@ -426,11 +484,12 @@ class StorageUI {
         if (!name) return;
 
         const description = prompt('Description (optional):') || '';
+        const isPrivate = confirm('Make this repository private?');
 
         await this.manager.createRepository({
             name,
             description,
-            visibility: 'public'
+            private: isPrivate
         });
     }
 
@@ -446,62 +505,67 @@ class StorageUI {
 
         const description = prompt('Description:', repo.description) || '';
 
-        await this.manager.updateRepository(repo.id, { name, description });
+        await this.manager.updateRepository(repo.owner. login, repo.name, { name, description });
     }
 
     async confirmDeleteRepo() {
-        const repo = this.manager.getCurrentRepo();
+        const repo = this. manager.getCurrentRepo();
         if (!repo) {
-            this.notify('No repository selected', 'error');
+            this. notify('No repository selected', 'error');
             return;
         }
 
-        const confirmed = confirm(`Are you sure you want to delete "${repo.name}"? This cannot be undone.`);
+        const confirmed = confirm(`Are you sure you want to delete "${repo.name}"?  This cannot be undone.`);
         if (confirmed) {
-            await this.manager.deleteRepository(repo.id);
+            await this. manager.deleteRepository(repo.owner.login, repo.name);
         }
-    }
-
-    async duplicateCurrentRepo() {
-        const repo = this.manager.getCurrentRepo();
-        if (!repo) {
-            this.notify('No repository selected', 'error');
-            return;
-        }
-
-        const name = prompt('Name for the copy:', `${repo.name} (copy)`);
-        if (!name) return;
-
-        await this.manager.duplicateRepository(repo.id, name);
     }
 
     async showCreateFileDialog() {
+        if (! this.currentOwner || !this.currentRepo) {
+            this.notify('No repository selected', 'error');
+            return;
+        }
+
         const filename = prompt('File name (with extension):');
         if (!filename) return;
 
-        await this.manager.createFile({
-            filename,
+        await this.manager.createFile(this.currentOwner, this.currentRepo, filename, {
             content: ''
         });
     }
 
-    async showRenameFileDialog(fileId) {
-        const file = this.manager.getFileById(fileId);
-        if (!file) return;
+    async showRenameFileDialog(oldPath) {
+        if (!this.currentOwner || !this.currentRepo) {
+            this.notify('No repository selected', 'error');
+            return;
+        }
 
-        const filename = prompt('New file name:', file.filename);
-        if (!filename || filename === file.filename) return;
+        const oldName = oldPath.split('/').pop();
+        const newName = prompt('New file name:', oldName);
+        if (!newName || newName === oldName) return;
 
-        await this.manager.updateFile(fileId, { filename });
+        const newPath = oldPath.replace(/[^/]*$/, newName);
+
+        try {
+            const file = await this.manager.selectFile(this.currentOwner, this.currentRepo, oldPath);
+            await this.manager.createFile(this.currentOwner, this.currentRepo, newPath, {
+                content: file.content,
+                message: `Rename ${oldPath} to ${newPath}`
+            });
+            await this.manager.deleteFile(this.currentOwner, this.currentRepo, oldPath);
+            this.notify('File renamed successfully', 'success');
+            this.loadRepositoryContents(this.currentOwner, this.currentRepo);
+        } catch (error) {
+            this.notify('Failed to rename file: ' + error.message, 'error');
+        }
     }
 
-    async confirmDeleteFile(fileId) {
-        const file = this.manager.getFileById(fileId);
-        if (!file) return;
-
-        const confirmed = confirm(`Are you sure you want to delete "${file.filename}"?`);
-        if (confirmed) {
-            await this.manager.deleteFile(fileId);
+    async confirmDeleteFile(path) {
+        const filename = path.split('/').pop();
+        const confirmed = confirm(`Are you sure you want to delete "${filename}"?`);
+        if (confirmed && this.currentOwner && this.currentRepo) {
+            await this.manager. deleteFile(this.currentOwner, this.currentRepo, path);
         }
     }
 
@@ -514,7 +578,7 @@ class StorageUI {
     }
 
     hideLoading() {
-        const overlay = document.querySelector(this.selectors.loadingOverlay);
+        const overlay = document. querySelector(this.selectors.loadingOverlay);
         if (overlay) {
             overlay.classList.remove('visible');
         }
@@ -531,7 +595,7 @@ class StorageUI {
                 container.classList.remove('visible');
             }, duration);
         } else {
-            console.log(`[${type.toUpperCase()}] ${message}`);
+            console.log(`[${type. toUpperCase()}] ${message}`);
         }
     }
 
@@ -558,35 +622,40 @@ class StorageUI {
         if (bytes === 0) return '0 B';
         const k = 1024;
         const sizes = ['B', 'KB', 'MB', 'GB'];
-        const i = Math.floor(Math.log(bytes) / Math.log(k));
+        const i = Math.floor(Math. log(bytes) / Math.log(k));
         return parseFloat((bytes / Math.pow(k, i)).toFixed(1)) + ' ' + sizes[i];
     }
 
-    getFileIcon(language) {
+    getFileIcon(extension) {
         const icons = {
-            'javascript': '📜',
-            'typescript': '📘',
+            'js': '📜',
+            'ts': '📘',
+            'tsx': '📘',
+            'jsx': '📜',
             'html': '🌐',
             'css': '🎨',
+            'scss': '🎨',
             'json': '📋',
-            'markdown': '📝',
-            'python': '🐍',
+            'md': '📝',
+            'py': '🐍',
             'php': '🐘',
-            'ruby': '💎',
+            'rb': '💎',
             'java': '☕',
             'go': '🔵',
-            'rust': '⚙️',
-            'shell': '💻',
+            'rs': '⚙️',
+            'sh': '💻',
             'sql': '🗃️',
-            'plaintext': '📄'
+            'yml': '⚙️',
+            'yaml': '⚙️',
+            'txt': '📄'
         };
 
-        return icons[language] || '📄';
+        return icons[extension] || '📄';
     }
 }
 
 const storageUI = new StorageUI();
 
-if (typeof module !== 'undefined' && module.exports) {
+if (typeof module !== 'undefined' && module. exports) {
     module.exports = { StorageUI, storageUI };
 }
