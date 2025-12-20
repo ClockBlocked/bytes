@@ -1,7 +1,8 @@
 class RepositoryManager {
     constructor(api) {
-        this.api = api || storageAPI;
-        this.currentRepo = null;
+        this.api = api || githubAPI;
+        this.currentUser = null;
+        this. currentRepo = null;
         this.currentFile = null;
         this.listeners = new Map();
         this.pendingChanges = new Map();
@@ -13,16 +14,16 @@ class RepositoryManager {
         if (!this.listeners.has(event)) {
             this.listeners.set(event, []);
         }
-        this.listeners.get(event).push(callback);
+        this.listeners. get(event).push(callback);
         return () => this.off(event, callback);
     }
 
     off(event, callback) {
-        if (!this.listeners.has(event)) return;
-        const callbacks = this.listeners.get(event);
+        if (! this.listeners.has(event)) return;
+        const callbacks = this. listeners.get(event);
         const index = callbacks.indexOf(callback);
         if (index > -1) {
-            callbacks.splice(index, 1);
+            callbacks. splice(index, 1);
         }
     }
 
@@ -37,11 +38,37 @@ class RepositoryManager {
         });
     }
 
+    async loadUser() {
+        this.emit('loading', { type: 'user' });
+        
+        try {
+            const result = await this.api.getUserInfo();
+            this.currentUser = result;
+            this.emit('userLoaded', this.currentUser);
+            return this.currentUser;
+        } catch (error) {
+            this.emit('error', { type: 'loadUser', error });
+            throw error;
+        }
+    }
+
     async loadRepositories(options = {}) {
         this.emit('loading', { type: 'repositories' });
         
         try {
-            const result = await this.api.listRepositories(options);
+            if (! this.currentUser) {
+                await this.loadUser();
+            }
+
+            const result = await this.api.listRepositories({
+                type: options.type || 'owner',
+                sort: options.sort || 'updated',
+                direction: options.direction || 'desc',
+                per_page: options.per_page || 30,
+                page: options.page || 1,
+                useCache: options.useCache
+            });
+
             this.emit('repositoriesLoaded', result);
             return result;
         } catch (error) {
@@ -50,25 +77,20 @@ class RepositoryManager {
         }
     }
 
-    async loadRepository(repoId, options = {}) {
-        this.emit('loading', { type: 'repository', repoId });
+    async loadRepository(owner, repo, options = {}) {
+        this.emit('loading', { type: 'repository', owner, repo });
         
         try {
-            const result = await this.api.getRepository(repoId, {
-                includeContent: options.includeContent !== false,
+            const result = await this.api.getRepository(owner, repo, {
                 useCache: options.useCache
             });
             
-            this.currentRepo = result.data.repository;
-            this.emit('repositoryLoaded', this.currentRepo);
-            
-            if (options.recordView !== false) {
-                this.api.recordView(repoId).catch(() => {});
-            }
+            this.currentRepo = result;
+            this. emit('repositoryLoaded', this.currentRepo);
             
             return this.currentRepo;
         } catch (error) {
-            this.emit('error', { type: 'loadRepository', error, repoId });
+            this.emit('error', { type: 'loadRepository', error, owner, repo });
             throw error;
         }
     }
@@ -77,206 +99,211 @@ class RepositoryManager {
         this.emit('saving', { type: 'createRepository' });
         
         try {
-            const result = await this.api.createRepository(data);
-            this.currentRepo = result.data.repository;
+            const result = await this.api.createRepository({
+                name: data.name,
+                description: data.description || '',
+                private: data.private || false
+            });
+
+            this.currentRepo = result;
             this.emit('repositoryCreated', this.currentRepo);
             return this.currentRepo;
         } catch (error) {
-            this.emit('error', { type: 'createRepository', error });
+            this. emit('error', { type: 'createRepository', error });
             throw error;
         }
     }
 
-    async updateRepository(repoId, data) {
-        this.emit('saving', { type: 'updateRepository', repoId });
+    async updateRepository(owner, repo, data) {
+        this.emit('saving', { type: 'updateRepository', owner, repo });
         
         try {
-            const result = await this.api.updateRepository(repoId, data);
+            const result = await this.api.updateRepository(owner, repo, {
+                name: data.name,
+                description: data.description,
+                private: data.private
+            });
             
-            if (this.currentRepo && this.currentRepo.id === repoId) {
-                Object.assign(this.currentRepo, result.data.repository);
+            if (this.currentRepo && this.currentRepo.name === repo && this.currentRepo.owner. login === owner) {
+                Object.assign(this.currentRepo, result);
             }
             
-            this.emit('repositoryUpdated', result.data.repository);
-            return result.data.repository;
+            this.emit('repositoryUpdated', result);
+            return result;
         } catch (error) {
-            this.emit('error', { type: 'updateRepository', error, repoId });
+            this.emit('error', { type: 'updateRepository', error, owner, repo });
             throw error;
         }
     }
 
-    async deleteRepository(repoId) {
-        this.emit('saving', { type: 'deleteRepository', repoId });
+    async deleteRepository(owner, repo) {
+        this.emit('saving', { type: 'deleteRepository', owner, repo });
         
         try {
-            await this.api.deleteRepository(repoId);
+            await this.api.deleteRepository(owner, repo);
             
-            if (this.currentRepo && this.currentRepo.id === repoId) {
+            if (this.currentRepo && this. currentRepo.name === repo && this.currentRepo.owner.login === owner) {
                 this.currentRepo = null;
                 this.currentFile = null;
             }
             
-            this.emit('repositoryDeleted', { id: repoId });
+            this.emit('repositoryDeleted', { owner, repo });
             return true;
         } catch (error) {
-            this.emit('error', { type: 'deleteRepository', error, repoId });
+            this.emit('error', { type: 'deleteRepository', error, owner, repo });
             throw error;
         }
     }
 
-    async duplicateRepository(repoId, newName = null) {
-        this.emit('saving', { type: 'duplicateRepository', repoId });
+    async loadRepositoryContents(owner, repo, path = '') {
+        this.emit('loading', { type: 'repositoryContents', owner, repo, path });
         
         try {
-            const result = await this.api.duplicateRepository(repoId, newName);
-            this.emit('repositoryDuplicated', result.data.repository);
-            return result.data.repository;
+            const result = await this.api.listRepositoryContents(owner, repo, path);
+            this.emit('repositoryContentsLoaded', result);
+            return result;
         } catch (error) {
-            this.emit('error', { type: 'duplicateRepository', error, repoId });
+            this.emit('error', { type: 'loadRepositoryContents', error, owner, repo, path });
             throw error;
         }
     }
 
-    async selectFile(fileId) {
-        if (!this.currentRepo) {
-            throw new Error('No repository loaded');
-        }
-
-        const file = this.currentRepo.files.find(f => f.id === fileId);
-        
-        if (!file) {
-            throw new Error('File not found');
-        }
-
-        if (!file.content && file.content !== '') {
-            this.emit('loading', { type: 'fileContent', fileId });
-            
-            try {
-                const result = await this.api.getFileContent(this.currentRepo.id, fileId);
-                file.content = result.data.content;
-            } catch (error) {
-                this.emit('error', { type: 'loadFileContent', error, fileId });
-                throw error;
-            }
-        }
-
-        this.currentFile = file;
-        this.emit('fileSelected', file);
-        return file;
-    }
-
-    async createFile(data) {
-        if (!this.currentRepo) {
-            throw new Error('No repository loaded');
-        }
-
-        this.emit('saving', { type: 'createFile' });
+    async selectFile(owner, repo, path) {
+        this.emit('loading', { type: 'fileContent', owner, repo, path });
         
         try {
-            const result = await this.api.createFile(this.currentRepo.id, data);
-            const newFile = result.data.file;
-            newFile.content = data.content || '';
+            const result = await this.api.getFileContent(owner, repo, path);
             
-            this.currentRepo.files.push(newFile);
+            let content = '';
+            if (result.content) {
+                content = atob(result.content);
+            }
+
+            this.currentFile = {
+                path: result.path,
+                name: result.name,
+                size: result.size,
+                content: content,
+                sha: result.sha,
+                url: result.html_url
+            };
+
+            this.emit('fileSelected', this.currentFile);
+            return this.currentFile;
+        } catch (error) {
+            this.emit('error', { type: 'loadFileContent', error, owner, repo, path });
+            throw error;
+        }
+    }
+
+    async createFile(owner, repo, path, data) {
+        this.emit('saving', { type: 'createFile', owner, repo, path });
+        
+        try {
+            const result = await this.api. createFile(owner, repo, path, {
+                content: data.content || '',
+                message: data.message || `Create ${path}`
+            });
+
+            const fileData = result.content;
+            const newFile = {
+                path: fileData.path,
+                name: fileData.name,
+                size: fileData.size,
+                content: data.content || '',
+                sha: fileData.sha,
+                url: fileData.html_url
+            };
+            
             this.currentFile = newFile;
-            
             this.emit('fileCreated', newFile);
             return newFile;
         } catch (error) {
-            this.emit('error', { type: 'createFile', error });
+            this.emit('error', { type: 'createFile', error, owner, repo, path });
             throw error;
         }
     }
 
-    async updateFile(fileId, data) {
-        if (!this.currentRepo) {
-            throw new Error('No repository loaded');
-        }
-
-        this.emit('saving', { type: 'updateFile', fileId });
+    async updateFile(owner, repo, path, data) {
+        this.emit('saving', { type: 'updateFile', owner, repo, path });
         
         try {
-            const result = await this.api.updateFile(this.currentRepo.id, fileId, data);
-            const updatedFile = result.data.file;
+            const result = await this.api.updateFile(owner, repo, path, {
+                content: data.content || '',
+                message: data.message || `Update ${path}`
+            });
+
+            const fileData = result.content;
+            const updatedFile = {
+                path:  fileData.path,
+                name: fileData.name,
+                size: fileData.size,
+                content: data.content || '',
+                sha: fileData.sha,
+                url: fileData. html_url
+            };
             
-            const index = this.currentRepo.files.findIndex(f => f.id === fileId);
-            if (index > -1) {
-                if (data.content !== undefined) {
-                    updatedFile.content = data.content;
-                } else {
-                    updatedFile.content = this.currentRepo.files[index].content;
-                }
-                this.currentRepo.files[index] = updatedFile;
-            }
-            
-            if (this.currentFile && this.currentFile.id === fileId) {
+            if (this.currentFile && this. currentFile.path === path) {
                 this.currentFile = updatedFile;
             }
             
-            this.pendingChanges.delete(fileId);
+            this.pendingChanges.delete(path);
             this.emit('fileSaved', updatedFile);
             return updatedFile;
         } catch (error) {
-            this.emit('error', { type: 'updateFile', error, fileId });
+            this.emit('error', { type: 'updateFile', error, owner, repo, path });
             throw error;
         }
     }
 
-    async deleteFile(fileId) {
-        if (!this.currentRepo) {
-            throw new Error('No repository loaded');
-        }
-
-        this.emit('saving', { type: 'deleteFile', fileId });
+    async deleteFile(owner, repo, path) {
+        this.emit('saving', { type: 'deleteFile', owner, repo, path });
         
         try {
-            await this.api.deleteFile(this.currentRepo.id, fileId);
+            await this.api.deleteFile(owner, repo, path, {
+                message: `Delete ${path}`
+            });
             
-            const index = this.currentRepo.files.findIndex(f => f.id === fileId);
-            if (index > -1) {
-                this.currentRepo.files.splice(index, 1);
+            if (this.currentFile && this. currentFile.path === path) {
+                this.currentFile = null;
             }
             
-            if (this.currentFile && this.currentFile.id === fileId) {
-                this.currentFile = this.currentRepo.files[0] || null;
-            }
-            
-            this.pendingChanges.delete(fileId);
-            this.emit('fileDeleted', { id: fileId });
+            this.pendingChanges.delete(path);
+            this.emit('fileDeleted', { owner, repo, path });
             return true;
         } catch (error) {
-            this.emit('error', { type: 'deleteFile', error, fileId });
+            this.emit('error', { type: 'deleteFile', error, owner, repo, path });
             throw error;
         }
     }
 
-    markFileChanged(fileId, content) {
-        this.pendingChanges.set(fileId, {
+    markFileChanged(path, content) {
+        this.pendingChanges.set(path, {
             content,
-            timestamp: Date.now()
+            timestamp:  Date.now()
         });
         
-        this.emit('fileChanged', { fileId, hasUnsavedChanges: true });
+        this.emit('fileChanged', { path, hasUnsavedChanges: true });
     }
 
-    hasUnsavedChanges(fileId = null) {
-        if (fileId) {
-            return this.pendingChanges.has(fileId);
+    hasUnsavedChanges(path = null) {
+        if (path) {
+            return this. pendingChanges.has(path);
         }
         return this.pendingChanges.size > 0;
     }
 
-    async saveAllPendingChanges() {
+    async saveAllPendingChanges(owner, repo) {
         const promises = [];
         
-        for (const [fileId, change] of this.pendingChanges) {
-            promises.push(this.updateFile(fileId, { content: change.content }));
+        for (const [path, change] of this.pendingChanges) {
+            promises.push(this.updateFile(owner, repo, path, { content: change.content }));
         }
         
         return Promise.all(promises);
     }
 
-    startAutoSave(delay = null) {
+    startAutoSave(owner, repo, delay = null) {
         if (delay !== null) {
             this.autoSaveDelay = delay;
         }
@@ -285,11 +312,11 @@ class RepositoryManager {
         
         this.autoSaveInterval = setInterval(() => {
             if (this.hasUnsavedChanges()) {
-                this.saveAllPendingChanges().catch(error => {
+                this.saveAllPendingChanges(owner, repo).catch(error => {
                     console.error('Auto-save failed:', error);
                 });
             }
-        }, this.autoSaveDelay);
+        }, this. autoSaveDelay);
     }
 
     stopAutoSave() {
@@ -299,11 +326,17 @@ class RepositoryManager {
         }
     }
 
-    async search(query, options = {}) {
+    async searchRepositories(query, options = {}) {
         this.emit('loading', { type: 'search', query });
         
         try {
-            const result = await this.api.search(query, options);
+            const result = await this.api. searchRepositories(query, {
+                sort: options.sort || 'stars',
+                order: options.order || 'desc',
+                per_page: options.per_page || 30,
+                page:  options.page || 1
+            });
+
             this.emit('searchCompleted', result);
             return result;
         } catch (error) {
@@ -312,98 +345,73 @@ class RepositoryManager {
         }
     }
 
-    async getStats() {
+    async getRateLimitStatus() {
         try {
-            const result = await this.api.getStats();
-            return result.data;
-        } catch (error) {
-            this.emit('error', { type: 'getStats', error });
-            throw error;
-        }
-    }
-
-    async exportRepository(repoId = null, format = 'json') {
-        const id = repoId || (this.currentRepo ? this.currentRepo.id : null);
-        
-        if (!id) {
-            throw new Error('No repository specified');
-        }
-
-        this.emit('exporting', { repoId: id, format });
-        
-        try {
-            if (format === 'download') {
-                this.api.downloadExport(id, 'zip');
-                this.emit('exported', { repoId: id, format: 'zip' });
-                return null;
-            }
-            
-            const result = await this.api.exportRepository(id, format);
-            this.emit('exported', { repoId: id, format, data: result });
+            const result = await this.api.getRateLimitStatus();
             return result;
         } catch (error) {
-            this.emit('error', { type: 'export', error, repoId: id });
+            this.emit('error', { type: 'getRateLimit', error });
             throw error;
         }
     }
 
-    async importRepository(data, ownerId = null) {
-        this.emit('importing', { name: data.name });
-        
+    async starRepository(owner, repo) {
+        this.emit('saving', { type: 'starRepository', owner, repo });
+
         try {
-            const result = await this.api.importRepository(data, ownerId);
-            this.emit('imported', result.data.repository);
-            return result.data.repository;
+            await this. api.starRepository(owner, repo);
+            this.emit('repositoryStarred', { owner, repo });
+            return true;
         } catch (error) {
-            this.emit('error', { type: 'import', error });
+            this.emit('error', { type: 'starRepository', error, owner, repo });
             throw error;
         }
     }
 
-    async importFromFile(file) {
-        return new Promise((resolve, reject) => {
-            const reader = new FileReader();
-            
-            reader.onload = async (e) => {
-                try {
-                    const data = JSON.parse(e.target.result);
-                    const repo = await this.importRepository(data);
-                    resolve(repo);
-                } catch (error) {
-                    reject(error);
-                }
-            };
-            
-            reader.onerror = () => reject(new Error('Failed to read file'));
-            reader.readAsText(file);
-        });
+    async unstarRepository(owner, repo) {
+        this.emit('saving', { type: 'unstarRepository', owner, repo });
+
+        try {
+            await this.api.unstarRepository(owner, repo);
+            this.emit('repositoryUnstarred', { owner, repo });
+            return true;
+        } catch (error) {
+            this.emit('error', { type: 'unstarRepository', error, owner, repo });
+            throw error;
+        }
+    }
+
+    async forkRepository(owner, repo, options = {}) {
+        this.emit('saving', { type: 'forkRepository', owner, repo });
+
+        try {
+            const result = await this.api.forkRepository(owner, repo, options);
+            this.emit('repositoryForked', result);
+            return result;
+        } catch (error) {
+            this.emit('error', { type: 'forkRepository', error, owner, repo });
+            throw error;
+        }
+    }
+
+    getCurrentUser() {
+        return this. currentUser;
     }
 
     getCurrentRepo() {
-        return this.currentRepo;
+        return this. currentRepo;
     }
 
     getCurrentFile() {
         return this.currentFile;
     }
 
-    getFileById(fileId) {
-        if (!this.currentRepo) return null;
-        return this.currentRepo.files.find(f => f.id === fileId) || null;
-    }
-
-    getFileByName(filename) {
-        if (!this.currentRepo) return null;
-        return this.currentRepo.files.find(
-            f => f.filename.toLowerCase() === filename.toLowerCase()
-        ) || null;
-    }
-
     reset() {
         this.stopAutoSave();
-        this.currentRepo = null;
+        this.currentUser = null;
+        this. currentRepo = null;
         this.currentFile = null;
-        this.pendingChanges.clear();
+        this.pendingChanges. clear();
         this.emit('reset');
     }
 }
