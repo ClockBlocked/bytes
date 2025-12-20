@@ -4,7 +4,6 @@ const GITHUB_API_BASE = 'https://api.github.com';
 class GitHubAPI {
     constructor(options = {}) {
         this.token = options.token || GITHUB_TOKEN;
-        this.username = options.username || null;
         this.timeout = options.timeout || 30000;
         this.headers = {
             'Authorization': `token ${this.token}`,
@@ -55,17 +54,11 @@ class GitHubAPI {
             }
 
             if (! response.ok) {
-                const error = new GitHubAPIError(
-                    data. message || 'Request failed',
+                throw new GitHubAPIError(
+                    data.message || 'Request failed',
                     response.status,
                     data. errors || null
                 );
-                
-                if (this.onError) {
-                    this.onError(error);
-                }
-                
-                throw error;
             }
 
             return data;
@@ -73,7 +66,7 @@ class GitHubAPI {
         } catch (error) {
             clearTimeout(timeoutId);
 
-            if (error. name === 'AbortError') {
+            if (error.name === 'AbortError') {
                 const timeoutError = new GitHubAPIError('Request timeout', 408);
                 if (this.onError) this.onError(timeoutError);
                 throw timeoutError;
@@ -106,7 +99,7 @@ class GitHubAPI {
     }
 
     setCache(key, data) {
-        this.cache.set(key, { data, timestamp:  Date.now() });
+        this.cache.set(key, { data, timestamp: Date.now() });
     }
 
     clearCache(pattern = null) {
@@ -117,19 +110,9 @@ class GitHubAPI {
         
         for (const key of this.cache.keys()) {
             if (key.includes(pattern)) {
-                this.cache.delete(key);
+                this. cache.delete(key);
             }
         }
-    }
-
-    async getUserInfo() {
-        const cacheKey = 'user:info';
-        const cached = this.getCached(cacheKey);
-        if (cached) return cached;
-
-        const result = await this.request('/user');
-        this.setCache(cacheKey, result);
-        return result;
     }
 
     async listRepositories(options = {}) {
@@ -376,7 +359,7 @@ class GitHubAPIError extends Error {
 }
 
 const githubAPI = new GitHubAPI({
-    token:  GITHUB_TOKEN,
+    token: GITHUB_TOKEN,
     timeout: 30000,
     onError: (error) => {
         console.error('[GitHub API Error]', error. message, error.status);
