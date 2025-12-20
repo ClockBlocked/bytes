@@ -1,8 +1,7 @@
 class RepositoryManager {
     constructor(api) {
         this.api = api || githubAPI;
-        this.currentUser = null;
-        this. currentRepo = null;
+        this.currentRepo = null;
         this.currentFile = null;
         this.listeners = new Map();
         this.pendingChanges = new Map();
@@ -23,7 +22,7 @@ class RepositoryManager {
         const callbacks = this. listeners.get(event);
         const index = callbacks.indexOf(callback);
         if (index > -1) {
-            callbacks. splice(index, 1);
+            callbacks.splice(index, 1);
         }
     }
 
@@ -38,28 +37,10 @@ class RepositoryManager {
         });
     }
 
-    async loadUser() {
-        this.emit('loading', { type: 'user' });
-        
-        try {
-            const result = await this.api.getUserInfo();
-            this.currentUser = result;
-            this.emit('userLoaded', this.currentUser);
-            return this.currentUser;
-        } catch (error) {
-            this.emit('error', { type: 'loadUser', error });
-            throw error;
-        }
-    }
-
     async loadRepositories(options = {}) {
         this.emit('loading', { type: 'repositories' });
         
         try {
-            if (! this.currentUser) {
-                await this.loadUser();
-            }
-
             const result = await this.api.listRepositories({
                 type: options.type || 'owner',
                 sort: options.sort || 'updated',
@@ -86,11 +67,11 @@ class RepositoryManager {
             });
             
             this.currentRepo = result;
-            this. emit('repositoryLoaded', this.currentRepo);
+            this.emit('repositoryLoaded', this.currentRepo);
             
             return this.currentRepo;
         } catch (error) {
-            this.emit('error', { type: 'loadRepository', error, owner, repo });
+            this. emit('error', { type: 'loadRepository', error, owner, repo });
             throw error;
         }
     }
@@ -200,7 +181,7 @@ class RepositoryManager {
         this.emit('saving', { type: 'createFile', owner, repo, path });
         
         try {
-            const result = await this.api. createFile(owner, repo, path, {
+            const result = await this.api.createFile(owner, repo, path, {
                 content: data.content || '',
                 message: data.message || `Create ${path}`
             });
@@ -243,7 +224,7 @@ class RepositoryManager {
                 url: fileData. html_url
             };
             
-            if (this.currentFile && this. currentFile.path === path) {
+            if (this.currentFile && this.currentFile.path === path) {
                 this.currentFile = updatedFile;
             }
             
@@ -280,7 +261,7 @@ class RepositoryManager {
     markFileChanged(path, content) {
         this.pendingChanges.set(path, {
             content,
-            timestamp:  Date.now()
+            timestamp: Date.now()
         });
         
         this.emit('fileChanged', { path, hasUnsavedChanges: true });
@@ -288,7 +269,7 @@ class RepositoryManager {
 
     hasUnsavedChanges(path = null) {
         if (path) {
-            return this. pendingChanges.has(path);
+            return this.pendingChanges.has(path);
         }
         return this.pendingChanges.size > 0;
     }
@@ -394,23 +375,18 @@ class RepositoryManager {
         }
     }
 
-    getCurrentUser() {
-        return this. currentUser;
-    }
-
     getCurrentRepo() {
-        return this. currentRepo;
+        return this.currentRepo;
     }
 
     getCurrentFile() {
-        return this.currentFile;
+        return this. currentFile;
     }
 
     reset() {
         this.stopAutoSave();
-        this.currentUser = null;
-        this. currentRepo = null;
-        this.currentFile = null;
+        this.currentRepo = null;
+        this. currentFile = null;
         this.pendingChanges. clear();
         this.emit('reset');
     }
