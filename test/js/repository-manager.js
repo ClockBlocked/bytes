@@ -76,24 +76,29 @@ class RepositoryManager {
         }
     }
 
-    async createRepository(data) {
-        this.emit('saving', { type: 'createRepository' });
+async createRepository(data) {
+    this.emit('saving', { type: 'createRepository' });
 
-        try {
-            const result = await this.api. createRepository({
-                name: data.name,
-                description: data.description || '',
-                private: data. private || false
-            });
+    try {
+        const result = await this.api.createRepository({
+            name: data.name,
+            description: data.description || '',
+            private: data.private || false
+        });
 
-            this.currentRepo = result;
-            this. emit('repositoryCreated', this.currentRepo);
-            return this.currentRepo;
-        } catch (error) {
-            this.emit('error', { type: 'createRepository', error });
-            throw error;
-        }
+        this.currentRepo = result;
+        this.emit('repositoryCreated', this.currentRepo);
+        return this.currentRepo;
+    } catch (error) {
+        console.error('Create repository failed:', {
+            message: error.message,
+            status: error.status,
+            errors: error.errors
+        });
+        this.emit('error', { type: 'createRepository', error });
+        throw error;
     }
+}
 
     async updateRepository(owner, repo, data) {
         this.emit('saving', { type: 'updateRepository', owner, repo });
