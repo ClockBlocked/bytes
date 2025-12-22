@@ -111,6 +111,10 @@ function fetchData(operationName, callback) {
 }
 function loadRepositories() {
   return fetchData("Loading repositories...", async () => {
+    // Ensure storage is initialized before loading
+    if (typeof ensureInitialized === 'function') {
+      await ensureInitialized();
+    }
     // Refresh repositories from server
     await LocalStorageManager.refresh();
     currentState.repositories = LocalStorageManager.getRepositories();

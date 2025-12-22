@@ -75,8 +75,20 @@ async function initializeStorage() {
   }
 }
 
+// Initialize storage and store the promise for awaiting
+let initPromise = null;
+
+// Ensure initialization is complete before using storage
+async function ensureInitialized() {
+  if (storageCache.initialized) return;
+  if (!initPromise) {
+    initPromise = initializeStorage();
+  }
+  await initPromise;
+}
+
 // Call initialize on load
-initializeStorage();
+initPromise = initializeStorage();
 
 const LocalStorageManager = {
   // Get all repositories from server cache
