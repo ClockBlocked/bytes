@@ -326,32 +326,54 @@ class coderViewEdit {
   hide() {
     this.elements.filePage?.classList.add("hidden");
   }
-  enterEditMode() {
-    if (!this.currentFile) return;
-    if (typeof LoadingSpinner !== "undefined") LoadingSpinner.show();
-    this.isEditing = true;
-    this.elements.editToggleBtn.innerHTML = `<svg class="icon" fill="currentColor" viewBox="0 0 16 16"><path d="M3.72 3.72a.75.75 0 0 1 1.06 0L8 6.94l3.22-3.22a.75.75 0 1 1 1.06 1.06L9.06 8l3.22 3.22a.75.75 0 1 1-1.06 1.06L8 9.06l-3.22 3.22a.75.75 0 0 1-1.06-1.06L6.94 8 3.72 4.78a.75.75 0 0 1 0-1.06Z"></path></svg>`;
-    this.elements.formatCodeBtn?.classList.remove("hidden");
-    this.elements.commitPanel?.classList.remove("hidden");
-    if (this.codeMirror) {
-      this.codeMirror.setOption("readOnly", false);
-      this.codeMirror.getWrapperElement().style.cursor = "text";
-    }
-    this.updateCommitMessage();
-    setTimeout(() => {
-      if (typeof LoadingSpinner !== "undefined") LoadingSpinner.hide();
-    }, 500);
+enterEditMode() {
+  if (!this.currentFile) return;
+  if (typeof LoadingSpinner !== "undefined") LoadingSpinner.show();
+  this.isEditing = true;
+  
+  // Change to Save icon
+  this.elements.editToggleBtn.innerHTML = `<svg class="icon" fill="currentColor" viewBox="0 0 16 16">
+    <path d="M13.488 2.512a1.75 1.75 0 0 0-2.475 0L6.175 7.35a.75.75 0 0 0-.206.578l.242 2.62a.75.75 0 0 0 .826.826l2.62.242a.75.75 0 0 0 .578-.206l4.838-4.838a1.75 1.75 0 0 0 0-2.475l-1.143-1.143Zm-1.06 1.06a.25.25 0 0 1 .354 0l1.143 1.143a.25.25 0 0 1 0 .354l-4.587 4.587-1.849-.171-.17-1.85 4.587-4.586Z"></path>
+    <path d="M1.75 1.5a.25.25 0 0 0-.25.25v12.5c0 .138.112.25.25.25h12.5a.25.25 0 0 0 .25-.25V6a.75.75 0 0 1 1.5 0v7.75A1.75 1.75 0 0 1 14.25 15.5H1.75A1.75 1.75 0 0 1 0 13.75V1.75C0 .784.784 0 1.75 0h6a.75.75 0 0 1 0 1.5Z"></path>
+  </svg>`;
+  this.elements.editToggleBtn.title = "Save";
+  
+  // Remove old event listener and add new one
+  this.elements.editToggleBtn.removeEventListener("click", () => this.isEditing ? this.cancelEdit() : this.enterEditMode());
+  this.elements.editToggleBtn.addEventListener("click", () => this.saveChanges());
+  
+  this.elements.formatCodeBtn?.classList.remove("hidden");
+  this.elements.commitPanel?.classList.remove("hidden");
+  if (this.codeMirror) {
+    this.codeMirror.setOption("readOnly", false);
+    this.codeMirror.getWrapperElement().style.cursor = "text";
   }
-  exitEditMode() {
-    this.isEditing = false;
-    this.elements.editToggleBtn.innerHTML = `<svg class="icon" fill="currentColor" viewBox="0 0 16 16"><path d="M11.013 1.427a1.75 1.75 0 0 1 2.474 0l1.086 1.086a1.75 1.75 0 0 1 0 2.474l-8.61 8.61a1.75 1.75 0 0 1-.757.437l-3.26.88a.75.75 0 0 1-.918-.918l.88-3.26a1.75 1.75 0 0 1 .437-.757l8.61-8.61Zm1.414 1.06a.25.25 0 0 0-.354 0L11.26 3.3l1.44 1.44 1.113-1.113a.25.25 0 0 0 0-.354l-1.086-1.086Z"></path></svg>`;
-    this.elements.formatCodeBtn?.classList.add("hidden");
-    this.elements.commitPanel?.classList.add("hidden");
-    if (this.codeMirror) {
-      this.codeMirror.setOption("readOnly", true);
-      this.codeMirror.getWrapperElement().style.cursor = "default";
-    }
+  this.updateCommitMessage();
+  setTimeout(() => {
+    if (typeof LoadingSpinner !== "undefined") LoadingSpinner.hide();
+  }, 500);
+}
+
+exitEditMode() {
+  this.isEditing = false;
+  
+  // Change back to Edit icon
+  this.elements.editToggleBtn.innerHTML = `<svg class="icon" fill="currentColor" viewBox="0 0 16 16">
+    <path d="M11.013 1.427a1.75 1.75 0 0 1 2.474 0l1.086 1.086a1.75 1.75 0 0 1 0 2.474l-8.61 8.61a1.75 1.75 0 0 1-.757.437l-3.26.88a.75.75 0 0 1-.918-.918l.88-3.26a1.75 1.75 0 0 1 .437-.757l8.61-8.61Zm1.414 1.06a.25.25 0 0 0-.354 0L11.26 3.3l1.44 1.44 1.113-1.113a.25.25 0 0 0 0-.354l-1.086-1.086Z"></path>
+  </svg>`;
+  this.elements.editToggleBtn.title = "Edit";
+  
+  // Remove save listener and restore original
+  this.elements.editToggleBtn.removeEventListener("click", () => this.saveChanges());
+  this.elements.editToggleBtn.addEventListener("click", () => this.isEditing ? this.cancelEdit() : this.enterEditMode());
+  
+  this.elements.formatCodeBtn?.classList.add("hidden");
+  this.elements.commitPanel?.classList.add("hidden");
+  if (this.codeMirror) {
+    this.codeMirror.setOption("readOnly", true);
+    this.codeMirror.getWrapperElement().style.cursor = "default";
   }
+}
   cancelEdit() {
     if (!this.codeMirror) return;
     if (this.codeMirror.getValue() !== this.originalContent && !confirm("Discard unsaved changes?")) return;
