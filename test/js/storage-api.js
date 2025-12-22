@@ -1,4 +1,4 @@
-const GITHUB_TOKEN = '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';
+const GITHUB_TOKEN = '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';
 const GITHUB_API_BASE = 'https://api.github.com';
 
 class GitHubAPI {
