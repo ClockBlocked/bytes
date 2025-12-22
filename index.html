@@ -571,8 +571,9 @@ input, textarea {
       border-top-left-radius: 15px;
     }
 
-    .main-content-wrapper {
+    #mainArea {
       flex: 1;
+      padding: 4rem;
       overflow-x: hidden;
       margin-left: var(--sidebar-width);
       margin-right: var(--sidebar-width);
@@ -625,7 +626,7 @@ input, textarea {
         transform: translateX(0);
       }
 
-      .main-content-wrapper {
+      #mainArea {
         margin-left: 0;
         margin-right: 0;
       }
@@ -1749,75 +1750,13 @@ background: linear-gradient(90deg, #dc2626, #ef4444, #f87171);
   
   
 
-  <!-- Main Content Wrapper -->
-  <div class="main-content-wrapper pt-16">
-    <!-- Repository Header -->
-    <header id="repoHeader" class="bg-github-canvas-overlay border-b border-github-border-default sticky top-0 z-40 backdrop-blur-md bg-github-canvas-overlay/95 hidden">
-      <div class="max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="flex items-center justify-between py-4">
-          <div class="flex items-center space-x-3">
-            <div class="flex items-center space-x-2">
-              <svg class="w-5 h-5 text-github-fg-muted" fill="currentColor" viewBox="0 0 16 16">
-                <path d="M2 2.5A2.5 2.5 0 0 1 4.5 0h8.75a.75.75 0 0 1 .75.75v12.5a.75.75 0 0 1-.75.75h-2.5a.75.75 0 0 1 0-1.5h1.75v-2h-8a1 1 0 0 0-.714 1.7.75.75 0 1 1-1.072 1.05A2.495 2.495 0 0 1 2 11.5Zm10.5-1h-8a1 1 0 0 0-1 1v6.708A2.486 2.486 0 0 1 4.5 9h8ZM5 12.25a.25.25 0 0 1 .25-.25h3.5a.25.25 0 0 1 .25.25v3.25a.25.25 0 0 1-.4.2l-1.45-1.087a.249.249 0 0 0-.3 0L5.4 15.7a.25.25 0 0 1-.4-.2Z" />
-              </svg>
-              <a href="#" onclick="showRepoSelector()" class="text-github-accent-fg hover:underline text-xl font-semibold">
-                GitDev
-              </a>
-            </div>
-            <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-github-canvas-subtle border border-github-border-default text-github-fg-muted">
-              Local
-            </span>
-          </div>
-
-          <div class="flex items-center space-x-2">
-            <button data-action="star-repo" class="inline-flex items-center px-3 py-1.5 border border-github-border-default rounded-md text-sm font-medium text-github-fg-default bg-github-btn-secondary-bg hover:bg-github-btn-secondary-hover transition-colors">
-              <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 16 16">
-                <path d="M8 .25a.75.75 0 0 1 .673.418l1.882 3.815 4.21.612a.75.75 0 0 1 .416 1.279l-3.046 2.97.719 4.192a.751.751 0 0 1-1.088.791L8 12.347l-3.766 1.98a.75.75 0 0 1-1.088-.79l.72-4.194L.818 6.374a.75.75 0 0 1 .416-1.28l4.21-.611L7.327.668A.75.75 0 0 1 8 .25Z" />
-              </svg>
-              Star
-            </button>
-            <button data-action="fork-repo" class="inline-flex items-center px-3 py-1.5 border border-github-border-default rounded-md text-sm font-medium text-github-fg-default bg-github-btn-secondary-bg hover:bg-github-btn-secondary-hover transition-colors">
-              <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 16 16">
-                <path d="M5 5.372v.878c0 .414.336.75.75.75h4.5a.75.75 0 0 0 .75-.75v-.878a2.25 2.25 0 1 1 1.5 0v.878a2.25 2.25 0 0 1-2.25 2.25h-1.5v2.128a2.251 2.251 0 1 1-1.5 0V8.5h-1.5A2.25 2.25 0 0 1 3.5 6.25v-.878a2.25 2.25 0 1 1 1.5 0ZM5 3.25a.75.75 0 1 0-1.5 0 .75.75 0 0 0 1.5 0Zm6.75.75a.75.75 0 1 0 0-1.5.75.75 0 0 0 0 1.5Zm-3 8.75a.75.75 0 1 0-1.5 0 .75.75 0 0 0 1.5 0Z" />
-              </svg>
-              Fork
-            </button>
-          </div>
-        </div>
-
-        <nav class="flex space-x-6 border-b border-github-border-muted -mb-px">
-          <a href="#" onclick="showExplorer()" class="flex items-center space-x-2 px-1 py-3 border-b-2 border-orange-400 text-sm font-semibold text-github-fg-default">
-            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 16 16">
-              <path d="M2 2.5A2.5 2.5 0 0 1 4.5 0h8.75a.75.75 0 0 1 .75.75v12.5a.75.75 0 0 1-.75.75h-2.5a.75.75 0 0 1 0-1.5h1.75v-2h-8a1 1 0 0 0-.714 1.7.75.75 0 1 1-1.072 1.05A2.495 2.495 0 0 1 2 11.5Zm10.5-1h-8a1 1 0 0 0-1 1v6.708A2.486 2.486 0 0 1 4.5 9h8ZM5 12.25a.25.25 0 0 1 .25-.25h3.5a.25.25 0 0 1 .25.25v3.25a.25.25 0 0 1-.4.2l-1.45-1.087a.249.249 0 0 0-.3 0L5.4 15.7a.25.25 0 0 1-.4-.2Z" />
-            </svg>
-            <span>Code</span>
-          </a>
-          <a href="#" class="flex items-center space-x-2 px-1 py-3 border-b-2 border-transparent text-sm font-medium text-github-fg-muted hover:text-github-fg-default hover:border-github-border-default transition-colors">
-            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 16 16">
-              <path d="M8 9.5a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3Z" />
-              <path d="M8 0a8 8 0 1 1 0 16A8 8 0 0 1 8 0ZM1.5 8a6.5 6.5 0 1 0 13 0 6.5 6.5 0 0 0-13 0Z" />
-            </svg>
-            <span>Issues</span>
-            <span class="bg-github-canvas-subtle text-github-fg-default text-xs px-1.5 py-0.5 rounded-full">0</span>
-          </a>
-          <a href="#" class="flex items-center space-x-2 px-1 py-3 border-b-2 border-transparent text-sm font-medium text-github-fg-muted hover:text-github-fg-default hover:border-github-border-default transition-colors">
-            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 16 16">
-              <path d="M1.5 3.25a2.25 2.25 0 1 1 3 2.122v5.256a2.251 2.251 0 1 1-1.5 0V5.372A2.25 2.25 0 0 1 1.5 3.25Zm5.677-.177L9.573.677A.25.25 0 0 1 10 .854V2.5h1A2.5 2.5 0 0 1 13.5 5v5.628a2.251 2.251 0 1 1-1.5 0V5a1 1 0 0 0-1-1h-1v1.646a.25.25 0 0 1-.427.177L7.177 3.427a.25.25 0 0 1 0-.354ZM3.75 2.5a.75.75 0 1 0 0 1.5.75.75 0 0 0 0-1.5Zm0 9.5a.75.75 0 1 0 0 1.5.75.75 0 0 0 0-1.5Zm8.25.75a.75.75 0 1 0 1.5 0 .75.75 0 0 0-1.5 0Z" />
-            </svg>
-            <span>Pull requests</span>
-            <span class="bg-github-canvas-subtle text-github-fg-default text-xs px-1.5 py-0.5 rounded-full">0</span>
-          </a>
-        </nav>
-      </div>
-    </header>
-
-    <!-- Main Content -->
-    <main class="flex-1">
+<!-- Page Wrapper -->
+<main id="mainArea">
 
 
 
 
-
+<!-- Number 1 -->
 <!-- Repository Selector View -->
 <div id="repoSelectorView" class="max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
   <div class="flex items-center justify-between mb-6">
@@ -1829,6 +1768,7 @@ background: linear-gradient(90deg, #dc2626, #ef4444, #f87171);
   </div>
 </div>
 
+<!-- Number 2 -->
 <!-- File Explorer View -->
 <div id="explorerView" class="max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8 py-6 hidden">
   <div class="flex items-center justify-between mb-4">
@@ -2004,15 +1944,16 @@ background: linear-gradient(90deg, #dc2626, #ef4444, #f87171);
   </div>
 </div>
 
-
+<!-- Nunber 3 -->
+<!-- Viewing a file -->
 <div class="pages hidden" data-page="file">
-
+<!--
+data-page="file" is for viewing files with the Code Viewer / Code Editor
+-->
 </div>
 
 
-
-    </main>
-  </div>
+</main>
 
 
 
@@ -2273,7 +2214,7 @@ const SidebarManager = {
     const leftSidebar = document.getElementById('leftSidebar');
     const rightSidebar = document.getElementById('rightSidebar');
     const overlay = document.getElementById('overlay');
-    const mainContentWrapper = document.querySelector('.main-content-wrapper');
+    const mainContentWrapper = document.getElementById('mainArea');
     
     if (window.innerWidth <= 1200) {
       leftSidebar.classList.remove('open');
