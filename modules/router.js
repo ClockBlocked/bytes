@@ -99,12 +99,12 @@ const LoadingProgress = (() => {
     const style = document.createElement("style");
     style.id = "loadingProgressStyles";
     style.textContent = `
-      . gh-progress {
+      .gh-progress {
         position: fixed;
         top: 0;
         left: 0;
         width: 100%;
-        height: 2. 5px;
+        height: 2.5px;
         z-index: 9999;
         background-color: transparent;
         pointer-events: none;
