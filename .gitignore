@@ -1,0 +1,23 @@
+# Storage directories - contain user data, should not be committed
+storage/repos/*
+storage/users/*
+storage/trash/*
+
+# Keep the .htaccess and .gitkeep files
+!storage/.htaccess
+!storage/repos/.gitkeep
+!storage/users/.gitkeep
+!storage/trash/.gitkeep
+
+# PHP error logs
+*.log
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE files
+.idea/
+.vscode/
+*.swp
+*.swo
