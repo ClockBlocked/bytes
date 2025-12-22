@@ -1,3 +1,5 @@
+const GITHUB_API_BASE = 'https://api.github.com';
+
 class GitHubAPI {
     constructor(options = {}) {
         this.token = options.token || this.getStoredToken();
@@ -38,7 +40,7 @@ class GitHubAPI {
             this.initialized = true;
             return true;
         } catch (error) {
-            if (error.isUnauthorized()) {
+            if (error.status === 401) {
                 // Token is invalid, clear it and prompt again
                 this.clearToken();
                 throw new GitHubAPIError(
@@ -556,34 +558,6 @@ class GitHubAPIError extends Error {
         this.status = status;
         this.errors = errors;
     }
-
-    isNotFound() {
-        return this.status === 404;
-    }
-
-    isValidationError() {
-        return this.status === 400 || this.status === 422;
-    }
-
-    isServerError() {
-        return this.status >= 500;
-    }
-
-    isNetworkError() {
-        return this.status === 0;
-    }
-
-    isTimeout() {
-        return this.status === 408;
-    }
-
-    isUnauthorized() {
-        return this.status === 401;
-    }
-
-    isForbidden() {
-        return this.status === 403;
-    }
 }
 
 // Create API instance without a token initially
@@ -593,7 +567,7 @@ const githubAPI = new GitHubAPI({
         console.error('[GitHub API Error]', error.message, error.status);
         
         // Show user-friendly error messages for common issues
-        if (error.isUnauthorized()) {
+        if (error.status === 401) {
             // Clear invalid token and prompt for new one
             githubAPI.clearToken();
             
