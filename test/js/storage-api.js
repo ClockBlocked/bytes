@@ -6,27 +6,21 @@ class GitHubAPI {
         this.timeout = options.timeout || 30000;
         this.headers = {
             'Authorization': this.token ? `token ${this.token}` : '',
-            'Accept': 'application/vnd.github.v3+json',
+            'Accept': 'application/vnd. github.v3+json',
             'Content-Type': 'application/json'
         };
         this.onError = options.onError || null;
-        this.onRequest = options.onRequest || null;
+        this. onRequest = options.onRequest || null;
         this.onResponse = options.onResponse || null;
         this.cache = new Map();
-        this.cacheTimeout = options.cacheTimeout || 60000;
+        this.cacheTimeout = options. cacheTimeout || 60000;
         this.initialized = false;
-        this.initializing = false; // Prevent concurrent initialization
-        
-        // If no token provided, try to get one
-        if (!this.token && options.promptIfMissing !== false) {
-            // Don't auto-prompt in constructor, wait for first request
-        }
+        this.initializing = false;
     }
 
     async initialize() {
         if (this.initialized) return true;
         if (this.initializing) {
-            // Wait for ongoing initialization to complete
             return new Promise(resolve => {
                 const check = () => {
                     if (this.initialized) {
@@ -39,52 +33,47 @@ class GitHubAPI {
             });
         }
         
-        this.initializing = true;
+        this. initializing = true;
         
         try {
-            // Ensure we have a token before making any requests
-            if (!this.token) {
-                await this.promptForToken();
+            if (! this.token) {
+                await this. promptForToken();
             }
             
-            if (!this.token) {
-                throw new GitHubAPIError('GitHub token is required. Please provide a valid token.', 401);
+            if (!this. token) {
+                throw new GitHubAPIError('GitHub token is required.  Please provide a valid token. ', 401);
             }
             
-            // Test the token with a simple request - skip initialization check
-            const result = await this.getRateLimitStatus(true); // Pass true to skip initialization
-            console.log('Token validated, rate limit:', result);
+            const result = await this. requestWithoutInitialization('/rate_limit');
+            console. log('Token validated, rate limit:', result);
             
             this.initialized = true;
             return true;
         } catch (error) {
             if (error.status === 401) {
-                // Token is invalid, clear it
                 this.clearToken();
                 throw new GitHubAPIError(
-                    'Invalid GitHub token. Please provide a valid token.',
+                    'Invalid GitHub token.  Please provide a valid token.',
                     401
                 );
             }
             throw error;
         } finally {
-            this.initializing = false;
+            this. initializing = false;
         }
     }
 
     async promptForToken() {
-        // Try to get token from localStorage first
-        const storedToken = this.getStoredToken();
+        const storedToken = this. getStoredToken();
         if (storedToken) {
             this.setToken(storedToken);
             return;
         }
 
-        // Show a custom prompt modal for better UX
         const token = await this.showTokenPromptModal();
         
         if (token) {
-            this.setToken(token);
+            this. setToken(token);
             this.storeToken(token);
             return true;
         }
@@ -94,15 +83,14 @@ class GitHubAPI {
 
     async showTokenPromptModal() {
         return new Promise((resolve) => {
-            // Create modal
             const modal = document.createElement('div');
             modal.style.cssText = `
                 position: fixed;
-                top: 0;
+                top:  0;
                 left: 0;
                 width: 100%;
                 height: 100%;
-                background: rgba(0,0,0,0.7);
+                background:  rgba(0,0,0,0.7);
                 display: flex;
                 align-items: center;
                 justify-content: center;
@@ -124,9 +112,9 @@ class GitHubAPI {
                         This application needs a GitHub Personal Access Token to access your repositories.
                     </p>
                     
-                    <div style="background: #f5f5f5; padding: 15px; border-radius: 5px; margin-bottom: 20px;">
+                    <div style="background: #f5f5f5; padding: 15px; border-radius:  5px; margin-bottom: 20px;">
                         <h4 style="margin-top: 0; color: #333;">How to get a token:</h4>
-                        <ol style="margin: 10px 0; padding-left: 20px; color: #666;">
+                        <ol style="margin:  10px 0; padding-left: 20px; color: #666;">
                             <li>Go to <a href="https://github.com/settings/tokens" target="_blank" style="color: #0366d6;">GitHub Token Settings</a></li>
                             <li>Click "Generate new token (classic)"</li>
                             <li>Select these scopes: <code>repo</code>, <code>user</code></li>
@@ -135,8 +123,8 @@ class GitHubAPI {
                     </div>
                     
                     <div style="margin-bottom: 20px;">
-                        <label style="display: block; margin-bottom: 8px; font-weight: bold; color: #333;">
-                            Your GitHub Token:
+                        <label style="display: block; margin-bottom:  8px; font-weight: bold; color: #333;">
+                            Your GitHub Token: 
                         </label>
                         <input type="password" 
                                id="github-token-input"
@@ -149,12 +137,12 @@ class GitHubAPI {
                                    font-family: monospace;
                                    box-sizing: border-box;
                                ">
-                        <div style="font-size: 12px; color: #999; margin-top: 5px;">
+                        <div style="font-size: 12px; color: #999; margin-top:  5px;">
                             Your token is stored locally and never sent to our servers.
                         </div>
                     </div>
                     
-                    <div style="display: flex; justify-content: flex-end; gap: 10px;">
+                    <div style="display: flex; justify-content: flex-end; gap:  10px;">
                         <button id="cancel-btn" style="
                             padding: 10px 20px;
                             background: #f5f5f5;
@@ -166,7 +154,7 @@ class GitHubAPI {
                             Cancel
                         </button>
                         <button id="submit-btn" style="
-                            padding: 10px 20px;
+                            padding:  10px 20px;
                             background: #28a745;
                             color: white;
                             border: none;
@@ -178,7 +166,7 @@ class GitHubAPI {
                         </button>
                     </div>
                     
-                    <div style="margin-top: 20px; padding-top: 20px; border-top: 1px solid #eee; font-size: 12px; color: #999;">
+                    <div style="margin-top: 20px; padding-top: 20px; border-top:  1px solid #eee; font-size: 12px; color: #999;">
                         <strong>Note:</strong> This application runs entirely in your browser. 
                         Your token is only used to communicate with GitHub's API directly from your browser.
                     </div>
@@ -208,7 +196,7 @@ class GitHubAPI {
                 }
             };
             
-            cancelBtn.onclick = () => {
+            cancelBtn. onclick = () => {
                 resolve(null);
                 cleanup();
             };
@@ -218,7 +206,7 @@ class GitHubAPI {
             input.onkeydown = (e) => {
                 if (e.key === 'Enter') {
                     submit();
-                } else if (e.key === 'Escape') {
+                } else if (e. key === 'Escape') {
                     resolve(null);
                     cleanup();
                 }
@@ -227,9 +215,9 @@ class GitHubAPI {
     }
 
     setToken(token) {
-        this.token = token.trim();
-        this.headers.Authorization = this.token ? `token ${this.token}` : '';
-        this.cache.clear(); // Clear cache when token changes
+        this.token = token. trim();
+        this.headers. Authorization = this.token ? `token ${this.token}` : '';
+        this.cache.clear();
         this.initialized = false;
     }
 
@@ -254,7 +242,7 @@ class GitHubAPI {
         this.token = null;
         this.headers.Authorization = '';
         try {
-            localStorage.removeItem('github_clone_token');
+            localStorage. removeItem('github_clone_token');
         } catch (e) {
             console.warn('Failed to clear token from localStorage:', e);
         }
@@ -263,8 +251,7 @@ class GitHubAPI {
     }
 
     async request(endpoint, options = {}) {
-        // Ensure we're initialized before making requests
-        if (!this.initialized && options.skipInitialization !== true) {
+        if (! this.initialized && options.skipInitialization !== true) {
             await this.initialize();
         }
         
@@ -279,11 +266,11 @@ class GitHubAPI {
         };
 
         if (options.body && config.method !== 'GET') {
-            config.body = JSON.stringify(options.body);
+            config.body = JSON. stringify(options.body);
         }
 
         if (this.onRequest) {
-            this.onRequest({ url, ...config });
+            this.onRequest({ url, ... config });
         }
 
         try {
@@ -300,14 +287,14 @@ class GitHubAPI {
             }
 
             if (this.onResponse) {
-                this.onResponse({ url, status: response.status, data });
+                this.onResponse({ url, status: response. status, data });
             }
 
-            if (!response.ok) {
+            if (! response.ok) {
                 throw new GitHubAPIError(
-                    data.message || 'Request failed',
+                    data. message || 'Request failed',
                     response.status,
-                    data.errors || null
+                    data. errors || null
                 );
             }
 
@@ -331,7 +318,7 @@ class GitHubAPI {
                 0
             );
             
-            if (this.onError) {
+            if (this. onError) {
                 this.onError(networkError);
             }
             
@@ -340,46 +327,45 @@ class GitHubAPI {
     }
 
     async requestWithoutInitialization(endpoint, options = {}) {
-        // Direct request without initialization check
         const url = `${GITHUB_API_BASE}${endpoint}`;
         const controller = new AbortController();
         const timeoutId = setTimeout(() => controller.abort(), this.timeout);
 
         const config = {
-            method: options.method || 'GET',
-            headers: { ...this.headers, ...options.headers },
-            signal: controller.signal
+            method: options. method || 'GET',
+            headers:  { ...this.headers, ...options.headers },
+            signal:  controller.signal
         };
 
         if (options.body && config.method !== 'GET') {
-            config.body = JSON.stringify(options.body);
+            config.body = JSON.stringify(options. body);
         }
 
         if (this.onRequest) {
-            this.onRequest({ url, ...config });
+            this.onRequest({ url, ... config });
         }
 
         try {
             const response = await fetch(url, config);
             clearTimeout(timeoutId);
 
-            const contentType = response.headers.get('content-type');
+            const contentType = response.headers. get('content-type');
             let data;
 
             if (contentType && contentType.includes('application/json')) {
-                data = await response.json();
+                data = await response. json();
             } else {
                 data = await response.text();
             }
 
-            if (this.onResponse) {
-                this.onResponse({ url, status: response.status, data });
+            if (this. onResponse) {
+                this.onResponse({ url, status:  response.status, data });
             }
 
-            if (!response.ok) {
+            if (!response. ok) {
                 throw new GitHubAPIError(
                     data.message || 'Request failed',
-                    response.status,
+                    response. status,
                     data.errors || null
                 );
             }
@@ -404,7 +390,7 @@ class GitHubAPI {
                 0
             );
             
-            if (this.onError) {
+            if (this. onError) {
                 this.onError(networkError);
             }
             
@@ -413,7 +399,7 @@ class GitHubAPI {
     }
 
     getCached(key) {
-        const cached = this.cache.get(key);
+        const cached = this.cache. get(key);
         if (cached && Date.now() - cached.timestamp < this.cacheTimeout) {
             return cached.data;
         }
@@ -426,14 +412,14 @@ class GitHubAPI {
     }
 
     clearCache(pattern = null) {
-        if (!pattern) {
+        if (! pattern) {
             this.cache.clear();
             return;
         }
         
         for (const key of this.cache.keys()) {
             if (key.includes(pattern)) {
-                this.cache.delete(key);
+                this.cache. delete(key);
             }
         }
     }
@@ -441,18 +427,18 @@ class GitHubAPI {
     async listRepositories(options = {}) {
         const params = new URLSearchParams();
         
-        if (options.type) params.append('type', options.type);
+        if (options. type) params.append('type', options.type);
         if (options.sort) params.append('sort', options.sort);
-        if (options.direction) params.append('direction', options.direction);
+        if (options. direction) params.append('direction', options.direction);
         if (options.per_page) params.append('per_page', options.per_page);
         if (options.page) params.append('page', options.page);
 
         const query = params.toString();
         const endpoint = `/user/repos${query ? `?${query}` : ''}`;
-        const cacheKey = `repos:${query}`;
+        const cacheKey = `repos: ${query}`;
 
         if (options.useCache !== false) {
-            const cached = this.getCached(cacheKey);
+            const cached = this. getCached(cacheKey);
             if (cached) return cached;
         }
 
@@ -462,14 +448,14 @@ class GitHubAPI {
     }
 
     async getRepository(owner, repo, options = {}) {
-        const cacheKey = `repo:${owner}:${repo}`;
+        const cacheKey = `repo:${owner}: ${repo}`;
 
-        if (options.useCache !== false) {
+        if (options. useCache !== false) {
             const cached = this.getCached(cacheKey);
             if (cached) return cached;
         }
 
-        const result = await this.request(`/repos/${owner}/${repo}`);
+        const result = await this. request(`/repos/${owner}/${repo}`);
         this.setCache(cacheKey, result);
         return result;
     }
@@ -489,18 +475,18 @@ class GitHubAPI {
     }
 
     async updateRepository(owner, repo, data) {
-        this.clearCache(`repo:${owner}:${repo}`);
+        this.clearCache(`repo:${owner}: ${repo}`);
         this.clearCache('repos');
 
         return this.request(`/repos/${owner}/${repo}`, {
-            method: 'PATCH',
+            method:  'PATCH',
             body: {
                 name: data.name || undefined,
-                description: data.description || undefined,
-                private: data.private || undefined,
+                description:  data.description || undefined,
+                private:  data.private || undefined,
                 has_wiki: data.has_wiki !== undefined ? data.has_wiki : undefined,
-                has_issues: data.has_issues !== undefined ? data.has_issues : undefined,
-                has_projects: data.has_projects !== undefined ? data.has_projects : undefined
+                has_issues: data. has_issues !== undefined ? data.has_issues : undefined,
+                has_projects:  data.has_projects !== undefined ? data. has_projects : undefined
             }
         });
     }
@@ -509,13 +495,13 @@ class GitHubAPI {
         this.clearCache(`repo:${owner}:${repo}`);
         this.clearCache('repos');
 
-        return this.request(`/repos/${owner}/${repo}`, {
+        return this. request(`/repos/${owner}/${repo}`, {
             method: 'DELETE'
         });
     }
 
     async listRepositoryContents(owner, repo, path = '') {
-        const cacheKey = `repo:${owner}:${repo}:contents:${path}`;
+        const cacheKey = `repo:${owner}: ${repo}:contents: ${path}`;
         const cached = this.getCached(cacheKey);
         if (cached) return cached;
 
@@ -536,8 +522,8 @@ class GitHubAPI {
     }
 
     async createFile(owner, repo, path, data) {
-        this.clearCache(`repo:${owner}:${repo}`);
-        this.clearCache(`repo:${owner}:${repo}:contents`);
+        this.clearCache(`repo:${owner}: ${repo}`);
+        this.clearCache(`repo:${owner}:${repo}: contents`);
 
         const message = data.message || `Create ${path}`;
         const content = btoa(unescape(encodeURIComponent(data.content || '')));
@@ -584,7 +570,7 @@ class GitHubAPI {
             method: 'DELETE',
             body: {
                 message: message,
-                sha: fileInfo.sha,
+                sha:  fileInfo.sha,
                 branch: data.branch || 'main'
             }
         });
@@ -597,7 +583,7 @@ class GitHubAPI {
     }
 
     async unstarRepository(owner, repo) {
-        this.clearCache(`repo:${owner}:${repo}`);
+        this.clearCache(`repo:${owner}: ${repo}`);
 
         return this.request(`/user/starred/${owner}/${repo}`, {
             method: 'DELETE'
@@ -624,21 +610,17 @@ class GitHubAPI {
         if (options.per_page) params.append('per_page', options.per_page);
         if (options.page) params.append('page', options.page);
 
-        const endpoint = `/search/repositories?${params.toString()}`;
+        const endpoint = `/search/repositories? ${params.toString()}`;
         return this.request(endpoint);
     }
 
-    async getRateLimitStatus(skipInitialization = false) {
-        if (skipInitialization) {
-            // Use direct request without initialization check
-            return this.requestWithoutInitialization('/rate_limit');
-        }
-        return this.request('/rate_limit');
+    async getRateLimitStatus() {
+        return this.requestWithoutInitialization('/rate_limit');
     }
 
     async forkRepository(owner, repo, data = {}) {
         return this.request(`/repos/${owner}/${repo}/forks`, {
-            method: 'POST',
+            method:  'POST',
             body: {
                 owner: data.owner || undefined,
                 name: data.name || undefined,
@@ -657,23 +639,19 @@ class GitHubAPIError extends Error {
     }
 }
 
-// Create API instance without a token initially
 const githubAPI = new GitHubAPI({
     timeout: 30000,
     onError: (error) => {
-        console.error('[GitHub API Error]', error.message, error.status);
+        console.error('[GitHub API Error]', error. message, error.status);
         
-        // Show user-friendly error messages for common issues
         if (error.status === 401) {
-            // Clear invalid token and prompt for new one
             githubAPI.clearToken();
             
-            // Show notification to user
             const notification = document.createElement('div');
             notification.style.cssText = `
                 position: fixed;
                 top: 20px;
-                right: 20px;
+                right:  20px;
                 background: #dc3545;
                 color: white;
                 padding: 15px;
@@ -686,13 +664,12 @@ const githubAPI = new GitHubAPI({
                 <strong>Authentication Error</strong>
                 <p>Your GitHub token is invalid or expired. Please enter a new token.</p>
                 <button onclick="this.parentElement.remove(); githubAPI.promptForToken();" 
-                        style="background: white; color: #dc3545; border: none; padding: 5px 10px; border-radius: 3px; cursor: pointer; margin-top: 10px;">
+                        style="background: white; color: #dc3545; border:  none; padding: 5px 10px; border-radius: 3px; cursor: pointer; margin-top: 10px;">
                     Enter New Token
                 </button>
             `;
             document.body.appendChild(notification);
             
-            // Auto-remove after 10 seconds
             setTimeout(() => {
                 if (notification.parentElement) {
                     notification.remove();
@@ -702,7 +679,6 @@ const githubAPI = new GitHubAPI({
     }
 });
 
-// Add a global function to reset token
 window.resetGitHubToken = function() {
     githubAPI.clearToken();
     githubAPI.promptForToken();
