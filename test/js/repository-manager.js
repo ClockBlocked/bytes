@@ -10,7 +10,7 @@ class RepositoryManager {
     }
 
     on(event, callback) {
-        if (!this.listeners.has(event)) {
+        if (!this. listeners.has(event)) {
             this.listeners.set(event, []);
         }
         this.listeners. get(event).push(callback);
@@ -19,7 +19,7 @@ class RepositoryManager {
 
     off(event, callback) {
         if (! this.listeners.has(event)) return;
-        const callbacks = this. listeners.get(event);
+        const callbacks = this.listeners. get(event);
         const index = callbacks.indexOf(callback);
         if (index > -1) {
             callbacks.splice(index, 1);
@@ -27,7 +27,7 @@ class RepositoryManager {
     }
 
     emit(event, data) {
-        if (!this.listeners.has(event)) return;
+        if (! this.listeners.has(event)) return;
         this.listeners.get(event).forEach(callback => {
             try {
                 callback(data);
@@ -39,14 +39,14 @@ class RepositoryManager {
 
     async loadRepositories(options = {}) {
         this.emit('loading', { type: 'repositories' });
-        
+
         try {
             const result = await this.api.listRepositories({
                 type: options.type || 'owner',
-                sort: options.sort || 'updated',
-                direction: options.direction || 'desc',
+                sort: options. sort || 'updated',
+                direction:  options.direction || 'desc',
                 per_page: options.per_page || 30,
-                page: options.page || 1,
+                page:  options.page || 1,
                 useCache: options.useCache
             });
 
@@ -59,76 +59,76 @@ class RepositoryManager {
     }
 
     async loadRepository(owner, repo, options = {}) {
-        this.emit('loading', { type: 'repository', owner, repo });
-        
+        this. emit('loading', { type: 'repository', owner, repo });
+
         try {
-            const result = await this.api.getRepository(owner, repo, {
-                useCache: options.useCache
+            const result = await this. api.getRepository(owner, repo, {
+                useCache:  options.useCache
             });
-            
+
             this.currentRepo = result;
             this.emit('repositoryLoaded', this.currentRepo);
-            
+
             return this.currentRepo;
         } catch (error) {
-            this. emit('error', { type: 'loadRepository', error, owner, repo });
+            this.emit('error', { type: 'loadRepository', error, owner, repo });
             throw error;
         }
     }
 
     async createRepository(data) {
         this.emit('saving', { type: 'createRepository' });
-        
+
         try {
-            const result = await this.api.createRepository({
+            const result = await this.api. createRepository({
                 name: data.name,
                 description: data.description || '',
-                private: data.private || false
+                private: data. private || false
             });
 
             this.currentRepo = result;
-            this.emit('repositoryCreated', this.currentRepo);
+            this. emit('repositoryCreated', this.currentRepo);
             return this.currentRepo;
         } catch (error) {
-            this. emit('error', { type: 'createRepository', error });
+            this.emit('error', { type: 'createRepository', error });
             throw error;
         }
     }
 
     async updateRepository(owner, repo, data) {
         this.emit('saving', { type: 'updateRepository', owner, repo });
-        
+
         try {
             const result = await this.api.updateRepository(owner, repo, {
                 name: data.name,
                 description: data.description,
                 private: data.private
             });
-            
-            if (this.currentRepo && this.currentRepo.name === repo && this.currentRepo.owner. login === owner) {
-                Object.assign(this.currentRepo, result);
+
+            if (this.currentRepo && this.currentRepo. name === repo && this.currentRepo. owner.login === owner) {
+                Object.assign(this. currentRepo, result);
             }
-            
+
             this.emit('repositoryUpdated', result);
             return result;
         } catch (error) {
-            this.emit('error', { type: 'updateRepository', error, owner, repo });
+            this.emit('error', { type:  'updateRepository', error, owner, repo });
             throw error;
         }
     }
 
     async deleteRepository(owner, repo) {
         this.emit('saving', { type: 'deleteRepository', owner, repo });
-        
+
         try {
             await this.api.deleteRepository(owner, repo);
-            
-            if (this.currentRepo && this. currentRepo.name === repo && this.currentRepo.owner.login === owner) {
+
+            if (this.currentRepo && this.currentRepo.name === repo && this.currentRepo. owner.login === owner) {
                 this.currentRepo = null;
                 this.currentFile = null;
             }
-            
-            this.emit('repositoryDeleted', { owner, repo });
+
+            this. emit('repositoryDeleted', { owner, repo });
             return true;
         } catch (error) {
             this.emit('error', { type: 'deleteRepository', error, owner, repo });
@@ -138,7 +138,7 @@ class RepositoryManager {
 
     async loadRepositoryContents(owner, repo, path = '') {
         this.emit('loading', { type: 'repositoryContents', owner, repo, path });
-        
+
         try {
             const result = await this.api.listRepositoryContents(owner, repo, path);
             this.emit('repositoryContentsLoaded', result);
@@ -150,11 +150,11 @@ class RepositoryManager {
     }
 
     async selectFile(owner, repo, path) {
-        this.emit('loading', { type: 'fileContent', owner, repo, path });
-        
+        this.emit('loading', { type:  'fileContent', owner, repo, path });
+
         try {
             const result = await this.api.getFileContent(owner, repo, path);
-            
+
             let content = '';
             if (result.content) {
                 content = atob(result.content);
@@ -178,24 +178,24 @@ class RepositoryManager {
     }
 
     async createFile(owner, repo, path, data) {
-        this.emit('saving', { type: 'createFile', owner, repo, path });
-        
+        this. emit('saving', { type: 'createFile', owner, repo, path });
+
         try {
             const result = await this.api.createFile(owner, repo, path, {
                 content: data.content || '',
                 message: data.message || `Create ${path}`
             });
 
-            const fileData = result.content;
+            const fileData = result. content;
             const newFile = {
                 path: fileData.path,
                 name: fileData.name,
-                size: fileData.size,
+                size: fileData. size,
                 content: data.content || '',
                 sha: fileData.sha,
                 url: fileData.html_url
             };
-            
+
             this.currentFile = newFile;
             this.emit('fileCreated', newFile);
             return newFile;
@@ -207,28 +207,28 @@ class RepositoryManager {
 
     async updateFile(owner, repo, path, data) {
         this.emit('saving', { type: 'updateFile', owner, repo, path });
-        
+
         try {
             const result = await this.api.updateFile(owner, repo, path, {
-                content: data.content || '',
+                content:  data.content || '',
                 message: data.message || `Update ${path}`
             });
 
             const fileData = result.content;
             const updatedFile = {
-                path:  fileData.path,
-                name: fileData.name,
+                path: fileData.path,
+                name: fileData. name,
                 size: fileData.size,
-                content: data.content || '',
+                content:  data.content || '',
                 sha: fileData.sha,
-                url: fileData. html_url
+                url: fileData.html_url
             };
-            
+
             if (this.currentFile && this.currentFile.path === path) {
                 this.currentFile = updatedFile;
             }
-            
-            this.pendingChanges.delete(path);
+
+            this. pendingChanges.delete(path);
             this.emit('fileSaved', updatedFile);
             return updatedFile;
         } catch (error) {
@@ -239,21 +239,21 @@ class RepositoryManager {
 
     async deleteFile(owner, repo, path) {
         this.emit('saving', { type: 'deleteFile', owner, repo, path });
-        
+
         try {
             await this.api.deleteFile(owner, repo, path, {
-                message: `Delete ${path}`
+                message:  `Delete ${path}`
             });
-            
-            if (this.currentFile && this. currentFile.path === path) {
-                this.currentFile = null;
+
+            if (this.currentFile && this.currentFile.path === path) {
+                this. currentFile = null;
             }
-            
-            this.pendingChanges.delete(path);
+
+            this. pendingChanges. delete(path);
             this.emit('fileDeleted', { owner, repo, path });
             return true;
         } catch (error) {
-            this.emit('error', { type: 'deleteFile', error, owner, repo, path });
+            this.emit('error', { type:  'deleteFile', error, owner, repo, path });
             throw error;
         }
     }
@@ -263,8 +263,8 @@ class RepositoryManager {
             content,
             timestamp: Date.now()
         });
-        
-        this.emit('fileChanged', { path, hasUnsavedChanges: true });
+
+        this.emit('fileChanged', { path, hasUnsavedChanges:  true });
     }
 
     hasUnsavedChanges(path = null) {
@@ -276,11 +276,11 @@ class RepositoryManager {
 
     async saveAllPendingChanges(owner, repo) {
         const promises = [];
-        
+
         for (const [path, change] of this.pendingChanges) {
-            promises.push(this.updateFile(owner, repo, path, { content: change.content }));
+            promises.push(this. updateFile(owner, repo, path, { content: change.content }));
         }
-        
+
         return Promise.all(promises);
     }
 
@@ -288,16 +288,16 @@ class RepositoryManager {
         if (delay !== null) {
             this.autoSaveDelay = delay;
         }
-        
+
         this.stopAutoSave();
-        
+
         this.autoSaveInterval = setInterval(() => {
             if (this.hasUnsavedChanges()) {
                 this.saveAllPendingChanges(owner, repo).catch(error => {
                     console.error('Auto-save failed:', error);
                 });
             }
-        }, this. autoSaveDelay);
+        }, this.autoSaveDelay);
     }
 
     stopAutoSave() {
@@ -309,13 +309,13 @@ class RepositoryManager {
 
     async searchRepositories(query, options = {}) {
         this.emit('loading', { type: 'search', query });
-        
+
         try {
-            const result = await this.api. searchRepositories(query, {
+            const result = await this.api.searchRepositories(query, {
                 sort: options.sort || 'stars',
                 order: options.order || 'desc',
-                per_page: options.per_page || 30,
-                page:  options.page || 1
+                per_page:  options.per_page || 30,
+                page: options. page || 1
             });
 
             this.emit('searchCompleted', result);
@@ -340,7 +340,7 @@ class RepositoryManager {
         this.emit('saving', { type: 'starRepository', owner, repo });
 
         try {
-            await this. api.starRepository(owner, repo);
+            await this.api.starRepository(owner, repo);
             this.emit('repositoryStarred', { owner, repo });
             return true;
         } catch (error) {
@@ -353,7 +353,7 @@ class RepositoryManager {
         this.emit('saving', { type: 'unstarRepository', owner, repo });
 
         try {
-            await this.api.unstarRepository(owner, repo);
+            await this.api. unstarRepository(owner, repo);
             this.emit('repositoryUnstarred', { owner, repo });
             return true;
         } catch (error) {
@@ -363,14 +363,14 @@ class RepositoryManager {
     }
 
     async forkRepository(owner, repo, options = {}) {
-        this.emit('saving', { type: 'forkRepository', owner, repo });
+        this.emit('saving', { type:  'forkRepository', owner, repo });
 
         try {
             const result = await this.api.forkRepository(owner, repo, options);
             this.emit('repositoryForked', result);
             return result;
         } catch (error) {
-            this.emit('error', { type: 'forkRepository', error, owner, repo });
+            this.emit('error', { type:  'forkRepository', error, owner, repo });
             throw error;
         }
     }
@@ -380,14 +380,14 @@ class RepositoryManager {
     }
 
     getCurrentFile() {
-        return this. currentFile;
+        return this.currentFile;
     }
 
     reset() {
         this.stopAutoSave();
         this.currentRepo = null;
-        this. currentFile = null;
-        this.pendingChanges. clear();
+        this.currentFile = null;
+        this.pendingChanges.clear();
         this.emit('reset');
     }
 }
