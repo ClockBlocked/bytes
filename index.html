@@ -1503,12 +1503,9 @@ background: linear-gradient(90deg, #dc2626, #ef4444, #f87171);
         <img src="https://dev.wuaze.com/banner.png" alt="Profile" class="profile-avatar" />
         <div class="profile-info">
           <h3 class="profile-name">GitDev</h3>
-          <span class="profile-username">Local File Manager</span>
+          <span class="profile-username">Server File Manager</span>
         </div>
-        <button data-action="show-create-repo" class="w-full mt-3 px-3 py-2 bg-github-btn-primary-bg hover:bg-github-btn-primary-hover text-white rounded-md text-sm font-medium transition-colors">
-          <i class="fas fa-plus mr-2"></i>
-          New Repository
-        </button>
+        <!-- Create Repository removed - files are stored on server -->
       </div>
 
       <!-- Quick Actions -->
@@ -1879,12 +1876,7 @@ background: linear-gradient(90deg, #dc2626, #ef4444, #f87171);
 <div id="repoSelectorView" class="max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
   <div class="flex items-center justify-between mb-6">
     <h2 class="text-2xl font-bold text-github-fg-default">Your Repositories</h2>
-    <button data-action="create-repo" class="inline-flex items-center px-4 py-2 bg-github-btn-primary-bg hover:bg-github-btn-primary-hover text-white rounded-md text-sm font-medium transition-colors">
-      <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 16 16">
-        <path d="M7.75 2a.75.75 0 0 1 .75.75V7h4.25a.75.75 0 0 1 0 1.5H8.5v4.25a.75.75 0 0 1-1.5 0V8.5H2.75a.75.75 0 0 1 0-1.5H7V2.75A.75.75 0 0 1 7.75 2Z" />
-      </svg>
-      New repository
-    </button>
+    <!-- New repository button removed - repositories are managed on server -->
   </div>
 
   <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4" id="repoList">
@@ -2139,70 +2131,7 @@ background: linear-gradient(90deg, #dc2626, #ef4444, #f87171);
     </div>
   </div>
 
-  <!-- Create Repository Modal -->
-  <div id="createRepoModal" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 hidden items-center justify-center p-4">
-    <div class="bg-github-canvas-overlay border border-github-border-default rounded-lg shadow-2xl w-full max-w-2xl animate-scale-in">
-      <div class="px-6 py-4 border-b border-github-border-default">
-        <div class="flex items-center justify-between">
-          <h3 class="text-lg font-semibold text-github-fg-default">Create new repository</h3>
-          <button data-action="hide-create-repo-modal" class="text-github-fg-muted hover:text-github-fg-default transition-colors">
-            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 16 16">
-              <path d="M3.72 3.72a.75.75 0 0 1 1.06 0L8 6.94l3.22-3.22a.749.749 0 0 1 1.275.326.749.749 0 0 1-.215.734L9.06 8l3.22 3.22a.749.749 0 0 1-.326 1.275.749.749 0 0 1-.734-.215L8 9.06l-3.22 3.22a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042L6.94 8 3.72 4.78a.75.75 0 0 1 0-1.06Z" />
-            </svg>
-          </button>
-        </div>
-      </div>
-
-      <div class="p-6 space-y-6">
-        <div>
-          <label class="block text-sm font-medium text-github-fg-default mb-2">Repository name</label>
-          <input type="text" id="newRepoName" placeholder="repository-name" class="w-full px-3 py-2 bg-github-canvas-inset border border-github-border-default rounded-md text-github-fg-default placeholder-github-fg-muted focus:outline-none focus:ring-2 focus:ring-github-accent-emphasis focus:border-transparent">
-          <p class="mt-1 text-xs text-github-fg-muted">Great repository names are short and memorable.</p>
-        </div>
-
-        <div>
-          <label class="block text-sm font-medium text-github-fg-default mb-2">Description (optional)</label>
-          <textarea id="repoDescriptionInput" rows="3" placeholder="A short description of your repository" class="w-full px-3 py-2 bg-github-canvas-inset border border-github-border-default rounded-md text-github-fg-default placeholder-github-fg-muted focus:outline-none focus:ring-2 focus:ring-github-accent-emphasis focus:border-transparent resize-none"></textarea>
-        </div>
-
-        <div>
-          <label class="block text-sm font-medium text-github-fg-default mb-2">Visibility</label>
-          <div class="space-y-2">
-            <div class="flex items-center space-x-3 p-3 border border-github-border-default rounded-md">
-              <input type="radio" id="visibilityPublic" name="visibility" value="public" checked class="text-github-accent-fg focus:ring-github-accent-fg">
-              <div>
-                <label for="visibilityPublic" class="block text-sm font-medium text-github-fg-default">Public</label>
-                <p class="text-xs text-github-fg-muted">Anyone can see this repository locally.</p>
-              </div>
-            </div>
-            <div class="flex items-center space-x-3 p-3 border border-github-border-default rounded-md">
-              <input type="radio" id="visibilityPrivate" name="visibility" value="private" class="text-github-accent-fg focus:ring-github-accent-fg">
-              <div>
-                <label for="visibilityPrivate" class="block text-sm font-medium text-github-fg-default">Private</label>
-                <p class="text-xs text-github-fg-muted">Only you can see this repository.</p>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div>
-          <div class="flex items-center space-x-3">
-            <input type="checkbox" id="initReadme" checked class="text-github-accent-fg focus:ring-github-accent-fg">
-            <label for="initReadme" class="text-sm font-medium text-github-fg-default">Initialize this repository with a README</label>
-          </div>
-        </div>
-      </div>
-
-      <div class="px-6 py-4 border-t border-github-border-default bg-github-canvas-subtle flex items-center justify-end space-x-3">
-        <button data-action="hide-create-repo-modal" class="px-4 py-2 border border-github-border-default rounded-md text-sm font-medium text-github-fg-default bg-github-btn-secondary-bg hover:bg-github-btn-secondary-hover transition-colors">
-          Cancel
-        </button>
-        <button data-action="create-repo" class="px-4 py-2 bg-github-btn-primary-bg hover:bg-github-btn-primary-hover text-white rounded-md text-sm font-medium transition-colors">
-          Create repository
-        </button>
-      </div>
-    </div>
-  </div>
+  <!-- Create Repository Modal removed - repositories are managed on server -->
 
   <!-- Delete File Modal -->
   <div id="deleteFileModal" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 hidden items-center justify-center p-4">
@@ -2243,12 +2172,11 @@ background: linear-gradient(90deg, #dc2626, #ef4444, #f87171);
 
 <!---
 
-  <script src="https://clockblocked.github.io/gitDev//modules/primary.js" type="module"></script>
-  <script src="https://clockblocked.github.io/gitDev//modules/listeners.js" type="module"></script>
+  <script src="modules/index.js" type="module"></script>
 --->
 
 
-<script type="module" src="https://clockblocked.github.io/gitDev/modules/index.js">
+<script type="module" src="modules/index.js">
 /**
  *  Main script
  */

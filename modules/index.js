@@ -7,17 +7,18 @@
     const SCRIPT_MANIFEST = [
         { id: "elements", url: "https://clockblocked.github.io/gitDev/modules/utilities/elements.js", category: "Utility", priority: 1, critical: true },
         { id: "dependencies", url: "https://clockblocked.github.io/gitDev/modules/dependencies.js", category: "Primary", priority: 2, critical: true },
-        { id: "storage", url: "https://clockblocked.github.io/gitDev/modules/storage.js", category: "Service", priority: 3, critical: true },
-        { id: "router", url: "https://clockblocked.github.io/gitDev/modules/router.js", category: "Primary", priority: 4, critical: true },
-        { id: "pageUpdates", url: "https://clockblocked.github.io/gitDev/modules/pageUpdates.js", category: "UI", priority: 5, critical: false },
-        { id: "overlays", url: "https://clockblocked.github.io/gitDev/modules/overlays.js", category: "UI", priority: 6, critical: false },
-        { id: "core", url: "https://clockblocked.github.io/gitDev/modules/core.js", category: "Primary", priority: 7, critical: true },
-        { id: "listeners", url: "https://clockblocked.github.io/gitDev/modules/listeners.js", category: "Helper", priority: 8, critical: false },
-        { id: "search", url: "https://clockblocked.github.io/gitDev/modules/search.js", category: "Feature", priority: 9, critical: false },
-        { id: "fileUpload", url: "https://clockblocked.github.io/gitDev/modules/fileUpload.js", category: "Feature", priority: 10, critical: false },
-        { id: "importExport", url: "https://clockblocked.github.io/gitDev/modules/importExport.js", category: "Feature", priority: 11, critical: false },
-        { id: "fileMenu", url: "https://clockblocked.github.io/gitDev/modules/fileMenu.js", category: "UI", priority: 12, critical: false },
-        { id: "coder", url: "https://clockblocked.github.io/gitDev/modules/coder.js", category: "Feature", priority: 13, critical: false }
+        { id: "api", url: "modules/api.js", category: "Service", priority: 3, critical: true },
+        { id: "storage", url: "modules/storage.js", category: "Service", priority: 4, critical: true },
+        { id: "router", url: "https://clockblocked.github.io/gitDev/modules/router.js", category: "Primary", priority: 5, critical: true },
+        { id: "pageUpdates", url: "https://clockblocked.github.io/gitDev/modules/pageUpdates.js", category: "UI", priority: 6, critical: false },
+        { id: "overlays", url: "https://clockblocked.github.io/gitDev/modules/overlays.js", category: "UI", priority: 7, critical: false },
+        { id: "core", url: "modules/core.js", category: "Primary", priority: 8, critical: true },
+        { id: "listeners", url: "https://clockblocked.github.io/gitDev/modules/listeners.js", category: "Helper", priority: 9, critical: false },
+        { id: "search", url: "https://clockblocked.github.io/gitDev/modules/search.js", category: "Feature", priority: 10, critical: false },
+        { id: "fileUpload", url: "https://clockblocked.github.io/gitDev/modules/fileUpload.js", category: "Feature", priority: 11, critical: false },
+        { id: "importExport", url: "https://clockblocked.github.io/gitDev/modules/importExport.js", category: "Feature", priority: 12, critical: false },
+        { id: "fileMenu", url: "modules/fileMenu.js", category: "UI", priority: 13, critical: false },
+        { id: "coder", url: "https://clockblocked.github.io/gitDev/modules/coder.js", category: "Feature", priority: 14, critical: false }
     ];
     const CATEGORY_COLORS = {
         Primary: "#3b82f6",
@@ -52,7 +53,8 @@
         const knownExports = {
             elements: ["isElement", "isNodeList", "isHTMLCollection", "toArray", "ElementUtils"],
             dependencies: ["DependencyManager", "loadDependency"],
-            storage: ["StorageManager", "LocalDB", "SessionCache"],
+            api: ["StorageAPI", "storageAPI"],
+            storage: ["LocalStorageManager", "storageCache", "initializeStorage"],
             router: ["Router", "navigate", "getCurrentRoute"],
             pageUpdates: ["PageUpdater", "refreshContent"],
             overlays: ["OverlayManager", "Modal", "Toast", "Notification"],

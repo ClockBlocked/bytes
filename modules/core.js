@@ -110,7 +110,9 @@ function fetchData(operationName, callback) {
   });
 }
 function loadRepositories() {
-  return fetchData("Loading repositories...", () => {
+  return fetchData("Loading repositories...", async () => {
+    // Refresh repositories from server
+    await LocalStorageManager.refresh();
     currentState.repositories = LocalStorageManager.getRepositories();
     renderRepositoryList();
     return currentState.repositories;
@@ -118,69 +120,13 @@ function loadRepositories() {
     showErrorMessage("Failed to load repositories: " + error.message);
   });
 }
-function createRepository() {
-  const repoName = document.getElementById("newRepoName").value.trim();
-  const description = document.getElementById("repoDescriptionInput").value.trim();
-  const initReadme = document.getElementById("initReadme").checked;
-  if (!repoName) {
-    showErrorMessage("Please enter a repository name");
-    return;
-  }
-  if (!isValidFilename(repoName)) {
-    showErrorMessage("Invalid repository name. Please use only letters, numbers, hyphens and underscores.");
-    return;
-  }
-  const existingRepo = LocalStorageManager.getRepository(repoName);
-  if (existingRepo) {
-    showErrorMessage("Repository already exists");
-    return;
-  }
-  LoadingProgress.show();
-  setTimeout(() => {
-    try {
-      const repo = {
-        name: repoName,
-        description: description,
-        created: Date.now(),
-        lastModified: Date.now(),
-        defaultBranch: "main",
-        branches: ["main"],
-        visibility: document.getElementById("visibilityPublic").checked ? "public" : "private"
-      };
-      LocalStorageManager.saveRepository(repo);
-      if (initReadme) {
-        const readmeContent = `# ${repoName}\n\n${description ? description + "\n\n" : ""}## Getting Started\n\nThis repository was created with GitHub Clone.\n`;
-        const readmeData = {
-          content: readmeContent,
-          category: "Documentation",
-          tags: ["readme"],
-          created: Date.now(),
-          lastModified: Date.now(),
-          lastCommit: "Initial commit",
-          size: new Blob([readmeContent]).size
-        };
-        LocalStorageManager.saveFile(repoName, "README.md", readmeData);
-      }
-      currentState.repositories.push(repo);
-      renderRepositoryList();
-      hideCreateRepoModal();
-      showSuccessMessage(`Repository "${repoName}" created successfully!`);
-      setTimeout(() => {
-        LoadingProgress.hide();
-        openRepository(repoName);
-      }, 500);
-    } catch (error) {
-      LoadingProgress.hide();
-      showErrorMessage("Failed to create repository: " + error.message);
-    }
-  }, 1500);
-}
+// createRepository function removed - repositories are managed on server
 function deleteRepository(repoName) {
   if (!confirm(`Are you sure you want to delete the repository "${repoName}"? This action cannot be undone.`)) return;
   LoadingProgress.show();
-  setTimeout(() => {
+  setTimeout(async () => {
     try {
-      LocalStorageManager.deleteRepository(repoName);
+      await LocalStorageManager.deleteRepository(repoName);
       currentState.repositories = currentState.repositories.filter(r => r.name !== repoName);
       if (currentState.repository === repoName) {
         currentState.repository = null;
@@ -208,7 +154,7 @@ function createFile() {
     return;
   }
   LoadingProgress.show();
-  setTimeout(() => {
+  setTimeout(async () => {
     try {
       const filePath = (currentState.path ? currentState.path + "/" : "") + fileName;
       const existingFile = LocalStorageManager.getFile(currentState.repository, filePath);
@@ -223,7 +169,7 @@ function createFile() {
         lastCommit: "Initial commit",
         size: new Blob([fileContent]).size
       };
-      LocalStorageManager.saveFile(currentState.repository, filePath, fileData);
+      await LocalStorageManager.saveFile(currentState.repository, filePath, fileData);
       currentState.files.push({
         name: fileName,
         type: "file",
@@ -248,10 +194,10 @@ function confirmDeleteFile() {
 function deleteCurrentFile() {
   if (!currentState.currentFile) return;
   LoadingProgress.show();
-  setTimeout(() => {
+  setTimeout(async () => {
     try {
       const filePath = (currentState.path ? currentState.path + "/" : "") + currentState.currentFile.name;
-      LocalStorageManager.deleteFile(currentState.repository, filePath);
+      await LocalStorageManager.deleteFile(currentState.repository, filePath);
       currentState.files = currentState.files.filter(f => f.name !== currentState.currentFile.name);
       renderFileList();
       hideDeleteFileModal();
@@ -345,9 +291,9 @@ function openRecentFile(repoName, filePath, fileName) {
   if (pathParts.length > 1) currentState.path = pathParts.slice(0, -1).join("/");
   else currentState.path = "";
   LoadingProgress.show();
-  setTimeout(() => {
+  setTimeout(async () => {
     try {
-      currentState.files = LocalStorageManager.listFiles(repoName, currentState.path ? currentState.path + "/" : "");
+      currentState.files = await LocalStorageManager.listFiles(repoName, currentState.path ? currentState.path + "/" : "");
       renderFileList();
       updateBreadcrumb();
       const currentRepoName = document.getElementById("currentRepoName");
@@ -445,7 +391,7 @@ function saveFile() {
     return;
   }
   LoadingProgress.show();
-  setTimeout(() => {
+  setTimeout(async () => {
     try {
       const filePath = (currentState.path ? currentState.path + "/" : "") + currentState.currentFile.name;
       const content = codeEditor ? codeEditor.getValue() : "";
@@ -459,7 +405,7 @@ function saveFile() {
         lastCommit: commitTitle.value.trim(),
         size: new Blob([content]).size
       };
-      LocalStorageManager.saveFile(currentState.repository, filePath, fileData);
+      await LocalStorageManager.saveFile(currentState.repository, filePath, fileData);
       const fileIndex = currentState.files.findIndex(f => f.name === currentState.currentFile.name);
       if (fileIndex !== -1) {
         currentState.files[fileIndex].lastModified = fileData.lastModified;
@@ -481,9 +427,9 @@ function openRepository(repoName) {
   currentState.repository = repoName;
   currentState.path = "";
   LoadingProgress.show();
-  setTimeout(() => {
+  setTimeout(async () => {
     try {
-      currentState.files = LocalStorageManager.listFiles(repoName, "");
+      currentState.files = await LocalStorageManager.listFiles(repoName, "");
       renderFileList();
       updateBreadcrumb();
       const currentRepoName = document.getElementById("currentRepoName");
@@ -506,14 +452,7 @@ function openRepository(repoName) {
     }
   }, 1500);
 }
-function showCreateRepoModal() {
-  const modal = document.getElementById("createRepoModal");
-  if (modal) modal.classList.remove("hidden");
-}
-function hideCreateRepoModal() {
-  const modal = document.getElementById("createRepoModal");
-  if (modal) modal.classList.add("hidden");
-}
+// showCreateRepoModal and hideCreateRepoModal removed - repositories are managed on server
 function showCreateFileModal() {
   const modal = document.getElementById("createFileModal");
   if (modal) modal.classList.remove("hidden");
