@@ -2,18 +2,18 @@ const GITHUB_API_BASE = 'https://api.github.com';
 
 class GitHubAPI {
     constructor(options = {}) {
-        this. token = options.token || this.getStoredToken();
+        this.token = options.token || this.getStoredToken();
         this.timeout = options.timeout || 30000;
         this.headers = {
-            'Authorization': this.token ?  `token ${this.token}` : '',
-            'Accept':  'application/vnd.github.v3+json',
+            'Authorization':  this.token ?  `token ${this.token}` : '',
+            'Accept': 'application/vnd.github. v3+json',
             'Content-Type': 'application/json'
         };
         this.onError = options.onError || null;
         this.onRequest = options.onRequest || null;
         this.onResponse = options.onResponse || null;
         this.cache = new Map();
-        this.cacheTimeout = options.cacheTimeout || 60000;
+        this.cacheTimeout = options. cacheTimeout || 60000;
         this.initialized = false;
         this.initializing = false;
     }
@@ -41,7 +41,7 @@ class GitHubAPI {
             }
 
             if (!this.token) {
-                throw new GitHubAPIError('GitHub token is required.  Please provide a valid token.', 401);
+                throw new GitHubAPIError('GitHub token is required.  Please provide a valid token. ', 401);
             }
 
             const result = await this.requestWithoutInitialization('/rate_limit');
@@ -86,8 +86,8 @@ class GitHubAPI {
             const modal = document.createElement('div');
             modal.style.cssText = `
                 position: fixed;
-                top: 0;
-                left:  0;
+                top:  0;
+                left: 0;
                 width: 100%;
                 height: 100%;
                 background:  rgba(0,0,0,0.7);
@@ -99,7 +99,7 @@ class GitHubAPI {
 
             modal.innerHTML = `
                 <div style="
-                    background:  white;
+                    background: white;
                     padding: 30px;
                     border-radius: 10px;
                     width: 90%;
@@ -146,7 +146,7 @@ class GitHubAPI {
                         <button id="cancel-btn" style="
                             padding: 10px 20px;
                             background: #f5f5f5;
-                            border: none;
+                            border:  none;
                             border-radius: 5px;
                             cursor: pointer;
                             color: #666;
@@ -166,7 +166,7 @@ class GitHubAPI {
                         </button>
                     </div>
 
-                    <div style="margin-top: 20px; padding-top: 20px; border-top:  1px solid #eee; font-size: 12px; color: #999;">
+                    <div style="margin-top:  20px; padding-top: 20px; border-top:  1px solid #eee; font-size: 12px; color: #999;">
                         <strong>Note:</strong> This application runs entirely in your browser. 
                         Your token is only used to communicate with GitHub's API directly from your browser.
                     </div>
@@ -216,7 +216,7 @@ class GitHubAPI {
 
     setToken(token) {
         this.token = token. trim();
-        this.headers. Authorization = this.token ? `token ${this.token}` : '';
+        this.headers.Authorization = this.token ? `token ${this.token}` : '';
         this.cache.clear();
         this.initialized = false;
     }
@@ -283,7 +283,7 @@ class GitHubAPI {
             if (contentType && contentType.includes('application/json')) {
                 data = await response.json();
             } else {
-                data = await response.text();
+                data = await response. text();
             }
 
             if (this.onResponse) {
@@ -303,7 +303,7 @@ class GitHubAPI {
         } catch (error) {
             clearTimeout(timeoutId);
 
-            if (error.name === 'AbortError') {
+            if (error. name === 'AbortError') {
                 const timeoutError = new GitHubAPIError('Request timeout', 408);
                 if (this.onError) this.onError(timeoutError);
                 throw timeoutError;
@@ -475,7 +475,7 @@ class GitHubAPI {
     }
 
     async updateRepository(owner, repo, data) {
-        this.clearCache(`repo:${owner}:${repo}`);
+        this.clearCache(`repo:${owner}: ${repo}`);
         this.clearCache('repos');
 
         return this.request(`/repos/${owner}/${repo}`, {
@@ -501,7 +501,7 @@ class GitHubAPI {
     }
 
     async listRepositoryContents(owner, repo, path = '') {
-        const cacheKey = `repo:${owner}: ${repo}:contents: ${path}`;
+        const cacheKey = `repo:${owner}: ${repo}: contents:${path}`;
         const cached = this.getCached(cacheKey);
         if (cached) return cached;
 
@@ -512,7 +512,7 @@ class GitHubAPI {
     }
 
     async getFileContent(owner, repo, path) {
-        const cacheKey = `repo:${owner}: ${repo}:file:${path}`;
+        const cacheKey = `repo:${owner}:${repo}:file:${path}`;
         const cached = this.getCached(cacheKey);
         if (cached) return cached;
 
@@ -551,7 +551,7 @@ class GitHubAPI {
             method: 'PUT',
             body: {
                 message: message,
-                content:  content,
+                content: content,
                 sha: fileInfo.sha,
                 branch:  data.branch || 'main'
             }
@@ -570,8 +570,8 @@ class GitHubAPI {
             method: 'DELETE',
             body: {
                 message: message,
-                sha:  fileInfo.sha,
-                branch: data.branch || 'main'
+                sha: fileInfo.sha,
+                branch: data. branch || 'main'
             }
         });
     }
@@ -592,10 +592,10 @@ class GitHubAPI {
 
     async isRepositoryStarred(owner, repo) {
         try {
-            await this. request(`/user/starred/${owner}/${repo}`);
+            await this.request(`/user/starred/${owner}/${repo}`);
             return true;
         } catch (error) {
-            if (error. status === 404) {
+            if (error.status === 404) {
                 return false;
             }
             throw error;
@@ -622,9 +622,9 @@ class GitHubAPI {
         return this.request(`/repos/${owner}/${repo}/forks`, {
             method: 'POST',
             body:  {
-                owner:  data.owner || undefined,
-                name:  data.name || undefined,
-                description:  data.description || undefined
+                owner: data.owner || undefined,
+                name: data.name || undefined,
+                description: data.description || undefined
             }
         });
     }
@@ -641,7 +641,7 @@ class GitHubAPIError extends Error {
 
 const githubAPI = new GitHubAPI({
     timeout: 30000,
-    onError:  (error) => {
+    onError: (error) => {
         console.error('[GitHub API Error]', error. message, error.status);
 
         if (error. status === 401) {
@@ -650,10 +650,10 @@ const githubAPI = new GitHubAPI({
             const notification = document.createElement('div');
             notification.style.cssText = `
                 position: fixed;
-                top:  20px;
+                top: 20px;
                 right: 20px;
                 background: #dc3545;
-                color:  white;
+                color: white;
                 padding: 15px;
                 border-radius: 5px;
                 z-index: 10001;
@@ -664,15 +664,15 @@ const githubAPI = new GitHubAPI({
                 <strong>Authentication Error</strong>
                 <p>Your GitHub token is invalid or expired. Please enter a new token.</p>
                 <button onclick="this.parentElement.remove(); githubAPI.promptForToken();"
-                        style="background: white; color: #dc3545; border: none; padding: 5px 10px; border-radius: 3px; cursor: pointer; margin-top:  10px;">
+                        style="background: white; color: #dc3545; border:  none; padding: 5px 10px; border-radius: 3px; cursor:  pointer; margin-top: 10px;">
                     Enter New Token
                 </button>
             `;
-            document.body. appendChild(notification);
+            document.body.appendChild(notification);
 
             setTimeout(() => {
-                if (notification.parentElement) {
-                    notification. remove();
+                if (notification. parentElement) {
+                    notification.remove();
                 }
             }, 10000);
         }
