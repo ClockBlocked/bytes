@@ -1415,22 +1415,23 @@ background: linear-gradient(90deg, #dc2626, #ef4444, #f87171);
   min-width: 0; /* Important for proper shrinking */
 }
 
-.fileNameInput {
+#fileNameInput {
   width: 30px !important; /* Small default width */
   min-width: 30px;
   max-width: 200px; /* Maximum width when expanded */
   transition: all 0.3s ease;
   opacity: 1;
-  border: 1px solid #ccc;
+  border: 1px solid var(--input-border);
   border-radius: 4px;
   padding: 2px 8px;
   font-size: 14px;
-  background-color: white;
+  background-color: var(--input-bg);
   cursor: default;
 }
 
-.fileNameInput:hover {
+#fileNameInput:hover {
   width: 150px !important; /* Decent width on hover */
+  border-color: var(--input-border-hover);
 }
 
 .buttonGroup {
@@ -1453,9 +1454,9 @@ background: linear-gradient(90deg, #dc2626, #ef4444, #f87171);
   justify-content: center;
   gap: 5px;
   padding: 5px 10px;
-  border: 1px solid #ccc;
+  border: 1px solid var(--btn-primary-text);
   border-radius: 4px;
-  background-color: #f5f5f5;
+  background-color: var(--btn-primary-bg);
   cursor: pointer;
   font-size: 14px;
   transition: all 0.2s ease;
@@ -1465,7 +1466,7 @@ background: linear-gradient(90deg, #dc2626, #ef4444, #f87171);
 }
 
 .actionButton:hover {
-  background-color: #e8e8e8;
+  background-color: var(--btn-primary-hover);
 }
 
 /* Ensure buttons are visible when not hovering over input */
@@ -1476,9 +1477,9 @@ background: linear-gradient(90deg, #dc2626, #ef4444, #f87171);
 
 .navButton {
   padding: 4px 12px;
-  border: 1px solid #ccc;
+  border: 1px solid var(--btn-secondary-text);
   border-radius: 4px;
-  background-color: #f5f5f5;
+  background-color: var(--btn-secondary-bg);
   cursor: pointer;
   font-size: 14px;
   white-space: nowrap;
@@ -1497,9 +1498,8 @@ background: linear-gradient(90deg, #dc2626, #ef4444, #f87171);
 /* Optional: Improve the input's appearance when not readonly (for edit mode) */
 .fileNameInput:not([readonly]) {
   cursor: text;
-  background-color: #fff;
+  background-color: var(--input-bg);
   border-color: #4d90fe;
-  box-shadow: 0 0 0 1px rgba(77, 144, 254, 0.2);
 }
 </style>
 </head>
