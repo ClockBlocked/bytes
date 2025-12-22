@@ -1,3 +1,130 @@
+// Store interval references outside of DOM
+let _loadingProgressInterval = null;
+let _fallbackListenersInitialized = false;
+
+// Fallback LoadingProgress if overlays.js fails to load from CDN
+if (typeof LoadingProgress === 'undefined') {
+  window.LoadingProgress = {
+    show: function() {
+      const progress = document.getElementById('pageProgress');
+      if (progress) {
+        progress.classList.add('visible');
+        const fill = progress.querySelector('.progress-fill');
+        if (fill) {
+          fill.style.width = '0%';
+          let width = 0;
+          // Clear any existing interval first
+          if (_loadingProgressInterval) {
+            clearInterval(_loadingProgressInterval);
+          }
+          _loadingProgressInterval = setInterval(() => {
+            if (width >= 90) {
+              clearInterval(_loadingProgressInterval);
+              _loadingProgressInterval = null;
+            } else {
+              width += Math.random() * 10;
+              fill.style.width = Math.min(width, 90) + '%';
+            }
+          }, 100);
+        }
+      }
+    },
+    hide: function() {
+      const progress = document.getElementById('pageProgress');
+      if (progress) {
+        const fill = progress.querySelector('.progress-fill');
+        if (fill) {
+          fill.style.width = '100%';
+        }
+        if (_loadingProgressInterval) {
+          clearInterval(_loadingProgressInterval);
+          _loadingProgressInterval = null;
+        }
+        setTimeout(() => {
+          progress.classList.remove('visible');
+          if (fill) fill.style.width = '0%';
+        }, 200);
+      }
+    }
+  };
+}
+
+// Fallback LoadingSpinner if overlays.js fails to load from CDN
+if (typeof LoadingSpinner === 'undefined') {
+  window.LoadingSpinner = {
+    show: function() {
+      const spinner = document.querySelector('.loading-spinner');
+      if (spinner) spinner.dataset.active = 'true';
+    },
+    hide: function() {
+      const spinner = document.querySelector('.loading-spinner');
+      if (spinner) spinner.dataset.active = 'false';
+    }
+  };
+}
+
+// Fallback setupEventListeners if listeners.js fails to load from CDN
+if (typeof setupEventListeners === 'undefined') {
+  window.setupEventListeners = function(sidebarManager) {
+    // Prevent adding duplicate listeners
+    if (_fallbackListenersInitialized) {
+      console.log('Fallback event listeners already initialized');
+      return;
+    }
+    _fallbackListenersInitialized = true;
+    
+    // Basic event delegation for data-action buttons
+    document.addEventListener('click', function(e) {
+      const actionElement = e.target.closest('[data-action]');
+      if (!actionElement) return;
+      
+      const action = actionElement.dataset.action;
+      
+      // Handle common actions
+      switch(action) {
+        case 'create-file':
+          if (typeof showCreateFileModal === 'function') showCreateFileModal();
+          break;
+        case 'show-repo-selector':
+          if (typeof showRepoSelector === 'function') showRepoSelector();
+          break;
+        case 'show-explorer':
+          if (typeof showExplorer === 'function') showExplorer();
+          break;
+        case 'edit-file':
+          if (typeof editCurrentFile === 'function') editCurrentFile();
+          break;
+        case 'save-file':
+          if (typeof saveFile === 'function') saveFile();
+          break;
+        case 'download-file':
+          if (typeof downloadCurrentFile === 'function') downloadCurrentFile();
+          break;
+        case 'delete-file':
+          if (typeof showDeleteFileModal === 'function') showDeleteFileModal();
+          break;
+        case 'show-file-viewer':
+          if (typeof showFileViewer === 'function') showFileViewer();
+          break;
+        case 'confirm-create-file':
+          if (typeof createFile === 'function') createFile();
+          break;
+        case 'confirm-delete-file':
+          if (typeof confirmDeleteFile === 'function') confirmDeleteFile();
+          break;
+        case 'hide-create-file-modal':
+          if (typeof hideCreateFileModal === 'function') hideCreateFileModal();
+          break;
+        case 'hide-delete-file-modal':
+          if (typeof hideDeleteFileModal === 'function') hideDeleteFileModal();
+          break;
+      }
+    });
+    
+    console.log('Fallback event listeners initialized');
+  };
+}
+
 let currentState = {
   repository: null,
   branch: "main",
