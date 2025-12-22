@@ -15,33 +15,51 @@ class GitHubAPI {
         this.cache = new Map();
         this.cacheTimeout = options.cacheTimeout || 60000;
         this.initialized = false;
+        this.initializing = false; // Prevent concurrent initialization
         
         // If no token provided, try to get one
         if (!this.token && options.promptIfMissing !== false) {
-            this.promptForToken();
+            // Don't auto-prompt in constructor, wait for first request
         }
     }
 
     async initialize() {
         if (this.initialized) return true;
-        
-        // Ensure we have a token before making any requests
-        if (!this.token) {
-            await this.promptForToken();
+        if (this.initializing) {
+            // Wait for ongoing initialization to complete
+            return new Promise(resolve => {
+                const check = () => {
+                    if (this.initialized) {
+                        resolve(true);
+                    } else {
+                        setTimeout(check, 100);
+                    }
+                };
+                check();
+            });
         }
         
-        if (!this.token) {
-            throw new GitHubAPIError('GitHub token is required. Please provide a valid token.', 401);
-        }
+        this.initializing = true;
         
-        // Test the token with a simple request
         try {
-            await this.getRateLimitStatus();
+            // Ensure we have a token before making any requests
+            if (!this.token) {
+                await this.promptForToken();
+            }
+            
+            if (!this.token) {
+                throw new GitHubAPIError('GitHub token is required. Please provide a valid token.', 401);
+            }
+            
+            // Test the token with a simple request - skip initialization check
+            const result = await this.getRateLimitStatus(true); // Pass true to skip initialization
+            console.log('Token validated, rate limit:', result);
+            
             this.initialized = true;
             return true;
         } catch (error) {
             if (error.status === 401) {
-                // Token is invalid, clear it and prompt again
+                // Token is invalid, clear it
                 this.clearToken();
                 throw new GitHubAPIError(
                     'Invalid GitHub token. Please provide a valid token.',
@@ -49,6 +67,8 @@ class GitHubAPI {
                 );
             }
             throw error;
+        } finally {
+            this.initializing = false;
         }
     }
 
@@ -248,6 +268,79 @@ class GitHubAPI {
             await this.initialize();
         }
         
+        const url = `${GITHUB_API_BASE}${endpoint}`;
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), this.timeout);
+
+        const config = {
+            method: options.method || 'GET',
+            headers: { ...this.headers, ...options.headers },
+            signal: controller.signal
+        };
+
+        if (options.body && config.method !== 'GET') {
+            config.body = JSON.stringify(options.body);
+        }
+
+        if (this.onRequest) {
+            this.onRequest({ url, ...config });
+        }
+
+        try {
+            const response = await fetch(url, config);
+            clearTimeout(timeoutId);
+
+            const contentType = response.headers.get('content-type');
+            let data;
+
+            if (contentType && contentType.includes('application/json')) {
+                data = await response.json();
+            } else {
+                data = await response.text();
+            }
+
+            if (this.onResponse) {
+                this.onResponse({ url, status: response.status, data });
+            }
+
+            if (!response.ok) {
+                throw new GitHubAPIError(
+                    data.message || 'Request failed',
+                    response.status,
+                    data.errors || null
+                );
+            }
+
+            return data;
+
+        } catch (error) {
+            clearTimeout(timeoutId);
+
+            if (error.name === 'AbortError') {
+                const timeoutError = new GitHubAPIError('Request timeout', 408);
+                if (this.onError) this.onError(timeoutError);
+                throw timeoutError;
+            }
+
+            if (error instanceof GitHubAPIError) {
+                throw error;
+            }
+
+            const networkError = new GitHubAPIError(
+                error.message || 'Network error',
+                0
+            );
+            
+            if (this.onError) {
+                this.onError(networkError);
+            }
+            
+            throw networkError;
+        }
+    }
+
+    async requestWithoutInitialization(endpoint, options = {}) {
+        // Direct request without initialization check
         const url = `${GITHUB_API_BASE}${endpoint}`;
         const controller = new AbortController();
         const timeoutId = setTimeout(() => controller.abort(), this.timeout);
@@ -535,7 +628,11 @@ class GitHubAPI {
         return this.request(endpoint);
     }
 
-    async getRateLimitStatus() {
+    async getRateLimitStatus(skipInitialization = false) {
+        if (skipInitialization) {
+            // Use direct request without initialization check
+            return this.requestWithoutInitialization('/rate_limit');
+        }
         return this.request('/rate_limit');
     }
 
