@@ -377,9 +377,6 @@ input, textarea {
   flex-direction: column;
   max-width: 1280px;
   margin: 0 auto;
-  border: 1px solid var(--github-border-default);
-  border-radius: 6px;
-  background-color: var(--github-canvas-default);
   overflow: hidden;
   
   
@@ -1406,6 +1403,104 @@ background: linear-gradient(90deg, #dc2626, #ef4444, #f87171);
     margin: 0 0.75rem !important;
 }
 
+
+
+
+
+.navigation {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  flex: 1;
+  min-width: 0; /* Important for proper shrinking */
+}
+
+.fileNameInput {
+  width: 30px !important; /* Small default width */
+  min-width: 30px;
+  max-width: 200px; /* Maximum width when expanded */
+  transition: all 0.3s ease;
+  opacity: 1;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  padding: 2px 8px;
+  font-size: 14px;
+  background-color: white;
+  cursor: default;
+}
+
+.fileNameInput:hover {
+  width: 150px !important; /* Decent width on hover */
+}
+
+.buttonGroup {
+  display: flex;
+  gap: 5px;
+  flex-shrink: 0; /* Prevent button group from shrinking */
+  transition: opacity 0.3s ease;
+}
+
+/* When input is hovered, fade out the buttons */
+.navigation:hover .buttonGroup {
+  opacity: 0;
+  pointer-events: none; /* Prevent clicking while hidden */
+}
+
+/* Default state for buttons */
+.actionButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  padding: 5px 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  background-color: #f5f5f5;
+  cursor: pointer;
+  font-size: 14px;
+  transition: all 0.2s ease;
+  flex: 1; /* Buttons take up equal space */
+  min-width: 60px; /* Minimum width for buttons */
+  opacity: 1;
+}
+
+.actionButton:hover {
+  background-color: #e8e8e8;
+}
+
+/* Ensure buttons are visible when not hovering over input */
+.container:hover .buttonGroup:not(.navigation:hover .buttonGroup) {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.navButton {
+  padding: 4px 12px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  background-color: #f5f5f5;
+  cursor: pointer;
+  font-size: 14px;
+  white-space: nowrap;
+}
+
+.separator {
+  margin: 0 2px;
+  color: #666;
+}
+
+.icon {
+  width: 16px;
+  height: 16px;
+}
+
+/* Optional: Improve the input's appearance when not readonly (for edit mode) */
+.fileNameInput:not([readonly]) {
+  cursor: text;
+  background-color: #fff;
+  border-color: #4d90fe;
+  box-shadow: 0 0 0 1px rgba(77, 144, 254, 0.2);
+}
 </style>
 </head>
 
