@@ -25,7 +25,6 @@ class coderViewEdit {
     filePage.innerHTML = this.getTemplate();
     this.cacheElements();
     this.bindEvents();
-//    this.injectStyles();
     if (typeof CodeMirror !== "undefined") this.setupCodeMirror();
     else setTimeout(() => this.setupCodeMirror(), 100);
     this.loadUserPreferences();
@@ -34,30 +33,35 @@ class coderViewEdit {
   getTemplate() {
     return `
     <div class="container">
-      <nav class="navigation">
-        <button onclick="showExplorer()" class="navButton">${window.currentState?.repository || "Repository"}</button>
-        <span class="separator">/</span>
-        <input type="text" id="fileNameInput" class="fileNameInput" value="" readonly />
-      </nav>
-      <div class="buttonGroup">
-        <button id="editToggleBtn" class="actionButton" title="Edit">
-          <svg class="icon" fill="currentColor" viewBox="0 0 16 16">
-            <path d="M11.013 1.427a1.75 1.75 0 0 1 2.474 0l1.086 1.086a1.75 1.75 0 0 1 0 2.474l-8.61 8.61a1.75 1.75 0 0 1-.757.437l-3.26.88a.75.75 0 0 1-.918-.918l.88-3.26a1.75 1.75 0 0 1 .437-.757l8.61-8.61Zm1.414 1.06a.25.25 0 0 0-.354 0L11.26 3.3l1.44 1.44 1.113-1.113a.25.25 0 0 0 0-.354l-1.086-1.086Z"></path>
-          </svg>
-        </button>
-        <button id="copyBtn" class="actionButton" title="Copy">
-          <svg class="icon" fill="currentColor" viewBox="0 0 16 16">
-            <path d="M0 6.75C0 5.784.784 5 1.75 5h1.5a.75.75 0 0 1 0 1.5h-1.5a.25.25 0 0 0-.25.25v6.5c0 .138.112.25.25.25h7.5a.25.25 0 0 0 .25-.25v-1.5a.75.75 0 0 1 1.5 0v1.5A1.75 1.75 0 0 1 9.25 15h-7.5A1.75 1.75 0 0 1 0 13.25v-6.5Zm5-5A1.75 1.75 0 0 0 3.25 3.5v6.5A1.75 1.75 0 0 0 5 11.75h7.5A1.75 1.75 0 0 0 14.25 10V3.5A1.75 1.75 0 0 0 12.5 1.75H5Zm.25 1.5a.25.25 0 0 0-.25.25v6.5c0 .138.112.25.25.25h7.5a.25.25 0 0 0 .25-.25v-6.5a.25.25 0 0 0-.25-.25H5.25Z"></path>
-          </svg>
-        </button>
-        <button id="downloadBtn" class="actionButton" title="Download">
-          <svg class="icon" fill="currentColor" viewBox="0 0 16 16">
-            <path d="M2.75 14A1.75 1.75 0 0 1 1 12.25v-2.5a.75.75 0 0 1 1.5 0v2.5c0 .138.112.25.25.25h10.5a.25.25 0 0 0 .25-.25v-2.5a.75.75 0 0 1 1.5 0v2.5A1.75 1.75 0 0 1 13.25 14H2.75Zm3.5-5.75a.75.75 0 0 1 1.5 0v-6.5a.75.75 0 0 1 1.5 0v6.5a.75.75 0 0 1 1.5 0l-2.25 2.5a.75.75 0 0 1-1.06 0l-2.24-2.5Z"></path>
-          </svg>
-        </button>
+      <div class="fileHeader">
+        <div class="filePath">
+          <button onclick="showExplorer()" class="repoButton">${window.currentState?.repository || "Repository"}</button>
+          <span class="separator">/</span>
+          <input type="text" id="fileNameInput" class="fileNameInput" value="" readonly />
+        </div>
+        <div class="fileActions">
+          <button id="editSaveBtn" class="actionButton" title="Edit">
+            <svg id="editSaveIcon" class="icon" fill="currentColor" viewBox="0 0 16 16">
+              <path d="M11.013 1.427a1.75 1.75 0 0 1 2.474 0l1.086 1.086a1.75 1.75 0 0 1 0 2.474l-8.61 8.61a1.75 1.75 0 0 1-.757.437l-3.26.88a.75.75 0 0 1-.918-.918l.88-3.26a1.75 1.75 0 0 1 .437-.757l8.61-8.61Zm1.414 1.06a.25.25 0 0 0-.354 0L11.26 3.3l1.44 1.44 1.113-1.113a.25.25 0 0 0 0-.354l-1.086-1.086Z"></path>
+            </svg>
+          </button>
+          <button id="cancelBtn" class="actionButton hidden" title="Cancel">
+            <svg class="icon" fill="currentColor" viewBox="0 0 16 16">
+              <path d="M3.72 3.72a.75.75 0 0 1 1.06 0L8 6.94l3.22-3.22a.75.75 0 1 1 1.06 1.06L9.06 8l3.22 3.22a.75.75 0 1 1-1.06 1.06L8 9.06l-3.22 3.22a.75.75 0 0 1-1.06-1.06L6.94 8 3.72 4.78a.75.75 0 0 1 0-1.06Z"></path>
+            </svg>
+          </button>
+          <button id="copyBtn" class="actionButton" title="Copy">
+            <svg class="icon" fill="currentColor" viewBox="0 0 16 16">
+              <path d="M0 6.75C0 5.784.784 5 1.75 5h1.5a.75.75 0 0 1 0 1.5h-1.5a.25.25 0 0 0-.25.25v6.5c0 .138.112.25.25.25h7.5a.25.25 0 0 0 .25-.25v-1.5a.75.75 0 0 1 1.5 0v1.5A1.75 1.75 0 0 1 9.25 15h-7.5A1.75 1.75 0 0 1 0 13.25v-6.5Zm5-5A1.75 1.75 0 0 0 3.25 3.5v6.5A1.75 1.75 0 0 0 5 11.75h7.5A1.75 1.75 0 0 0 14.25 10V3.5A1.75 1.75 0 0 0 12.5 1.75H5Zm.25 1.5a.25.25 0 0 0-.25.25v6.5c0 .138.112.25.25.25h7.5a.25.25 0 0 0 .25-.25v-6.5a.25.25 0 0 0-.25-.25H5.25Z"></path>
+            </svg>
+          </button>
+          <button id="downloadBtn" class="actionButton" title="Download">
+            <svg class="icon" fill="currentColor" viewBox="0 0 16 16">
+              <path d="M2.75 14A1.75 1.75 0 0 1 1 12.25v-2.5a.75.75 0 0 1 1.5 0v2.5c0 .138.112.25.25.25h10.5a.25.25 0 0 0 .25-.25v-2.5a.75.75 0 0 1 1.5 0v2.5A1.75 1.75 0 0 1 13.25 14H2.75Zm3.5-5.75a.75.75 0 0 1 1.5 0v-6.5a.75.75 0 0 1 1.5 0v6.5a.75.75 0 0 1 1.5 0l-2.25 2.5a.75.75 0 0 1-1.06 0l-2.24-2.5Z"></path>
+            </svg>
+          </button>
+        </div>
       </div>
-    </div>
-    <div class="fileHeader">
       <div class="toolbarGroup">
         <button id="themeToggleBtn" class="toolbarButton" title="Toggle Theme">
           <svg id="themeIcon" class="smallIcon" fill="currentColor" viewBox="0 0 16 16">
@@ -144,12 +148,13 @@ class coderViewEdit {
       </div>
     </div>`;
   }
-
   cacheElements() {
     this.elements = {
       filePage: document.querySelector('.pages[data-page="file"]'),
       fileNameInput: document.getElementById("fileNameInput"),
-      editToggleBtn: document.getElementById("editToggleBtn"),
+      editSaveBtn: document.getElementById("editSaveBtn"),
+      editSaveIcon: document.getElementById("editSaveIcon"),
+      cancelBtn: document.getElementById("cancelBtn"),
       copyBtn: document.getElementById("copyBtn"),
       downloadBtn: document.getElementById("downloadBtn"),
       fileLinesCount: document.getElementById("fileLinesCount"),
@@ -179,7 +184,8 @@ class coderViewEdit {
     };
   }
   bindEvents() {
-    this.elements.editToggleBtn?.addEventListener("click", () => this.isEditing ? this.cancelEdit() : this.enterEditMode());
+    this.elements.editSaveBtn?.addEventListener("click", () => this.isEditing ? this.saveChanges() : this.enterEditMode());
+    this.elements.cancelBtn?.addEventListener("click", () => this.cancelEdit());
     this.elements.decreaseFontBtn?.addEventListener("click", () => this.adjustFontSize(-1));
     this.elements.increaseFontBtn?.addEventListener("click", () => this.adjustFontSize(1));
     this.elements.themeToggleBtn?.addEventListener("click", () => this.toggleTheme());
@@ -326,54 +332,36 @@ class coderViewEdit {
   hide() {
     this.elements.filePage?.classList.add("hidden");
   }
-enterEditMode() {
-  if (!this.currentFile) return;
-  if (typeof LoadingSpinner !== "undefined") LoadingSpinner.show();
-  this.isEditing = true;
-  
-  // Change to Save icon
-  this.elements.editToggleBtn.innerHTML = `<svg class="icon" fill="currentColor" viewBox="0 0 16 16">
-    <path d="M13.488 2.512a1.75 1.75 0 0 0-2.475 0L6.175 7.35a.75.75 0 0 0-.206.578l.242 2.62a.75.75 0 0 0 .826.826l2.62.242a.75.75 0 0 0 .578-.206l4.838-4.838a1.75 1.75 0 0 0 0-2.475l-1.143-1.143Zm-1.06 1.06a.25.25 0 0 1 .354 0l1.143 1.143a.25.25 0 0 1 0 .354l-4.587 4.587-1.849-.171-.17-1.85 4.587-4.586Z"></path>
-    <path d="M1.75 1.5a.25.25 0 0 0-.25.25v12.5c0 .138.112.25.25.25h12.5a.25.25 0 0 0 .25-.25V6a.75.75 0 0 1 1.5 0v7.75A1.75 1.75 0 0 1 14.25 15.5H1.75A1.75 1.75 0 0 1 0 13.75V1.75C0 .784.784 0 1.75 0h6a.75.75 0 0 1 0 1.5Z"></path>
-  </svg>`;
-  this.elements.editToggleBtn.title = "Save";
-  
-  // Remove old event listener and add new one
-  this.elements.editToggleBtn.removeEventListener("click", () => this.isEditing ? this.cancelEdit() : this.enterEditMode());
-  this.elements.editToggleBtn.addEventListener("click", () => this.saveChanges());
-  
-  this.elements.formatCodeBtn?.classList.remove("hidden");
-  this.elements.commitPanel?.classList.remove("hidden");
-  if (this.codeMirror) {
-    this.codeMirror.setOption("readOnly", false);
-    this.codeMirror.getWrapperElement().style.cursor = "text";
+  enterEditMode() {
+    if (!this.currentFile) return;
+    if (typeof LoadingSpinner !== "undefined") LoadingSpinner.show();
+    this.isEditing = true;
+    this.elements.editSaveIcon.innerHTML = `<path d="M13.488 2.512a1.75 1.75 0 0 0-2.475 0L6.175 7.35a.75.75 0 0 0-.206.578l.242 2.62a.75.75 0 0 0 .826.826l2.62.242a.75.75 0 0 0 .578-.206l4.838-4.838a1.75 1.75 0 0 0 0-2.475l-1.143-1.143Zm-1.06 1.06a.25.25 0 0 1 .354 0l1.143 1.143a.25.25 0 0 1 0 .354l-4.587 4.587-1.849-.171-.17-1.85 4.587-4.586Z"></path><path d="M1.75 1.5a.25.25 0 0 0-.25.25v12.5c0 .138.112.25.25.25h12.5a.25.25 0 0 0 .25-.25V6a.75.75 0 0 1 1.5 0v7.75A1.75 1.75 0 0 1 14.25 15.5H1.75A1.75 1.75 0 0 1 0 13.75V1.75C0 .784.784 0 1.75 0h6a.75.75 0 0 1 0 1.5Z"></path>`;
+    this.elements.editSaveBtn.title = "Save";
+    this.elements.cancelBtn?.classList.remove("hidden");
+    this.elements.formatCodeBtn?.classList.remove("hidden");
+    this.elements.commitPanel?.classList.remove("hidden");
+    if (this.codeMirror) {
+      this.codeMirror.setOption("readOnly", false);
+      this.codeMirror.getWrapperElement().style.cursor = "text";
+    }
+    this.updateCommitMessage();
+    setTimeout(() => {
+      if (typeof LoadingSpinner !== "undefined") LoadingSpinner.hide();
+    }, 500);
   }
-  this.updateCommitMessage();
-  setTimeout(() => {
-    if (typeof LoadingSpinner !== "undefined") LoadingSpinner.hide();
-  }, 500);
-}
-
-exitEditMode() {
-  this.isEditing = false;
-  
-  // Change back to Edit icon
-  this.elements.editToggleBtn.innerHTML = `<svg class="icon" fill="currentColor" viewBox="0 0 16 16">
-    <path d="M11.013 1.427a1.75 1.75 0 0 1 2.474 0l1.086 1.086a1.75 1.75 0 0 1 0 2.474l-8.61 8.61a1.75 1.75 0 0 1-.757.437l-3.26.88a.75.75 0 0 1-.918-.918l.88-3.26a1.75 1.75 0 0 1 .437-.757l8.61-8.61Zm1.414 1.06a.25.25 0 0 0-.354 0L11.26 3.3l1.44 1.44 1.113-1.113a.25.25 0 0 0 0-.354l-1.086-1.086Z"></path>
-  </svg>`;
-  this.elements.editToggleBtn.title = "Edit";
-  
-  // Remove save listener and restore original
-  this.elements.editToggleBtn.removeEventListener("click", () => this.saveChanges());
-  this.elements.editToggleBtn.addEventListener("click", () => this.isEditing ? this.cancelEdit() : this.enterEditMode());
-  
-  this.elements.formatCodeBtn?.classList.add("hidden");
-  this.elements.commitPanel?.classList.add("hidden");
-  if (this.codeMirror) {
-    this.codeMirror.setOption("readOnly", true);
-    this.codeMirror.getWrapperElement().style.cursor = "default";
+  exitEditMode() {
+    this.isEditing = false;
+    this.elements.editSaveIcon.innerHTML = `<path d="M11.013 1.427a1.75 1.75 0 0 1 2.474 0l1.086 1.086a1.75 1.75 0 0 1 0 2.474l-8.61 8.61a1.75 1.75 0 0 1-.757.437l-3.26.88a.75.75 0 0 1-.918-.918l.88-3.26a1.75 1.75 0 0 1 .437-.757l8.61-8.61Zm1.414 1.06a.25.25 0 0 0-.354 0L11.26 3.3l1.44 1.44 1.113-1.113a.25.25 0 0 0 0-.354l-1.086-1.086Z"></path>`;
+    this.elements.editSaveBtn.title = "Edit";
+    this.elements.cancelBtn?.classList.add("hidden");
+    this.elements.formatCodeBtn?.classList.add("hidden");
+    this.elements.commitPanel?.classList.add("hidden");
+    if (this.codeMirror) {
+      this.codeMirror.setOption("readOnly", true);
+      this.codeMirror.getWrapperElement().style.cursor = "default";
+    }
   }
-}
   cancelEdit() {
     if (!this.codeMirror) return;
     if (this.codeMirror.getValue() !== this.originalContent && !confirm("Discard unsaved changes?")) return;
@@ -609,14 +597,3 @@ window.coderViewEdit = new coderViewEdit();
 document.addEventListener("DOMContentLoaded", () => {
   if (document.querySelector('.pages[data-page="file"]')) window.coderViewEdit.init();
 });
-/**
- * 
- *  C R E A T E D  B Y
- * 
- *  William Hanson 
- * 
- *  Chevrolay@Outlook.com
- * 
- *  m.me/Chevrolay
- * 
- */
