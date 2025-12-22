@@ -99,7 +99,7 @@ const LoadingProgress = (() => {
     const style = document.createElement("style");
     style.id = "loadingProgressStyles";
     style.textContent = `
-      .gh-progress {
+      #pageProgress {
         position: fixed;
         top: 0;
         left: 0;
@@ -111,10 +111,10 @@ const LoadingProgress = (() => {
         opacity: 0;
         transition: opacity 0.3s ease;
       }
-      .gh-progress--visible {
+      .progress-bar--visible {
         opacity: 1;
       }
-      .gh-progress-fill {
+      .progress-bar-fill {
         display: block;
         height: 100%;
         width: 0;
@@ -125,9 +125,9 @@ const LoadingProgress = (() => {
     `;
     document.head.appendChild(style);
     progressElement = document.createElement("div");
-    progressElement.className = "gh-progress";
+    progressElement.id = "pageProgress";
     fillElement = document.createElement("div");
-    fillElement.className = "gh-progress-fill";
+    fillElement.className = "progress-bar-fill";
     progressElement.appendChild(fillElement);
     document.body.appendChild(progressElement);
   }
