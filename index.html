@@ -2072,9 +2072,9 @@ background: linear-gradient(90deg, #dc2626, #ef4444, #f87171);
     });
 
     // Inject templates into their containers
-    window.templateLoader.injectTemplate('repository-selector-template', '#repoSelectorView');
-    window.templateLoader.injectTemplate('file-explorer-template', '#explorerView');
-    window.templateLoader.injectTemplate('file-viewer-template', '#fileView');
+    window.templateLoader.injectTemplate('repository-selector-template', '#repoView.content-body');
+    window.templateLoader.injectTemplate('file-explorer-template', '#explorerView.content-body');
+    window.templateLoader.injectTemplate('file-viewer-template', '#fileView.content-body');
     
     // Inject all modal templates
     window.templateLoader.injectTemplate('create-file-modal-template', '#modalsContainer', false);
