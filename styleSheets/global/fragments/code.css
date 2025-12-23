@@ -261,220 +261,6 @@
   =========================
      Code Viewer - Header
   ========================== */
-  /**
-.navigation {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  font-size: 14px;
-  color: var(--textMuted);
-}
-.navButton {
-  background: var(--bgSecondary);
-  border: 1px solid var(--borderDefault);
-  color: var(--textPrimary);
-  padding: 6px 10px;
-  border-radius: 6px;
-  font-weight: 600;
-  cursor: pointer;
-}
-
-.separator {
-  color: var(--textMuted);
-}
-
-.fileNameInput {
-  background: var(--bgSecondary);
-  border: 1px solid var(--borderDefault);
-  color: var(--textPrimary);
-  padding: 6px 10px;
-  border-radius: 6px;
-  min-width: 120px;
-  font-weight: 600;
-}
-
-
-.buttonGroup {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.actionButton {
-  background: var(--bgSecondary);
-  border: 1px solid var(--borderDefault);
-  color: var(--textPrimary);
-  width: auto;
-  height: auto;
-  font-size: 1rem;
-  padding: 0.75rem 1.25rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: all 0.15s ease;
-}
-.actionButton:hover {
-  background: var(--github-btn-secondary-hover);
-  color: var(--accentPrimary);
-}
-
-.icon {
-  width: 18px;
-  height: 18px;
-}
-
-.fileHeader {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 0.25rem 0.5rem 0.5rem 0.5rem;
-}
-
-.toolbarGroup {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.toolbarButton {
-  background: var(--bgSecondary);
-  border: 1px solid var(--borderDefault);
-  color: var(--textPrimary);
-  width: 34px;
-  height: 34px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: all 0.15s ease;
-}
-.toolbarButton:hover {
-  background: var(--github-btn-secondary-hover);
-  color: var(--accentPrimary);
-}
-
-
-.smallIcon {
-  width: 16px;
-  height: 16px;
-}
-
-.fontSizeControl {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  background: var(--bgSecondary);
-  border: 1px solid var(--borderDefault);
-  padding: 4px 8px;
-  border-radius: 8px;
-}
-
-.fontButton {
-  background: transparent;
-  border: none;
-  color: var(--textPrimary);
-  width: 24px;
-  height: 24px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-}
-.fontButton:hover {
-  color: var(--accentPrimary);
-}
-
-.fontSizeDisplay {
-  color: var(--textPrimary);
-  font-weight: 600;
-}
-
-.tinyIcon {
-  width: 14px;
-  height: 14px;
-}
-**/
-
-
-
-
-
-.commitPanel {
-  margin: 0.5rem;
-  border: 1px solid var(--borderDefault);
-  background: var(--bgSecondary);
-  border-radius: 8px;
-  padding: 12px;
-}
-.panelTitle {
-  margin: 0 0 8px 0;
-  color: var(--textPrimary);
-  font-size: 14px;
-  font-weight: 700;
-}
-.panelContent {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-.commitInput,
-.commitTextarea {
-  width: 100%;
-  border: 1px solid var(--borderDefault);
-  background: var(--bgCode);
-  color: var(--textPrimary);
-  border-radius: 8px;
-  padding: 8px;
-  font-size: 14px;
-}
-.commitTextarea {
-  resize: vertical;
-}
-.panelButtons {
-  display: flex;
-  justify-content: flex-end;
-  gap: 8px;
-}
-
-.primaryButton {
-  background: var(--accentPrimary);
-  color: #fff;
-  border: none;
-  border-radius: 8px;
-  padding: 8px 12px;
-  font-weight: 700;
-  cursor: pointer;
-}
-.secondaryButton {
-  background: var(--bgSecondary);
-  color: var(--textPrimary);
-  border: 1px solid var(--borderDefault);
-  border-radius: 8px;
-  padding: 8px 12px;
-  font-weight: 700;
-  cursor: pointer;
-}
-
-.primaryButton:hover {
-  filter: brightness(1.05);
-}
-.secondaryButton:hover {
-  background: var(--github-btn-secondary-hover);
-}
-
-
-.hidden {
-  visibility: hidden;
-  pointer-events: none;
-  transition: visibility 0.25s ease;
-}
-
-
-
-
 
 .navigation {
   display: flex;
@@ -562,3 +348,76 @@
   background-color: var(--github-canvas-subtle);
   border-color: #4d90fe;
 }
+
+
+
+.commitPanel {
+  margin: 0.5rem;
+  border: 1px solid var(--borderDefault);
+  background: var(--bgSecondary);
+  border-radius: 8px;
+  padding: 12px;
+}
+.panelTitle {
+  margin: 0 0 8px 0;
+  color: var(--textPrimary);
+  font-size: 14px;
+  font-weight: 700;
+}
+.panelContent {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.commitInput,
+.commitTextarea {
+  width: 100%;
+  border: 1px solid var(--borderDefault);
+  background: var(--bgCode);
+  color: var(--textPrimary);
+  border-radius: 8px;
+  padding: 8px;
+  font-size: 14px;
+}
+.commitTextarea {
+  resize: vertical;
+}
+.panelButtons {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+.primaryButton {
+  background: var(--accentPrimary);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 8px 12px;
+  font-weight: 700;
+  cursor: pointer;
+}
+.secondaryButton {
+  background: var(--bgSecondary);
+  color: var(--textPrimary);
+  border: 1px solid var(--borderDefault);
+  border-radius: 8px;
+  padding: 8px 12px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.primaryButton:hover {
+  filter: brightness(1.05);
+}
+.secondaryButton:hover {
+  background: var(--github-btn-secondary-hover);
+}
+
+
+.hidden {
+  visibility: hidden;
+  pointer-events: none;
+  transition: visibility 0.25s ease;
+}
+
