@@ -1503,28 +1503,27 @@ background: linear-gradient(90deg, #dc2626, #ef4444, #f87171);
   border-color: #4d90fe;
 }
 </style>
-</head>
 
+
+</head>
 <body class="bg-github-canvas-default text-github-fg-default font-sans">
   
 
-<!-- STATIC --> 
-<!-- Nunber 1 -->
-<!-- Progress Bar -->
+<!-- Page Loading Animation -->
 <div id="pageProgress" class="ph-progress page-progress">
     <div class="progress-bar">
       <div class="ph-fill progress-fill"></div>
     </div>
   </div>
-<!-- END OF STATIC --> 
 
 
-<!-- STATIC -->
-<!-- Top Navigation Bar -->
+
+
+<!-- Top Nav -->
 <nav class="navbar" aria-label="Main navigation">
   <div class="navbar-inner">
     
-    <!-- Left Section -->
+<!-- Left -->
     <div class="navbar-section navbar-left">
       <button 
         id="leftSidebarTrigger" 
@@ -1542,7 +1541,7 @@ background: linear-gradient(90deg, #dc2626, #ef4444, #f87171);
       </a>
     </div>
 
-    <!-- Center Section (Search Button) -->
+<!-- Center (Search) -->
     <div class="navbar-section navbar-center">
       <button 
         onclick="showSearchModal()" 
@@ -1557,7 +1556,7 @@ background: linear-gradient(90deg, #dc2626, #ef4444, #f87171);
       </button>
     </div>
 
-    <!-- Right Section -->
+<!-- Right -->
     <div class="navbar-section navbar-right">
       <button 
         class="navbar-button navbar-button-with-text"
@@ -1590,13 +1589,13 @@ background: linear-gradient(90deg, #dc2626, #ef4444, #f87171);
     
   </div>
 </nav>
-<!-- END OF STATIC --> 
 
 
-<!-- STATIC -->
-  <!-- Left & Right Sidebars / Overlay -->
-  <div id="overlay" class="fixed inset-0 bg-black"></div>
-  <aside id="leftSidebar" class="sidebar left-sidebar">
+
+<!-- Left & Right Sidebars / Overlay -->
+<div id="overlay" class="fixed inset-0 bg-black"></div>
+
+<aside id="leftSidebar" class="sidebar left-sidebar">
     <div class="p-4 h-full overflow-y-auto">
       <!-- User Profile -->
       <div class="profile-section">
@@ -1676,7 +1675,7 @@ background: linear-gradient(90deg, #dc2626, #ef4444, #f87171);
       </div>
     </div>
   </aside>
-  <aside id="rightSidebar" class="sidebar right-sidebar">
+<aside id="rightSidebar" class="sidebar right-sidebar">
     <div class="p-4 h-full overflow-y-auto">
       <!-- Recent Files -->
       <div class="mb-6">
@@ -1750,41 +1749,48 @@ background: linear-gradient(90deg, #dc2626, #ef4444, #f87171);
       </div>
     </div>
   </aside>
-<!-- END OF STATIC --> 
+ 
 
 
 
-<!-- STATIC --> 
-<!-- Page Wrapper -->
+
 <main id="mainArea">
 
 
 
 
-<!-- DYNAMIC PAGES (Loaded from templates) -->
-<div id="repoSelectorView"></div>
-<div id="explorerView" class="hidden"></div>
-<div id="fileView" class="hidden"></div>
-<!-- END OF DYNAMIC PAGES --> 
+<div id="repoSelectorView">
+<!-- R E P O S I T O R I E S -->
+</div>
+
+<div id="explorerView" class="hidden">
+<!-- F I L E  L I S T S -->
+</div>
+
+<div id="fileView" class="hidden">
+<!-- F I L E  V I E W E R -->
+</div>
 
 
 
 
 
 </main>
-<!-- END OF STATIC --> 
 
 
 
 
-<!-- DYNAMIC MODALS (Loaded from templates) -->
-<div id="modalsContainer"></div>
-<!-- END OF DYNAMIC MODALS --> 
+
+
+<div id="modalsContainer">
+<!-- M O D A L S -->
+</div>
 
 
 
-<!-- STATIC -->
-<!-- Template Loader -->
+
+<!-- S C R I P T S ------------------------------->
+<!-- Primary -->
 <script src="modules/templates.js"></script>
 <script>
 // Initialize templates on page load
@@ -1817,10 +1823,9 @@ background: linear-gradient(90deg, #dc2626, #ef4444, #f87171);
 
 <script type="module" src="modules/index.js">
 /**
- *  Main script
+ *  Main
  */
 </script>
-
 
 <script id="sidebars">
 const SidebarManager = {
@@ -2237,7 +2242,28 @@ function updateSidebarAfterRepoOperation() {
 }
 </script>
 
+<script id="share">
+    if (window.location.search.includes('share')) {
+        window.addEventListener('load', async () => {
+            const formData = await getSharedData();
+            if (formData) {
+                handleSharedFiles(formData);
+            }
+        });
+    }
 
+    async function getSharedData() {
+        // process files shared via Web Share Target API
+    }
+
+    function handleSharedFiles(formData) {
+        // Process and upload shared files
+        console.log('Processing shared files...');
+    }
+</script>
+
+
+<!-- Background -->
 <script id="serviceWorker">
 class ServiceWorkerManager {
     constructor() {
@@ -2452,38 +2478,32 @@ window.addEventListener('appinstalled', () => {
 </script>  
 
 
-<script id="share">
-    if (window.location.search.includes('share')) {
-        window.addEventListener('load', async () => {
-            const formData = await getSharedData();
-            if (formData) {
-                handleSharedFiles(formData);
-            }
-        });
-    }
-
-    async function getSharedData() {
-        // process files shared via Web Share Target API
-    }
-
-    function handleSharedFiles(formData) {
-        // Process and upload shared files
-        console.log('Processing shared files...');
-    }
-</script>
 
 
+<!-- Temporary -->
 <script id="debugger" src="https://cdn.jsdelivr.net/npm/eruda">
-
+/**
+ *  E R U D A
+ */
 </script>
-<!-- END OF STATIC --> 
-
 <script>
 eruda.init();
 </script>
 
 
 
-
+<!--------------------
+**
+ * 
+ *  C R E A T E D  B Y
+ * 
+ *  William Hanson 
+ * 
+ *  Chevrolay@Outlook.com
+ * 
+ *  m.me/Chevrolay
+ * 
+ **
+------------------------------------------------>
 </body>
 </html>
