@@ -40,6 +40,25 @@
     transform: scale(1.05);
   }
 }
+
+
+
+#fileView,
+#explorerView,
+#repoSelectorView {
+  opacity: 0;
+  pointer-events: none;
+}
+#fileView.blurIN,
+#explorerView.blurIN,
+#repoSelectorView.blurIN {
+  animation blurFadeIn 1.2s ease-out forwards;
+}
+#fileView.blurOUT,
+#explorerView.blurOUT,
+#repoSelectorView.blurOUT {
+  animation blurFadeOut 1.2s ease-in forwards;
+}
 </style>
 
 
@@ -1797,7 +1816,7 @@ background: linear-gradient(90deg, #dc2626, #ef4444, #f87171);
 
 
 
-<div id="repoSelectorView">
+<div id="repoSelectorView" class="blurIN">
 <!-- R E P O S I T O R I E S -->
 </div>
 
