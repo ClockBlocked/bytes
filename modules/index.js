@@ -130,9 +130,6 @@
         return loadScript(manifest);
     }
 
-    // ============================================================================
-    // SIDEBAR MANAGER
-    // ============================================================================
     const SidebarManager = {
         state: {
             isLeftSidebarOpen:  false,
@@ -394,7 +391,6 @@
                         totalSize += file. size || 0;
                     });
                 } catch (e) {
-                    // Silent fail for individual repo processing
                 }
             });
 
@@ -522,9 +518,6 @@
         }
     };
 
-    // ============================================================================
-    // SERVICE WORKER MANAGER
-    // ============================================================================
     class ServiceWorkerManager {
         constructor() {
             this.registration = null;
@@ -568,7 +561,6 @@
             });
 
             navigator.serviceWorker. addEventListener('controllerchange', () => {
-                // New Service Worker controlling the page
             });
 
             navigator.serviceWorker.addEventListener('message', event => {
@@ -674,9 +666,6 @@
         }
     }
 
-    // ============================================================================
-    // SHARE HANDLER
-    // ============================================================================
     const ShareHandler = {
         init() {
             if (window.location.search.includes('share')) {
@@ -692,18 +681,13 @@
         },
 
         async getSharedData() {
-            // Process files shared via Web Share Target API
             return null;
         },
 
         handleSharedFiles(formData) {
-            // Process and upload shared files
         }
     };
 
-    // ============================================================================
-    // PWA INSTALL HANDLER
-    // ============================================================================
     const PWAInstallHandler = {
         deferredPrompt:  null,
 
@@ -761,9 +745,6 @@
         }
     };
 
-    // ============================================================================
-    // DEBUGGER (ERUDA)
-    // ============================================================================
     const DebuggerManager = {
         init() {
             this.loadEruda();
@@ -781,9 +762,6 @@
         }
     };
 
-    // ============================================================================
-    // HELPER FUNCTIONS FOR SIDEBAR OPERATIONS
-    // ============================================================================
     function updateSidebarAfterFileOperation(repoName, fileName, filePath) {
         if (window.SidebarManager) {
             window.SidebarManager.addToRecentFiles(fileName, repoName, filePath);
@@ -798,9 +776,6 @@
         }
     }
 
-    // ============================================================================
-    // MAIN SCRIPT LOADER
-    // ============================================================================
     async function loadAllScripts() {
         const sortedManifest = [... SCRIPT_MANIFEST].sort((a, b) => a.priority - b.priority);
 
@@ -808,42 +783,33 @@
             try {
                 await loadScript(manifest);
             } catch (error) {
-                // Script failed to load, continue with others
             }
         }
 
         setTimeout(() => {
-            // Initialize SidebarManager
             if (typeof window.SidebarManager !== "undefined" && window.SidebarManager.init) {
                 window. SidebarManager. init();
             }
 
-            // Initialize app if available
             if (typeof initializeApp === "function") {
                 initializeApp();
             }
 
-            // Initialize Service Worker
             window.swManager = new ServiceWorkerManager();
             window.swManager.init();
 
-            // Initialize Share Handler
             ShareHandler.init();
 
-            // Initialize PWA Install Handler
             PWAInstallHandler.init();
 
-            // Initialize Debugger
             DebuggerManager.init();
 
-            // Apply saved theme
             const savedTheme = localStorage.getItem('gitcodr_theme');
             if (savedTheme === 'light' && window.SidebarManager) {
                 window.SidebarManager.state.isDarkTheme = true;
                 window.SidebarManager.toggleTheme();
             }
 
-            // Dispatch ready event
             window.dispatchEvent(new CustomEvent("gitDevReady", {
                 detail: {
                     loadedCount: Array.from(SCRIPT_REGISTRY.scripts.values()).filter(s => s.status === "Loaded").length,
@@ -854,9 +820,6 @@
         }, 50);
     }
 
-    // ============================================================================
-    // GLOBAL API
-    // ============================================================================
     window.SidebarManager = SidebarManager;
     window.updateSidebarAfterFileOperation = updateSidebarAfterFileOperation;
     window.updateSidebarAfterRepoOperation = updateSidebarAfterRepoOperation;
@@ -952,24 +915,9 @@
         }
     };
 
-    // ============================================================================
-    // INITIALIZATION
-    // ============================================================================
     if (document.readyState === "loading") {
         document. addEventListener("DOMContentLoaded", loadAllScripts);
     } else {
         loadAllScripts();
     }
 })();
-
-/**
- *
- *  C R E A T E D  B Y
- *
- *  William Hanson
- *
- *  Chevrolay@Outlook.com
- *
- *  m. me/Chevrolay
- *
- */
