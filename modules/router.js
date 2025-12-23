@@ -387,7 +387,7 @@ class GitDevSPA {
                 width: 100%;
                 height: 3px;
                 background: transparent;
-                z-index: 9999;
+                z-index: 99999999;
                 pointer-events: none;
                 opacity: 0;
                 transition: opacity 0.3s ease;
