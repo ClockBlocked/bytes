@@ -591,8 +591,20 @@ function initializeSPA() {
     }, 100);
 }
 
+
 if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', initializeSPA);
 } else {
     initializeSPA();
 }
+/**
+ * 
+ *  C R E A T E D  B Y
+ * 
+ *  William Hanson 
+ * 
+ *  Chevrolay@Outlook.com
+ * 
+ *  m.me/Chevrolay
+ * 
+ */
