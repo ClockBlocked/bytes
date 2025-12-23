@@ -27,14 +27,13 @@ function showExplorer() {
   const repoSelector = document.getElementById("repoSelectorView");
   const fileView = document.getElementById("fileView");
   const explorerView = document.getElementById("explorerView");
-  if (repoSelector) repoSelector.classList.add("hidden");
-  if (fileView) fileView.classList.add("hidden");
+//if (repoSelector) repoSelector.classList.add("hidden");
+  if (repoSelector) repoSelector.classList.add("blurOUT");
+//if (fileView) fileView.classList.add("hidden");
+  if (fileView) fileView.classList.add("blurOUT");
   if (explorerView) {
-    explorerView.classList.remove("hidden");
-    // Find the actual pages element inside explorerView
-    const pagesElement = explorerView.querySelector('.pages[data-page="file-explorer"]');
-    if (pagesElement) {
-      pagesElement.classList.remove("hidden");
+ // explorerView.classList.remove("hidden");
+    explorerView.classList.add("blurIN");
     }
   }
   if (typeof updateStats === "function") updateStats();
@@ -47,21 +46,18 @@ function showFileViewer() {
   const explorerView = document.getElementById("explorerView");
   const fileView = document.getElementById("fileView");
   
-  if (repoSelector) repoSelector.classList.add("hidden");
+//if (repoSelector) repoSelector.classList.add("hidden");
+  if (repoSelector) repoSelector.classList.add("blurOUT");
   
   if (explorerView) {
-    explorerView.classList.add("hidden");
-    // Also hide the inner pages element
-    const explorerPages = explorerView.querySelector('.pages[data-page="file-explorer"]');
-    if (explorerPages) explorerPages.classList.add("hidden");
+//  explorerView.classList.add("hidden");
+    explorerView.classList.add("blurOUT");
   }
   
   if (fileView) {
-    fileView.classList.remove("hidden");
-    // Find the actual pages element inside fileView
-    const pagesElement = fileView.querySelector('.pages[data-page="file"]');
-    if (pagesElement) {
-      pagesElement.classList.remove("hidden");
+//  fileView.classList.remove("hidden");
+    fileView.classList.remove("blurOUT");
+    fileView.classList.add("blurIN");
     }
     if (window.coderViewEdit && typeof window.coderViewEdit.init === "function" && !window.coderViewEdit.isInitialized) {
       window.coderViewEdit.init();
