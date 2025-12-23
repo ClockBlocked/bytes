@@ -35,7 +35,7 @@ function showExplorer() {
  // explorerView.classList.remove("hidden");
     explorerView.classList.add("blurIN");
     }
-  }
+  
   if (typeof updateStats === "function") updateStats();
   LoadingProgress.show();
   setTimeout(() => LoadingProgress.hide(), 300);
@@ -62,7 +62,7 @@ function showFileViewer() {
     if (window.coderViewEdit && typeof window.coderViewEdit.init === "function" && !window.coderViewEdit.isInitialized) {
       window.coderViewEdit.init();
     }
-  }
+
   LoadingProgress.show();
   setTimeout(() => LoadingProgress.hide(), 300);
 }
