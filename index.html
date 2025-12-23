@@ -1507,14 +1507,19 @@ background: linear-gradient(90deg, #dc2626, #ef4444, #f87171);
 
 <body class="bg-github-canvas-default text-github-fg-default font-sans">
   
-  <!-- Progress Bar -->
-  <div id="pageProgress" class="ph-progress page-progress">
+
+<!-- STATIC --> 
+<!-- Nunber Four -->
+<!-- Progress Bar -->
+<div id="pageProgress" class="ph-progress page-progress">
     <div class="progress-bar">
       <div class="ph-fill progress-fill"></div>
     </div>
   </div>
+<!-- END OF STATIC --> 
 
 
+<!-- STATIC -->
 <!-- Top Navigation Bar -->
 <nav class="navbar" aria-label="Main navigation">
   <div class="navbar-inner">
@@ -1585,12 +1590,12 @@ background: linear-gradient(90deg, #dc2626, #ef4444, #f87171);
     
   </div>
 </nav>
+<!-- END OF STATIC --> 
 
 
-
-  <!-- Overlay for Mobile -->
+<!-- STATIC -->
+  <!-- Left & Right Sidebars / Overlay -->
   <div id="overlay" class="fixed inset-0 bg-black"></div>
-  <!-- Left Sidebar -->
   <aside id="leftSidebar" class="sidebar left-sidebar">
     <div class="p-4 h-full overflow-y-auto">
       <!-- User Profile -->
@@ -1671,8 +1676,6 @@ background: linear-gradient(90deg, #dc2626, #ef4444, #f87171);
       </div>
     </div>
   </aside>
-
-  <!-- Right Sidebar -->
   <aside id="rightSidebar" class="sidebar right-sidebar">
     <div class="p-4 h-full overflow-y-auto">
       <!-- Recent Files -->
@@ -1747,15 +1750,18 @@ background: linear-gradient(90deg, #dc2626, #ef4444, #f87171);
       </div>
     </div>
   </aside>
-  
-  
+<!-- END OF STATIC --> 
 
+
+
+<!-- STATIC --> 
 <!-- Page Wrapper -->
 <main id="mainArea">
 
 
 
 
+<!-- DYNAMIC --> 
 <!-- Number 1 -->
 <!-- Repository Selector View -->
 <div id="repoSelectorView" class="max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
@@ -1951,12 +1957,19 @@ background: linear-gradient(90deg, #dc2626, #ef4444, #f87171);
 data-page="file" is for viewing files with the Code Viewer / Code Editor
 -->
 </div>
+<!-- END OF DYNAMIC --> 
+
+
+
 
 
 </main>
+<!-- END OF STATIC --> 
 
 
 
+
+<!-- STATIC --> 
 <!-- Modals -->
 <div id="createFileModal" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 hidden items-center justify-center p-4">
     <div class="bg-github-canvas-overlay border border-github-border-default rounded-lg shadow-2xl w-full max-w-2xl animate-scale-in">
@@ -2045,10 +2058,11 @@ data-page="file" is for viewing files with the Code Viewer / Code Editor
       </div>
     </div>
   </div>
+<!-- END OF STATIC --> 
 
 
 
-
+<!-- STATIC --> 
 <script type="module" src="modules/index.js">
 /**
  *  Main script
@@ -2686,7 +2700,7 @@ window.addEventListener('appinstalled', () => {
 </script>  
 
 
-<script>
+<script id="share">
     if (window.location.search.includes('share')) {
         window.addEventListener('load', async () => {
             const formData = await getSharedData();
@@ -2707,12 +2721,15 @@ window.addEventListener('appinstalled', () => {
 </script>
 
 
-    <!-- Eruda -->
-    <!-- D E B U G G I N G -->
-    <script src="https://cdn.jsdelivr.net/npm/eruda"></script>
-    <script>
-      eruda.init();
-    </script>
+<script id="debugger" src="https://cdn.jsdelivr.net/npm/eruda">
+eruda.init();
+</script>
+<!-- END OF STATIC --> 
+
+
+
+
+
 
 </body>
 </html>
