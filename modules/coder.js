@@ -164,33 +164,6 @@ class coderViewEdit {
       </div>
     </div>`;
   }
-      </div>
-      <div id="codeMirrorContainer"></div>
-    </div>
-    <div class="fileFooter">
-      <div class="footerStats">
-        <span id="fileLinesCount">0 lines</span><span class="footerDivider">•</span>
-        <span id="fileSize">0 KB</span><span class="footerDivider">•</span>
-        <span id="fileLanguageDisplay">Text</span>
-      </div>
-      <div class="footerRight">
-        <span id="cursorPosition" class="cursorInfo">Ln 1, Col 1</span><span class="footerDivider">•</span>
-        <span id="selectionInfo" class="selectionInfo"></span>
-        <span id="encodingDisplay" class="encodingInfo">UTF-8</span>
-      </div>
-    </div>
-    <div id="commitPanel" class="commitPanel hidden">
-      <h3 class="panelTitle">Commit changes</h3>
-      <div class="panelContent">
-        <div><input type="text" id="commitTitleInput" class="commitInput" placeholder="Update filename.ext"/></div>
-        <div><textarea id="commitDescriptionInput" rows="4" class="commitTextarea" placeholder="Add an optional extended description..."></textarea></div>
-        <div class="panelButtons">
-          <button id="cancelEditBtn" class="secondaryButton">Cancel</button>
-          <button id="saveChangesBtn" class="primaryButton">Commit changes</button>
-        </div>
-      </div>
-    </div>`;
-  }
   cacheElements() {
     this.elements = {
       filePage: document.querySelector('.pages[data-page="file"]'),
