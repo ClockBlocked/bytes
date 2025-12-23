@@ -1,6 +1,6 @@
 
 
-/**
+
 function showRepoSelector() {
   const explorerView = document.getElementById("explorerView");
   const fileView = document.getElementById("fileView");
@@ -280,9 +280,12 @@ window.showFileEditor = showFileEditor;
 window.navigateToRoot = navigateToRoot;
 window.navigateToPath = navigateToPath;
 window.navigateToFolder = navigateToFolder;
-**/
 
 
+
+
+
+/**
 // Loading Progress Controller
 const LoadingProgress = (() => {
   let progressElement = null;
@@ -1384,3 +1387,4 @@ if (document.readyState === "loading") {
 } else {
   initializeAppComponents();
 }
+**/
