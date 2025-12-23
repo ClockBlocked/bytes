@@ -4,22 +4,48 @@ class GitDevSPA {
         this.loadingBar = null;
         this.currentPage = null;
         this.previousPage = null;
-        this.pageCache = new Map();
-        this.transitionDuration = 1200;
+        this.pageElements = new Map();
+        this.transitionDuration = 800;
         this.loadingBarDuration = 800;
         this.currentState = window.currentState || {};
+        this.isTransitioning = false;
         this.init();
     }
 
     init() {
         this.createLoadingBar();
+        this.cacheExistingPages();
         this.setupNavigation();
-        this.loadInitialPage();
         this.setupEventListeners();
         this.setupGlobalErrorHandling();
+        this.loadInitialPage();
+    }
+
+    cacheExistingPages() {
+        // Cache all existing page elements
+        const pages = {
+            'repo': document.getElementById('repoSelectorView'),
+            'explorer': document.getElementById('explorerView'),
+            'file': document.querySelector('.pages[data-page="file"]')
+        };
+        
+        Object.entries(pages).forEach(([name, element]) => {
+            if (element) {
+                // Store the original parent and position
+                this.pageElements.set(name, {
+                    element: element,
+                    originalParent: element.parentNode,
+                    originalDisplay: element.style.display || 'block'
+                });
+            }
+        });
     }
 
     createLoadingBar() {
+        // Remove existing loading bar if present
+        const existingBar = document.querySelector('.spa-loading-bar');
+        if (existingBar) existingBar.remove();
+        
         this.loadingBar = document.createElement('div');
         this.loadingBar.className = 'spa-loading-bar';
         this.loadingBar.innerHTML = `
@@ -32,6 +58,9 @@ class GitDevSPA {
     }
 
     addStyles() {
+        const existingStyle = document.getElementById('spa-loading-styles');
+        if (existingStyle) existingStyle.remove();
+        
         const styles = `
             .spa-loading-bar {
                 position: fixed;
@@ -57,6 +86,7 @@ class GitDevSPA {
                 height: 100%;
                 width: 0%;
                 background: linear-gradient(90deg, #dc2626, #ef4444, #f87171);
+                background-size: 200% 100%;
                 transition: width 0.2s ease;
                 animation: loadingBarColors 2s linear infinite;
             }
@@ -76,68 +106,45 @@ class GitDevSPA {
                 100% { background-position: 200% 0%; }
             }
             
-            .page-enter {
-                animation: pageEnter ${this.transitionDuration}ms cubic-bezier(0.4, 0, 0.2, 1) forwards;
-            }
-            
-            .page-exit {
-                animation: pageExit ${this.transitionDuration}ms cubic-bezier(0.4, 0, 0.2, 1) forwards;
-            }
-            
-            @keyframes pageEnter {
-                from {
-                    opacity: 0;
-                    transform: translateY(20px);
-                    filter: blur(10px);
-                }
-                to {
-                    opacity: 1;
-                    transform: translateY(0);
-                    filter: blur(0);
-                }
-            }
-            
-            @keyframes pageExit {
-                from {
-                    opacity: 1;
-                    transform: translateY(0);
-                    filter: blur(0);
-                }
-                to {
-                    opacity: 0;
-                    transform: translateY(-20px);
-                    filter: blur(10px);
-                }
-            }
-            
-            .page-content {
+            .spa-page {
                 position: relative;
                 min-height: 80vh;
+                opacity: 0;
+                transform: translateY(20px);
+                filter: blur(10px);
+                transition: all ${this.transitionDuration}ms cubic-bezier(0.4, 0, 0.2, 1);
+                pointer-events: none;
             }
             
-            [data-navigate] {
+            .spa-page.active {
+                opacity: 1;
+                transform: translateY(0);
+                filter: blur(0);
+                pointer-events: all;
+            }
+            
+            .spa-page.exit {
+                opacity: 0;
+                transform: translateY(-20px);
+                filter: blur(10px);
+            }
+            
+            .spa-hidden {
+                display: none !important;
+            }
+            
+            [data-spa-navigate] {
                 cursor: pointer;
                 transition: opacity 0.2s ease;
             }
             
-            [data-navigate]:hover {
+            [data-spa-navigate]:hover {
                 opacity: 0.8;
-            }
-            
-            .hidden {
-                display: none !important;
-            }
-            
-            .blurIN {
-                animation: pageEnter ${this.transitionDuration}ms cubic-bezier(0.4, 0, 0.2, 1) forwards;
-            }
-            
-            .blurOUT {
-                animation: pageExit ${this.transitionDuration}ms cubic-bezier(0.4, 0, 0.2, 1) forwards;
             }
         `;
         
         const styleSheet = document.createElement('style');
+        styleSheet.id = 'spa-loading-styles';
         styleSheet.textContent = styles;
         document.head.appendChild(styleSheet);
     }
@@ -145,71 +152,53 @@ class GitDevSPA {
     setupNavigation() {
         window.addEventListener('popstate', (e) => {
             const page = window.location.hash.slice(1) || 'repo';
-            this.loadPage(page, false);
+            this.loadPage(page, true);
         });
     }
 
     setupEventListeners() {
         document.addEventListener('click', (e) => {
-            const navigateElement = e.target.closest('[data-navigate]');
-            if (navigateElement) {
+            const navigateElement = e.target.closest('[data-spa-navigate]');
+            if (navigateElement && !this.isTransitioning) {
                 e.preventDefault();
-                const page = navigateElement.getAttribute('data-navigate');
+                const page = navigateElement.getAttribute('data-spa-navigate');
                 const url = navigateElement.getAttribute('href') || `#${page}`;
                 this.navigateTo(url, page);
             }
         });
 
+        // Listen for existing app events
         document.addEventListener('viewTransitionStart', () => {
             this.showLoadingBar();
-        });
-
-        document.addEventListener('viewTransitionEnd', () => {
-            this.updateLoadingBar(100);
-            setTimeout(() => this.hideLoadingBar(), 200);
         });
 
         document.addEventListener('navigationStart', () => {
             this.showLoadingBar();
         });
-
-        document.addEventListener('navigationComplete', () => {
-            this.updateLoadingBar(100);
-            setTimeout(() => this.hideLoadingBar(), 200);
-        });
     }
 
     setupGlobalErrorHandling() {
         window.addEventListener('error', (event) => {
-            document.dispatchEvent(new CustomEvent('appError', {
-                detail: {
-                    type: 'global',
-                    error: event.error,
-                    message: event.message,
-                    filename: event.filename,
-                    lineno: event.lineno,
-                    colno: event.colno,
-                },
-            }));
+            console.error('Global error:', event.error);
+            this.hideLoadingBar();
         });
 
         window.addEventListener('unhandledrejection', (event) => {
-            document.dispatchEvent(new CustomEvent('appError', {
-                detail: {
-                    type: 'promise',
-                    error: event.reason,
-                    promise: event.promise,
-                },
-            }));
+            console.error('Unhandled promise rejection:', event.reason);
+            this.hideLoadingBar();
         });
     }
 
     loadInitialPage() {
         const initialPage = window.location.hash.slice(1) || 'repo';
-        this.loadPage(initialPage, false);
+        setTimeout(() => {
+            this.loadPage(initialPage, false);
+        }, 100);
     }
 
     async navigateTo(url, page) {
+        if (this.isTransitioning) return;
+        
         if (url !== window.location.hash) {
             window.history.pushState({ page }, '', url);
         }
@@ -218,58 +207,47 @@ class GitDevSPA {
     }
 
     async loadPage(pageName, showTransition = true) {
-        if (this.currentPage === pageName) return;
+        if (this.isTransitioning || this.currentPage === pageName) return;
         
-        this.previousPage = this.currentPage;
+        this.isTransitioning = true;
+        const previousPage = this.currentPage;
         this.currentPage = pageName;
         
-        document.dispatchEvent(new CustomEvent('viewTransitionStart', {
-            detail: { from: this.previousPage, to: pageName }
+        // Dispatch start event
+        document.dispatchEvent(new CustomEvent('spaNavigationStart', {
+            detail: { from: previousPage, to: pageName }
         }));
         
+        // Show loading bar
         this.showLoadingBar();
         
         try {
-            let pageContent;
-            if (this.pageCache.has(pageName)) {
-                pageContent = this.pageCache.get(pageName);
-                await this.simulateDelay(150);
-            } else {
-                const delay = Math.random() * 300 + 200;
-                await this.simulateDelay(delay);
-                
-                pageContent = this.getPageContent(pageName);
-                
-                if (pageContent) {
-                    this.pageCache.set(pageName, pageContent);
-                }
+            // Hide previous page if exists
+            if (previousPage && this.pageElements.has(previousPage)) {
+                await this.hidePage(previousPage, showTransition);
             }
             
-            if (!pageContent) {
-                console.error(`Page ${pageName} not found`);
-                return;
-            }
+            // Simulate loading delay
+            await this.simulateDelay(showTransition ? 300 : 50);
             
-            this.updateLoadingBar(90);
+            // Show loading progress
+            this.updateLoadingBar(60);
             
-            await this.renderPage(pageContent, showTransition);
+            // Show new page
+            await this.showPage(pageName, showTransition);
             
+            // Complete loading
             this.updateLoadingBar(100);
             
-            setTimeout(() => {
-                this.hideLoadingBar();
-            }, 200);
-            
+            // Update page title
             this.updatePageTitle(pageName);
             
-            document.dispatchEvent(new CustomEvent('viewTransitionEnd', {
-                detail: { from: this.previousPage, to: pageName }
+            // Dispatch complete event
+            document.dispatchEvent(new CustomEvent('spaNavigationComplete', {
+                detail: { from: previousPage, to: pageName }
             }));
             
-            document.dispatchEvent(new CustomEvent('viewChanged', {
-                detail: { viewId: pageName }
-            }));
-            
+            // Update app state
             if (window.appState) {
                 window.appState.currentView = pageName;
             }
@@ -277,90 +255,136 @@ class GitDevSPA {
         } catch (error) {
             console.error('Error loading page:', error);
             this.updateLoadingBar(100);
-            setTimeout(() => this.hideLoadingBar(), 200);
+        } finally {
+            // Hide loading bar after delay
+            setTimeout(() => {
+                this.hideLoadingBar();
+                this.isTransitioning = false;
+            }, 300);
         }
     }
 
-    showLoadingBar() {
-        this.loadingBar.classList.add('visible');
-        this.updateLoadingBar(10);
+    async hidePage(pageName, animate = true) {
+        const pageData = this.pageElements.get(pageName);
+        if (!pageData) return;
         
-        setTimeout(() => {
-            const buffer = this.loadingBar.querySelector('.spa-loading-bar-buffer');
-            buffer.style.width = '50%';
-        }, 100);
+        const page = pageData.element;
         
-        const randomIncrement = () => {
-            if (parseInt(this.loadingBar.querySelector('.spa-loading-bar-progress').style.width) < 80) {
-                const increment = Math.random() * 5 + 1;
-                this.updateLoadingBar(
-                    parseInt(this.loadingBar.querySelector('.spa-loading-bar-progress').style.width) + increment
-                );
-                setTimeout(randomIncrement, Math.random() * 200 + 100);
-            }
-        };
-        
-        setTimeout(randomIncrement, 300);
-    }
-
-    updateLoadingBar(percentage) {
-        const progressBar = this.loadingBar.querySelector('.spa-loading-bar-progress');
-        percentage = Math.min(100, Math.max(0, percentage));
-        progressBar.style.width = `${percentage}%`;
-        progressBar.style.backgroundSize = '200% 100%';
-    }
-
-    hideLoadingBar() {
-        const progressBar = this.loadingBar.querySelector('.spa-loading-bar-progress');
-        const buffer = this.loadingBar.querySelector('.spa-loading-bar-buffer');
-        
-        buffer.style.width = '0%';
-        
-        setTimeout(() => {
-            this.loadingBar.classList.remove('visible');
-            setTimeout(() => {
-                progressBar.style.width = '0%';
-            }, 300);
-        }, 300);
-    }
-
-    async renderPage(content, showTransition = true) {
         return new Promise((resolve) => {
-            if (showTransition && this.appContainer.children.length > 0) {
-                const currentPage = this.appContainer.firstElementChild;
-                currentPage.classList.add('page-exit');
+            if (animate) {
+                page.classList.remove('active');
+                page.classList.add('exit');
                 
                 setTimeout(() => {
-                    if (currentPage.parentNode) {
-                        currentPage.remove();
+                    // Move page back to original container and hide
+                    if (pageData.originalParent && page.parentNode !== pageData.originalParent) {
+                        pageData.originalParent.appendChild(page);
                     }
-                    this.insertNewPage(content, resolve);
+                    page.classList.add('spa-hidden');
+                    page.classList.remove('exit');
+                    resolve();
                 }, this.transitionDuration);
             } else {
-                this.insertNewPage(content, resolve);
+                // Move page back to original container and hide immediately
+                if (pageData.originalParent && page.parentNode !== pageData.originalParent) {
+                    pageData.originalParent.appendChild(page);
+                }
+                page.classList.add('spa-hidden');
+                page.classList.remove('active', 'exit');
+                resolve();
             }
         });
     }
 
-    insertNewPage(content, resolve) {
-        const pageWrapper = document.createElement('div');
-        pageWrapper.className = 'page-content';
-        pageWrapper.innerHTML = content;
-        
-        if (this.appContainer.children.length > 0) {
-            this.appContainer.insertBefore(pageWrapper, this.appContainer.firstChild);
-        } else {
-            this.appContainer.appendChild(pageWrapper);
+    async showPage(pageName, animate = true) {
+        const pageData = this.pageElements.get(pageName);
+        if (!pageData) {
+            console.error(`Page ${pageName} not found`);
+            return;
         }
         
-        setTimeout(() => {
-            pageWrapper.classList.add('page-enter');
-            resolve();
-        }, 10);
+        const page = pageData.element;
         
-        window.dispatchEvent(new CustomEvent('pageChanged', {
-            detail: { page: this.currentPage }
-        }));
+        return new Promise((resolve) => {
+            // Ensure page is in main container
+            if (page.parentNode !== this.appContainer) {
+                this.appContainer.appendChild(page);
+            }
+            
+            // Remove hidden class
+            page.classList.remove('spa-hidden');
+            
+            if (animate) {
+                // Trigger reflow
+                void page.offsetWidth;
+                
+                // Add active class for animation
+                page.classList.add('active');
+                
+                setTimeout(() => {
+                    resolve();
+                }, this.transitionDuration);
+            } else {
+                // Show immediately
+                page.classList.add('active');
+                resolve();
+            }
+        });
+    }
+
+    showLoadingBar() {
+        if (!this.loadingBar) return;
+        
+        this.loadingBar.classList.add('visible');
+        this.updateLoadingBar(10);
+        
+        // Buffer animation
+        setTimeout(() => {
+            const buffer = this.loadingBar.querySelector('.spa-loading-bar-buffer');
+            if (buffer) buffer.style.width = '60%';
+        }, 100);
+        
+        // Random progress increments for realistic feel
+        const simulateProgress = () => {
+            if (this.isTransitioning) {
+                const progressBar = this.loadingBar.querySelector('.spa-loading-bar-progress');
+                if (!progressBar) return;
+                
+                const currentWidth = parseInt(progressBar.style.width) || 10;
+                if (currentWidth < 80) {
+                    const increment = Math.random() * 8 + 2;
+                    this.updateLoadingBar(currentWidth + increment);
+                    setTimeout(simulateProgress, Math.random() * 150 + 50);
+                }
+            }
+        };
+        
+        setTimeout(simulateProgress, 200);
+    }
+
+    updateLoadingBar(percentage) {
+        if (!this.loadingBar) return;
+        
+        const progressBar = this.loadingBar.querySelector('.spa-loading-bar-progress');
+        if (!progressBar) return;
+        
+        percentage = Math.min(100, Math.max(0, percentage));
+        progressBar.style.width = `${percentage}%`;
+    }
+
+    hideLoadingBar() {
+        if (!this.loadingBar) return;
+        
+        const buffer = this.loadingBar.querySelector('.spa-loading-bar-buffer');
+        if (buffer) buffer.style.width = '0%';
+        
+        setTimeout(() => {
+            this.loadingBar.classList.remove('visible');
+            setTimeout(() => {
+                const progressBar = this.loadingBar.querySelector('.spa-loading-bar-progress');
+                if (progressBar) progressBar.style.width = '0%';
+            }, 300);
+        }, 300);
     }
 
     simulateDelay(ms) {
@@ -377,24 +401,7 @@ class GitDevSPA {
         document.title = titles[pageName] || 'GitDev';
     }
 
-    getPageContent(pageName) {
-        const pages = {
-            'repo': () => {
-                return document.getElementById('repoSelectorView').outerHTML;
-            },
-            'explorer': () => {
-                return document.getElementById('explorerView').outerHTML;
-            },
-            'file': () => {
-                const fileView = document.querySelector('.pages[data-page="file"]');
-                return fileView ? fileView.outerHTML : '<div>File view not available</div>';
-            }
-        };
-        
-        const pageGetter = pages[pageName];
-        return pageGetter ? pageGetter() : null;
-    }
-
+    // Navigation methods that match your original API
     showRepoSelector() {
         this.navigateTo('#repo', 'repo');
     }
@@ -413,11 +420,13 @@ class GitDevSPA {
 
     showFileEditor() {
         this.navigateTo('#file', 'file');
-        document.dispatchEvent(new CustomEvent('editorModeActivated'));
-        
-        if (window.coderViewEdit && typeof window.coderViewEdit.enableEditing === 'function') {
-            window.coderViewEdit.enableEditing();
-        }
+        setTimeout(() => {
+            document.dispatchEvent(new CustomEvent('editorModeActivated'));
+            
+            if (window.coderViewEdit && typeof window.coderViewEdit.enableEditing === 'function') {
+                window.coderViewEdit.enableEditing();
+            }
+        }, this.transitionDuration + 100);
     }
 
     navigateToRoot() {
@@ -512,36 +521,51 @@ class GitDevSPA {
     }
 
     refreshCurrentView() {
-        if (!this.currentState) return;
-        
-        const currentView = this.currentPage;
-        if (!currentView) return;
+        if (!this.currentState || !this.currentPage) return;
         
         this.showLoadingBar();
         
         document.dispatchEvent(new CustomEvent('viewRefresh', {
-            detail: { viewId: currentView }
+            detail: { viewId: this.currentPage }
         }));
         
         setTimeout(() => {
-            if (currentView === 'explorer' && this.currentState.path !== undefined) {
+            if (this.currentPage === 'explorer' && this.currentState.path !== undefined) {
                 this.navigateToPath(this.currentState.path);
-            } else if (currentView === 'repo') {
+            } else if (this.currentPage === 'repo') {
                 if (typeof refreshRepositories === 'function') {
                     refreshRepositories();
                 }
             }
             
-            this.hideLoadingBar();
+            setTimeout(() => this.hideLoadingBar(), 500);
         }, 300);
     }
 }
 
+// Initialize the SPA
 let spaInstance = null;
 
-function initializeApp() {
+function initializeSPA() {
     spaInstance = new GitDevSPA();
     
+    // Add data-spa-navigate attributes to existing navigation elements
+    document.querySelectorAll('[onclick*="showRepoSelector"]').forEach(el => {
+        el.setAttribute('data-spa-navigate', 'repo');
+        el.setAttribute('href', '#repo');
+    });
+    
+    document.querySelectorAll('[onclick*="showExplorer"]').forEach(el => {
+        el.setAttribute('data-spa-navigate', 'explorer');
+        el.setAttribute('href', '#explorer');
+    });
+    
+    document.querySelectorAll('[onclick*="showFileViewer"], [onclick*="showFileEditor"]').forEach(el => {
+        el.setAttribute('data-spa-navigate', 'file');
+        el.setAttribute('href', '#file');
+    });
+    
+    // Set global references
     window.spa = spaInstance;
     window.showRepoSelector = () => spaInstance.showRepoSelector();
     window.showExplorer = () => spaInstance.showExplorer();
@@ -553,11 +577,25 @@ function initializeApp() {
     window.navigateBack = () => spaInstance.navigateBack();
     window.refreshCurrentView = () => spaInstance.refreshCurrentView();
     
-    document.dispatchEvent(new CustomEvent('appComponentsInitialized'));
+    // Initialize all pages as hidden initially
+    setTimeout(() => {
+        ['repo', 'explorer', 'file'].forEach(page => {
+            const pageData = spaInstance.pageElements.get(page);
+            if (pageData) {
+                pageData.element.classList.add('spa-hidden');
+                pageData.element.classList.add('spa-page');
+            }
+        });
+        
+        // Show initial page
+        const initialPage = window.location.hash.slice(1) || 'repo';
+        spaInstance.loadPage(initialPage, false);
+    }, 100);
 }
 
+// Start when DOM is ready
 if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', initializeApp);
+    document.addEventListener('DOMContentLoaded', initializeSPA);
 } else {
-    initializeApp();
+    initializeSPA();
 }
