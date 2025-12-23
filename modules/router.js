@@ -1,21 +1,21 @@
 function showRepoSelector() {
   const explorerView = document.getElementById("explorerView");
-  const fileView = document.querySelector('. pages[data-page="file"]');
+  const fileView = document.getElementById("fileView");
   const repoSelector = document.getElementById("repoSelectorView");
-  if (explorerView) explorerView.classList. add("hidden");
-  if (fileView) fileView.classList. add("hidden");
+  if (explorerView) explorerView.classList.add("hidden");
+  if (fileView) fileView.classList.add("hidden");
   if (repoSelector) repoSelector.classList.remove("hidden");
   LoadingProgress.show();
   setTimeout(() => LoadingProgress.hide(), 400);
 }
 
 function showExplorer() {
-  if (! window.currentState || ! window.currentState. repository) return;
+  if (!window.currentState || !window.currentState.repository) return;
   const repoSelector = document.getElementById("repoSelectorView");
-  const fileView = document.querySelector('.pages[data-page="file"]');
+  const fileView = document.getElementById("fileView");
   const explorerView = document.getElementById("explorerView");
   if (repoSelector) repoSelector.classList.add("hidden");
-  if (fileView) fileView.classList. add("hidden");
+  if (fileView) fileView.classList.add("hidden");
   if (explorerView) explorerView.classList.remove("hidden");
   if (typeof updateStats === "function") updateStats();
   LoadingProgress.show();
@@ -23,18 +23,23 @@ function showExplorer() {
 }
 
 function showFileViewer() {
-  const repoSelector = document. getElementById("repoSelectorView");
-  const explorerView = document. getElementById("explorerView");
-  const fileView = document.querySelector('.pages[data-page="file"]');
+  const repoSelector = document.getElementById("repoSelectorView");
+  const explorerView = document.getElementById("explorerView");
+  const fileView = document.getElementById("fileView");
   if (repoSelector) repoSelector.classList.add("hidden");
   if (explorerView) explorerView.classList.add("hidden");
   if (fileView) {
-    fileView. classList.remove("hidden");
-    if (window.coderViewEdit && typeof window.coderViewEdit.init === "function" && ! window.coderViewEdit.isInitialized) {
+    fileView.classList.remove("hidden");
+    // Find the actual pages element inside fileView
+    const pagesElement = fileView.querySelector('.pages[data-page="file"]');
+    if (pagesElement) {
+      pagesElement.classList.remove("hidden");
+    }
+    if (window.coderViewEdit && typeof window.coderViewEdit.init === "function" && !window.coderViewEdit.isInitialized) {
       window.coderViewEdit.init();
     }
   }
-  LoadingProgress. show();
+  LoadingProgress.show();
   setTimeout(() => LoadingProgress.hide(), 300);
 }
 
