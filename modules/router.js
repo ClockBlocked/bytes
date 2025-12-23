@@ -2,8 +2,21 @@ function showRepoSelector() {
   const explorerView = document.getElementById("explorerView");
   const fileView = document.getElementById("fileView");
   const repoSelector = document.getElementById("repoSelectorView");
-  if (explorerView) explorerView.classList.add("hidden");
-  if (fileView) fileView.classList.add("hidden");
+  
+  if (explorerView) {
+    explorerView.classList.add("hidden");
+    // Also hide the inner pages element
+    const explorerPages = explorerView.querySelector('.pages[data-page="file-explorer"]');
+    if (explorerPages) explorerPages.classList.add("hidden");
+  }
+  
+  if (fileView) {
+    fileView.classList.add("hidden");
+    // Also hide the inner pages element
+    const filePages = fileView.querySelector('.pages[data-page="file"]');
+    if (filePages) filePages.classList.add("hidden");
+  }
+  
   if (repoSelector) repoSelector.classList.remove("hidden");
   LoadingProgress.show();
   setTimeout(() => LoadingProgress.hide(), 400);
@@ -16,7 +29,14 @@ function showExplorer() {
   const explorerView = document.getElementById("explorerView");
   if (repoSelector) repoSelector.classList.add("hidden");
   if (fileView) fileView.classList.add("hidden");
-  if (explorerView) explorerView.classList.remove("hidden");
+  if (explorerView) {
+    explorerView.classList.remove("hidden");
+    // Find the actual pages element inside explorerView
+    const pagesElement = explorerView.querySelector('.pages[data-page="file-explorer"]');
+    if (pagesElement) {
+      pagesElement.classList.remove("hidden");
+    }
+  }
   if (typeof updateStats === "function") updateStats();
   LoadingProgress.show();
   setTimeout(() => LoadingProgress.hide(), 300);
@@ -26,8 +46,16 @@ function showFileViewer() {
   const repoSelector = document.getElementById("repoSelectorView");
   const explorerView = document.getElementById("explorerView");
   const fileView = document.getElementById("fileView");
+  
   if (repoSelector) repoSelector.classList.add("hidden");
-  if (explorerView) explorerView.classList.add("hidden");
+  
+  if (explorerView) {
+    explorerView.classList.add("hidden");
+    // Also hide the inner pages element
+    const explorerPages = explorerView.querySelector('.pages[data-page="file-explorer"]');
+    if (explorerPages) explorerPages.classList.add("hidden");
+  }
+  
   if (fileView) {
     fileView.classList.remove("hidden");
     // Find the actual pages element inside fileView
