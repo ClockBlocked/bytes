@@ -1,3 +1,6 @@
+
+
+/**
 function showRepoSelector() {
   const explorerView = document.getElementById("explorerView");
   const fileView = document.getElementById("fileView");
@@ -277,3 +280,389 @@ window.showFileEditor = showFileEditor;
 window.navigateToRoot = navigateToRoot;
 window.navigateToPath = navigateToPath;
 window.navigateToFolder = navigateToFolder;
+**/
+
+
+
+        // Modern JavaScript Module Pattern
+        const AppState = (() => {
+            let state = {
+                currentView: 'repo',
+                repository: null,
+                path: '',
+                files: [],
+                history: []
+            };
+
+            const subscribers = new Set();
+
+            const update = (newState) => {
+                const oldState = { ...state };
+                state = { ...state, ...newState };
+                
+                // Notify subscribers
+                subscribers.forEach(callback => callback(state, oldState));
+                
+                return state;
+            };
+
+            const get = () => ({ ...state });
+
+            const subscribe = (callback) => {
+                subscribers.add(callback);
+                return () => subscribers.delete(callback);
+            };
+
+            const pushHistory = (view) => {
+                state.history.push(state.currentView);
+                update({ currentView: view });
+            };
+
+            const popHistory = () => {
+                if (state.history.length > 0) {
+                    const previousView = state.history.pop();
+                    update({ currentView: previousView });
+                }
+            };
+
+            return {
+                update,
+                get,
+                subscribe,
+                pushHistory,
+                popHistory
+            };
+        })();
+
+        // View Manager
+        const ViewManager = (() => {
+            const views = new Map();
+            let currentView = null;
+
+            const register = (id, element) => {
+                views.set(id, element);
+                return {
+                    show: () => transitionTo(id),
+                    hide: () => hideView(id)
+                };
+            };
+
+            const transitionTo = (viewId) => {
+                if (!views.has(viewId)) {
+                    console.error(`View "${viewId}" not found`);
+                    return;
+                }
+
+                const targetView = views.get(viewId);
+                
+                // Exit current view
+                if (currentView) {
+                    currentView.classList.remove('view--active');
+                    currentView.classList.add('view--exiting');
+                    currentView.setAttribute('hidden', '');
+                    
+                    setTimeout(() => {
+                        currentView.classList.remove('view--exiting');
+                    }, 400);
+                }
+
+                // Enter target view
+                targetView.classList.add('view--entering');
+                targetView.removeAttribute('hidden');
+                
+                setTimeout(() => {
+                    targetView.classList.remove('view--entering');
+                    targetView.classList.add('view--active');
+                    currentView = targetView;
+                    
+                    // Announce view change for screen readers
+                    const viewName = targetView.getAttribute('aria-label') || 'View';
+                    announce(`${viewName} loaded`);
+                }, 50);
+            };
+
+            const hideView = (viewId) => {
+                const view = views.get(viewId);
+                if (view) {
+                    view.classList.remove('view--active');
+                    view.classList.add('view--exiting');
+                    view.setAttribute('hidden', '');
+                    
+                    setTimeout(() => {
+                        view.classList.remove('view--exiting');
+                    }, 400);
+                }
+            };
+
+            const getCurrentView = () => currentView?.id;
+
+            return {
+                register,
+                transitionTo,
+                hideView,
+                getCurrentView
+            };
+        })();
+
+        // Navigation Controller
+        const Navigation = (() => {
+            const navigate = (destination, data = {}) => {
+                LoadingIndicator.show();
+                AppState.pushHistory(destination);
+
+                switch(destination) {
+                    case 'repo':
+                        showRepositoryView();
+                        break;
+                    case 'explorer':
+                        showExplorerView(data.repository);
+                        break;
+                    case 'file':
+                        showFileView(data.filePath);
+                        break;
+                    default:
+                        console.error(`Unknown destination: ${destination}`);
+                }
+
+                setTimeout(() => LoadingIndicator.hide(), 300);
+            };
+
+            const navigateBack = () => {
+                AppState.popHistory();
+                const state = AppState.get();
+                navigate(state.currentView);
+            };
+
+            const showRepositoryView = () => {
+                ViewManager.transitionTo('repoView');
+                // Additional repository view logic here
+            };
+
+            const showExplorerView = (repository) => {
+                if (!repository) return;
+                
+                AppState.update({ repository, path: '' });
+                ViewManager.transitionTo('explorerView');
+                
+                // Load and render file list
+                setTimeout(() => {
+                    const files = LocalStorageManager?.listFiles(repository, '') || [];
+                    AppState.update({ files });
+                    renderFileList();
+                    updateBreadcrumb();
+                }, 150);
+            };
+
+            const showFileView = (filePath) => {
+                ViewManager.transitionTo('fileView');
+                
+                // Initialize editor if needed
+                if (window.coderViewEdit && typeof window.coderViewEdit.init === 'function') {
+                    window.coderViewEdit.init();
+                }
+            };
+
+            const navigateToPath = (path) => {
+                LoadingIndicator.show();
+                
+                setTimeout(() => {
+                    const state = AppState.get();
+                    const pathPrefix = path ? `${path}/` : '';
+                    
+                    try {
+                        const files = LocalStorageManager?.listFiles(state.repository, pathPrefix) || [];
+                        AppState.update({ path, files });
+                        
+                        if (typeof renderFileList === 'function') renderFileList();
+                        if (typeof updateBreadcrumb === 'function') updateBreadcrumb();
+                    } catch (error) {
+                        console.error('Error loading path:', error);
+                    } finally {
+                        LoadingIndicator.hide();
+                    }
+                }, 150);
+            };
+
+            return {
+                navigate,
+                navigateBack,
+                navigateToPath,
+                navigateToFolder: (folderName) => {
+                    const state = AppState.get();
+                    const newPath = state.path ? `${state.path}/${folderName}` : folderName;
+                    navigateToPath(newPath);
+                },
+                navigateToRoot: () => navigateToPath('')
+            };
+        })();
+
+        // Loading Indicator
+        const LoadingIndicator = (() => {
+            let progressBar;
+            let progressFill;
+            let spinner;
+            let progressInterval;
+            let currentProgress = 0;
+            let isVisible = false;
+            
+            const config = {
+                minProgress: 0.1,
+                maxProgress: 0.95,
+                minDuration: 400,
+                maxDuration: 2000,
+                progressIncrement: 0.03,
+                spinnerDelay: 100
+            };
+
+            const init = () => {
+                progressBar = document.getElementById('loadingProgress');
+                progressFill = progressBar.querySelector('.loading-progress__fill');
+                spinner = document.getElementById('loadingOverlay');
+            };
+
+            const show = () => {
+                if (!progressBar) init();
+                if (isVisible) return;
+
+                isVisible = true;
+                currentProgress = config.minProgress;
+                
+                // Show progress bar
+                progressFill.style.transition = 'none';
+                progressFill.style.width = '0%';
+                void progressFill.offsetWidth; // Force reflow
+                progressFill.style.transition = '';
+                
+                progressBar.classList.add('loading-progress--visible');
+                progressFill.style.width = `${currentProgress * 100}%`;
+                
+                // Simulate progress
+                simulateProgress();
+                
+                // Show spinner after delay
+                setTimeout(() => {
+                    if (isVisible) {
+                        spinner.classList.add('loading-spinner--visible');
+                    }
+                }, config.spinnerDelay);
+            };
+
+            const hide = () => {
+                if (!isVisible) return;
+                
+                clearInterval(progressInterval);
+                
+                // Complete progress
+                progressFill.style.width = '100%';
+                
+                // Hide after animation completes
+                setTimeout(() => {
+                    progressBar.classList.remove('loading-progress--visible');
+                    spinner.classList.remove('loading-spinner--visible');
+                    
+                    setTimeout(() => {
+                        progressFill.style.width = '0%';
+                        currentProgress = 0;
+                        isVisible = false;
+                    }, 300);
+                }, 150);
+            };
+
+            const simulateProgress = () => {
+                clearInterval(progressInterval);
+                
+                progressInterval = setInterval(() => {
+                    if (currentProgress >= config.maxProgress) {
+                        clearInterval(progressInterval);
+                        return;
+                    }
+                    
+                    // Slow down as we approach max
+                    const remaining = config.maxProgress - currentProgress;
+                    const increment = Math.min(config.progressIncrement, remaining * 0.5);
+                    
+                    currentProgress += increment;
+                    progressFill.style.width = `${currentProgress * 100}%`;
+                }, 50);
+            };
+
+            return { show, hide };
+        })();
+
+        // Accessibility Utilities
+        const Accessibility = (() => {
+            const announce = (message, priority = 'polite') => {
+                const announcer = document.getElementById('live-announcer') || createAnnouncer();
+                announcer.setAttribute('aria-live', priority);
+                announcer.textContent = message;
+                
+                // Clear message after announcement
+                setTimeout(() => {
+                    announcer.textContent = '';
+                }, 1000);
+            };
+
+            const createAnnouncer = () => {
+                const announcer = document.createElement('div');
+                announcer.id = 'live-announcer';
+                announcer.className = 'visually-hidden';
+                announcer.setAttribute('aria-live', 'polite');
+                announcer.setAttribute('aria-atomic', 'true');
+                document.body.appendChild(announcer);
+                return announcer;
+            };
+
+            const focusViewHeader = (viewId) => {
+                const view = document.getElementById(viewId);
+                const header = view?.querySelector('h1');
+                if (header) {
+                    header.setAttribute('tabindex', '-1');
+                    header.focus();
+                }
+            };
+
+            return { announce, focusViewHeader };
+        })();
+
+        // Initialize Application
+        document.addEventListener('DOMContentLoaded', () => {
+            // Register views
+            ViewManager.register('repoView', document.getElementById('repoView'));
+            ViewManager.register('explorerView', document.getElementById('explorerView'));
+            ViewManager.register('fileView', document.getElementById('fileView'));
+            
+            // Initialize loading indicator
+            LoadingIndicator.show();
+            
+            // Simulate initial load
+            setTimeout(() => {
+                LoadingIndicator.hide();
+                Accessibility.announce('Application ready');
+            }, 800);
+            
+            // Set up state subscriptions
+            AppState.subscribe((state, oldState) => {
+                if (state.currentView !== oldState.currentView) {
+                    Accessibility.focusViewHeader(`${state.currentView}View`);
+                }
+            });
+        });
+
+        // Public API
+        window.App = {
+            State: AppState,
+            Navigation,
+            ViewManager,
+            LoadingIndicator,
+            Accessibility
+        };
+
+        // Legacy API compatibility (optional - can be phased out)
+        window.showRepoSelector = () => Navigation.navigate('repo');
+        window.showExplorer = () => Navigation.navigate('explorer');
+        window.showFileViewer = () => Navigation.navigate('file');
+        window.showFileEditor = window.showFileViewer;
+        window.navigateToRoot = Navigation.navigateToRoot;
+        window.navigateToPath = Navigation.navigateToPath;
+        window.navigateToFolder = Navigation.navigateToFolder;
+        window.LoadingProgress = LoadingIndicator;
