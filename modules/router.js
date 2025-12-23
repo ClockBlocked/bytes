@@ -48,7 +48,7 @@ const LoadingProgress = (() => {
       #pageProgress.visible {
         opacity:  1;
       }
-      . progress-bar-fill {
+      .progress-bar-fill {
         display: block;
         height: 100%;
         width: 0;
@@ -65,12 +65,12 @@ const LoadingProgress = (() => {
     `;
     document.head.appendChild(style);
 
-    progressElement = document. createElement("div");
+    progressElement = document.createElement("div");
     progressElement.id = "pageProgress";
-    progressElement. setAttribute("aria-hidden", "true");
+    progressElement.setAttribute("aria-hidden", "true");
 
     fillElement = document.createElement("div");
-    fillElement. className = "progress-bar-fill";
+    fillElement.className = "progress-bar-fill";
     progressElement.appendChild(fillElement);
 
     document.body.appendChild(progressElement);
@@ -116,16 +116,16 @@ const LoadingProgress = (() => {
       fillElement.style.width = "100%";
 
       setTimeout(() => {
-        progressElement.classList. remove("visible");
+        progressElement.classList.remove("visible");
 
         setTimeout(() => {
-          fillElement.style. width = "0%";
+          fillElement.style.width = "0%";
           currentProgress = 0;
           showTime = null;
           isShowing = false;
 
           const event = new CustomEvent("loadingProgressHide", { detail: { timestamp:  Date.now() } });
-          document. dispatchEvent(event);
+          document.dispatchEvent(event);
         }, config.animationDuration);
       }, 150);
     }, remaining);
@@ -138,14 +138,14 @@ const LoadingProgress = (() => {
       let increment, delay;
 
       if (currentProgress < 60) {
-        increment = Math.random() * (config.fastIncrement.max - config. fastIncrement.min) + config.fastIncrement.min;
-        delay = Math.random() * 60 + config.fastIncrement. delay;
+        increment = Math.random() * (config.fastIncrement.max - config.fastIncrement.min) + config.fastIncrement.min;
+        delay = Math.random() * 60 + config.fastIncrement.delay;
       } else if (currentProgress < 90) {
         increment = Math.random() * (config.mediumIncrement.max - config.mediumIncrement.min) + config.mediumIncrement.min;
         delay = Math.random() * 250 + config.mediumIncrement.delay;
       } else {
-        increment = Math.random() * (config.slowIncrement.max - config.slowIncrement. min) + config.slowIncrement.min;
-        delay = Math.random() * 500 + config.slowIncrement. delay;
+        increment = Math.random() * (config.slowIncrement.max - config.slowIncrement.min) + config.slowIncrement.min;
+        delay = Math.random() * 500 + config.slowIncrement.delay;
       }
 
       currentProgress = Math.min(config.maximum * 100, currentProgress + increment);
@@ -263,8 +263,8 @@ const LoadingSpinner = (() => {
   }
 
   function createSpinnerElement() {
-    spinnerElement = document. createElement("div");
-    spinnerElement. id = "loadingSpinner";
+    spinnerElement = document.createElement("div");
+    spinnerElement.id = "loadingSpinner";
     spinnerElement.className = "loading-spinner";
     spinnerElement.innerHTML = `
       <div class="spinner-circle"></div>
@@ -297,7 +297,7 @@ const LoadingSpinner = (() => {
       #loadingSpinner[data-active="true"] {
         opacity: 1;
       }
-      . spinner-circle {
+      .spinner-circle {
         width: ${config.spinnerSize}px;
         height: ${config.spinnerSize}px;
         border: 3px solid rgba(0, 0, 0, 0.1);
@@ -305,7 +305,7 @@ const LoadingSpinner = (() => {
         border-radius: 50%;
         animation: spinnerRotate 1s linear infinite;
       }
-      . spinner-text {
+      .spinner-text {
         color: #666;
         font-size: 0.875rem;
         font-weight: 500;
@@ -314,13 +314,13 @@ const LoadingSpinner = (() => {
         to { transform: rotate(360deg); }
       }
     `;
-    document.head. appendChild(spinnerStyle);
+    document.head.appendChild(spinnerStyle);
   }
 
   function init(selector) {
     if (selector) config.selector = selector;
 
-    spinnerElement = document.querySelector(config. selector);
+    spinnerElement = document.querySelector(config.selector);
 
     if (!spinnerElement) {
       createSpinnerElement();
@@ -354,12 +354,12 @@ const LoadingSpinner = (() => {
     if (!spinnerElement || !isActive) return;
 
     const elapsed = Date.now() - (showTime || 0);
-    const remaining = Math. max(0, config.minDisplayTime - elapsed);
+    const remaining = Math.max(0, config.minDisplayTime - elapsed);
 
     hideTimeout = setTimeout(() => {
       isActive = false;
       showTime = null;
-      spinnerElement. setAttribute("data-active", "false");
+      spinnerElement.setAttribute("data-active", "false");
 
       const event = new CustomEvent("loadingSpinnerHide", { detail: { timestamp: Date.now() } });
       document.dispatchEvent(event);
@@ -390,7 +390,7 @@ const LoadingSpinner = (() => {
   function setMessage(message) {
     if (! spinnerElement) return;
 
-    const textElement = spinnerElement. querySelector(".spinner-text");
+    const textElement = spinnerElement.querySelector(".spinner-text");
     if (textElement) {
       textElement.textContent = message;
     }
@@ -495,7 +495,7 @@ const ViewManager = (() => {
           targetView.classList.add("blurIN");
 
           setTimeout(() => {
-            targetView. classList.remove("blurIN");
+            targetView.classList.remove("blurIN");
             currentView = viewId;
             transitionInProgress = false;
 
@@ -544,7 +544,7 @@ const ViewManager = (() => {
 
     return new Promise((resolve) => {
       if (config.enableSmoothTransitions) {
-        view. classList.add("blurOUT");
+        view.classList.add("blurOUT");
         view.classList.remove("blurIN");
 
         setTimeout(() => {
@@ -553,7 +553,7 @@ const ViewManager = (() => {
           resolve();
         }, config.animationDuration);
       } else {
-        view. classList.add("hidden");
+        view.classList.add("hidden");
         resolve();
       }
     });
@@ -618,7 +618,7 @@ function showRepoSelector() {
   const promises = [];
 
   if (explorerView && ! explorerView.classList.contains("hidden")) {
-    explorerView.classList. add("blurOUT");
+    explorerView.classList.add("blurOUT");
     promises.push(
       new Promise((resolve) => {
         setTimeout(() => {
@@ -630,12 +630,12 @@ function showRepoSelector() {
   }
 
   if (fileView && !fileView.classList.contains("hidden")) {
-    fileView.classList. add("blurOUT");
+    fileView.classList.add("blurOUT");
     promises.push(
       new Promise((resolve) => {
         setTimeout(() => {
-          fileView.classList. add("hidden");
-          const filePages = fileView.querySelector('. pages[data-page="file"]');
+          fileView.classList.add("hidden");
+          const filePages = fileView.querySelector('.pages[data-page="file"]');
           if (filePages) filePages.classList.add("hidden");
           resolve();
         }, 1200);
@@ -645,12 +645,12 @@ function showRepoSelector() {
 
   if (repoSelector) {
     repoSelector.classList.remove("hidden");
-    repoSelector.classList. remove("blurOUT");
-    repoSelector.classList. add("blurIN");
+    repoSelector.classList.remove("blurOUT");
+    repoSelector.classList.add("blurIN");
   }
 
   Promise.all(promises).then(() => {
-    LoadingProgress. hide();
+    LoadingProgress.hide();
 
     document.dispatchEvent(
       new CustomEvent("navigationComplete", {
@@ -661,7 +661,7 @@ function showRepoSelector() {
     document.dispatchEvent(new CustomEvent("repoViewShown"));
 
     if (window.appState) {
-      window. appState.currentView = "repo";
+      window.appState.currentView = "repo";
     }
   });
 }
@@ -683,7 +683,7 @@ function showExplorer() {
 
   const promises = [];
 
-  if (repoSelector && !repoSelector.classList. contains("hidden")) {
+  if (repoSelector && !repoSelector.classList.contains("hidden")) {
     repoSelector.classList.add("blurOUT");
     promises.push(
       new Promise((resolve) => {
@@ -709,7 +709,7 @@ function showExplorer() {
 
   if (explorerView) {
     explorerView.classList.remove("hidden");
-    explorerView.classList. remove("blurOUT");
+    explorerView.classList.remove("blurOUT");
     explorerView.classList.add("blurIN");
 
     setTimeout(() => {
@@ -735,22 +735,22 @@ function showExplorer() {
       })
     );
 
-    if (window. appState) {
+    if (window.appState) {
       window.appState.currentView = "explorer";
     }
 
-    if (window. currentState && typeof updateBreadcrumb === "function") {
+    if (window.currentState && typeof updateBreadcrumb === "function") {
       updateBreadcrumb();
     }
   });
 }
 
 function showFileViewer() {
-  const repoSelector = document. getElementById("repoSelectorView");
-  const explorerView = document. getElementById("explorerView");
+  const repoSelector = document.getElementById("repoSelectorView");
+  const explorerView = document.getElementById("explorerView");
   const fileView = document.getElementById("fileView");
 
-  LoadingProgress. show();
+  LoadingProgress.show();
 
   document.dispatchEvent(
     new CustomEvent("navigationStart", {
@@ -765,15 +765,15 @@ function showFileViewer() {
     promises.push(
       new Promise((resolve) => {
         setTimeout(() => {
-          repoSelector. classList.add("hidden");
+          repoSelector.classList.add("hidden");
           resolve();
         }, 1200);
       })
     );
   }
 
-  if (explorerView && !explorerView. classList.contains("hidden")) {
-    explorerView.classList. add("blurOUT");
+  if (explorerView && !explorerView.classList.contains("hidden")) {
+    explorerView.classList.add("blurOUT");
     promises.push(
       new Promise((resolve) => {
         setTimeout(() => {
@@ -785,8 +785,8 @@ function showFileViewer() {
   }
 
   if (fileView) {
-    fileView.classList. remove("hidden");
-    fileView.classList. remove("blurOUT");
+    fileView.classList.remove("hidden");
+    fileView.classList.remove("blurOUT");
     fileView.classList.add("blurIN");
 
     const filePages = fileView.querySelector('.pages[data-page="file"]');
@@ -794,7 +794,7 @@ function showFileViewer() {
   }
 
   Promise.all(promises).then(() => {
-    LoadingProgress. hide();
+    LoadingProgress.hide();
 
     if (window.coderViewEdit && typeof window.coderViewEdit.init === "function") {
       if (! window.coderViewEdit.isInitialized) {
@@ -811,7 +811,7 @@ function showFileViewer() {
     document.dispatchEvent(new CustomEvent("fileViewShown"));
 
     if (window.appState) {
-      window.appState. currentView = "file";
+      window.appState.currentView = "file";
     }
   });
 }
@@ -821,7 +821,7 @@ function showFileEditor() {
 
   document.dispatchEvent(new CustomEvent("editorModeActivated"));
 
-  if (window. coderViewEdit && typeof window.coderViewEdit.enableEditing === "function") {
+  if (window.coderViewEdit && typeof window.coderViewEdit.enableEditing === "function") {
     window.coderViewEdit.enableEditing();
   }
 }
@@ -852,7 +852,7 @@ function navigateToRoot() {
 
       document.dispatchEvent(
         new CustomEvent("navigationPathComplete", {
-          detail: { path: "", fileCount: window.currentState.files?. length || 0 },
+          detail: { path: "", fileCount: window.currentState.files?.length || 0 },
         })
       );
     } catch (error) {
@@ -868,12 +868,12 @@ function navigateToRoot() {
 }
 
 function navigateToPath(path) {
-  if (!window. currentState) return;
+  if (!window.currentState) return;
 
   window.currentState.path = path;
 
-  LoadingSpinner. show();
-  LoadingSpinner.setMessage("Loading directory.. .");
+  LoadingSpinner.show();
+  LoadingSpinner.setMessage("Loading directory...");
 
   document.dispatchEvent(
     new CustomEvent("navigationPathChange", {
@@ -894,7 +894,7 @@ function navigateToPath(path) {
 
       document.dispatchEvent(
         new CustomEvent("navigationPathComplete", {
-          detail: { path, fileCount: window. currentState.files?. length || 0 },
+          detail: { path, fileCount: window.currentState.files?.length || 0 },
         })
       );
     } catch (error) {
@@ -910,7 +910,7 @@ function navigateToPath(path) {
 }
 
 function navigateToFolder(folderName) {
-  if (!window. currentState) return;
+  if (!window.currentState) return;
 
   const newPath = window.currentState.path ? window.currentState.path + "/" + folderName : folderName;
 
@@ -927,7 +927,7 @@ function navigateBack() {
   if (!window.currentState) return;
 
   const pathParts = window.currentState.path.split("/").filter(Boolean);
-  if (pathParts. length > 0) {
+  if (pathParts.length > 0) {
     pathParts.pop();
     const newPath = pathParts.join("/");
 
@@ -944,7 +944,7 @@ function navigateBack() {
 }
 
 function refreshCurrentView() {
-  if (!window. currentState) return;
+  if (!window.currentState) return;
 
   const currentView = document.querySelector(".view: not(.hidden)");
   if (! currentView) return;
@@ -953,14 +953,14 @@ function refreshCurrentView() {
 
   document.dispatchEvent(
     new CustomEvent("viewRefresh", {
-      detail: { viewId: currentView. id },
+      detail: { viewId: currentView.id },
     })
   );
 
   setTimeout(() => {
     if (currentView.id === "explorerView" && window.currentState.path !== undefined) {
       navigateToPath(window.currentState.path);
-    } else if (currentView. id === "repoSelectorView") {
+    } else if (currentView.id === "repoSelectorView") {
       if (typeof refreshRepositories === "function") {
         refreshRepositories();
       }
@@ -975,7 +975,7 @@ function initializeAppComponents() {
   LoadingSpinner.init();
 
   ViewManager.registerView("repoSelectorView");
-  ViewManager. registerView("explorerView");
+  ViewManager.registerView("explorerView");
   ViewManager.registerView("fileView");
 
   window.addEventListener("error", handleGlobalError);
@@ -1012,7 +1012,7 @@ function handlePromiseRejection(event) {
 }
 
 window.LoadingProgress = LoadingProgress;
-window. LoadingSpinner = LoadingSpinner;
+window.LoadingSpinner = LoadingSpinner;
 window.ViewManager = ViewManager;
 window.showRepoSelector = showRepoSelector;
 window.showExplorer = showExplorer;
