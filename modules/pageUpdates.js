@@ -114,7 +114,7 @@ function renderFileList() {
       <td class="py-3 px-4">
         <div class="flex items-center gap-3">
           ${fileIconSVG}
-          <span class="text-github-fg-default font-mono" onclick="viewFile('${escapeHTML(file.name)}')">${escapeHTML(file.name)}</span>
+          <span class="text-github-fg-default font-mono" data-spa-navigate="explorer" href="#explorer">${escapeHTML(file.name)}</span>
         </div>
       </td>
       <td class="py-3 px-4 text-github-fg-muted text-sm">${escapeHTML(file.lastCommit || 'Initial commit')}</td>
