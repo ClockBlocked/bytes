@@ -20,7 +20,6 @@ class GitDevSPA {
         this.setupGlobalErrorHandling();
         this.loadInitialPage();
     }
-
     cacheExistingPages() {
         // Cache all existing page elements
         const pages = {
@@ -40,7 +39,327 @@ class GitDevSPA {
             }
         });
     }
+    setupNavigation() {
+        window.addEventListener('popstate', (e) => {
+            const page = window.location.hash.slice(1) || 'repo';
+            this.loadPage(page, true);
+        });
+    }
+    setupEventListeners() {
+        document.addEventListener('click', (e) => {
+            const navigateElement = e.target.closest('[data-spa-navigate]');
+            if (navigateElement && !this.isTransitioning) {
+                e.preventDefault();
+                const page = navigateElement.getAttribute('data-spa-navigate');
+                const url = navigateElement.getAttribute('href') || `#${page}`;
+                this.navigateTo(url, page);
+            }
+        });
 
+        // Listen for existing app events
+        document.addEventListener('viewTransitionStart', () => {
+            this.showLoadingBar();
+        });
+
+        document.addEventListener('navigationStart', () => {
+            this.showLoadingBar();
+        });
+    }
+    setupGlobalErrorHandling() {
+        window.addEventListener('error', (event) => {
+            console.error('Global error:', event.error);
+            this.hideLoadingBar();
+        });
+
+        window.addEventListener('unhandledrejection', (event) => {
+            console.error('Unhandled promise rejection:', event.reason);
+            this.hideLoadingBar();
+        });
+    }
+
+///////////////////////////////////////////////////
+////////////////////////////////  Routes  /////////
+    async navigateTo(url, page) {
+        if (this.isTransitioning) return;
+        
+        if (url !== window.location.hash) {
+            window.history.pushState({ page }, '', url);
+        }
+        
+        await this.loadPage(page, true);
+    }
+    async loadPage(pageName, showTransition = true) {
+        if (this.isTransitioning || this.currentPage === pageName) return;
+        
+        this.isTransitioning = true;
+        const previousPage = this.currentPage;
+        this.currentPage = pageName;
+        
+        // Dispatch start event
+        document.dispatchEvent(new CustomEvent('spaNavigationStart', {
+            detail: { from: previousPage, to: pageName }
+        }));
+        
+        // Show loading bar
+        this.showLoadingBar();
+        
+        try {
+            // Hide previous page if exists
+            if (previousPage && this.pageElements.has(previousPage)) {
+                await this.hidePage(previousPage, showTransition);
+            }
+            
+            // Simulate loading delay
+            await this.simulateDelay(showTransition ? 300 : 50);
+            
+            // Show loading progress
+            this.updateLoadingBar(60);
+            
+            // Show new page
+            await this.showPage(pageName, showTransition);
+            
+            // Complete loading
+            this.updateLoadingBar(100);
+            
+            // Update page title
+            this.updatePageTitle(pageName);
+            
+            // Dispatch complete event
+            document.dispatchEvent(new CustomEvent('spaNavigationComplete', {
+                detail: { from: previousPage, to: pageName }
+            }));
+            
+            // Update app state
+            if (window.appState) {
+                window.appState.currentView = pageName;
+            }
+            
+        } catch (error) {
+            console.error('Error loading page:', error);
+            this.updateLoadingBar(100);
+        } finally {
+            // Hide loading bar after delay
+            setTimeout(() => {
+                this.hideLoadingBar();
+                this.isTransitioning = false;
+            }, 300);
+        }
+    }
+    async hidePage(pageName, animate = true) {
+        const pageData = this.pageElements.get(pageName);
+        if (!pageData) return;
+        
+        const page = pageData.element;
+        
+        return new Promise((resolve) => {
+            if (animate) {
+                page.classList.remove('active');
+                page.classList.add('exit');
+                
+                setTimeout(() => {
+                    // Move page back to original container and hide
+                    if (pageData.originalParent && page.parentNode !== pageData.originalParent) {
+                        pageData.originalParent.appendChild(page);
+                    }
+                    page.classList.add('spa-hidden');
+                    page.classList.remove('exit');
+                    resolve();
+                }, this.transitionDuration);
+            } else {
+                // Move page back to original container and hide immediately
+                if (pageData.originalParent && page.parentNode !== pageData.originalParent) {
+                    pageData.originalParent.appendChild(page);
+                }
+                page.classList.add('spa-hidden');
+                page.classList.remove('active', 'exit');
+                resolve();
+            }
+        });
+    }
+    async showPage(pageName, animate = true) {
+        const pageData = this.pageElements.get(pageName);
+        if (!pageData) {
+            console.error(`Page ${pageName} not found`);
+            return;
+        }
+        
+        const page = pageData.element;
+        
+        return new Promise((resolve) => {
+            // Ensure page is in main container
+            if (page.parentNode !== this.appContainer) {
+                this.appContainer.appendChild(page);
+            }
+            
+            // Remove hidden class
+            page.classList.remove('spa-hidden');
+            
+            if (animate) {
+                // Trigger reflow
+                void page.offsetWidth;
+                
+                // Add active class for animation
+                page.classList.add('active');
+                
+                setTimeout(() => {
+                    resolve();
+                }, this.transitionDuration);
+            } else {
+                // Show immediately
+                page.classList.add('active');
+                resolve();
+            }
+        });
+    }
+
+    loadInitialPage() {
+        const initialPage = window.location.hash.slice(1) || 'repo';
+        setTimeout(() => {
+            this.loadPage(initialPage, false);
+        }, 100);
+    }
+
+    showRepoSelector() {
+        this.navigateTo('#repo', 'repo');
+    }
+    showExplorer() {
+        if (!this.currentState.repository) {
+            console.warn('No repository selected');
+            return;
+        }
+        this.navigateTo('#explorer', 'explorer');
+    }
+    showFileViewer() {
+        this.navigateTo('#file', 'file');
+    }
+    showFileEditor() {
+        this.navigateTo('#file', 'file');
+        setTimeout(() => {
+            document.dispatchEvent(new CustomEvent('editorModeActivated'));
+            
+            if (window.coderViewEdit && typeof window.coderViewEdit.enableEditing === 'function') {
+                window.coderViewEdit.enableEditing();
+            }
+        }, this.transitionDuration + 100);
+    }
+
+    navigateToRoot() {
+        if (!this.currentState) return;
+        
+        this.currentState.path = '';
+        
+        document.dispatchEvent(new CustomEvent('navigationPathChange', {
+            detail: { path: '', type: 'root' }
+        }));
+        
+        setTimeout(() => {
+            try {
+                if (typeof LocalStorageManager !== 'undefined') {
+                    this.currentState.files = LocalStorageManager.listFiles(this.currentState.repository, '');
+                }
+                
+                if (typeof renderFileList === 'function') renderFileList();
+                if (typeof updateBreadcrumb === 'function') updateBreadcrumb();
+                if (typeof updateStats === 'function') updateStats();
+                
+                document.dispatchEvent(new CustomEvent('navigationPathComplete', {
+                    detail: { path: '', fileCount: this.currentState.files?.length || 0 }
+                }));
+            } catch (error) {
+                document.dispatchEvent(new CustomEvent('navigationError', {
+                    detail: { error, path: '', operation: 'navigateToRoot' }
+                }));
+            }
+        }, 150);
+    }
+    navigateToPath(path) {
+        if (!this.currentState) return;
+        
+        this.currentState.path = path;
+        
+        document.dispatchEvent(new CustomEvent('navigationPathChange', {
+            detail: { path, type: 'directory' }
+        }));
+        
+        setTimeout(() => {
+            try {
+                const pathPrefix = path ? path + '/' : '';
+                
+                if (typeof LocalStorageManager !== 'undefined') {
+                    this.currentState.files = LocalStorageManager.listFiles(this.currentState.repository, pathPrefix);
+                }
+                
+                if (typeof renderFileList === 'function') renderFileList();
+                if (typeof updateBreadcrumb === 'function') updateBreadcrumb();
+                
+                document.dispatchEvent(new CustomEvent('navigationPathComplete', {
+                    detail: { path, fileCount: this.currentState.files?.length || 0 }
+                }));
+            } catch (error) {
+                document.dispatchEvent(new CustomEvent('navigationError', {
+                    detail: { error, path, operation: 'navigateToPath' }
+                }));
+            }
+        }, 150);
+    }
+    navigateToFolder(folderName) {
+        if (!this.currentState) return;
+        
+        const newPath = this.currentState.path ? this.currentState.path + '/' + folderName : folderName;
+        
+        document.dispatchEvent(new CustomEvent('folderNavigation', {
+            detail: { folderName, fromPath: this.currentState.path, toPath: newPath }
+        }));
+        
+        this.navigateToPath(newPath);
+    }
+
+    navigateBack() {
+        if (!this.currentState) return;
+        
+        const pathParts = this.currentState.path.split('/').filter(Boolean);
+        if (pathParts.length > 0) {
+            pathParts.pop();
+            const newPath = pathParts.join('/');
+            
+            document.dispatchEvent(new CustomEvent('navigationBack', {
+                detail: { from: this.currentState.path, to: newPath }
+            }));
+            
+            this.navigateToPath(newPath);
+        } else {
+            this.navigateToRoot();
+        }
+    }
+    refreshCurrentView() {
+        if (!this.currentState || !this.currentPage) return;
+        
+        this.showLoadingBar();
+        
+        document.dispatchEvent(new CustomEvent('viewRefresh', {
+            detail: { viewId: this.currentPage }
+        }));
+        
+        setTimeout(() => {
+            if (this.currentPage === 'explorer' && this.currentState.path !== undefined) {
+                this.navigateToPath(this.currentState.path);
+            } else if (this.currentPage === 'repo') {
+                if (typeof refreshRepositories === 'function') {
+                    refreshRepositories();
+                }
+            }
+            
+            setTimeout(() => this.hideLoadingBar(), 500);
+        }, 300);
+    }
+    
+    
+    
+
+
+/**
+ *  Loading Animation
+ */
     createLoadingBar() {
         // Remove existing loading bar if present
         const existingBar = document.querySelector('.spa-loading-bar');
@@ -56,7 +375,6 @@ class GitDevSPA {
         
         this.addStyles();
     }
-
     addStyles() {
         const existingStyle = document.getElementById('spa-loading-styles');
         if (existingStyle) existingStyle.remove();
@@ -149,189 +467,6 @@ class GitDevSPA {
         document.head.appendChild(styleSheet);
     }
 
-    setupNavigation() {
-        window.addEventListener('popstate', (e) => {
-            const page = window.location.hash.slice(1) || 'repo';
-            this.loadPage(page, true);
-        });
-    }
-
-    setupEventListeners() {
-        document.addEventListener('click', (e) => {
-            const navigateElement = e.target.closest('[data-spa-navigate]');
-            if (navigateElement && !this.isTransitioning) {
-                e.preventDefault();
-                const page = navigateElement.getAttribute('data-spa-navigate');
-                const url = navigateElement.getAttribute('href') || `#${page}`;
-                this.navigateTo(url, page);
-            }
-        });
-
-        // Listen for existing app events
-        document.addEventListener('viewTransitionStart', () => {
-            this.showLoadingBar();
-        });
-
-        document.addEventListener('navigationStart', () => {
-            this.showLoadingBar();
-        });
-    }
-
-    setupGlobalErrorHandling() {
-        window.addEventListener('error', (event) => {
-            console.error('Global error:', event.error);
-            this.hideLoadingBar();
-        });
-
-        window.addEventListener('unhandledrejection', (event) => {
-            console.error('Unhandled promise rejection:', event.reason);
-            this.hideLoadingBar();
-        });
-    }
-
-    loadInitialPage() {
-        const initialPage = window.location.hash.slice(1) || 'repo';
-        setTimeout(() => {
-            this.loadPage(initialPage, false);
-        }, 100);
-    }
-
-    async navigateTo(url, page) {
-        if (this.isTransitioning) return;
-        
-        if (url !== window.location.hash) {
-            window.history.pushState({ page }, '', url);
-        }
-        
-        await this.loadPage(page, true);
-    }
-
-    async loadPage(pageName, showTransition = true) {
-        if (this.isTransitioning || this.currentPage === pageName) return;
-        
-        this.isTransitioning = true;
-        const previousPage = this.currentPage;
-        this.currentPage = pageName;
-        
-        // Dispatch start event
-        document.dispatchEvent(new CustomEvent('spaNavigationStart', {
-            detail: { from: previousPage, to: pageName }
-        }));
-        
-        // Show loading bar
-        this.showLoadingBar();
-        
-        try {
-            // Hide previous page if exists
-            if (previousPage && this.pageElements.has(previousPage)) {
-                await this.hidePage(previousPage, showTransition);
-            }
-            
-            // Simulate loading delay
-            await this.simulateDelay(showTransition ? 300 : 50);
-            
-            // Show loading progress
-            this.updateLoadingBar(60);
-            
-            // Show new page
-            await this.showPage(pageName, showTransition);
-            
-            // Complete loading
-            this.updateLoadingBar(100);
-            
-            // Update page title
-            this.updatePageTitle(pageName);
-            
-            // Dispatch complete event
-            document.dispatchEvent(new CustomEvent('spaNavigationComplete', {
-                detail: { from: previousPage, to: pageName }
-            }));
-            
-            // Update app state
-            if (window.appState) {
-                window.appState.currentView = pageName;
-            }
-            
-        } catch (error) {
-            console.error('Error loading page:', error);
-            this.updateLoadingBar(100);
-        } finally {
-            // Hide loading bar after delay
-            setTimeout(() => {
-                this.hideLoadingBar();
-                this.isTransitioning = false;
-            }, 300);
-        }
-    }
-
-    async hidePage(pageName, animate = true) {
-        const pageData = this.pageElements.get(pageName);
-        if (!pageData) return;
-        
-        const page = pageData.element;
-        
-        return new Promise((resolve) => {
-            if (animate) {
-                page.classList.remove('active');
-                page.classList.add('exit');
-                
-                setTimeout(() => {
-                    // Move page back to original container and hide
-                    if (pageData.originalParent && page.parentNode !== pageData.originalParent) {
-                        pageData.originalParent.appendChild(page);
-                    }
-                    page.classList.add('spa-hidden');
-                    page.classList.remove('exit');
-                    resolve();
-                }, this.transitionDuration);
-            } else {
-                // Move page back to original container and hide immediately
-                if (pageData.originalParent && page.parentNode !== pageData.originalParent) {
-                    pageData.originalParent.appendChild(page);
-                }
-                page.classList.add('spa-hidden');
-                page.classList.remove('active', 'exit');
-                resolve();
-            }
-        });
-    }
-
-    async showPage(pageName, animate = true) {
-        const pageData = this.pageElements.get(pageName);
-        if (!pageData) {
-            console.error(`Page ${pageName} not found`);
-            return;
-        }
-        
-        const page = pageData.element;
-        
-        return new Promise((resolve) => {
-            // Ensure page is in main container
-            if (page.parentNode !== this.appContainer) {
-                this.appContainer.appendChild(page);
-            }
-            
-            // Remove hidden class
-            page.classList.remove('spa-hidden');
-            
-            if (animate) {
-                // Trigger reflow
-                void page.offsetWidth;
-                
-                // Add active class for animation
-                page.classList.add('active');
-                
-                setTimeout(() => {
-                    resolve();
-                }, this.transitionDuration);
-            } else {
-                // Show immediately
-                page.classList.add('active');
-                resolve();
-            }
-        });
-    }
-
     showLoadingBar() {
         if (!this.loadingBar) return;
         
@@ -361,7 +496,6 @@ class GitDevSPA {
         
         setTimeout(simulateProgress, 200);
     }
-
     updateLoadingBar(percentage) {
         if (!this.loadingBar) return;
         
@@ -371,7 +505,6 @@ class GitDevSPA {
         percentage = Math.min(100, Math.max(0, percentage));
         progressBar.style.width = `${percentage}%`;
     }
-
     hideLoadingBar() {
         if (!this.loadingBar) return;
         
@@ -391,6 +524,11 @@ class GitDevSPA {
         return new Promise(resolve => setTimeout(resolve, ms));
     }
 
+
+
+/**
+ *  Helpers
+ */
     updatePageTitle(pageName) {
         const titles = {
             'repo': 'Repositories - GitDev',
@@ -401,146 +539,7 @@ class GitDevSPA {
         document.title = titles[pageName] || 'GitDev';
     }
 
-    // Navigation methods that match your original API
-    showRepoSelector() {
-        this.navigateTo('#repo', 'repo');
-    }
-
-    showExplorer() {
-        if (!this.currentState.repository) {
-            console.warn('No repository selected');
-            return;
-        }
-        this.navigateTo('#explorer', 'explorer');
-    }
-
-    showFileViewer() {
-        this.navigateTo('#file', 'file');
-    }
-
-    showFileEditor() {
-        this.navigateTo('#file', 'file');
-        setTimeout(() => {
-            document.dispatchEvent(new CustomEvent('editorModeActivated'));
-            
-            if (window.coderViewEdit && typeof window.coderViewEdit.enableEditing === 'function') {
-                window.coderViewEdit.enableEditing();
-            }
-        }, this.transitionDuration + 100);
-    }
-
-    navigateToRoot() {
-        if (!this.currentState) return;
-        
-        this.currentState.path = '';
-        
-        document.dispatchEvent(new CustomEvent('navigationPathChange', {
-            detail: { path: '', type: 'root' }
-        }));
-        
-        setTimeout(() => {
-            try {
-                if (typeof LocalStorageManager !== 'undefined') {
-                    this.currentState.files = LocalStorageManager.listFiles(this.currentState.repository, '');
-                }
-                
-                if (typeof renderFileList === 'function') renderFileList();
-                if (typeof updateBreadcrumb === 'function') updateBreadcrumb();
-                if (typeof updateStats === 'function') updateStats();
-                
-                document.dispatchEvent(new CustomEvent('navigationPathComplete', {
-                    detail: { path: '', fileCount: this.currentState.files?.length || 0 }
-                }));
-            } catch (error) {
-                document.dispatchEvent(new CustomEvent('navigationError', {
-                    detail: { error, path: '', operation: 'navigateToRoot' }
-                }));
-            }
-        }, 150);
-    }
-
-    navigateToPath(path) {
-        if (!this.currentState) return;
-        
-        this.currentState.path = path;
-        
-        document.dispatchEvent(new CustomEvent('navigationPathChange', {
-            detail: { path, type: 'directory' }
-        }));
-        
-        setTimeout(() => {
-            try {
-                const pathPrefix = path ? path + '/' : '';
-                
-                if (typeof LocalStorageManager !== 'undefined') {
-                    this.currentState.files = LocalStorageManager.listFiles(this.currentState.repository, pathPrefix);
-                }
-                
-                if (typeof renderFileList === 'function') renderFileList();
-                if (typeof updateBreadcrumb === 'function') updateBreadcrumb();
-                
-                document.dispatchEvent(new CustomEvent('navigationPathComplete', {
-                    detail: { path, fileCount: this.currentState.files?.length || 0 }
-                }));
-            } catch (error) {
-                document.dispatchEvent(new CustomEvent('navigationError', {
-                    detail: { error, path, operation: 'navigateToPath' }
-                }));
-            }
-        }, 150);
-    }
-
-    navigateToFolder(folderName) {
-        if (!this.currentState) return;
-        
-        const newPath = this.currentState.path ? this.currentState.path + '/' + folderName : folderName;
-        
-        document.dispatchEvent(new CustomEvent('folderNavigation', {
-            detail: { folderName, fromPath: this.currentState.path, toPath: newPath }
-        }));
-        
-        this.navigateToPath(newPath);
-    }
-
-    navigateBack() {
-        if (!this.currentState) return;
-        
-        const pathParts = this.currentState.path.split('/').filter(Boolean);
-        if (pathParts.length > 0) {
-            pathParts.pop();
-            const newPath = pathParts.join('/');
-            
-            document.dispatchEvent(new CustomEvent('navigationBack', {
-                detail: { from: this.currentState.path, to: newPath }
-            }));
-            
-            this.navigateToPath(newPath);
-        } else {
-            this.navigateToRoot();
-        }
-    }
-
-    refreshCurrentView() {
-        if (!this.currentState || !this.currentPage) return;
-        
-        this.showLoadingBar();
-        
-        document.dispatchEvent(new CustomEvent('viewRefresh', {
-            detail: { viewId: this.currentPage }
-        }));
-        
-        setTimeout(() => {
-            if (this.currentPage === 'explorer' && this.currentState.path !== undefined) {
-                this.navigateToPath(this.currentState.path);
-            } else if (this.currentPage === 'repo') {
-                if (typeof refreshRepositories === 'function') {
-                    refreshRepositories();
-                }
-            }
-            
-            setTimeout(() => this.hideLoadingBar(), 500);
-        }, 300);
-    }
+    
 }
 
 // Initialize the SPA
