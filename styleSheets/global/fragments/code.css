@@ -145,17 +145,17 @@
   font-size: 12px;
 }
 #codeMirrorContainer .CodeMirror-activeline-background {
-  background-color: var(--bgHover) !important;
+  background-color: var(--github-btn-secondary-hover) !important;
 }
 #codeMirrorContainer .CodeMirror-activeline-gutter {
-  background-color: var(--bgHover) !important;
+  background-color: var(--github-btn-secondary-hover) !important;
 }
 #codeMirrorContainer .CodeMirror-selected {
   background-color: var(--bgSelection) !important;
 }
 #codeMirrorContainer .CodeMirror-matchingbracket {
   color: var(--accentPrimary) !important;
-  background-color: var(--bgHover);
+  background-color: var(--github-btn-secondary-hover);
   border-bottom: 2px solid var(--accentPrimary);
 }
 #codeMirrorContainer .CodeMirror-cursor {
@@ -189,7 +189,7 @@
 
 
 .toolbarButton.active {
-  background-color: var(--bgHover);
+  background-color: var(--github-btn-secondary-hover);
   color: var(--accentPrimary);
 }
 
@@ -316,7 +316,7 @@
   transition: all 0.15s ease;
 }
 .actionButton:hover {
-  background: var(--bgHover);
+  background: var(--github-btn-secondary-hover);
   color: var(--accentPrimary);
 }
 
@@ -352,7 +352,7 @@
   transition: all 0.15s ease;
 }
 .toolbarButton:hover {
-  background: var(--bgHover);
+  background: var(--github-btn-secondary-hover);
   color: var(--accentPrimary);
 }
 
@@ -462,12 +462,14 @@
   filter: brightness(1.05);
 }
 .secondaryButton:hover {
-  background: var(--bgHover);
+  background: var(--github-btn-secondary-hover);
 }
 
 
 .hidden {
-  display: none !important;
+  visibility: hidden;
+  pointer-events: none;
+  transition: visibility 0.25s ease;
 }
 
 
@@ -479,7 +481,7 @@
   align-items: center;
   gap: 5px;
   flex: 1;
-  min-width: 0; /* Important for proper shrinking */
+  min-width: 0;
 }
 
 .fileNameInput {
@@ -496,18 +498,18 @@
   cursor: default;
 }
 .fileNameInput:hover {
-  width: 150px !important; /* Decent width on hover */
+  width: 150px !important;
 }
 
 .buttonGroup {
   display: flex;
   gap: 5px;
-  flex-shrink: 0; /* Prevent button group from shrinking */
+  flex-shrink: 0;
   transition: opacity 0.3s ease;
 }
 .navigation:hover .buttonGroup {
   opacity: 0;
-  pointer-events: none; /* Prevent clicking while hidden */
+  pointer-events: none;
 }
 
 .actionButton {
