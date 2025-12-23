@@ -161,6 +161,9 @@
 #codeMirrorContainer .CodeMirror-cursor {
   border-left: 2px solid var(--accentPrimary);
 }
+
+
+
 .fileFooter {
   display: flex;
   justify-content: space-between;
@@ -182,10 +185,16 @@
   color: var(--textMuted);
   opacity: 0.5;
 }
+
+
+
 .toolbarButton.active {
   background-color: var(--bgHover);
   color: var(--accentPrimary);
 }
+
+
+
 .loading-spinner {
   position: absolute;
   inset: 0;
@@ -198,6 +207,7 @@
 .loading-spinner[data-active="true"] {
   display: flex;
 }
+
 .spinner-overlay {
   display: flex;
   align-items: center;
@@ -205,10 +215,12 @@
   width: 100%;
   height: 100%;
 }
+
 .spinner-svg {
   width: 64px;
   height: 64px;
 }
+
 .spinner-track {
   fill: none;
   stroke: rgba(255, 255, 255, 0.15);
@@ -222,6 +234,7 @@
   stroke-dasharray: 80;
   animation: spin 1.2s linear infinite;
 }
+
 @keyframes spin {
   0% {
     transform: rotate(0deg);
@@ -230,12 +243,25 @@
     transform: rotate(360deg);
   }
 }
+
+
+
 .container {
   display: flex;
   align-items: center;
   justify-content: space-between;
   margin: 0.5rem 0.5rem 0.25rem 0.5rem;
 }
+
+
+
+
+
+/*
+  =========================
+     Code Viewer - Header
+  ========================== */
+  /**
 .navigation {
   display: flex;
   align-items: center;
@@ -252,9 +278,11 @@
   font-weight: 600;
   cursor: pointer;
 }
+
 .separator {
   color: var(--textMuted);
 }
+
 .fileNameInput {
   background: var(--bgSecondary);
   border: 1px solid var(--borderDefault);
@@ -264,11 +292,14 @@
   min-width: 120px;
   font-weight: 600;
 }
+
+
 .buttonGroup {
   display: flex;
   align-items: center;
   gap: 8px;
 }
+
 .actionButton {
   background: var(--bgSecondary);
   border: 1px solid var(--borderDefault);
@@ -288,21 +319,25 @@
   background: var(--bgHover);
   color: var(--accentPrimary);
 }
+
 .icon {
   width: 18px;
   height: 18px;
 }
+
 .fileHeader {
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding: 0.25rem 0.5rem 0.5rem 0.5rem;
 }
+
 .toolbarGroup {
   display: flex;
   align-items: center;
   gap: 8px;
 }
+
 .toolbarButton {
   background: var(--bgSecondary);
   border: 1px solid var(--borderDefault);
@@ -320,10 +355,13 @@
   background: var(--bgHover);
   color: var(--accentPrimary);
 }
+
+
 .smallIcon {
   width: 16px;
   height: 16px;
 }
+
 .fontSizeControl {
   display: flex;
   align-items: center;
@@ -333,6 +371,7 @@
   padding: 4px 8px;
   border-radius: 8px;
 }
+
 .fontButton {
   background: transparent;
   border: none;
@@ -347,14 +386,22 @@
 .fontButton:hover {
   color: var(--accentPrimary);
 }
+
 .fontSizeDisplay {
   color: var(--textPrimary);
   font-weight: 600;
 }
+
 .tinyIcon {
   width: 14px;
   height: 14px;
 }
+**/
+
+
+
+
+
 .commitPanel {
   margin: 0.5rem;
   border: 1px solid var(--borderDefault);
@@ -391,6 +438,7 @@
   justify-content: flex-end;
   gap: 8px;
 }
+
 .primaryButton {
   background: var(--accentPrimary);
   color: #fff;
@@ -409,12 +457,15 @@
   font-weight: 700;
   cursor: pointer;
 }
+
 .primaryButton:hover {
   filter: brightness(1.05);
 }
 .secondaryButton:hover {
   background: var(--bgHover);
 }
+
+
 .hidden {
   display: none !important;
 }
@@ -444,7 +495,6 @@
   background-color: white;
   cursor: default;
 }
-
 .fileNameInput:hover {
   width: 150px !important; /* Decent width on hover */
 }
@@ -455,14 +505,11 @@
   flex-shrink: 0; /* Prevent button group from shrinking */
   transition: opacity 0.3s ease;
 }
-
-/* When input is hovered, fade out the buttons */
 .navigation:hover .buttonGroup {
   opacity: 0;
   pointer-events: none; /* Prevent clicking while hidden */
 }
 
-/* Default state for buttons */
 .actionButton {
   display: flex;
   align-items: center;
@@ -479,12 +526,10 @@
   min-width: 60px; /* Minimum width for buttons */
   opacity: 1;
 }
-
 .actionButton:hover {
   background-color: #e8e8e8;
 }
 
-/* Ensure buttons are visible when not hovering over input */
 .container:hover .buttonGroup:not(.navigation:hover .buttonGroup) {
   opacity: 1;
   pointer-events: auto;
@@ -510,7 +555,6 @@
   height: 16px;
 }
 
-/* Optional: Improve the input's appearance when not readonly (for edit mode) */
 .fileNameInput:not([readonly]) {
   cursor: text;
   background-color: #fff;
