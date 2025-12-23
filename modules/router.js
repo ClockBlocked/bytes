@@ -538,8 +538,6 @@ class GitDevSPA {
         
         document.title = titles[pageName] || 'GitDev';
     }
-
-    
 }
 
 // Initialize the SPA
