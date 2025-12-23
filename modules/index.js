@@ -9,7 +9,7 @@
         { id: "dependencies", url: "https://clockblocked.github.io/gitDev/modules/dependencies.js", category: "Primary", priority: 2, critical: true },
         { id: "api", url: "modules/api.js", category: "Service", priority: 3, critical: true },
         { id: "storage", url: "modules/storage.js", category: "Service", priority: 4, critical: true },
-        { id: "router", url: "https://clockblocked.github.io/gitDev/modules/router.js", category: "Primary", priority: 5, critical: true },
+        { id: "router", url: "modules/router.js", category: "Primary", priority: 5, critical: true },
         { id: "pageUpdates", url: "https://clockblocked.github.io/gitDev/modules/pageUpdates.js", category: "UI", priority: 6, critical: false },
         { id: "overlays", url: "https://clockblocked.github.io/gitDev/modules/overlays.js", category: "UI", priority: 7, critical: false },
         { id: "core", url: "modules/core.js", category: "Primary", priority: 8, critical: true },

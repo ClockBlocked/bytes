@@ -1539,7 +1539,7 @@ aside:hover .sidebar-title {
       <div>
         <span class="sidebar-title">Navigation</span>
         <div class="space-y-1">
-          <a href="#" onclick="showRepoSelector()" class="sidebar-link">
+          <a href="#repo" data-spa-navigate="repo" class="sidebar-link">
             <i class="fas fa-code mr-2"></i>
             Code
           </a>
@@ -1661,7 +1661,7 @@ aside:hover .sidebar-title {
 <!-- DYNAMIC --> 
 <!-- Number 2 -->
 <!-- Repository Selector View -->
-<div id="repoSelectorView" class="spa-page max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+<div id="repoSelectorView" class="spa-page spa-hidden max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
   <div class="flex items-center justify-between mb-6">
     <h2 class="text-2xl font-bold text-github-fg-default">Your Repositories</h2>
     <!-- New repository button removed - repositories are managed on server -->
@@ -1673,7 +1673,7 @@ aside:hover .sidebar-title {
 
 <!-- Number 3 -->
 <!-- File Explorer View -->
-<div id="explorerView" class="spa-page max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8 py-6 hidden">
+<div id="explorerView" class="spa-page spa-hidden max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
   <div class="flex items-center justify-between mb-4">
     <div class="flex items-center space-x-3">
       <div class="relative">
@@ -1697,7 +1697,7 @@ aside:hover .sidebar-title {
       </div>
 
       <nav class="flex items-center space-x-1 text-sm" id="pathBreadcrumb">
-        <a href="#" onclick="showRepoSelector()" class="text-github-accent-fg hover:underline font-semibold">Repositories</a>
+        <a href="#repo" data-spa-navigate="repo" class="text-github-accent-fg hover:underline font-semibold">Repositories</a>
         <span class="text-github-fg-muted">/</span>
         <a href="#" class="text-github-accent-fg hover:underline font-semibold" id="currentRepoName">Repository</a>
       </nav>
