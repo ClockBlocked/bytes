@@ -135,8 +135,3 @@ class TemplateLoader {
 
 // Create global instance
 window.templateLoader = new TemplateLoader();
-
-// Export for module usage
-if (typeof module !== 'undefined' && module.exports) {
-  module.exports = TemplateLoader;
-}

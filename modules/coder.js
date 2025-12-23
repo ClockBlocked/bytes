@@ -164,29 +164,6 @@ class coderViewEdit {
       </div>
     </div>`;
   }
-            <path d="M0 2.75C0 1.784.784 1 1.75 1h12.5c.966 0 1.75.784 1.75 1.75v10.5A1.75 1.75 0 0 1 14.25 15H1.75A1.75 1.75 0 0 1 0 13.25Zm1.5 0a.25.25 0 0 1 .25-.25h12.5a.25.25 0 0 1 .25.25v10.5a.25.25 0 0 1-.25.25H1.75a.25.25 0 0 1-.25-.25Z"></path>
-          </svg>
-        </button>
-        <button id="fullscreenBtn" class="toolbarButton" title="Fullscreen">
-          <svg id="fullscreenIcon" class="smallIcon" fill="currentColor" viewBox="0 0 16 16">
-            <path d="M3.75 2h2.5a.75.75 0 0 1 0 1.5h-2.5a.25.25 0 0 0-.25.25v2.5a.75.75 0 0 1-1.5 0v-2.5C2 2.784 2.784 2 3.75 2Zm6.5 0h2c.966 0 1.75.784 1.75 1.75v2a.75.75 0 0 1-1.5 0v-2a.25.25 0 0 0-.25-.25h-2a.75.75 0 0 1 0-1.5Zm-9 8.25a.75.75 0 0 1 .75.75v2a.25.25 0 0 0 .25.25h2.5a.75.75 0 0 1 0 1.5h-2.5A1.75 1.75 0 0 1 2 13.25v-2a.75.75 0 0 1 .75-.75Zm9 0a.75.75 0 0 1 .75-.75h2a.75.75 0 0 1 .75.75v2c0 .966-.784 1.75-1.75 1.75h-2a.75.75 0 0 1 0-1.5h2a.25.25 0 0 0 .25-.25v-2a.25.25 0 0 0-.25-.25h-2a.75.75 0 0 1-.75-.75Z"></path>
-          </svg>
-        </button>
-        <button id="formatCodeBtn" class="toolbarButton hidden" title="Format">
-          <svg class="smallIcon" fill="currentColor" viewBox="0 0 16 16">
-            <path d="M4.72 3.22a.75.75 0 0 1 1.06 1.06L3.06 7l2.72 2.72a.75.75 0 1 1-1.06 1.06L1.94 7.94a1.25 1.25 0 0 1 0-1.88Zm6.56 0a.75.75 0 0 0-1.06 1.06L12.94 7l-2.72 2.72a.75.75 0 1 0 1.06 1.06l2.78-2.78a1.25 1.25 0 0 0 0-1.88Z"></path>
-          </svg>
-        </button>
-      </div>
-    </div>
-    <div id="coderWrapper">
-      <div id="loadingSpinner" class="loading-spinner" data-active="false">
-        <div class="spinner-overlay">
-          <svg class="spinner-svg" viewBox="0 0 50 50">
-            <circle class="spinner-track" cx="25" cy="25" r="20"></circle>
-            <circle class="spinner-head" cx="25" cy="25" r="20"></circle>
-          </svg>
-        </div>
       </div>
       <div id="codeMirrorContainer"></div>
     </div>
