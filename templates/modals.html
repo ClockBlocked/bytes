@@ -1,0 +1,139 @@
+<template id="create-file-modal-template">
+  <div id="createFileModal" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 hidden items-center justify-center p-4">
+    <div class="bg-github-canvas-overlay border border-github-border-default rounded-lg shadow-2xl w-full max-w-2xl animate-scale-in">
+      <div class="px-6 py-4 border-b border-github-border-default">
+        <div class="flex items-center justify-between">
+          <h3 class="text-lg font-semibold text-github-fg-default">Create new file</h3>
+          <button data-action="hide-create-file-modal" class="text-github-fg-muted hover:text-github-fg-default transition-colors">
+            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 16 16">
+              <path d="M3.72 3.72a.75.75 0 0 1 1.06 0L8 6.94l3.22-3.22a.749.749 0 0 1 1.275.326.749.749 0 0 1-.215.734L9.06 8l3.22 3.22a.749.749 0 0 1-.326 1.275.749.749 0 0 1-.734-.215L8 9.06l-3.22 3.22a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042L6.94 8 3.72 4.78a.75.75 0 0 1 0-1.06Z" />
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <div class="p-6 space-y-6">
+        <div>
+          <label class="block text-sm font-medium text-github-fg-default mb-2">Name your file...</label>
+          <div class="flex items-center bg-github-canvas-inset border border-github-border-default rounded-md overflow-hidden focus-within:ring-2 focus-within:ring-github-accent-emphasis focus-within:border-transparent">
+            <span class="px-3 py-2 bg-github-canvas-subtle border-r border-github-border-default text-github-fg-muted text-sm font-mono" id="currentPathPrefix">Repository/</span>
+            <input type="text" id="newFileName" placeholder="filename.ext" class="flex-1 px-3 py-2 bg-transparent border-none text-github-fg-default placeholder-github-fg-muted focus:outline-none text-sm">
+          </div>
+          <p class="mt-1 text-xs text-github-fg-muted">The file extension will determine syntax highlighting</p>
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium text-github-fg-default mb-2">Category (optional)</label>
+          <input type="text" id="fileCategoryInput" maxlength="15" placeholder="e.g., Component, Utility, Config" class="w-full px-3 py-2 bg-github-canvas-inset border border-github-border-default rounded-md text-github-fg-default placeholder-github-fg-muted focus:outline-none focus:ring-2 focus:ring-github-accent-emphasis focus:border-transparent">
+          <p class="mt-1 text-xs text-github-fg-muted">Maximum 15 characters</p>
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium text-github-fg-default mb-2">Tags (optional)</label>
+          <div class="space-y-2">
+            <div id="selectedTags" class="flex flex-wrap gap-2 min-h-[2rem]">
+            </div>
+            <div class="flex items-center space-x-2">
+              <input type="text" id="tagInput" placeholder="Add a tag..." class="flex-1 px-3 py-2 bg-github-canvas-inset border border-github-border-default rounded-md text-github-fg-default placeholder-github-fg-muted focus:outline-none focus:ring-2 focus:ring-github-accent-emphasis focus:border-transparent text-sm">
+              <button data-action="add-tag" class="px-3 py-2 bg-github-accent-emphasis hover:bg-github-accent-fg text-white rounded-md text-sm font-medium transition-colors">
+                Add
+              </button>
+            </div>
+          </div>
+          <p class="mt-1 text-xs text-github-fg-muted">Press Enter or click Add to add tags</p>
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium text-github-fg-default mb-2">Initial content (optional)</label>
+          <div id="initialContentEditor" class="border border-github-border-default rounded-sm h-20"></div>
+        </div>
+      </div>
+
+      <div class="px-6 py-4 border-t border-github-border-default bg-github-canvas-subtle flex items-center justify-end space-x-3">
+        <button data-action="hide-create-file-modal" class="px-4 py-2 border border-github-border-default rounded-md text-sm font-medium text-github-fg-default bg-github-btn-secondary-bg hover:bg-github-btn-secondary-hover transition-colors">
+          Cancel
+        </button>
+        <button data-action="create-file" class="px-4 py-2 bg-github-btn-primary-bg hover:bg-github-btn-primary-hover text-white rounded-md text-sm font-medium transition-colors">
+          Create file
+        </button>
+      </div>
+    </div>
+  </div>
+</template>
+
+<template id="delete-file-modal-template">
+  <div id="deleteFileModal" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 hidden items-center justify-center p-4">
+    <div class="bg-github-canvas-overlay border border-github-border-default rounded-lg shadow-2xl w-full max-w-md animate-scale-in">
+      <div class="px-6 py-4 border-b border-github-border-default">
+        <div class="flex items-center justify-between">
+          <h3 class="text-lg font-semibold text-github-fg-default">Delete file</h3>
+          <button data-action="hide-delete-file-modal" class="text-github-fg-muted hover:text-github-fg-default transition-colors">
+            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 16 16">
+              <path d="M3.72 3.72a.75.75 0 0 1 1.06 0L8 6.94l3.22-3.22a.749.749 0 0 1 1.275.326.749.749 0 0 1-.215.734L9.06 8l3.22 3.22a.749.749 0 0 1-.326 1.275.749.749 0 0 1-.734-.215L8 9.06l-3.22 3.22a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042L6.94 8 3.72 4.78a.75.75 0 0 1 0-1.06Z" />
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <div class="p-6">
+        <p class="text-github-fg-default mb-4">Are you sure you want to delete <span id="fileToDeleteName" class="font-semibold">filename.ext</span>? This action cannot be undone.</p>
+        <div class="flex items-center justify-end space-x-3">
+          <button data-action="hide-delete-file-modal" class="px-4 py-2 border border-github-border-default rounded-md text-sm font-medium text-github-fg-default bg-github-btn-secondary-bg hover:bg-github-btn-secondary-hover transition-colors">
+            Cancel
+          </button>
+          <button data-action="confirm-delete-file" class="px-4 py-2 bg-github-danger-fg hover:bg-red-600 text-white rounded-md text-sm font-medium transition-colors">
+            Delete
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</template>
+
+<template id="commit-modal-template">
+  <div id="commitModal" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 hidden items-center justify-center p-4">
+    <div class="bg-github-canvas-overlay border border-github-border-default rounded-lg shadow-2xl w-full max-w-2xl animate-scale-in">
+      <div class="px-6 py-4 border-b border-github-border-default">
+        <div class="flex items-center justify-between">
+          <h3 class="text-lg font-semibold text-github-fg-default">Commit changes</h3>
+          <button data-action="hide-commit-modal" class="text-github-fg-muted hover:text-github-fg-default transition-colors">
+            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 16 16">
+              <path d="M3.72 3.72a.75.75 0 0 1 1.06 0L8 6.94l3.22-3.22a.749.749 0 0 1 1.275.326.749.749 0 0 1-.215.734L9.06 8l3.22 3.22a.749.749 0 0 1-.326 1.275.749.749 0 0 1-.734-.215L8 9.06l-3.22 3.22a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042L6.94 8 3.72 4.78a.75.75 0 0 1 0-1.06Z" />
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <div class="p-6 space-y-4">
+        <div>
+          <label class="block text-sm font-medium text-github-fg-default mb-2">Commit message</label>
+          <input type="text" id="commitTitle" placeholder="Update filename.ext" class="w-full px-3 py-2 bg-github-canvas-inset border border-github-border-default rounded-md text-github-fg-default placeholder-github-fg-muted focus:outline-none focus:ring-2 focus:ring-github-accent-emphasis focus:border-transparent">
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium text-github-fg-default mb-2">Extended description (optional)</label>
+          <textarea id="commitDescription" rows="4" placeholder="Add an optional extended description..." class="w-full px-3 py-2 bg-github-canvas-inset border border-github-border-default rounded-md text-github-fg-default placeholder-github-fg-muted focus:outline-none focus:ring-2 focus:ring-github-accent-emphasis focus:border-transparent resize-none"></textarea>
+        </div>
+
+        <div class="bg-github-canvas-inset border border-github-border-default rounded-md p-4">
+          <div class="flex items-center justify-between mb-2">
+            <span class="text-sm font-medium text-github-fg-default">Changes</span>
+            <span class="text-xs text-github-fg-muted" id="changeCount">1 file changed</span>
+          </div>
+          <div id="changedFiles" class="space-y-1">
+            <!-- Changed files will be listed here -->
+          </div>
+        </div>
+      </div>
+
+      <div class="px-6 py-4 border-t border-github-border-default bg-github-canvas-subtle flex items-center justify-end space-x-3">
+        <button data-action="hide-commit-modal" class="px-4 py-2 border border-github-border-default rounded-md text-sm font-medium text-github-fg-default bg-github-btn-secondary-bg hover:bg-github-btn-secondary-hover transition-colors">
+          Cancel
+        </button>
+        <button data-action="confirm-commit" class="px-4 py-2 bg-github-btn-primary-bg hover:bg-github-btn-primary-hover text-white rounded-md text-sm font-medium transition-colors">
+          Commit changes
+        </button>
+      </div>
+    </div>
+  </div>
+</template>
