@@ -540,7 +540,8 @@ class GitDevSPA {
     }
 }
 
-// Initialize the SPA
+
+
 let spaInstance = null;
 
 function initializeSPA() {
@@ -590,7 +591,6 @@ function initializeSPA() {
     }, 100);
 }
 
-// Start when DOM is ready
 if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', initializeSPA);
 } else {
