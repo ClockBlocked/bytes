@@ -5,20 +5,20 @@
         startTime: performance.now()
     };
     const SCRIPT_MANIFEST = [
-        { id: "elements", url: "https://clockblocked.github.io/gitDev/modules/utilities/elements.js", category: "Utility", priority: 1, critical: true },
-        { id: "dependencies", url: "https://clockblocked.github.io/gitDev/modules/dependencies.js", category: "Primary", priority: 2, critical: true },
+        { id: "elements", url: "https://clockblocked.github.io/gitDev/modules/utilities/elements.js", category: "Utility", priority: 1, critical: false },
+        { id: "dependencies", url: "modules/dependencies.js", category: "Primary", priority: 2, critical: true },
         { id: "api", url: "modules/api.js", category: "Service", priority: 3, critical: true },
         { id: "storage", url: "modules/storage.js", category: "Service", priority: 4, critical: true },
-        { id: "router", url: "https://clockblocked.github.io/gitDev/modules/router.js", category: "Primary", priority: 5, critical: true },
-        { id: "pageUpdates", url: "https://clockblocked.github.io/gitDev/modules/pageUpdates.js", category: "UI", priority: 6, critical: false },
-        { id: "overlays", url: "https://clockblocked.github.io/gitDev/modules/overlays.js", category: "UI", priority: 7, critical: false },
+        { id: "router", url: "modules/router.js", category: "Primary", priority: 5, critical: true },
+        { id: "pageUpdates", url: "modules/pageUpdates.js", category: "UI", priority: 6, critical: false },
+        { id: "overlays", url: "modules/overlays.js", category: "UI", priority: 7, critical: false },
         { id: "core", url: "modules/core.js", category: "Primary", priority: 8, critical: true },
-        { id: "listeners", url: "https://clockblocked.github.io/gitDev/modules/listeners.js", category: "Helper", priority: 9, critical: false },
-        { id: "search", url: "https://clockblocked.github.io/gitDev/modules/search.js", category: "Feature", priority: 10, critical: false },
-        { id: "fileUpload", url: "https://clockblocked.github.io/gitDev/modules/fileUpload.js", category: "Feature", priority: 11, critical: false },
-        { id: "importExport", url: "https://clockblocked.github.io/gitDev/modules/importExport.js", category: "Feature", priority: 12, critical: false },
+        { id: "listeners", url: "modules/listeners.js", category: "Helper", priority: 9, critical: false },
+        { id: "search", url: "modules/search.js", category: "Feature", priority: 10, critical: false },
+        { id: "fileUpload", url: "modules/fileUpload.js", category: "Feature", priority: 11, critical: false },
+        { id: "importExport", url: "modules/importExport.js", category: "Feature", priority: 12, critical: false },
         { id: "fileMenu", url: "modules/fileMenu.js", category: "UI", priority: 13, critical: false },
-        { id: "coder", url: "https://clockblocked.github.io/gitDev/modules/coder.js", category: "Feature", priority: 14, critical: false }
+        { id: "coder", url: "modules/coder.js", category: "Feature", priority: 14, critical: false }
     ];
     const CATEGORY_COLORS = {
         Primary: "#3b82f6",
