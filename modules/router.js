@@ -4,10 +4,7 @@ function showRepoSelector() {
   const repoSelector = document.getElementById("repoSelectorView");
   
   if (explorerView) {
-    explorerView.classList.add("hidden");
-    // Also hide the inner pages element
-    const explorerPages = explorerView.querySelector('.pages[data-page="file-explorer"]');
-    if (explorerPages) explorerPages.classList.add("hidden");
+    explorerView.classList.add("blurOUT");
   }
   
   if (fileView) {
@@ -78,7 +75,7 @@ function navigateToRoot() {
   setTimeout(() => {
     try {
       if (typeof LocalStorageManager !== "undefined") {
-        window.currentState.files = LocalStorageManager.listFiles(window.currentState. repository, "");
+        window.currentState.files = LocalStorageManager.listFiles(window.currentState.repository, "");
       }
       if (typeof renderFileList === "function") renderFileList();
       if (typeof updateBreadcrumb === "function") updateBreadcrumb();
@@ -88,14 +85,14 @@ function navigateToRoot() {
 }
 
 function navigateToPath(path) {
-  if (!window. currentState) return;
+  if (!window.currentState) return;
   window.currentState.path = path;
   if (typeof showLoading === "function") showLoading("Loading directory...");
   setTimeout(() => {
     try {
       const pathPrefix = path ?  path + "/" : "";
       if (typeof LocalStorageManager !== "undefined") {
-        window.currentState. files = LocalStorageManager.listFiles(window.currentState. repository, pathPrefix);
+        window.currentState.files = LocalStorageManager.listFiles(window.currentState.repository, pathPrefix);
       }
       if (typeof renderFileList === "function") renderFileList();
       if (typeof updateBreadcrumb === "function") updateBreadcrumb();
@@ -105,8 +102,8 @@ function navigateToPath(path) {
 }
 
 function navigateToFolder(folderName) {
-  if (!window. currentState) return;
-  const newPath = window.currentState.path ?  window.currentState. path + "/" + folderName : folderName;
+  if (!window.currentState) return;
+  const newPath = window.currentState.path ?  window.currentState.path + "/" + folderName : folderName;
   navigateToPath(newPath);
 }
 
@@ -232,7 +229,7 @@ const LoadingSpinner = (() => {
   };
   function init(selector) {
     if (selector) config.selector = selector;
-    spinnerElement = document. querySelector(config.selector);
+    spinnerElement = document.querySelector(config.selector);
     return !!spinnerElement;
   }
   function show() {
@@ -272,11 +269,11 @@ const LoadingSpinner = (() => {
 })();
 
 window.LoadingProgress = LoadingProgress;
-window. LoadingSpinner = LoadingSpinner;
+window.LoadingSpinner = LoadingSpinner;
 window.showRepoSelector = showRepoSelector;
 window.showExplorer = showExplorer;
 window.showFileViewer = showFileViewer;
 window.showFileEditor = showFileEditor;
-window. navigateToRoot = navigateToRoot;
+window.navigateToRoot = navigateToRoot;
 window.navigateToPath = navigateToPath;
 window.navigateToFolder = navigateToFolder;
