@@ -7,6 +7,7 @@
   <title>File Explorer - GitDev</title>
   
 
+<!--
 <style>
 .blurIN {
   animation: blurFadeIn 1.2s ease-out forwards;
@@ -60,8 +61,188 @@
   animation blurFadeOut 1.2s ease-in forwards;
 }
 </style>
+-->
 
+<style>
+        /* CSS Custom Properties for consistent theming */
+        :root {
+            --transition-smooth: cubic-bezier(0.4, 0, 0.2, 1);
+            --animation-duration: 0.3s;
+            --surface-color: #ffffff;
+            --surface-elevated: rgba(255, 255, 255, 0.95);
+            --text-primary: #1a1a1a;
+            --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --progress-gradient: linear-gradient(90deg, #dc2626, #ef4444, #f87171);
+            --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            --border-radius: 8px;
+            --z-index-progress: 9999;
+            --z-index-overlay: 9990;
+        }
 
+        /* Base animations */
+        @keyframes fade-scale-in {
+            0% {
+                opacity: 0;
+                transform: translateY(10px) scale(0.98);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        @keyframes fade-scale-out {
+            0% {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+            100% {
+                opacity: 0;
+                transform: translateY(-10px) scale(0.98);
+            }
+        }
+
+        @keyframes shimmer {
+            0% {
+                background-position: -1000px 0;
+            }
+            100% {
+                background-position: 1000px 0;
+            }
+        }
+
+        /* Utility classes */
+        .visually-hidden {
+            position: absolute !important;
+            width: 1px !important;
+            height: 1px !important;
+            padding: 0 !important;
+            margin: -1px !important;
+            overflow: hidden !important;
+            clip: rect(0, 0, 0, 0) !important;
+            white-space: nowrap !important;
+            border: 0 !important;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        .transitioning {
+            pointer-events: none;
+        }
+
+        /* Loading Progress Bar */
+        .loading-progress {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            z-index: var(--z-index-progress);
+            background: transparent;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity var(--animation-duration) var(--transition-smooth);
+        }
+
+        .loading-progress--visible {
+            opacity: 1;
+        }
+
+        .loading-progress__fill {
+            height: 100%;
+            width: 0%;
+            background: var(--progress-gradient);
+            background-size: 200% 100%;
+            box-shadow: 
+                0 0 10px rgba(220, 38, 38, 0.5),
+                0 0 20px rgba(220, 38, 38, 0.3);
+            transition: width 0.4s var(--transition-smooth);
+            animation: shimmer 2s infinite linear;
+        }
+
+        /* View Containers */
+        .view-container {
+            position: relative;
+            min-height: 100vh;
+            background: var(--surface-color);
+        }
+
+        .view {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            pointer-events: none;
+            transform: translateY(10px);
+            transition: 
+                opacity 0.4s var(--transition-smooth),
+                transform 0.4s var(--transition-smooth);
+        }
+
+        .view--active {
+            opacity: 1;
+            pointer-events: all;
+            transform: translateY(0);
+        }
+
+        .view--entering {
+            animation: fade-scale-in 0.4s var(--transition-smooth) forwards;
+        }
+
+        .view--exiting {
+            animation: fade-scale-out 0.4s var(--transition-smooth) forwards;
+        }
+
+        /* Content Areas */
+        .content-header {
+            padding: 1.5rem 2rem;
+            background: var(--surface-elevated);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .content-body {
+            padding: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* Loading Spinner */
+        .loading-spinner {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity var(--animation-duration) var(--transition-smooth);
+            z-index: var(--z-index-overlay);
+        }
+
+        .loading-spinner--visible {
+            opacity: 1;
+        }
+
+        .spinner {
+            width: 48px;
+            height: 48px;
+            border: 3px solid rgba(0, 0, 0, 0.1);
+            border-top-color: var(--primary-gradient);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+</style>
 
  
 
@@ -1811,28 +1992,57 @@ background: linear-gradient(90deg, #dc2626, #ef4444, #f87171);
 
 
 
-<main id="mainArea">
+    <!-- Loading Progress Indicator -->
+    <div id="loadingProgress" class="loading-progress" aria-hidden="true">
+        <div class="loading-progress__fill"></div>
+    </div>
 
+    <!-- Main Application Container -->
+    <main id="app" class="view-container">
+        <!-- Repository Selector View -->
+        <section id="repoView" class="view view--active" role="region" aria-label="Repository Selection">
+            <div class="content-header">
+                <h1 class="view-title">Select Repository</h1>
+            </div>
+            <div class="content-body">
+                <!-- Repository list content here -->
+            </div>
+        </section>
 
+        <!-- File Explorer View -->
+        <section id="explorerView" class="view" role="region" aria-label="File Explorer" hidden>
+            <div class="content-header">
+                <h1 class="view-title">File Explorer</h1>
+                <nav class="breadcrumb" aria-label="Breadcrumb navigation">
+                    <!-- Breadcrumb will be populated dynamically -->
+                </nav>
+            </div>
+            <div class="content-body">
+                <!-- File list content here -->
+            </div>
+        </section>
 
+        <!-- File Viewer/Editor -->
+        <section id="fileView" class="view" role="region" aria-label="File Content" hidden>
+            <div class="content-header">
+                <div class="header-content">
+                    <button class="back-button" aria-label="Back to explorer" onclick="Navigation.navigateBack()">
+                        ← Back
+                    </button>
+                    <h1 class="file-title">File Content</h1>
+                </div>
+            </div>
+            <div class="content-body">
+                <!-- File content will be rendered here -->
+            </div>
+        </section>
+    </main>
 
-<div id="repoSelectorView" class="blurIN">
-<!-- R E P O S I T O R I E S -->
-</div>
-
-<div id="explorerView" class="hidden">
-<!-- F I L E  L I S T S -->
-</div>
-
-<div id="fileView" class="hidden">
-<!-- F I L E  V I E W E R -->
-</div>
-
-
-
-
-
-</main>
+    <!-- Loading Overlay -->
+    <div id="loadingOverlay" class="loading-spinner" role="status" aria-live="polite" aria-label="Loading">
+        <div class="spinner"></div>
+        <span class="visually-hidden">Loading content, please wait...</span>
+    </div>
 
 
 
