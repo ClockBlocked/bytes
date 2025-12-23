@@ -6,7 +6,45 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>File Explorer - GitDev</title>
   
-  
+
+<style>
+.blurIN {
+  animation: blurFadeIn 1.2s ease-out forwards;
+}
+@keyframes blurFadeIn {
+  0% {
+    opacity: 0;
+    filter: blur(10px);
+    transform: scale(0.95);
+  }
+  100% {
+    opacity: 1;
+    filter: blur(0);
+    transform: scale(1);
+  }
+}
+
+
+.blurOUT {
+  animation: blurFadeOut 1.2s ease-in forwards;
+}
+@keyframes blurFadeOut {
+  0% {
+    opacity: 1;
+    filter: blur(0);
+    transform: scale(1);
+  }
+  100% {
+    opacity: 0;
+    filter: blur(10px);
+    transform: scale(1.05);
+  }
+}
+</style>
+
+
+
+ 
 
 <style>
 :root {
