@@ -144,7 +144,7 @@
         });
     }
     function renderScriptTable() {
-        console.clear();
+//        console.clear();
         const totalTime = performance.now() - SCRIPT_REGISTRY.startTime;
         const loadedCount = Array.from(SCRIPT_REGISTRY.scripts.values()).filter(s => s.status === "Loaded").length;
         const failedCount = Array.from(SCRIPT_REGISTRY.scripts.values()).filter(s => s.status === "Failed").length;
