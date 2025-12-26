@@ -1,0 +1,126 @@
+/**
+ * Page Transition System
+ * 
+ * Uses visibility + opacity + transform for smooth transitions
+ * instead of display: none which cannot be animated
+ * 
+ * Classes:
+ * - . pages: Base class for all page containers
+ * - .show: Makes element visible with entrance animation
+ * - .hide: Makes element invisible with exit animation
+ * - .remove: For elements that should be removed from DOM
+ */
+
+/* Base state for all pages - invisible but in document flow */
+.pages {
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(20px);
+    transition: 
+        opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+        transform 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+        visibility 0.4s;
+    pointer-events: none;
+    position: relative;
+    min-height: 50vh;
+}
+
+/* Entrance animation - fade in + slide up */
+. pages.show {
+    opacity: 1;
+    visibility:  visible;
+    transform: translateY(0);
+    pointer-events: auto;
+}
+
+/* Exit animation - fade out + slide down */
+. pages.hide {
+    opacity: 0;
+    visibility:  hidden;
+    transform: translateY(20px);
+    pointer-events: none;
+}
+
+/* For when you need to completely collapse the element (no space taken) */
+.pages.collapsed {
+    opacity:  0;
+    visibility: hidden;
+    transform: translateY(20px);
+    pointer-events:  none;
+    height: 0;
+    min-height: 0;
+    padding: 0;
+    margin: 0;
+    overflow: hidden;
+}
+
+/* Generic show/hide classes for any element */
+.show {
+    opacity:  1 !important;
+    visibility: visible !important;
+    transform:  translateY(0) !important;
+    pointer-events: auto !important;
+}
+
+.hide {
+    opacity: 0 !important;
+    visibility: hidden ! important;
+    transform: translateY(10px) !important;
+    pointer-events: none !important;
+}
+
+/* Transition timing for generic elements using show/hide */
+[class*="show"],
+[class*="hide"] {
+    transition: 
+        opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+        transform 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+        visibility 0.3s;
+}
+
+/* Loading bar at top of page */
+. page-loading-bar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 3px;
+    background: transparent;
+    z-index: 99999;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+. page-loading-bar.active {
+    opacity:  1;
+}
+
+. page-loading-bar . bar-fill {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 0%;
+    background:  linear-gradient(90deg, #539bf5, #57ab5a, #539bf5);
+    background-size: 200% 100%;
+    animation: loadingGradient 2s linear infinite;
+    transition: width 0.2s ease;
+}
+
+@keyframes loadingGradient {
+    0% { background-position: 0% 0%; }
+    100% { background-position: 200% 0%; }
+}
+
+/* Reduced motion preference */
+@media (prefers-reduced-motion: reduce) {
+    .pages,
+    .pages. show,
+    . pages.hide,
+    [class*="show"],
+    [class*="hide"] {
+        transition: none;
+        transform: none;
+    }
+}
