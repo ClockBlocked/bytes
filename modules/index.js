@@ -5,7 +5,6 @@
         startTime: performance.now()
     };
     const SCRIPT_MANIFEST = [
-        { id: "elements", url: "https://clockblocked.github.io/bytes/modules/utilities/elements.js", category: "Utility", priority: 1, critical: true },
         { id: "dependencies", url: "https://clockblocked.github.io/bytes/modules/dependencies.js", category: "Primary", priority: 2, critical: true },
         { id: "api", url: "modules/api.js", category: "Service", priority: 3, critical: true },
         { id: "storage", url: "modules/storage.js", category: "Service", priority: 4, critical: true },
