@@ -3,7 +3,7 @@ const LoadingProgress = (() => {
   let fillElement = null;
   let hideTimeout = null;
   let progressInterval = null;
-  let currentProgress = 0;
+  let currentProgress = 0; 
 
   let config = {
     color: "#1c7eec",
