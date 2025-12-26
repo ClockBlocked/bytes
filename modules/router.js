@@ -153,16 +153,16 @@ const PageRouter = {
         this.loadingBar.classList.add('active');
         
         setTimeout(() => {
-            if (fill) fill.style.width = '30%';
-        }, 50);
+            if (fill) fill.style.width = '17%';
+        }, 220);
         
         setTimeout(() => {
-            if (fill) fill.style.width = '60%';
-        }, 150);
+            if (fill) fill.style.width = '63%';
+        }, 354);
         
         setTimeout(() => {
-            if (fill) fill.style.width = '80%';
-        }, 300);
+            if (fill) fill.style.width = '78%';
+        }, 749);
     },
 
     hideLoadingBar() {
