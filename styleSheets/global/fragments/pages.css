@@ -66,7 +66,7 @@
 }
 
 /* Generic show/hide classes for any element (modals, dropdowns, etc) */
-.element-show {
+[data-animate="enter"] {
     opacity: 1 !important;
     visibility: visible !important;
     transform: translateY(0) !important;
@@ -77,7 +77,7 @@
         visibility 0s linear 0s;
 }
 
-.element-hide {
+[data-animate="exit"] {
     opacity: 0 !important;
     visibility: hidden !important;
     transform:  translateY(10px) !important;
@@ -88,43 +88,6 @@
         visibility 0s linear 0.3s;
 }
 
-/* Loading bar at top of page */
-.page-loading-bar {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 3px;
-    background: rgba(0, 0, 0, 0.1);
-    z-index: 99999;
-    pointer-events: none;
-    opacity: 0;
-    transition: opacity 0.2s ease;
-}
-
-.page-loading-bar.active {
-    opacity:  1;
-}
-
-.page-loading-bar .bar-fill {
-    position: absolute;
-    top: 0;
-    left: 0;
-    height: 100%;
-    width: 0%;
-    background:  linear-gradient(90deg, #539bf5, #57ab5a, #539bf5);
-    background-size: 200% 100%;
-    animation: loadingGradient 1.5s linear infinite;
-    transition: width 0.15s ease-out;
-    border-radius: 0 2px 2px 0;
-}
-
-@keyframes loadingGradient {
-    0% { background-position: 0% 0%; }
-    100% { background-position: 200% 0%; }
-}
-
-/* Reduced motion preference */
 @media (prefers-reduced-motion: reduce) {
     .pages,
     .pages.show,
