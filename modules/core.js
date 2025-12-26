@@ -600,22 +600,6 @@ function hideDeleteFileModal() {
   const modal = document.getElementById("deleteFileModal");
   if (modal) modal.classList.add("hidden");
 }
-function showExplorer() {
-  const explorer = document.getElementById("explorerView");
-  const repoSelector = document.getElementById("repoSelectorView");
-  const coder = document.getElementById("coder");
-  if (explorer) explorer.classList.remove("hidden");
-  if (repoSelector) repoSelector.classList.add("hidden");
-  if (coder) coder.classList.add("hidden");
-}
-function showFileViewer() {
-  const explorer = document.getElementById("explorerView");
-  const repoSelector = document.getElementById("repoSelectorView");
-  const coder = document.getElementById("coder");
-  if (explorer) explorer.classList.add("hidden");
-  if (repoSelector) repoSelector.classList.add("hidden");
-  if (coder) coder.classList.remove("hidden");
-}
 function initializeApp() {
   setupEventListeners(SidebarManager || null);
   setupCodeEditors();
