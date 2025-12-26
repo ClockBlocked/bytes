@@ -1,16 +1,3 @@
-
-
-
-/**
- * 
-import { LoadingProgress } from 'https://gitdev.wuaze.com/modules/router.js';
-import { currentState } from 'https://gitdev.wuaze.com/modules/core.js';
-import { updateSelectedTags } from 'https://gitdev.wuaze.com/modules/pageUpdates.js';
-// import { ProgressBar } from 'https://gitdev.wuaze.com/modules/router.js';
-**/
-
-
-
 function showContextMenu(x, y, fileName, fileType) {
   hideContextMenu();
   const menu = document.createElement('div');
@@ -80,31 +67,6 @@ function hideDeleteFileModal() {
   document.getElementById('deleteFileModal').classList.remove('flex');
 }
 
-function showLoading(text = 'Loading...') {
-  const overlay = document.getElementById('loadingOverlay');
-  const loadingText = document.getElementById('loadingText');
-  
-//  ProgressBar.show();
-  LoadingProgress.show();
-  
-  if (overlay && loadingText) {
-    loadingText.textContent = text;
-    overlay.classList.remove('hidden');
-    overlay.style.display = 'flex';
-  }
-}
-
-function hideLoading() {
-  const overlay = document.getElementById('loadingOverlay');
-  
-//  ProgressBar.hide();
-  LoadingProgress.hide();
-  
-  if (overlay) {
-    overlay.classList.add('hidden');
-    overlay.style.display = 'none';
-  }
-}
 
 function showSuccessMessage(message) {
   LoadingProgress.show();
