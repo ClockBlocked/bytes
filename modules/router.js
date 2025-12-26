@@ -2,7 +2,7 @@
  * GitDev Page Router
  * 
  * Simple, clean page navigation using data-page attributes
- * and CSS-based animations with . show/. hide classes
+ * and CSS-based animations with .show/.hide classes
  * 
  * Created by William Hanson
  * Chevrolay@Outlook.com
@@ -48,7 +48,7 @@ const PageRouter = {
      * Cache all page elements using data-page attribute
      */
     cachePageElements() {
-        const allPages = document.querySelectorAll('. pages[data-page]');
+        const allPages = document.querySelectorAll('.pages[data-page]');
         
         allPages.forEach(page => {
             const pageName = page.getAttribute('data-page');
@@ -56,7 +56,7 @@ const PageRouter = {
                 this.pages[pageName] = page;
                 
                 // Remove any legacy classes and set initial hidden state
-                page. classList.remove('hidden', 'spa-hidden', 'spa-page', 'active', 'exit', 'show');
+                page.classList.remove('hidden', 'spa-hidden', 'spa-page', 'active', 'exit', 'show');
                 page.classList.add('hide');
             }
         });
@@ -81,17 +81,17 @@ const PageRouter = {
     setupEventListeners() {
         // Handle browser back/forward buttons
         window.addEventListener('popstate', (e) => {
-            const page = window.location.hash. slice(1) || 'repo';
+            const page = window.location.hash.slice(1) || 'repo';
             this.navigateTo(page, false);
         });
 
         // Handle clicks on elements with data-navigate attribute
-        document. addEventListener('click', (e) => {
-            const navElement = e.target. closest('[data-navigate]');
+        document.addEventListener('click', (e) => {
+            const navElement = e.target.closest('[data-navigate]');
             if (navElement && ! this.isTransitioning) {
                 e.preventDefault();
-                const targetPage = navElement. getAttribute('data-navigate');
-                this. navigateTo(targetPage, true);
+                const targetPage = navElement.getAttribute('data-navigate');
+                this.navigateTo(targetPage, true);
             }
         });
     },
@@ -103,9 +103,9 @@ const PageRouter = {
         const initialPage = window.location.hash.slice(1) || 'repo';
         
         // Ensure all pages start hidden
-        Object.values(this. pages).forEach(page => {
+        Object.values(this.pages).forEach(page => {
             if (page) {
-                page. classList.remove('show');
+                page.classList.remove('show');
                 page.classList.add('hide');
             }
         });
@@ -162,7 +162,7 @@ const PageRouter = {
 
         // Hide current page with exit animation
         if (this.currentPage && this.pages[this.currentPage]) {
-            this.pages[this. currentPage].classList. remove('show');
+            this.pages[this.currentPage].classList.remove('show');
             this.pages[this.currentPage].classList.add('hide');
         }
 
@@ -179,7 +179,7 @@ const PageRouter = {
         }
 
         // Scroll to top before showing new page
-        window. scrollTo(0, 0);
+        window.scrollTo(0, 0);
 
         // Show new page with entrance animation
         this.pages[pageName].classList.remove('hide');
@@ -222,10 +222,10 @@ const PageRouter = {
             this.loadingInterval = null;
         }
         
-        const fill = this.loadingBar.querySelector('. bar-fill');
+        const fill = this.loadingBar.querySelector('.bar-fill');
         if (fill) {
-            fill. style.transition = 'none';
-            fill. style.width = '0%';
+            fill.style.transition = 'none';
+            fill.style.width = '0%';
             
             // Force reflow
             void fill.offsetWidth;
@@ -259,19 +259,19 @@ const PageRouter = {
             this.loadingInterval = null;
         }
         
-        const fill = this.loadingBar.querySelector('. bar-fill');
+        const fill = this.loadingBar.querySelector('.bar-fill');
         if (fill) {
-            fill. style.width = '100%';
+            fill.style.width = '100%';
         }
         
         // Hide after completion animation
         setTimeout(() => {
-            this. loadingBar.classList.remove('active');
+            this.loadingBar.classList.remove('active');
             
             // Reset for next use
             setTimeout(() => {
                 if (fill) {
-                    fill. style.transition = 'none';
+                    fill.style.transition = 'none';
                     fill.style.width = '0%';
                 }
             }, 200);
@@ -305,7 +305,7 @@ const PageRouter = {
      * @returns {HTMLElement|null}
      */
     getPage(pageName) {
-        return this. pages[pageName] || null;
+        return this.pages[pageName] || null;
     },
 
     /**
@@ -332,15 +332,15 @@ window.showExplorer = function() {
     PageRouter.navigateTo('explorer');
 };
 
-window. showFileViewer = function() {
+window.showFileViewer = function() {
     PageRouter.navigateTo('file');
 };
 
 window.showFileEditor = function() {
-    PageRouter. navigateTo('file');
+    PageRouter.navigateTo('file');
     setTimeout(function() {
         if (window.coderViewEdit && typeof window.coderViewEdit.enableEditing === 'function') {
-            window. coderViewEdit. enableEditing();
+            window.coderViewEdit.enableEditing();
         }
     }, PageRouter.transitionDuration + 100);
 };
@@ -356,7 +356,7 @@ window.navigateToRoot = function() {
     window.currentState.path = '';
     
     if (typeof LocalStorageManager !== 'undefined') {
-        LocalStorageManager.listFiles(window.currentState. repository, '').then(function(files) {
+        LocalStorageManager.listFiles(window.currentState.repository, '').then(function(files) {
             window.currentState.files = files;
             if (typeof renderFileList === 'function') renderFileList();
             if (typeof updateBreadcrumb === 'function') updateBreadcrumb();
@@ -365,7 +365,7 @@ window.navigateToRoot = function() {
     }
 };
 
-window. navigateToPath = function(path) {
+window.navigateToPath = function(path) {
     if (! window.currentState) return;
     
     window.currentState.path = path;
@@ -373,7 +373,7 @@ window. navigateToPath = function(path) {
     
     if (typeof LocalStorageManager !== 'undefined') {
         LocalStorageManager.listFiles(window.currentState.repository, pathPrefix).then(function(files) {
-            window.currentState. files = files;
+            window.currentState.files = files;
             if (typeof renderFileList === 'function') renderFileList();
             if (typeof updateBreadcrumb === 'function') updateBreadcrumb();
         });
@@ -384,17 +384,17 @@ window.navigateToFolder = function(folderName) {
     if (!window.currentState) return;
     
     var newPath = window.currentState.path 
-        ? window. currentState.path + '/' + folderName 
+        ? window.currentState.path + '/' + folderName 
         :  folderName;
     
-    window. navigateToPath(newPath);
+    window.navigateToPath(newPath);
 };
 
 window.navigateBack = function() {
-    if (!window. currentState) return;
+    if (!window.currentState) return;
     
-    var pathParts = window.currentState.path. split('/').filter(Boolean);
-    if (pathParts. length > 0) {
+    var pathParts = window.currentState.path.split('/').filter(Boolean);
+    if (pathParts.length > 0) {
         pathParts.pop();
         window.navigateToPath(pathParts.join('/'));
     } else {
@@ -422,6 +422,6 @@ window.PageRouter = PageRouter;
  * 
  *  Chevrolay@Outlook.com
  * 
- *  m. me/Chevrolay
+ *  m.me/Chevrolay
  * 
  */
