@@ -14,7 +14,7 @@
 .pages {
     opacity: 0;
     visibility: hidden;
-    transform: translateY(20px);
+    transform: translateY(120px);
     pointer-events: none;
     position: absolute;
     top: 0;
@@ -46,7 +46,7 @@
 .pages.hide {
     opacity: 0;
     visibility: hidden;
-    transform: translateY(20px);
+    transform: translateY(120px);
     pointer-events: none;
     position:  absolute;
     top: 0;
@@ -80,7 +80,7 @@
 [data-animate="exit"] {
     opacity: 0 !important;
     visibility: hidden !important;
-    transform:  translateY(10px) !important;
+    transform:  translateY(100px) !important;
     pointer-events: none !important;
     transition: 
         opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1),
