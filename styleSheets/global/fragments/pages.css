@@ -5,13 +5,13 @@
  * No display: none - uses position and pointer-events instead
  * 
  * Classes:
- * - . pages:  Base class for all page containers
- * - . show:  Makes element visible with entrance animation
+ * - .pages:  Base class for all page containers
+ * - .show:  Makes element visible with entrance animation
  * - .hide: Makes element invisible with exit animation
  */
 
 /* Base state for all pages - invisible and removed from flow */
-. pages {
+.pages {
     opacity: 0;
     visibility: hidden;
     transform: translateY(20px);
@@ -29,7 +29,7 @@
 }
 
 /* Entrance animation - fade in + slide up */
-.pages. show {
+.pages.show {
     opacity: 1;
     visibility: visible;
     transform: translateY(0);
@@ -89,7 +89,7 @@
 }
 
 /* Loading bar at top of page */
-. page-loading-bar {
+.page-loading-bar {
     position: fixed;
     top: 0;
     left: 0;
@@ -102,11 +102,11 @@
     transition: opacity 0.2s ease;
 }
 
-. page-loading-bar.active {
+.page-loading-bar.active {
     opacity:  1;
 }
 
-. page-loading-bar . bar-fill {
+.page-loading-bar .bar-fill {
     position: absolute;
     top: 0;
     left: 0;
@@ -132,7 +132,7 @@
         transition: none;
     }
     
-    .page-loading-bar . bar-fill {
+    .page-loading-bar .bar-fill {
         animation: none;
     }
 }
