@@ -2,80 +2,90 @@
  * Page Transition System
  * 
  * Uses visibility + opacity + transform for smooth transitions
- * instead of display: none which cannot be animated
+ * No display: none - uses position and pointer-events instead
  * 
  * Classes:
- * - . pages: Base class for all page containers
- * - .show: Makes element visible with entrance animation
+ * - . pages:  Base class for all page containers
+ * - . show:  Makes element visible with entrance animation
  * - .hide: Makes element invisible with exit animation
- * - .remove: For elements that should be removed from DOM
  */
 
-/* Base state for all pages - invisible but in document flow */
-.pages {
+/* Base state for all pages - invisible and removed from flow */
+. pages {
     opacity: 0;
     visibility: hidden;
     transform: translateY(20px);
+    pointer-events: none;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    min-height: 50vh;
+    z-index: 1;
     transition: 
         opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1),
         transform 0.4s cubic-bezier(0.4, 0, 0.2, 1),
-        visibility 0.4s;
-    pointer-events: none;
-    position: relative;
-    min-height: 50vh;
+        visibility 0s linear 0.4s;
 }
 
 /* Entrance animation - fade in + slide up */
-. pages.show {
+.pages. show {
     opacity: 1;
-    visibility:  visible;
+    visibility: visible;
     transform: translateY(0);
     pointer-events: auto;
+    position: relative;
+    z-index: 10;
+    transition: 
+        opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+        transform 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+        visibility 0s linear 0s;
 }
 
 /* Exit animation - fade out + slide down */
-. pages.hide {
+.pages.hide {
     opacity: 0;
-    visibility:  hidden;
-    transform: translateY(20px);
-    pointer-events: none;
-}
-
-/* For when you need to completely collapse the element (no space taken) */
-.pages.collapsed {
-    opacity:  0;
     visibility: hidden;
     transform: translateY(20px);
-    pointer-events:  none;
-    height: 0;
-    min-height: 0;
-    padding: 0;
-    margin: 0;
-    overflow: hidden;
+    pointer-events: none;
+    position:  absolute;
+    top: 0;
+    left: 0;
+    right:  0;
+    z-index: 1;
+    transition:  
+        opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+        transform 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+        visibility 0s linear 0.4s;
 }
 
-/* Generic show/hide classes for any element */
-.show {
-    opacity:  1 !important;
+/* Container for pages needs relative positioning */
+#mainArea {
+    position: relative;
+    min-height: calc(100vh - 60px);
+}
+
+/* Generic show/hide classes for any element (modals, dropdowns, etc) */
+.element-show {
+    opacity: 1 !important;
     visibility: visible !important;
-    transform:  translateY(0) !important;
+    transform: translateY(0) !important;
     pointer-events: auto !important;
-}
-
-.hide {
-    opacity: 0 !important;
-    visibility: hidden ! important;
-    transform: translateY(10px) !important;
-    pointer-events: none !important;
-}
-
-/* Transition timing for generic elements using show/hide */
-[class*="show"],
-[class*="hide"] {
     transition: 
         opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1),
         transform 0.3s cubic-bezier(0.4, 0, 0.2, 1),
-        visibility 0.3s;
+        visibility 0s linear 0s;
+}
+
+.element-hide {
+    opacity: 0 !important;
+    visibility: hidden !important;
+    transform:  translateY(10px) !important;
+    pointer-events: none !important;
+    transition: 
+        opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+        transform 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+        visibility 0s linear 0.3s;
 }
 
 /* Loading bar at top of page */
@@ -85,11 +95,11 @@
     left: 0;
     width: 100%;
     height: 3px;
-    background: transparent;
+    background: rgba(0, 0, 0, 0.1);
     z-index: 99999;
     pointer-events: none;
     opacity: 0;
-    transition: opacity 0.3s ease;
+    transition: opacity 0.2s ease;
 }
 
 . page-loading-bar.active {
@@ -104,8 +114,9 @@
     width: 0%;
     background:  linear-gradient(90deg, #539bf5, #57ab5a, #539bf5);
     background-size: 200% 100%;
-    animation: loadingGradient 2s linear infinite;
-    transition: width 0.2s ease;
+    animation: loadingGradient 1.5s linear infinite;
+    transition: width 0.15s ease-out;
+    border-radius: 0 2px 2px 0;
 }
 
 @keyframes loadingGradient {
@@ -116,11 +127,12 @@
 /* Reduced motion preference */
 @media (prefers-reduced-motion: reduce) {
     .pages,
-    .pages. show,
-    . pages.hide,
-    [class*="show"],
-    [class*="hide"] {
+    .pages.show,
+    .pages.hide {
         transition: none;
-        transform: none;
+    }
+    
+    .page-loading-bar . bar-fill {
+        animation: none;
     }
 }
