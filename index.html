@@ -205,6 +205,28 @@
   fill: currentColor;
   flex-shrink: 0;
 }
+
+
+
+/* Add to your existing CSS */
+.navbar {
+  position: sticky;
+  top: 0;
+  z-index: 50; /* Higher than breadcrumbs */
+}
+
+.breadCrumbsWrapper {
+  position: sticky;
+  top: 64px; /* Height of your main navbar + any padding */
+  z-index: 40;
+  transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  will-change: transform;
+}
+
+.breadCrumbsWrapper.hidden {
+  transform: translateY(-100%);
+  transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
 </style>
 
 <style id="overRide">
@@ -242,7 +264,6 @@ html {
 
 <!-- STATIC -->
 <!-- Top Navigation Bar -->
-<div class="stickyFirst">
 <nav class="navbar" aria-label="Main navigation">
   <div class="navbar-inner">
     
@@ -312,18 +333,104 @@ html {
     
   </div>
 </nav>
-</div>
 
-
-<!-- Updated breadcrumb structure -->
-<div class="stickySecond">
+<!-- Breadcrumbs navbar -->
 <nav class="breadCrumbsWrapper" id="pathBreadcrumb">
   <div class="breadCrumbContainer">
     <!-- Content will be populated by JavaScript -->
   </div>
 </nav>
-</div>
 <!-- END OF STATIC --> 
+
+
+<script>
+class ScrollHideNavbar {
+  constructor() {
+    this.breadcrumbsNav = document.getElementById('pathBreadcrumb');
+    this.lastScrollTop = 0;
+    this.scrollThreshold = 10; // Minimum scroll distance before hiding
+    this.navbarHeight = 0;
+    this.hidden = false;
+    
+    this.init();
+  }
+  
+  init() {
+    // Calculate navbar height
+    if (this.breadcrumbsNav) {
+      this.navbarHeight = this.breadcrumbsNav.offsetHeight;
+      
+      // Set initial top position based on main navbar height
+      const mainNavbar = document.querySelector('.navbar');
+      if (mainNavbar) {
+        const mainNavHeight = mainNavbar.offsetHeight;
+        this.breadcrumbsNav.style.top = `${mainNavHeight}px`;
+      }
+      
+      // Add scroll event listener
+      window.addEventListener('scroll', this.handleScroll.bind(this), { passive: true });
+      
+      // Handle resize
+      window.addEventListener('resize', this.handleResize.bind(this));
+    }
+  }
+  
+  handleResize() {
+    // Update navbar height on resize
+    if (this.breadcrumbsNav) {
+      this.navbarHeight = this.breadcrumbsNav.offsetHeight;
+      
+      // Update top position
+      const mainNavbar = document.querySelector('.navbar');
+      if (mainNavbar) {
+        const mainNavHeight = mainNavbar.offsetHeight;
+        this.breadcrumbsNav.style.top = `${mainNavHeight}px`;
+      }
+    }
+  }
+  
+  handleScroll() {
+    const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+    const scrollDelta = scrollTop - this.lastScrollTop;
+    
+    // Only trigger if scrolled more than threshold
+    if (Math.abs(scrollDelta) > this.scrollThreshold) {
+      if (scrollDelta > 0 && scrollTop > this.navbarHeight) {
+        // Scrolling DOWN
+        if (!this.hidden) {
+          this.breadcrumbsNav.classList.add('hidden');
+          this.hidden = true;
+        }
+      } else if (scrollDelta < 0) {
+        // Scrolling UP
+        if (this.hidden) {
+          this.breadcrumbsNav.classList.remove('hidden');
+          this.hidden = false;
+        }
+      }
+      
+      this.lastScrollTop = scrollTop;
+    }
+  }
+  
+  destroy() {
+    window.removeEventListener('scroll', this.handleScroll);
+    window.removeEventListener('resize', this.handleResize);
+  }
+}
+
+// Initialize when DOM is loaded
+document.addEventListener('DOMContentLoaded', () => {
+  window.breadcrumbsScroll = new ScrollHideNavbar();
+});
+</script>
+
+
+
+
+
+
+
 
 
 <!-- STATIC -->
