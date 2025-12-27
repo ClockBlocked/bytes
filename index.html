@@ -466,11 +466,83 @@ html {
         </div>
       </div>
 
-      <nav class="flex items-center space-x-1 text-sm" id="pathBreadcrumb">
-        <a href="#" data-navigate="repo" class="text-github-accent-fg hover:underline font-semibold">Repositories</a>
-        <span class="text-github-fg-muted">/</span>
-        <a href="#" class="text-github-accent-fg hover:underline font-semibold" id="currentRepoName">Repository</a>
-      </nav>
+
+
+<style>
+.breadCrumbsWrapper {
+  background-color: var(--overlay);
+  border: 1px solid var(--border);
+  padding: 16px 20px;
+  margin-bottom: 20px;
+  position: sticky;
+  top: 0;
+  z-index: 40;
+  transition: transform 0.3s ease-in-out;
+  backdrop-filter: blur(8px);
+  background-color: rgba(var(--overlay-rgb, 15 23 42), 0.8);
+}
+
+.breadCrumbsWrapper.hidden {
+  transform: translateY(-100%);
+}
+
+.breadCrumbContainer {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.breadCrumb {
+  display: inline-flex;
+  align-items: center;
+  color: #94a3b8;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.5;
+  text-decoration: none;
+  transition: color 0.2s ease;
+  white-space: nowrap;
+}
+
+.breadCrumb:hover {
+  color: #e2e8f0;
+}
+
+.breadCrumb.current {
+  color: var(--text);
+  font-weight: 500;
+  pointer-events: none;
+}
+
+.navDivider {
+  display: inline-flex;
+  align-items: center;
+  color: #475569;
+  margin: 0;
+}
+
+.navDivider svg {
+  width: 16px;
+  height: 16px;
+  fill: currentColor;
+  flex-shrink: 0;
+}
+</style>
+
+<!-- Updated breadcrumb structure -->
+<nav class="breadCrumbsWrapper" id="pathBreadcrumb">
+  <div class="breadCrumbContainer">
+    <!-- Content will be populated by JavaScript -->
+  </div>
+</nav>
+
+
+      
+      
+      
+      
+      
     </div>
 
     <div class="flex items-center space-x-2">
