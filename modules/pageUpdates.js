@@ -22,6 +22,8 @@ function updateSelectedTags() {
   `).join('');
 }
 
+
+/**
 function updateBreadcrumb() {
   const breadcrumb = document.getElementById('pathBreadcrumb');
   if (!breadcrumb) return;
@@ -43,6 +45,183 @@ function updateBreadcrumb() {
   }
   breadcrumb.innerHTML = html;
 }
+**/
+
+
+
+
+let lastScrollTop = 0;
+let scrollTimeout = null;
+const SCROLL_THRESHOLD = 10;
+
+function initScrollBehavior() {
+  const breadcrumb = document.getElementById('pathBreadcrumb');
+  if (!breadcrumb) return;
+
+  window.addEventListener('scroll', () => {
+    if (scrollTimeout) {
+      clearTimeout(scrollTimeout);
+    }
+
+    scrollTimeout = setTimeout(() => {
+      const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+      
+      if (Math.abs(scrollTop - lastScrollTop) > SCROLL_THRESHOLD) {
+        if (scrollTop > lastScrollTop && scrollTop > 100) {
+          breadcrumb.classList.add('hidden');
+        } else {
+          breadcrumb.classList.remove('hidden');
+        }
+        
+        lastScrollTop = scrollTop;
+      }
+    }, 50);
+  });
+}
+
+function updateBreadcrumb() {
+  const breadcrumb = document.getElementById('pathBreadcrumb');
+  if (!breadcrumb) return;
+
+  const container = breadcrumb.querySelector('.breadCrumbContainer');
+  if (!container) return;
+
+  let html = `
+    <span data-navigate="repo" class="breadCrumb">
+      Repositories
+    </span>
+  `;
+
+  if (currentState.repository) {
+    html += `
+      <div class="navDivider" aria-hidden="true">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16">
+          <path d="M6.22 13.72a.75.75 0 0 0 1.06 0l4.25-4.25a.75.75 0 0 0 0-1.06L7.28 4.22a.751.751 0 0 0-1.042.018.751.751 0 0 0-.018 1.042L9.94 8l-3.72 3.72a.75.75 0 0 0 0 1.06Z"/>
+        </svg>
+      </div>
+      <span data-navigate="explorer" class="breadCrumb">
+        ${currentState.repository}
+      </span>
+    `;
+  }
+
+  if (currentState.path) {
+    const segments = currentState.path.split('/');
+    let currentPath = '';
+    
+    segments.forEach((segment, index) => {
+      currentPath += (currentPath ? '/' : '') + segment;
+      const isLast = index === segments.length - 1;
+      
+      html += `
+        <div class="navDivider" aria-hidden="true">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16">
+            <path d="M6.22 13.72a.75.75 0 0 0 1.06 0l4.25-4.25a.75.75 0 0 0 0-1.06L7.28 4.22a.751.751 0 0 0-1.042.018.751.751 0 0 0-.018 1.042L9.94 8l-3.72 3.72a.75.75 0 0 0 0 1.06Z"/>
+          </svg>
+        </div>
+        <span 
+           data-navigate-path="${currentPath}"
+           class="breadCrumb ${isLast ? 'current' : ''}">
+          ${segment}
+        </span>
+      `;
+    });
+  }
+
+  container.innerHTML = html;
+  
+  setupBreadcrumbListeners();
+}
+
+function setupBreadcrumbListeners() {
+document.querySelectorAll('[data-navigate-path]').forEach(element => {
+    element.addEventListener('click', function(e) {
+      e.preventDefault();
+      const path = this.getAttribute('data-navigate-path');
+      navigateToPath(path);
+    });
+  });
+}
+
+window.navigateToRoot = function() {
+  if (!window.currentState) return;
+  
+  window.currentState.path = '';
+  
+  if (PageRouter && PageRouter.navigateTo) {
+    PageRouter.navigateTo('explorer');
+  }
+  
+  if (typeof LocalStorageManager !== 'undefined') {
+    LocalStorageManager.listFiles(window.currentState.repository, '').then(function(files) {
+      window.currentState.files = files;
+      if (typeof renderFileList === 'function') renderFileList();
+      if (typeof updateBreadcrumb === 'function') updateBreadcrumb();
+      if (typeof updateStats === 'function') updateStats();
+    });
+  }
+};
+
+window.navigateToPath = function(path) {
+  if (!window.currentState) return;
+  
+  window.currentState.path = path;
+  
+  if (PageRouter && PageRouter.navigateTo) {
+    PageRouter.navigateTo('explorer');
+  }
+  
+  const pathPrefix = path ? path + '/' : '';
+  
+  if (typeof LocalStorageManager !== 'undefined') {
+    LocalStorageManager.listFiles(window.currentState.repository, pathPrefix).then(function(files) {
+      window.currentState.files = files;
+      if (typeof renderFileList === 'function') renderFileList();
+      if (typeof updateBreadcrumb === 'function') updateBreadcrumb();
+    });
+  }
+};
+
+document.addEventListener('pageNavigationComplete', function(e) {
+  if (e.detail.to === 'explorer') {
+    if (typeof updateBreadcrumb === 'function') {
+      updateBreadcrumb();
+    }
+  } else if (e.detail.to === 'repo') {
+    const breadcrumb = document.getElementById('pathBreadcrumb');
+    if (breadcrumb) {
+      const container = breadcrumb.querySelector('.breadCrumbContainer');
+      if (container) {
+        container.innerHTML = '<span data-navigate="repo" class="breadCrumb current">Repositories</span>';
+      }
+    }
+  }
+});
+
+document.addEventListener('repositoryChanged', function(e) {
+  if (typeof updateBreadcrumb === 'function') {
+    updateBreadcrumb();
+  }
+});
+
+document.addEventListener('DOMContentLoaded', function() {
+  initScrollBehavior();
+  
+  setTimeout(function() {
+    if (typeof updateBreadcrumb === 'function') {
+      updateBreadcrumb();
+    }
+  }, 100);
+});
+
+window.addEventListener('stateChanged', function() {
+  if (typeof updateBreadcrumb === 'function') {
+    updateBreadcrumb();
+  }
+});
+
+
+
 
 function updateEditorMode(editor, fileName) {
   if (!editor || !fileName) return;
