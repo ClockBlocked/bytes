@@ -142,10 +142,14 @@
   </script>
 
 <style>
+.stickyFirst,
+.stickySecond {
+  position: relative;
+}
 .breadCrumbsWrapper {
   background-color: var(--overlay);
   border: 1px solid var(--border);
-  padding: 16px 20px;
+  padding: 12px 12px;
   margin-bottom: 20px;
   position: sticky;
   top: 0;
@@ -238,7 +242,7 @@ html {
 
 <!-- STATIC -->
 <!-- Top Navigation Bar -->
-<nav class="navbar" aria-label="Main navigation">
+<nav class="navbar stickyFirst" aria-label="Main navigation">
   <div class="navbar-inner">
     
     <!-- Left Section -->
@@ -311,7 +315,7 @@ html {
 
 
 <!-- Updated breadcrumb structure -->
-<nav class="breadCrumbsWrapper" id="pathBreadcrumb">
+<nav class="breadCrumbsWrapper stickySecond" id="pathBreadcrumb">
   <div class="breadCrumbContainer">
     <!-- Content will be populated by JavaScript -->
   </div>
