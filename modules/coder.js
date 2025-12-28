@@ -39,7 +39,7 @@ class coderViewEdit {
     <div class="container">
       <div class="fileHeader"><!-- Header  -->
       
-      <!-- Header  |  Left -->
+  <!-- Header  |  Left -->
         <div class="fileActions">
           <button id="editSaveBtn" class="actionButton" title="Edit">
             <svg id="editSaveIcon" class="icon" fill="currentColor" viewBox="0 0 16 16">
@@ -65,7 +65,7 @@ class coderViewEdit {
 
 
 
-      <!-- Header  |  Right -->
+  <!-- Header  |  Right -->
         <div class="toolbarGroup">
           <button id="themeToggleBtn" class="toolbarButton" title="Toggle Theme">
             <svg id="themeIcon" class="smallIcon" fill="currentColor" viewBox="0 0 16 16">
@@ -123,9 +123,11 @@ class coderViewEdit {
         </div>
       </div>
     </div>
-    
-    <!-- Coder  |  Component -->
+
+
+  <!-- Coder  |  Component -->
     <div id="coderWrapper">
+    
       <div id="loadingSpinner" class="loading-spinner" data-active="false">
         <div class="spinner-overlay">
           <svg class="spinner-svg" viewBox="0 0 50 50">
@@ -134,7 +136,10 @@ class coderViewEdit {
           </svg>
         </div>
       </div>
+      
+  <!-- CodeMirror  |  Container -->
       <div id="codeMirrorContainer"></div>
+      
     </div>
     <div class="fileFooter">
       <div class="footerStats">
@@ -143,7 +148,7 @@ class coderViewEdit {
         <span id="fileLanguageDisplay">Text</span>
       </div>
       
-      <!-- Footer  |  Right -->
+  <!-- Footer  |  Right -->
       <div class="footerRight">
         <span id="cursorPosition" class="cursorInfo">Ln 1, Col 1</span><span class="footerDivider">•</span>
         <span id="selectionInfo" class="selectionInfo"></span>
@@ -151,7 +156,7 @@ class coderViewEdit {
       </div>
     </div>
     
-    <!-- Commit  |  Save File -->
+  <!-- Commit  |  Save File -->
     <div id="commitPanel" class="commitPanel hidden">
       <h3 class="panelTitle">Commit changes</h3>
       <div class="panelContent">
