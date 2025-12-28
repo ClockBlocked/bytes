@@ -46,7 +46,7 @@ class coderViewEdit {
               <path d="M11.013 1.427a1.75 1.75 0 0 1 2.474 0l1.086 1.086a1.75 1.75 0 0 1 0 2.474l-8.61 8.61a1.75 1.75 0 0 1-.757.437l-3.26.88a.75.75 0 0 1-.918-.918l.88-3.26a1.75 1.75 0 0 1 .437-.757l8.61-8.61Zm1.414 1.06a.25.25 0 0 0-.354 0L11.26 3.3l1.44 1.44 1.113-1.113a.25.25 0 0 0 0-.354l-1.086-1.086Z"></path>
             </svg>
           </button>
-          <button id="cancelBtn" class="actionButton hidden" title="Cancel">
+          <button id="cancelBtn" class="actionButton hide" title="Cancel">
             <svg class="icon" fill="currentColor" viewBox="0 0 16 16">
               <path d="M3.72 3.72a.75.75 0 0 1 1.06 0L8 6.94l3.22-3.22a.75.75 0 1 1 1.06 1.06L9.06 8l3.22 3.22a.75.75 0 1 1-1.06 1.06L8 9.06l-3.22 3.22a.75.75 0 0 1-1.06-1.06L6.94 8 3.72 4.78a.75.75 0 0 1 0-1.06Z"></path>
             </svg>
@@ -110,7 +110,7 @@ class coderViewEdit {
               <path d="M3.75 2h2.5a.75.75 0 0 1 0 1.5h-2.5a.25.25 0 0 0-.25.25v2.5a.75.75 0 0 1-1.5 0v-2.5C2 2.784 2.784 2 3.75 2Zm6.5 0h2c.966 0 1.75.784 1.75 1.75v2a.75.75 0 0 1-1.5 0v-2a.25.25 0 0 0-.25-.25h-2a.75.75 0 0 1 0-1.5Zm-9 8.25a.75.75 0 0 1 .75.75v2a.25.25 0 0 0 .25.25h2.5a.75.75 0 0 1 0 1.5h-2.5A1.75 1.75 0 0 1 2 13.25v-2a.75.75 0 0 1 .75-.75Zm9 0a.75.75 0 0 1 .75-.75h2a.75.75 0 0 1 .75.75v2c0 .966-.784 1.75-1.75 1.75h-2a.75.75 0 0 1 0-1.5h2a.25.25 0 0 0 .25-.25v-2a.25.25 0 0 0-.25-.25h-2a.75.75 0 0 1-.75-.75Z"></path>
             </svg>
           </button>
-          <button id="formatCodeBtn" class="toolbarButton hidden" title="Format">
+          <button id="formatCodeBtn" class="toolbarButton hide" title="Format">
             <svg class="smallIcon" fill="currentColor" viewBox="0 0 16 16">
               <path d="M4.72 3.22a.75.75 0 0 1 1.06 1.06L3.06 7l2.72 2.72a.75.75 0 1 1-1.06 1.06L1.94 7.94a1.25 1.25 0 0 1 0-1.88Zm6.56 0a.75.75 0 0 0-1.06 1.06L12.94 7l-2.72 2.72a.75.75 0 1 0 1.06 1.06l2.78-2.78a1.25 1.25 0 0 0 0-1.88Z"></path>
             </svg>
@@ -157,7 +157,7 @@ class coderViewEdit {
     </div>
     
   <!-- Commit  |  Save File -->
-    <div id="commitPanel" class="commitPanel hidden">
+    <div id="commitPanel" class="commitPanel hide">
       <h3 class="panelTitle">Commit changes</h3>
       <div class="panelContent">
         <div><input type="text" id="commitTitleInput" class="commitInput" placeholder="Update filename.ext"/></div>
@@ -370,11 +370,11 @@ class coderViewEdit {
   }
 
   show() {
-    this.elements.filePage?.classList.remove("hidden");
+    this.elements.filePage?.classList.remove("hide");
   }
 
   hide() {
-    this.elements.filePage?.classList.add("hidden");
+    this.elements.filePage?.classList.add("hide");
   }
 
   enterEditMode() {
@@ -383,9 +383,9 @@ class coderViewEdit {
     this.isEditing = true;
     this.elements.editSaveIcon.innerHTML = `<path d="M13.488 2.512a1.75 1.75 0 0 0-2.475 0L6.175 7.35a.75.75 0 0 0-.206.578l.242 2.62a.75.75 0 0 0 .826.826l2.62.242a.75.75 0 0 0 .578-.206l4.838-4.838a1.75 1.75 0 0 0 0-2.475l-1.143-1.143Zm-1.06 1.06a.25.25 0 0 1 .354 0l1.143 1.143a.25.25 0 0 1 0 .354l-4.587 4.587-1.849-.171-.17-1.85 4.587-4.586Z"></path><path d="M1.75 1.5a.25.25 0 0 0-.25.25v12.5c0 .138.112.25.25.25h12.5a.25.25 0 0 0 .25-.25V6a.75.75 0 0 1 1.5 0v7.75A1.75 1.75 0 0 1 14.25 15.5H1.75A1.75 1.75 0 0 1 0 13.75V1.75C0 .784.784 0 1.75 0h6a.75.75 0 0 1 0 1.5Z"></path>`;
     this.elements.editSaveBtn.title = "Save";
-    this.elements.cancelBtn?.classList.remove("hidden");
-    this.elements.formatCodeBtn?.classList.remove("hidden");
-    this.elements.commitPanel?.classList.remove("hidden");
+    this.elements.cancelBtn?.classList.remove("hide");
+    this.elements.formatCodeBtn?.classList.remove("hide");
+    this.elements.commitPanel?.classList.remove("hide");
     if (this.codeMirror) {
       this.codeMirror.setOption("readOnly", false);
       this.codeMirror.getWrapperElement().style.cursor = "text";
@@ -400,9 +400,9 @@ class coderViewEdit {
     this.isEditing = false;
     this.elements.editSaveIcon.innerHTML = `<path d="M11.013 1.427a1.75 1.75 0 0 1 2.474 0l1.086 1.086a1.75 1.75 0 0 1 0 2.474l-8.61 8.61a1.75 1.75 0 0 1-.757.437l-3.26.88a.75.75 0 0 1-.918-.918l.88-3.26a1.75 1.75 0 0 1 .437-.757l8.61-8.61Zm1.414 1.06a.25.25 0 0 0-.354 0L11.26 3.3l1.44 1.44 1.113-1.113a.25.25 0 0 0 0-.354l-1.086-1.086Z"></path>`;
     this.elements.editSaveBtn.title = "Edit";
-    this.elements.cancelBtn?.classList.add("hidden");
-    this.elements.formatCodeBtn?.classList.add("hidden");
-    this.elements.commitPanel?.classList.add("hidden");
+    this.elements.cancelBtn?.classList.add("hide");
+    this.elements.formatCodeBtn?.classList.add("hide");
+    this.elements.commitPanel?.classList.add("hide");
     if (this.codeMirror) {
       this.codeMirror.setOption("readOnly", true);
       this.codeMirror.getWrapperElement().style.cursor = "default";
@@ -559,7 +559,6 @@ class coderViewEdit {
     this.updateThemeIcon(!isDark);
     this.codeMirror?.setOption("theme", isDark ? "default" : "one-dark");
   }
-
   updateThemeIcon(isDark) {
     if (!this.elements.themeIcon) return;
     this.elements.themeIcon.innerHTML = isDark
@@ -585,7 +584,6 @@ class coderViewEdit {
       for (let i = 0; i < this.codeMirror.lineCount(); i++) this.codeMirror.foldCode({ line: i, ch: 0 }, null, "fold");
     });
   }
-
   unfoldAll() {
     if (!this.codeMirror) return;
     this.codeMirror.operation(() => {
@@ -599,11 +597,17 @@ class coderViewEdit {
     if (this.isFullscreen) {
       this.elements.coderWrapper.classList.add("fullscreen");
       document.body.style.overflow = "hidden";
-      this.elements.fullscreenIcon && (this.elements.fullscreenIcon.innerHTML = '<path d="M5.5 2.75a.75.75 0 0 0-1.5 0v2.5H1.75a.75.75 0 0 0 0 1.5h2.5a.75.75 0 0 0 .75-.75v-3.25Zm5 0a.75.75 0 0 1 1.5 0v2.5h2.25a.75.75 0 0 1 0 1.5h-2.5a.75.75 0 0 1-.75-.75v-3.25Zm0 10.5v-2.5a.75.75 0 0 1 1.5 0v1.75h2.25a.75.75 0 0 1 0 1.5h-3a.75.75 0 0 1-.75-.75Zm-5 0v-2.5a.75.75 0 0 0-1.5 0v1.75H1.75a.75.75 0 0 0 0 1.5h3a.75.75 0 0 0 .75-.75Z"></path>');
+      this.elements.fullscreenIcon && (this.elements.fullscreenIcon.innerHTML =
+      `
+      <path d="M5.5 2.75a.75.75 0 0 0-1.5 0v2.5H1.75a.75.75 0 0 0 0 1.5h2.5a.75.75 0 0 0 .75-.75v-3.25Zm5 0a.75.75 0 0 1 1.5 0v2.5h2.25a.75.75 0 0 1 0 1.5h-2.5a.75.75 0 0 1-.75-.75v-3.25Zm0 10.5v-2.5a.75.75 0 0 1 1.5 0v1.75h2.25a.75.75 0 0 1 0 1.5h-3a.75.75 0 0 1-.75-.75Zm-5 0v-2.5a.75.75 0 0 0-1.5 0v1.75H1.75a.75.75 0 0 0 0 1.5h3a.75.75 0 0 0 .75-.75Z"></path>
+      `);
     } else {
       this.elements.coderWrapper.classList.remove("fullscreen");
       document.body.style.overflow = "";
-      this.elements.fullscreenIcon && (this.elements.fullscreenIcon.innerHTML = '<path d="M3.75 2h2.5a.75.75 0 0 1 0 1.5h-2.5a.25.25 0 0 0-.25.25v2.5a.75.75 0 0 1-1.5 0v-2.5C2 2.784 2.784 2 3.75 2Zm6.5 0h2c.966 0 1.75.784 1.75 1.75v2a.75.75 0 0 1-1.5 0v-2a.25.25 0 0 0-.25-.25h-2a.75.75 0 0 1 0-1.5Zm-9 8.25a.75.75 0 0 1 .75.75v2a.25.25 0 0 0 .25.25h2.5a.75.75 0 0 1 0 1.5h-2.5A1.75 1.75 0 0 1 2 13.25v-2a.75.75 0 0 1 .75-.75Zm9 0a.75.75 0 0 1 .75-.75h2a.75.75 0 0 1 .75.75v2c0 .966-.784 1.75-1.75 1.75h-2a.75.75 0 0 1 0-1.5h2a.25.25 0 0 0 .25-.25v-2a.25.25 0 0 0-.25-.25h-2a.75.75 0 0 1-.75-.75Z"></path>');
+      this.elements.fullscreenIcon && (this.elements.fullscreenIcon.innerHTML =
+      `
+      <path d="M3.75 2h2.5a.75.75 0 0 1 0 1.5h-2.5a.25.25 0 0 0-.25.25v2.5a.75.75 0 0 1-1.5 0v-2.5C2 2.784 2.784 2 3.75 2Zm6.5 0h2c.966 0 1.75.784 1.75 1.75v2a.75.75 0 0 1-1.5 0v-2a.25.25 0 0 0-.25-.25h-2a.75.75 0 0 1 0-1.5Zm-9 8.25a.75.75 0 0 1 .75.75v2a.25.25 0 0 0 .25.25h2.5a.75.75 0 0 1 0 1.5h-2.5A1.75 1.75 0 0 1 2 13.25v-2a.75.75 0 0 1 .75-.75Zm9 0a.75.75 0 0 1 .75-.75h2a.75.75 0 0 1 .75.75v2c0 .966-.784 1.75-1.75 1.75h-2a.75.75 0 0 1 0-1.5h2a.25.25 0 0 0 .25-.25v-2a.25.25 0 0 0-.25-.25h-2a.75.75 0 0 1-.75-.75Z"></path>
+      `);
     }
     setTimeout(() => this.codeMirror?.refresh(), 100);
   }
@@ -673,3 +677,14 @@ window.coderViewEdit = new coderViewEdit();
 document.addEventListener("DOMContentLoaded", () => {
   if (document.querySelector('.pages[data-page="file"]')) window.coderViewEdit.init();
 });
+/**
+ * 
+ *  C R E A T E D  B Y
+ * 
+ *  William Hanson 
+ * 
+ *  Chevrolay@Outlook.com
+ * 
+ *  m.me/Chevrolay
+ * 
+ */
