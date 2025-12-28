@@ -1,8 +1,3 @@
-
-
-
-
-
 :root {
   --github-canvas-default: #22272e;
   --github-canvas-overlay: #2d333b;
@@ -25,9 +20,6 @@
   --github-btn-secondary-bg: #373e47;
   --github-btn-secondary-hover: #444c56;
   
-  
-  
-
   --bgMain: #22272e;
   --bgCode: #1c2128;
   --bgHeader: #1c2128;
@@ -49,8 +41,6 @@
   --syntaxTag: #8ddb8c;
   --syntaxMatch: #ae7c14;
 }
-  
-
 
 #coderWrapper {
   display: flex;
@@ -162,14 +152,183 @@
   border-left: 2px solid var(--accentPrimary);
 }
 
+.fileHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 0.5rem 0.5rem 0.25rem 0.5rem;
+  gap: 16px;
+}
 
+.fileActions {
+  display: flex;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.filePath {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 1;
+  min-width: 0;
+  justify-content: flex-end;
+}
+
+.toolbarGroup {
+  display: flex;
+  gap: 4px;
+  flex-shrink: 0;
+  overflow-x: auto;
+  max-width: 400px;
+  padding: 4px 0;
+}
+
+.toolbarGroup::-webkit-scrollbar {
+  height: 4px;
+}
+.toolbarGroup::-webkit-scrollbar-track {
+  background: var(--github-border-muted);
+  border-radius: 2px;
+}
+.toolbarGroup::-webkit-scrollbar-thumb {
+  background: var(--github-neutral-emphasis);
+  border-radius: 2px;
+}
+
+.repoButton {
+  background: var(--github-btn-secondary-bg);
+  color: var(--github-fg-default);
+  border: 1px solid var(--github-border-default);
+  border-radius: 6px;
+  padding: 6px 12px;
+  font-size: 14px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.2s ease;
+}
+.repoButton:hover {
+  background: var(--github-btn-secondary-hover);
+}
+
+.fileNameInput {
+  min-width: 200px;
+  width: auto;
+  max-width: 300px;
+  transition: all 0.3s ease;
+  border: 1px solid var(--github-border-muted);
+  border-radius: 6px;
+  padding: 6px 12px;
+  font-size: 14px;
+  background-color: var(--github-canvas-subtle);
+  color: var(--github-fg-default);
+  cursor: default;
+}
+.fileNameInput:hover {
+  border-color: var(--github-border-default);
+}
+.fileNameInput:not([readonly]) {
+  cursor: text;
+  background-color: var(--github-canvas-inset);
+  border-color: var(--github-accent-emphasis);
+}
+
+.actionButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 8px 16px;
+  border: 1px solid var(--github-border-default);
+  border-radius: 6px;
+  background-color: var(--github-btn-secondary-bg);
+  color: var(--github-fg-default);
+  cursor: pointer;
+  font-size: 14px;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+.actionButton:hover {
+  background-color: var(--github-btn-secondary-hover);
+}
+
+.toolbarButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border: 1px solid var(--github-border-default);
+  border-radius: 6px;
+  background-color: var(--github-btn-secondary-bg);
+  color: var(--github-fg-default);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+}
+.toolbarButton:hover {
+  background-color: var(--github-btn-secondary-hover);
+}
+.toolbarButton.active {
+  background-color: var(--github-btn-secondary-hover);
+  color: var(--github-accent-fg);
+  border-color: var(--github-accent-fg);
+}
+
+.fontSizeControl {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  border: 1px solid var(--github-border-default);
+  border-radius: 6px;
+  background-color: var(--github-btn-secondary-bg);
+  padding: 0 4px;
+}
+
+.fontButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border: none;
+  background: transparent;
+  color: var(--github-fg-default);
+  cursor: pointer;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+}
+.fontButton:hover {
+  background-color: var(--github-btn-secondary-hover);
+}
+
+.fontSizeDisplay {
+  font-size: 12px;
+  color: var(--github-fg-default);
+  min-width: 40px;
+  text-align: center;
+  font-family: "JetBrains Mono", monospace;
+}
+
+.smallIcon {
+  width: 16px;
+  height: 16px;
+}
+.tinyIcon {
+  width: 14px;
+  height: 14px;
+}
+.icon {
+  width: 16px;
+  height: 16px;
+}
 
 .fileFooter {
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding: 6px 12px;
-  background-color: var(--bgSecondary);
+  background-color: var(--github-canvas-subtle);
   border: 1px solid var(--borderDefault);
   border-top: none;
   margin: 0 0.5rem 0 0.5rem;
@@ -185,15 +344,6 @@
   color: var(--textMuted);
   opacity: 0.5;
 }
-
-
-
-.toolbarButton.active {
-  background-color: var(--github-btn-secondary-hover);
-  color: var(--accentPrimary);
-}
-
-
 
 .loading-spinner {
   position: absolute;
@@ -228,7 +378,7 @@
 }
 .spinner-head {
   fill: none;
-  stroke: var(--accentPrimary);
+  stroke: var(--github-accent-fg);
   stroke-width: 6;
   stroke-linecap: round;
   stroke-dasharray: 80;
@@ -244,123 +394,16 @@
   }
 }
 
-
-
-.container {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin: 0.5rem 0.5rem 0.25rem 0.5rem;
-}
-
-
-
-
-
-/*
-  =========================
-     Code Viewer - Header
-  ========================== */
-
-.navigation {
-  display: flex;
-  align-items: center;
-  gap: 5px;
-  flex: 1;
-  min-width: 0;
-}
-
-.fileNameInput {
-  width: 30px !important;
-  min-width: 30px;
-  max-width: 200px;
-  transition: all 0.3s ease;
-  opacity: 1;
-  border: 1px solid var(--github-border-muted);
-  border-radius: 4px;
-  padding: 2px 8px;
-  font-size: 14px;
-  background-color: var(--github-canvas-subtle);
-  cursor: default;
-}
-.fileNameInput:hover {
-  width: 150px !important;
-}
-
-.buttonGroup {
-  display: flex;
-  gap: 5px;
-  flex-shrink: 0;
-  transition: opacity 0.3s ease;
-}
-.navigation:hover .buttonGroup {
-  opacity: 0;
-  pointer-events: none;
-}
-
-.actionButton {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 5px;
-  padding: 5px 10px;
-  border: 1px solid var(--borderDefault);
-  border-radius: 4px;
-  background-color: var(--btnDefault);
-  cursor: pointer;
-  font-size: 14px;
-  transition: all 0.2s ease;
-  flex: 1;
-  min-width: 60px;
-  opacity: 1;
-}
-.actionButton:hover {
-  background-color: var(--btnHover);
-}
-
-.container:hover .buttonGroup:not(.navigation:hover .buttonGroup) {
-  opacity: 1;
-  pointer-events: auto;
-}
-
-.navButton {
-  padding: 4px 12px;
-  border: 1px solid var(--borderDefault);
-  border-radius: 4px;
-  background-color: var(--btnDefault);
-  cursor: pointer;
-  font-size: 14px;
-  white-space: nowrap;
-}
-
-.separator {
-  margin: 0 2px;
-  color: #666;
-}
-
-.icon {
-  width: 16px;
-  height: 16px;
-}
-
-.fileNameInput:not([readonly]) {
-  cursor: text;
-  background-color: var(--github-canvas-subtle);
-  border-color: #4d90fe;
-}
-
-
-
 .commitPanel {
   margin: 0.5rem;
   border: 1px solid var(--borderDefault);
-  background: var(--bgSecondary);
+  background: var(--github-canvas-subtle);
   border-radius: 8px;
   padding: 12px;
 }
 .panelTitle {
   margin: 0 0 8px 0;
-  color: var(--textPrimary);
+  color: var(--github-fg-default);
   font-size: 14px;
   font-weight: 700;
 }
@@ -373,8 +416,8 @@
 .commitTextarea {
   width: 100%;
   border: 1px solid var(--borderDefault);
-  background: var(--bgCode);
-  color: var(--textPrimary);
+  background: var(--github-canvas-inset);
+  color: var(--github-fg-default);
   border-radius: 8px;
   padding: 8px;
   font-size: 14px;
@@ -389,35 +432,41 @@
 }
 
 .primaryButton {
-  background: var(--accentPrimary);
+  background: var(--github-btn-primary-bg);
   color: #fff;
   border: none;
   border-radius: 8px;
   padding: 8px 12px;
   font-weight: 700;
   cursor: pointer;
+  transition: all 0.2s ease;
 }
 .secondaryButton {
-  background: var(--bgSecondary);
-  color: var(--textPrimary);
-  border: 1px solid var(--borderDefault);
+  background: var(--github-btn-secondary-bg);
+  color: var(--github-fg-default);
+  border: 1px solid var(--github-border-default);
   border-radius: 8px;
   padding: 8px 12px;
   font-weight: 700;
   cursor: pointer;
+  transition: all 0.2s ease;
 }
 
 .primaryButton:hover {
-  filter: brightness(1.05);
+  background: var(--github-btn-primary-hover);
 }
 .secondaryButton:hover {
   background: var(--github-btn-secondary-hover);
 }
 
-
 .hidden {
   visibility: hidden;
   pointer-events: none;
-  transition: visibility 0.25s ease;
+  opacity: 0;
+  transition: opacity 0.25s ease, visibility 0.25s ease;
 }
 
+.separator {
+  color: var(--github-fg-muted);
+  margin: 0 4px;
+}
