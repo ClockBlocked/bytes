@@ -58,11 +58,8 @@ class coderViewEdit {
             </svg>
           </button>
         </div>
-        <div class="filePath">
-          <button onclick="showExplorer()" class="repoButton">${window.currentState?.repository || "Repository"}</button>
-          <span class="separator">/</span>
-          <input type="text" id="fileNameInput" class="fileNameInput" value="" readonly />
-        </div>
+
+
         <div class="toolbarGroup">
           <button id="themeToggleBtn" class="toolbarButton" title="Toggle Theme">
             <svg id="themeIcon" class="smallIcon" fill="currentColor" viewBox="0 0 16 16">
