@@ -34,8 +34,12 @@ class coderViewEdit {
 
   getTemplate() {
     return `
+
+<!-- data-page="file" ---------------->
     <div class="container">
-      <div class="fileHeader">
+      <div class="fileHeader"><!-- Header  -->
+      
+      <!-- Header  |  Left -->
         <div class="fileActions">
           <button id="editSaveBtn" class="actionButton" title="Edit">
             <svg id="editSaveIcon" class="icon" fill="currentColor" viewBox="0 0 16 16">
@@ -60,6 +64,8 @@ class coderViewEdit {
         </div>
 
 
+
+      <!-- Header  |  Right -->
         <div class="toolbarGroup">
           <button id="themeToggleBtn" class="toolbarButton" title="Toggle Theme">
             <svg id="themeIcon" class="smallIcon" fill="currentColor" viewBox="0 0 16 16">
@@ -117,6 +123,8 @@ class coderViewEdit {
         </div>
       </div>
     </div>
+    
+    <!-- Coder  |  Component -->
     <div id="coderWrapper">
       <div id="loadingSpinner" class="loading-spinner" data-active="false">
         <div class="spinner-overlay">
@@ -134,12 +142,16 @@ class coderViewEdit {
         <span id="fileSize">0 KB</span><span class="footerDivider">•</span>
         <span id="fileLanguageDisplay">Text</span>
       </div>
+      
+      <!-- Footer  |  Right -->
       <div class="footerRight">
         <span id="cursorPosition" class="cursorInfo">Ln 1, Col 1</span><span class="footerDivider">•</span>
         <span id="selectionInfo" class="selectionInfo"></span>
         <span id="encodingDisplay" class="encodingInfo">UTF-8</span>
       </div>
     </div>
+    
+    <!-- Commit  |  Save File -->
     <div id="commitPanel" class="commitPanel hidden">
       <h3 class="panelTitle">Commit changes</h3>
       <div class="panelContent">
@@ -150,7 +162,11 @@ class coderViewEdit {
           <button id="saveChangesBtn" class="primaryButton">Commit changes</button>
         </div>
       </div>
-    </div>`;
+    </div>
+<!-- E N D -- E N D -- E N D ----------------------->
+    
+    
+    `;
   }
 
   cacheElements() {
