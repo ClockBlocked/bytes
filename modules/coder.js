@@ -955,6 +955,155 @@ getTemplate() {
     this.undoHistory = [];
     this.redoHistory = [];
   }
+  
+  
+  // Add to your class methods:
+
+openSearch() {
+  if (!this.codeMirror) {
+    return;
+  }
+  
+  // Show search panel
+  if (this.elements.searchPanel) {
+    this.elements.searchPanel.classList.remove("hide");
+  }
+  
+  // Focus search input
+  if (this.elements.searchInput) {
+    this.elements.searchInput.focus();
+    this.elements.searchInput.select();
+  }
+  
+  // Initialize search if CodeMirror has findPersistent
+  if (this.codeMirror.execCommand("findPersistent")) {
+    this.codeMirror.execCommand("findPersistent");
+  }
+  
+  // Setup search event listeners
+  this.setupSearchListeners();
+}
+
+setupSearchListeners() {
+  if (!this.elements.searchInput) return;
+  
+  // Debounced search handler
+  const handleSearch = () => {
+    const query = this.elements.searchInput.value;
+    if (!query) {
+      this.clearSearch();
+      return;
+    }
+    
+    // Use CodeMirror's search or implement custom search
+    if (typeof this.codeMirror.search !== 'undefined') {
+      this.codeMirror.search(query);
+    } else {
+      // Fallback search implementation
+      this.performSearch(query);
+    }
+  };
+  
+  // Remove existing listeners
+  this.elements.searchInput.removeEventListener('input', handleSearch);
+  this.elements.searchInput.removeEventListener('keydown', this.boundEventHandlers.searchKeydown);
+  
+  // Add new listeners
+  this.boundEventHandlers.searchKeydown = (e) => {
+    if (e.key === 'Escape') {
+      this.closeSearch();
+    } else if (e.key === 'Enter' && e.shiftKey) {
+      this.findPrevious();
+    } else if (e.key === 'Enter') {
+      this.findNext();
+    }
+  };
+  
+  this.elements.searchInput.addEventListener('input', handleSearch);
+  this.elements.searchInput.addEventListener('keydown', this.boundEventHandlers.searchKeydown);
+  
+  // Search button listeners
+  if (this.elements.searchNextBtn) {
+    this.elements.searchNextBtn.onclick = () => this.findNext();
+  }
+  if (this.elements.searchPrevBtn) {
+    this.elements.searchPrevBtn.onclick = () => this.findPrevious();
+  }
+  if (this.elements.closeSearchBtn) {
+    this.elements.closeSearchBtn.onclick = () => this.closeSearch();
+  }
+}
+
+closeSearch() {
+  if (this.elements.searchPanel) {
+    this.elements.searchPanel.classList.add("hide");
+  }
+  this.clearSearch();
+  if (this.codeMirror) {
+    this.codeMirror.focus();
+  }
+}
+
+clearSearch() {
+  if (this.elements.searchInput) {
+    this.elements.searchInput.value = "";
+  }
+  if (this.elements.searchMatches) {
+    this.elements.searchMatches.textContent = "0/0";
+  }
+  // Clear any search highlights
+  if (this.codeMirror && typeof this.codeMirror.clearSearch === 'function') {
+    this.codeMirror.clearSearch();
+  }
+}
+
+findNext() {
+  if (!this.codeMirror) return;
+  
+  const query = this.elements.searchInput?.value;
+  if (!query) return;
+  
+  // Use CodeMirror's searchNext or implement custom
+  if (typeof this.codeMirror.searchNext === 'function') {
+    this.codeMirror.searchNext();
+  }
+}
+
+findPrevious() {
+  if (!this.codeMirror) return;
+  
+  const query = this.elements.searchInput?.value;
+  if (!query) return;
+  
+  if (typeof this.codeMirror.searchPrev === 'function') {
+    this.codeMirror.searchPrev();
+  }
+}
+
+performSearch(query) {
+  // Basic search implementation
+  if (!this.codeMirror || !query) return;
+  
+  const content = this.codeMirror.getValue();
+  const lines = content.split('\n');
+  let matches = [];
+  
+  lines.forEach((line, index) => {
+    let pos = -1;
+    while ((pos = line.indexOf(query, pos + 1)) !== -1) {
+      matches.push({
+        line: index,
+        ch: pos,
+        length: query.length
+      });
+    }
+  });
+  
+  // Update match count
+  if (this.elements.searchMatches) {
+    this.elements.searchMatches.textContent = `0/${matches.length}`;
+  }
+}
 }
 
 window.coderViewEdit = new coderViewEdit();
