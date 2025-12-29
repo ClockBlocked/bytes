@@ -20,69 +20,72 @@
   --github-btn-secondary-bg: #373e47;
   --github-btn-secondary-hover: #444c56;
   
-  --bgMain: #22272e;
-  --bgCode: #1c2128;
-  --bgHeader: #1c2128;
-  --borderDefault: #444c56;
-  --btnDefault: #373e47;
-  --btnHover: #444c56;
-  --textMain: #adbac7;
-  --textMuted: #768390;
-  --accentPrimary: #316dca;
-  --accentBlue: #316dca;
+  --header-bg: #1c2128;
+  --header-border: #444c56;
+  --body-bg: #22272e;
+  --body-border: #444c56;
+  --footer-bg: #1c2128;
+  --footer-border: #444c56;
   
-  --syntaxKeyword: #f47067;
-  --syntaxString: #96d0ff;
-  --syntaxVariable: #adbac7;
-  --syntaxFunction: #dcbdfb;
-  --syntaxNumber: #6cb6ff;
-  --syntaxComment: #768390;
-  --syntaxConstant: #6cb6ff;
-  --syntaxTag: #8ddb8c;
-  --syntaxMatch: #ae7c14;
+  --btn-default: #373e47;
+  --btn-hover: #444c56;
+  --text-primary: #adbac7;
+  --text-muted: #768390;
+  --accent-primary: #316dca;
+  --accent-blue: #316dca;
+  
+  --syntax-keyword: #f47067;
+  --syntax-string: #96d0ff;
+  --syntax-variable: #adbac7;
+  --syntax-function: #dcbdfb;
+  --syntax-number: #6cb6ff;
+  --syntax-comment: #768390;
+  --syntax-constant: #6cb6ff;
+  --syntax-tag: #8ddb8c;
+  --syntax-match: #ae7c14;
 }
 
-.container {
+.coderContainer {
   display: flex;
   flex-direction: column;
-  margin: 0.5rem 0.5rem 0.25rem 0.5rem;
-  gap: 8px;
+  margin: 0.5rem;
+  gap: 0;
 }
 
-.fileHeader {
+/* HEADER */
+.coderHeader {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background-color: var(--bgHeader);
-  border: 1px solid var(--borderDefault);
-  border-radius: 8px;
+  background-color: var(--header-bg);
+  border: 1px solid var(--header-border);
+  border-bottom: none;
+  border-radius: 8px 8px 0 0;
   padding: 8px 12px;
-  min-height: 48px;
+  min-height: 56px;
   gap: 16px;
-  position: relative;
 }
 
-.fileActions {
+.coderHeaderLeft {
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 12px;
   flex-shrink: 0;
   min-width: 0;
 }
 
 .fileNameDisplay {
-  min-width: 120px;
+  min-width: 150px;
   max-width: 300px;
-  flex-shrink: 1;
 }
 
 .fileNameInput {
   width: 100%;
   border: 1px solid var(--github-border-muted);
   background-color: var(--github-canvas-subtle);
-  color: var(--textMain);
+  color: var(--text-primary);
   border-radius: 4px;
-  padding: 4px 8px;
+  padding: 6px 10px;
   font-size: 14px;
   font-family: inherit;
   cursor: default;
@@ -98,51 +101,26 @@
 
 .fileNameInput:not([readonly]) {
   cursor: text;
-  border-color: var(--accentPrimary);
+  border-color: var(--accent-primary);
   background-color: var(--github-canvas-default);
 }
 
-.toolbarContainer {
-  flex: 1;
-  min-width: 0;
-  overflow-x: auto;
-  overflow-y: hidden;
-  scrollbar-width: thin;
-  scrollbar-color: var(--github-border-muted) transparent;
-  padding: 2px 0;
-}
-
-.toolbarContainer::-webkit-scrollbar {
-  height: 4px;
-}
-
-.toolbarContainer::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-.toolbarContainer::-webkit-scrollbar-thumb {
-  background-color: var(--github-border-muted);
-  border-radius: 2px;
-}
-
-.toolbarGroup {
+.actionButtons {
   display: flex;
   align-items: center;
-  gap: 4px;
-  padding: 0 4px;
-  min-width: min-content;
+  gap: 6px;
 }
 
 .actionButton {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 32px;
-  height: 28px;
-  border: 1px solid var(--borderDefault);
+  width: 36px;
+  height: 32px;
+  border: 1px solid var(--header-border);
   border-radius: 4px;
-  background-color: var(--btnDefault);
-  color: var(--textMain);
+  background-color: var(--btn-default);
+  color: var(--text-primary);
   cursor: pointer;
   padding: 0;
   transition: all 0.2s ease;
@@ -150,24 +128,58 @@
 }
 
 .actionButton:hover {
-  background-color: var(--btnHover);
+  background-color: var(--btn-hover);
   border-color: var(--github-neutral-emphasis);
 }
 
 .actionButton.hide {
-  display: none !important;
+  display: none;
+}
+
+.coderHeaderRight {
+  flex: 1;
+  min-width: 0;
+}
+
+.toolbarScroll {
+  overflow-x: auto;
+  overflow-y: hidden;
+  scrollbar-width: thin;
+  scrollbar-color: var(--github-border-muted) transparent;
+  padding: 2px 0;
+}
+
+.toolbarScroll::-webkit-scrollbar {
+  height: 4px;
+}
+
+.toolbarScroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.toolbarScroll::-webkit-scrollbar-thumb {
+  background-color: var(--github-border-muted);
+  border-radius: 2px;
+}
+
+.toolbarButtons {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0 4px;
+  min-width: min-content;
 }
 
 .toolbarButton {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 28px;
-  height: 28px;
-  border: 1px solid var(--borderDefault);
+  width: 32px;
+  height: 32px;
+  border: 1px solid var(--header-border);
   border-radius: 4px;
-  background-color: var(--btnDefault);
-  color: var(--textMain);
+  background-color: var(--btn-default);
+  color: var(--text-primary);
   cursor: pointer;
   padding: 0;
   transition: all 0.2s ease;
@@ -175,23 +187,23 @@
 }
 
 .toolbarButton:hover {
-  background-color: var(--btnHover);
+  background-color: var(--btn-hover);
   border-color: var(--github-neutral-emphasis);
 }
 
 .toolbarButton.active {
   background-color: var(--github-btn-secondary-hover);
-  border-color: var(--accentPrimary);
-  color: var(--accentPrimary);
+  border-color: var(--accent-primary);
+  color: var(--accent-primary);
 }
 
 .fontSizeControl {
   display: flex;
   align-items: center;
-  border: 1px solid var(--borderDefault);
+  border: 1px solid var(--header-border);
   border-radius: 4px;
-  background-color: var(--btnDefault);
-  height: 28px;
+  background-color: var(--btn-default);
+  height: 32px;
   overflow: hidden;
   flex-shrink: 0;
 }
@@ -200,27 +212,28 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 24px;
+  width: 28px;
   height: 100%;
   border: none;
   background: transparent;
-  color: var(--textMain);
+  color: var(--text-primary);
   cursor: pointer;
   padding: 0;
   transition: background-color 0.2s ease;
 }
 
 .fontButton:hover {
-  background-color: var(--btnHover);
+  background-color: var(--btn-hover);
 }
 
 .fontSizeDisplay {
-  padding: 0 8px;
+  padding: 0 10px;
   font-size: 12px;
-  color: var(--textMain);
-  min-width: 40px;
+  color: var(--text-primary);
+  min-width: 44px;
   text-align: center;
   font-family: "JetBrains Mono", monospace;
+  font-weight: 500;
 }
 
 .icon {
@@ -238,17 +251,18 @@
   height: 12px;
 }
 
+/* BODY - DON'T RENAME */
 #coderWrapper {
-  display: flex;
-  flex-direction: column;
+  flex: 1;
   height: 65svh;
   min-height: 300px;
   max-height: calc(100vh - 200px);
-  background-color: var(--bgCode);
-  border: 1px solid var(--borderDefault);
+  background-color: var(--body-bg);
+  border: 1px solid var(--body-border);
+  border-top: none;
+  border-bottom: none;
   overflow: hidden;
   position: relative;
-  border-radius: 8px;
 }
 
 #coderWrapper.fullscreen {
@@ -267,20 +281,19 @@
 }
 
 #codeMirrorContainer {
-  flex: 1 1 auto;
-  min-height: 0;
   width: 100%;
+  height: 100%;
   overflow: hidden;
 }
 
 #codeMirrorContainer .CodeMirror {
   height: 100% !important;
   width: 100% !important;
-  background-color: var(--bgCode) !important;
+  background-color: var(--body-bg) !important;
   font-family: "JetBrains Mono", "Fira Code", Consolas, monospace;
   font-size: 14px;
   line-height: 1.5;
-  color: var(--textMain);
+  color: var(--text-primary);
 }
 
 #codeMirrorContainer .CodeMirror-scroll {
@@ -288,13 +301,13 @@
 }
 
 #codeMirrorContainer .CodeMirror-gutters {
-  background-color: var(--bgCode) !important;
-  border-right: 1px solid var(--borderDefault);
+  background-color: var(--body-bg) !important;
+  border-right: 1px solid var(--body-border);
   min-width: 48px;
 }
 
 #codeMirrorContainer .CodeMirror-linenumber {
-  color: var(--textMuted);
+  color: var(--text-muted);
   padding: 0 8px 0 12px;
   min-width: 40px;
   font-family: "JetBrains Mono", monospace;
@@ -308,7 +321,7 @@
 #codeMirrorContainer .CodeMirror-foldgutter-open,
 #codeMirrorContainer .CodeMirror-foldgutter-folded {
   cursor: pointer;
-  color: var(--textMuted);
+  color: var(--text-muted);
   font-size: 14px;
   line-height: 1.6;
   text-align: center;
@@ -327,7 +340,7 @@
 
 #codeMirrorContainer .CodeMirror-foldgutter-open:hover,
 #codeMirrorContainer .CodeMirror-foldgutter-folded:hover {
-  color: var(--textMain);
+  color: var(--text-primary);
 }
 
 #codeMirrorContainer .CodeMirror-activeline-background {
@@ -343,13 +356,13 @@
 }
 
 #codeMirrorContainer .CodeMirror-matchingbracket {
-  color: var(--accentPrimary) !important;
+  color: var(--accent-primary) !important;
   background-color: var(--github-btn-secondary-hover);
-  border-bottom: 2px solid var(--accentPrimary);
+  border-bottom: 2px solid var(--accent-primary);
 }
 
 #codeMirrorContainer .CodeMirror-cursor {
-  border-left: 2px solid var(--accentPrimary);
+  border-left: 2px solid var(--accent-primary);
 }
 
 #codeMirrorContainer .CodeMirror-overlayscroll-horizontal div,
@@ -357,46 +370,127 @@
   background-color: var(--github-border-muted) !important;
 }
 
-.fileFooter {
+/* Search Panel */
+.searchPanel {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  background-color: var(--header-bg);
+  border: 1px solid var(--header-border);
+  border-radius: 6px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+  z-index: 100;
+  min-width: 300px;
+}
+
+.searchPanel.hide {
+  display: none;
+}
+
+.searchContainer {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px;
+}
+
+.searchInput {
+  flex: 1;
+  min-width: 200px;
+  border: 1px solid var(--body-border);
+  background-color: var(--body-bg);
+  color: var(--text-primary);
+  border-radius: 4px;
+  padding: 6px 12px;
+  font-size: 13px;
+  font-family: inherit;
+  transition: border-color 0.2s ease;
+}
+
+.searchInput:focus {
+  outline: none;
+  border-color: var(--accent-primary);
+  box-shadow: 0 0 0 2px rgba(49, 109, 202, 0.2);
+}
+
+.searchActions {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.searchMatches {
+  font-size: 11px;
+  color: var(--text-muted);
+  font-family: "JetBrains Mono", monospace;
+  padding: 0 4px;
+  min-width: 40px;
+  text-align: center;
+}
+
+.searchActionButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border: 1px solid var(--body-border);
+  border-radius: 4px;
+  background-color: var(--btn-default);
+  color: var(--text-primary);
+  cursor: pointer;
+  padding: 0;
+  transition: all 0.2s ease;
+}
+
+.searchActionButton:hover {
+  background-color: var(--btn-hover);
+  border-color: var(--github-neutral-emphasis);
+}
+
+/* FOOTER */
+.coderFooter {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 6px 12px;
-  background-color: var(--bgHeader);
-  border: 1px solid var(--borderDefault);
+  background-color: var(--footer-bg);
+  border: 1px solid var(--footer-border);
   border-top: none;
   border-radius: 0 0 8px 8px;
-  min-height: 32px;
+  padding: 8px 12px;
+  min-height: 40px;
   font-size: 12px;
-  color: var(--textMuted);
+  color: var(--text-muted);
 }
 
-.footerStats,
-.footerRight {
+.coderFooterLeft,
+.coderFooterRight {
   display: flex;
   align-items: center;
   gap: 8px;
 }
 
 .footerDivider {
-  color: var(--textMuted);
-  opacity: 0.5;
+  color: var(--text-muted);
+  opacity: 0.4;
+  user-select: none;
 }
 
-.cursorInfo,
-.selectionInfo,
-.encodingInfo {
+.footerStat {
   font-family: "JetBrains Mono", monospace;
   font-size: 11px;
+  color: var(--text-muted);
+  white-space: nowrap;
 }
 
+/* Loading Spinner */
 .loading-spinner {
   position: absolute;
   inset: 0;
   display: none;
   align-items: center;
   justify-content: center;
-  background: rgba(28, 33, 40, 0.85);
+  background: rgba(28, 33, 40, 0.9);
   z-index: 1000;
   backdrop-filter: blur(2px);
 }
@@ -426,7 +520,7 @@
 
 .spinner-head {
   fill: none;
-  stroke: var(--accentPrimary);
+  stroke: var(--accent-primary);
   stroke-width: 4;
   stroke-linecap: round;
   stroke-dasharray: 60;
@@ -448,12 +542,13 @@
   }
 }
 
+/* Commit Panel */
 .commitPanel {
-  background-color: var(--bgHeader);
-  border: 1px solid var(--borderDefault);
+  background-color: var(--header-bg);
+  border: 1px solid var(--header-border);
   border-radius: 8px;
   padding: 16px;
-  margin-top: 8px;
+  margin-top: 12px;
 }
 
 .commitPanel.hide {
@@ -462,7 +557,7 @@
 
 .panelTitle {
   margin: 0 0 12px 0;
-  color: var(--textMain);
+  color: var(--text-primary);
   font-size: 14px;
   font-weight: 600;
 }
@@ -482,9 +577,9 @@
 .commitInput,
 .commitTextarea {
   width: 100%;
-  border: 1px solid var(--borderDefault);
-  background-color: var(--bgCode);
-  color: var(--textMain);
+  border: 1px solid var(--body-border);
+  background-color: var(--body-bg);
+  color: var(--text-primary);
   border-radius: 4px;
   padding: 8px 12px;
   font-size: 14px;
@@ -495,7 +590,7 @@
 .commitInput:focus,
 .commitTextarea:focus {
   outline: none;
-  border-color: var(--accentPrimary);
+  border-color: var(--accent-primary);
 }
 
 .commitTextarea {
@@ -530,8 +625,8 @@
 
 .secondaryButton {
   background-color: transparent;
-  color: var(--textMain);
-  border: 1px solid var(--borderDefault);
+  color: var(--text-primary);
+  border: 1px solid var(--body-border);
   border-radius: 4px;
   padding: 8px 16px;
   font-size: 14px;
@@ -546,97 +641,44 @@
   border-color: var(--github-neutral-emphasis);
 }
 
-.searchPanel {
-  position: absolute;
-  top: 8px;
-  right: 8px;
-  background-color: var(--bgHeader);
-  border: 1px solid var(--borderDefault);
-  border-radius: 4px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-  z-index: 1000;
-}
-
-.searchPanel.hide {
-  display: none;
-}
-
-.searchContent {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 8px;
-}
-
-.searchInput {
-  width: 200px;
-  border: 1px solid var(--borderDefault);
-  background-color: var(--bgCode);
-  color: var(--textMain);
-  border-radius: 4px;
-  padding: 6px 10px;
-  font-size: 13px;
-  font-family: inherit;
-  transition: border-color 0.2s ease;
-}
-
-.searchInput:focus {
-  outline: none;
-  border-color: var(--accentPrimary);
-}
-
-.searchControls {
-  display: flex;
-  gap: 4px;
-}
-
-.searchButton {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 28px;
-  height: 28px;
-  border: 1px solid var(--borderDefault);
-  border-radius: 4px;
-  background-color: var(--btnDefault);
-  color: var(--textMain);
-  cursor: pointer;
-  padding: 0;
-  transition: all 0.2s ease;
-}
-
-.searchButton:hover {
-  background-color: var(--btnHover);
-  border-color: var(--github-neutral-emphasis);
-}
-
 .hide {
   display: none !important;
 }
 
+/* Responsive */
 @media (max-width: 768px) {
-  .fileHeader {
+  .coderHeader {
     flex-direction: column;
-    gap: 8px;
+    gap: 12px;
     align-items: stretch;
+    padding: 12px;
   }
   
-  .fileActions {
-    justify-content: center;
-  }
-  
-  .toolbarContainer {
+  .coderHeaderLeft {
     width: 100%;
   }
   
-  .fileFooter {
+  .coderHeaderRight {
+    width: 100%;
+  }
+  
+  .coderFooter {
     flex-direction: column;
     gap: 8px;
     align-items: stretch;
+    text-align: center;
   }
   
-  .footerStats,
-  .footerRight {
+  .coderFooterLeft,
+  .coderFooterRight {
     justify-content: center;
+  }
+  
+  .searchPanel {
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    right: 20px;
+    min-width: auto;
   }
 }
