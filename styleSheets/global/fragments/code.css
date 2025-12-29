@@ -24,13 +24,13 @@
   --bgCode: #1c2128;
   --bgHeader: #1c2128;
   --borderDefault: #444c56;
-
   --btnDefault: #373e47;
   --btnHover: #444c56;
   --textMain: #adbac7;
   --textMuted: #768390;
+  --accentPrimary: #316dca;
   --accentBlue: #316dca;
-
+  
   --syntaxKeyword: #f47067;
   --syntaxString: #96d0ff;
   --syntaxVariable: #adbac7;
@@ -40,6 +40,202 @@
   --syntaxConstant: #6cb6ff;
   --syntaxTag: #8ddb8c;
   --syntaxMatch: #ae7c14;
+}
+
+.container {
+  display: flex;
+  flex-direction: column;
+  margin: 0.5rem 0.5rem 0.25rem 0.5rem;
+  gap: 8px;
+}
+
+.fileHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: var(--bgHeader);
+  border: 1px solid var(--borderDefault);
+  border-radius: 8px;
+  padding: 8px 12px;
+  min-height: 48px;
+  gap: 16px;
+  position: relative;
+}
+
+.fileActions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+  min-width: 0;
+}
+
+.fileNameDisplay {
+  min-width: 120px;
+  max-width: 300px;
+  flex-shrink: 1;
+}
+
+.fileNameInput {
+  width: 100%;
+  border: 1px solid var(--github-border-muted);
+  background-color: var(--github-canvas-subtle);
+  color: var(--textMain);
+  border-radius: 4px;
+  padding: 4px 8px;
+  font-size: 14px;
+  font-family: inherit;
+  cursor: default;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+  transition: all 0.2s ease;
+}
+
+.fileNameInput:hover {
+  background-color: var(--github-btn-secondary-bg);
+}
+
+.fileNameInput:not([readonly]) {
+  cursor: text;
+  border-color: var(--accentPrimary);
+  background-color: var(--github-canvas-default);
+}
+
+.toolbarContainer {
+  flex: 1;
+  min-width: 0;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scrollbar-width: thin;
+  scrollbar-color: var(--github-border-muted) transparent;
+  padding: 2px 0;
+}
+
+.toolbarContainer::-webkit-scrollbar {
+  height: 4px;
+}
+
+.toolbarContainer::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.toolbarContainer::-webkit-scrollbar-thumb {
+  background-color: var(--github-border-muted);
+  border-radius: 2px;
+}
+
+.toolbarGroup {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 0 4px;
+  min-width: min-content;
+}
+
+.actionButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 28px;
+  border: 1px solid var(--borderDefault);
+  border-radius: 4px;
+  background-color: var(--btnDefault);
+  color: var(--textMain);
+  cursor: pointer;
+  padding: 0;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+}
+
+.actionButton:hover {
+  background-color: var(--btnHover);
+  border-color: var(--github-neutral-emphasis);
+}
+
+.actionButton.hide {
+  display: none !important;
+}
+
+.toolbarButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border: 1px solid var(--borderDefault);
+  border-radius: 4px;
+  background-color: var(--btnDefault);
+  color: var(--textMain);
+  cursor: pointer;
+  padding: 0;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+}
+
+.toolbarButton:hover {
+  background-color: var(--btnHover);
+  border-color: var(--github-neutral-emphasis);
+}
+
+.toolbarButton.active {
+  background-color: var(--github-btn-secondary-hover);
+  border-color: var(--accentPrimary);
+  color: var(--accentPrimary);
+}
+
+.fontSizeControl {
+  display: flex;
+  align-items: center;
+  border: 1px solid var(--borderDefault);
+  border-radius: 4px;
+  background-color: var(--btnDefault);
+  height: 28px;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.fontButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 100%;
+  border: none;
+  background: transparent;
+  color: var(--textMain);
+  cursor: pointer;
+  padding: 0;
+  transition: background-color 0.2s ease;
+}
+
+.fontButton:hover {
+  background-color: var(--btnHover);
+}
+
+.fontSizeDisplay {
+  padding: 0 8px;
+  font-size: 12px;
+  color: var(--textMain);
+  min-width: 40px;
+  text-align: center;
+  font-family: "JetBrains Mono", monospace;
+}
+
+.icon {
+  width: 16px;
+  height: 16px;
+}
+
+.smallIcon {
+  width: 14px;
+  height: 14px;
+}
+
+.tinyIcon {
+  width: 12px;
+  height: 12px;
 }
 
 #coderWrapper {
@@ -53,8 +249,8 @@
   overflow: hidden;
   position: relative;
   border-radius: 8px;
-  margin-top: 8px;
 }
+
 #coderWrapper.fullscreen {
   position: fixed;
   top: 0;
@@ -66,44 +262,49 @@
   max-height: 100vh;
   margin: 0;
   border-radius: 0;
-  z-index: 9999;
   border: none;
+  z-index: 9999;
 }
+
 #codeMirrorContainer {
   flex: 1 1 auto;
   min-height: 0;
   width: 100%;
   overflow: hidden;
-  display: flex;
-  flex-direction: column;
 }
+
 #codeMirrorContainer .CodeMirror {
   height: 100% !important;
   width: 100% !important;
-  flex: 1 1 auto;
   background-color: var(--bgCode) !important;
   font-family: "JetBrains Mono", "Fira Code", Consolas, monospace;
-  line-height: 1.4;
-  color: var(--textPrimary);
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--textMain);
 }
+
 #codeMirrorContainer .CodeMirror-scroll {
   overflow: auto !important;
 }
+
 #codeMirrorContainer .CodeMirror-gutters {
   background-color: var(--bgCode) !important;
   border-right: 1px solid var(--borderDefault);
+  min-width: 48px;
 }
-#codeMirrorContainer .CodeMirror-gutter {
-  background-color: var(--bgCode) !important;
-}
+
 #codeMirrorContainer .CodeMirror-linenumber {
   color: var(--textMuted);
   padding: 0 8px 0 12px;
   min-width: 40px;
+  font-family: "JetBrains Mono", monospace;
+  font-size: 12px;
 }
+
 #codeMirrorContainer .CodeMirror-foldgutter {
   width: 16px;
 }
+
 #codeMirrorContainer .CodeMirror-foldgutter-open,
 #codeMirrorContainer .CodeMirror-foldgutter-folded {
   cursor: pointer;
@@ -113,214 +314,47 @@
   text-align: center;
   transition: color 0.15s ease;
 }
+
 #codeMirrorContainer .CodeMirror-foldgutter-open::after {
   content: "▾";
   display: inline-block;
 }
+
 #codeMirrorContainer .CodeMirror-foldgutter-folded::after {
   content: "▸";
   display: inline-block;
 }
+
 #codeMirrorContainer .CodeMirror-foldgutter-open:hover,
 #codeMirrorContainer .CodeMirror-foldgutter-folded:hover {
-  color: var(--textPrimary);
+  color: var(--textMain);
 }
-#codeMirrorContainer .CodeMirror-foldmarker {
-  background-color: var(--bgSecondary);
-  color: var(--textSecondary);
-  border: 1px solid var(--borderDefault);
-  border-radius: 4px;
-  padding: 0 6px;
-  margin: 0 4px;
-  font-size: 12px;
-}
+
 #codeMirrorContainer .CodeMirror-activeline-background {
   background-color: var(--github-btn-secondary-hover) !important;
 }
+
 #codeMirrorContainer .CodeMirror-activeline-gutter {
   background-color: var(--github-btn-secondary-hover) !important;
 }
+
 #codeMirrorContainer .CodeMirror-selected {
-  background-color: var(--bgSelection) !important;
+  background-color: rgba(65, 132, 228, 0.15) !important;
 }
+
 #codeMirrorContainer .CodeMirror-matchingbracket {
   color: var(--accentPrimary) !important;
   background-color: var(--github-btn-secondary-hover);
   border-bottom: 2px solid var(--accentPrimary);
 }
+
 #codeMirrorContainer .CodeMirror-cursor {
   border-left: 2px solid var(--accentPrimary);
 }
 
-.fileHeader {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin: 0.5rem 0.5rem 0.25rem 0.5rem;
-  gap: 16px;
-}
-
-.fileActions {
-  display: flex;
-  gap: 8px;
-  flex-shrink: 0;
-}
-
-.filePath {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  flex: 1;
-  min-width: 0;
-  justify-content: flex-end;
-}
-
-.toolbarGroup {
-  display: flex;
-  gap: 4px;
-  flex-shrink: 0;
-  overflow-x: auto;
-  max-width: 400px;
-  padding: 4px 0;
-}
-
-.toolbarGroup::-webkit-scrollbar {
-  height: 4px;
-}
-.toolbarGroup::-webkit-scrollbar-track {
-  background: var(--github-border-muted);
-  border-radius: 2px;
-}
-.toolbarGroup::-webkit-scrollbar-thumb {
-  background: var(--github-neutral-emphasis);
-  border-radius: 2px;
-}
-
-.repoButton {
-  background: var(--github-btn-secondary-bg);
-  color: var(--github-fg-default);
-  border: 1px solid var(--github-border-default);
-  border-radius: 6px;
-  padding: 6px 12px;
-  font-size: 14px;
-  cursor: pointer;
-  white-space: nowrap;
-  transition: all 0.2s ease;
-}
-.repoButton:hover {
-  background: var(--github-btn-secondary-hover);
-}
-
-.fileNameInput {
-  min-width: 200px;
-  width: auto;
-  max-width: 300px;
-  transition: all 0.3s ease;
-  border: 1px solid var(--github-border-muted);
-  border-radius: 6px;
-  padding: 6px 12px;
-  font-size: 14px;
-  background-color: var(--github-canvas-subtle);
-  color: var(--github-fg-default);
-  cursor: default;
-}
-.fileNameInput:hover {
-  border-color: var(--github-border-default);
-}
-.fileNameInput:not([readonly]) {
-  cursor: text;
-  background-color: var(--github-canvas-inset);
-  border-color: var(--github-accent-emphasis);
-}
-
-.actionButton {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 6px;
-  padding: 8px 16px;
-  border: 1px solid var(--github-border-default);
-  border-radius: 6px;
-  background-color: var(--github-btn-secondary-bg);
-  color: var(--github-fg-default);
-  cursor: pointer;
-  font-size: 14px;
-  transition: all 0.2s ease;
-  white-space: nowrap;
-}
-.actionButton:hover {
-  background-color: var(--github-btn-secondary-hover);
-}
-
-.toolbarButton {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 32px;
-  height: 32px;
-  border: 1px solid var(--github-border-default);
-  border-radius: 6px;
-  background-color: var(--github-btn-secondary-bg);
-  color: var(--github-fg-default);
-  cursor: pointer;
-  transition: all 0.2s ease;
-  flex-shrink: 0;
-}
-.toolbarButton:hover {
-  background-color: var(--github-btn-secondary-hover);
-}
-.toolbarButton.active {
-  background-color: var(--github-btn-secondary-hover);
-  color: var(--github-accent-fg);
-  border-color: var(--github-accent-fg);
-}
-
-.fontSizeControl {
-  display: flex;
-  align-items: center;
-  gap: 4px;
-  border: 1px solid var(--github-border-default);
-  border-radius: 6px;
-  background-color: var(--github-btn-secondary-bg);
-  padding: 0 4px;
-}
-
-.fontButton {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 24px;
-  height: 24px;
-  border: none;
-  background: transparent;
-  color: var(--github-fg-default);
-  cursor: pointer;
-  border-radius: 4px;
-  transition: all 0.2s ease;
-}
-.fontButton:hover {
-  background-color: var(--github-btn-secondary-hover);
-}
-
-.fontSizeDisplay {
-  font-size: 12px;
-  color: var(--github-fg-default);
-  min-width: 40px;
-  text-align: center;
-  font-family: "JetBrains Mono", monospace;
-}
-
-.smallIcon {
-  width: 16px;
-  height: 16px;
-}
-.tinyIcon {
-  width: 14px;
-  height: 14px;
-}
-.icon {
-  width: 16px;
-  height: 16px;
+#codeMirrorContainer .CodeMirror-overlayscroll-horizontal div,
+#codeMirrorContainer .CodeMirror-overlayscroll-vertical div {
+  background-color: var(--github-border-muted) !important;
 }
 
 .fileFooter {
@@ -328,21 +362,32 @@
   justify-content: space-between;
   align-items: center;
   padding: 6px 12px;
-  background-color: var(--github-canvas-subtle);
+  background-color: var(--bgHeader);
   border: 1px solid var(--borderDefault);
   border-top: none;
-  margin: 0 0.5rem 0 0.5rem;
   border-radius: 0 0 8px 8px;
+  min-height: 32px;
+  font-size: 12px;
+  color: var(--textMuted);
 }
+
 .footerStats,
 .footerRight {
   display: flex;
   align-items: center;
   gap: 8px;
 }
+
 .footerDivider {
   color: var(--textMuted);
   opacity: 0.5;
+}
+
+.cursorInfo,
+.selectionInfo,
+.encodingInfo {
+  font-family: "JetBrains Mono", monospace;
+  font-size: 11px;
 }
 
 .loading-spinner {
@@ -351,9 +396,11 @@
   display: none;
   align-items: center;
   justify-content: center;
-  background: rgba(0, 0, 0, 0.35);
-  z-index: 10;
+  background: rgba(28, 33, 40, 0.85);
+  z-index: 1000;
+  backdrop-filter: blur(2px);
 }
+
 .loading-spinner[data-active="true"] {
   display: flex;
 }
@@ -367,106 +414,229 @@
 }
 
 .spinner-svg {
-  width: 64px;
-  height: 64px;
+  width: 48px;
+  height: 48px;
 }
 
 .spinner-track {
   fill: none;
-  stroke: rgba(255, 255, 255, 0.15);
-  stroke-width: 6;
+  stroke: var(--github-border-muted);
+  stroke-width: 4;
 }
+
 .spinner-head {
   fill: none;
-  stroke: var(--github-accent-fg);
-  stroke-width: 6;
+  stroke: var(--accentPrimary);
+  stroke-width: 4;
   stroke-linecap: round;
-  stroke-dasharray: 80;
-  animation: spin 1.2s linear infinite;
+  stroke-dasharray: 60;
+  animation: spin 1s linear infinite;
+  transform-origin: center;
 }
 
 @keyframes spin {
   0% {
     transform: rotate(0deg);
+    stroke-dashoffset: 60;
+  }
+  50% {
+    stroke-dashoffset: 15;
   }
   100% {
     transform: rotate(360deg);
+    stroke-dashoffset: 60;
   }
 }
 
 .commitPanel {
-  margin: 0.5rem;
+  background-color: var(--bgHeader);
   border: 1px solid var(--borderDefault);
-  background: var(--github-canvas-subtle);
   border-radius: 8px;
-  padding: 12px;
+  padding: 16px;
+  margin-top: 8px;
 }
+
+.commitPanel.hide {
+  display: none;
+}
+
 .panelTitle {
-  margin: 0 0 8px 0;
-  color: var(--github-fg-default);
+  margin: 0 0 12px 0;
+  color: var(--textMain);
   font-size: 14px;
-  font-weight: 700;
+  font-weight: 600;
 }
+
 .panelContent {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 12px;
 }
+
+.commitField {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
 .commitInput,
 .commitTextarea {
   width: 100%;
   border: 1px solid var(--borderDefault);
-  background: var(--github-canvas-inset);
-  color: var(--github-fg-default);
-  border-radius: 8px;
-  padding: 8px;
+  background-color: var(--bgCode);
+  color: var(--textMain);
+  border-radius: 4px;
+  padding: 8px 12px;
   font-size: 14px;
+  font-family: inherit;
+  transition: border-color 0.2s ease;
 }
+
+.commitInput:focus,
+.commitTextarea:focus {
+  outline: none;
+  border-color: var(--accentPrimary);
+}
+
 .commitTextarea {
   resize: vertical;
+  min-height: 80px;
+  line-height: 1.4;
 }
+
 .panelButtons {
   display: flex;
   justify-content: flex-end;
   gap: 8px;
+  margin-top: 8px;
 }
 
 .primaryButton {
-  background: var(--github-btn-primary-bg);
-  color: #fff;
+  background-color: var(--github-btn-primary-bg);
+  color: white;
   border: none;
-  border-radius: 8px;
-  padding: 8px 12px;
-  font-weight: 700;
+  border-radius: 4px;
+  padding: 8px 16px;
+  font-size: 14px;
+  font-weight: 600;
   cursor: pointer;
-  transition: all 0.2s ease;
-}
-.secondaryButton {
-  background: var(--github-btn-secondary-bg);
-  color: var(--github-fg-default);
-  border: 1px solid var(--github-border-default);
-  border-radius: 8px;
-  padding: 8px 12px;
-  font-weight: 700;
-  cursor: pointer;
-  transition: all 0.2s ease;
+  transition: background-color 0.2s ease;
+  min-width: 120px;
 }
 
 .primaryButton:hover {
-  background: var(--github-btn-primary-hover);
+  background-color: var(--github-btn-primary-hover);
 }
+
+.secondaryButton {
+  background-color: transparent;
+  color: var(--textMain);
+  border: 1px solid var(--borderDefault);
+  border-radius: 4px;
+  padding: 8px 16px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  min-width: 80px;
+}
+
 .secondaryButton:hover {
-  background: var(--github-btn-secondary-hover);
+  background-color: var(--github-btn-secondary-bg);
+  border-color: var(--github-neutral-emphasis);
 }
 
-.hidden {
-  visibility: hidden;
-  pointer-events: none;
-  opacity: 0;
-  transition: opacity 0.25s ease, visibility 0.25s ease;
+.searchPanel {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  background-color: var(--bgHeader);
+  border: 1px solid var(--borderDefault);
+  border-radius: 4px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  z-index: 1000;
 }
 
-.separator {
-  color: var(--github-fg-muted);
-  margin: 0 4px;
+.searchPanel.hide {
+  display: none;
+}
+
+.searchContent {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px;
+}
+
+.searchInput {
+  width: 200px;
+  border: 1px solid var(--borderDefault);
+  background-color: var(--bgCode);
+  color: var(--textMain);
+  border-radius: 4px;
+  padding: 6px 10px;
+  font-size: 13px;
+  font-family: inherit;
+  transition: border-color 0.2s ease;
+}
+
+.searchInput:focus {
+  outline: none;
+  border-color: var(--accentPrimary);
+}
+
+.searchControls {
+  display: flex;
+  gap: 4px;
+}
+
+.searchButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border: 1px solid var(--borderDefault);
+  border-radius: 4px;
+  background-color: var(--btnDefault);
+  color: var(--textMain);
+  cursor: pointer;
+  padding: 0;
+  transition: all 0.2s ease;
+}
+
+.searchButton:hover {
+  background-color: var(--btnHover);
+  border-color: var(--github-neutral-emphasis);
+}
+
+.hide {
+  display: none !important;
+}
+
+@media (max-width: 768px) {
+  .fileHeader {
+    flex-direction: column;
+    gap: 8px;
+    align-items: stretch;
+  }
+  
+  .fileActions {
+    justify-content: center;
+  }
+  
+  .toolbarContainer {
+    width: 100%;
+  }
+  
+  .fileFooter {
+    flex-direction: column;
+    gap: 8px;
+    align-items: stretch;
+  }
+  
+  .footerStats,
+  .footerRight {
+    justify-content: center;
+  }
 }
