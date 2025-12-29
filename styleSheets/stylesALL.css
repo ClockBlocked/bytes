@@ -771,7 +771,12 @@ background: linear-gradient(90deg, #dc2626, #ef4444, #f87171);
     [data-notify="error"] {
       z-index: 9999999999 !important;
     }
-    
+
+
+
+
+
+/**    
     
     .cm-s-github-dark {
   background-color: #22272e;
@@ -1107,7 +1112,7 @@ background: linear-gradient(90deg, #dc2626, #ef4444, #f87171);
   background-color: #2ea043;
 }
 
-
+**/
 
 
 
@@ -1230,7 +1235,7 @@ background: linear-gradient(90deg, #dc2626, #ef4444, #f87171);
 
 
 
-
+/**
 #coderWrapper {
     margin: 0 0.75rem !important;
     border: 1px solid #373e47 !important;
@@ -1260,13 +1265,13 @@ background: linear-gradient(90deg, #dc2626, #ef4444, #f87171);
   align-items: center;
   gap: 5px;
   flex: 1;
-  min-width: 0; /* Important for proper shrinking */
+  min-width: 0;
 }
 
 #fileNameInput {
-  width: 30px !important; /* Small default width */
+  width: 30px !important;
   min-width: 30px;
-  max-width: 200px; /* Maximum width when expanded */
+  max-width: 200px;
   transition: all 0.3s ease;
   opacity: 1;
   border: 1px solid var(--input-border);
@@ -1278,24 +1283,24 @@ background: linear-gradient(90deg, #dc2626, #ef4444, #f87171);
 }
 
 #fileNameInput:hover {
-  width: 150px !important; /* Decent width on hover */
+  width: 150px !important;
   border-color: var(--input-border-hover);
 }
 
 .buttonGroup {
   display: flex;
   gap: 5px;
-  flex-shrink: 0; /* Prevent button group from shrinking */
+  flex-shrink: 0;
   transition: opacity 0.3s ease;
 }
 
-/* When input is hovered, fade out the buttons */
+
 .navigation:hover .buttonGroup {
   opacity: 0;
-  pointer-events: none; /* Prevent clicking while hidden */
+  pointer-events: none;
 }
 
-/* Default state for buttons */
+
 .actionButton {
   display: flex;
   align-items: center;
@@ -1308,8 +1313,8 @@ background: linear-gradient(90deg, #dc2626, #ef4444, #f87171);
   cursor: pointer;
   font-size: 14px;
   transition: all 0.2s ease;
-  flex: 1; /* Buttons take up equal space */
-  min-width: 60px; /* Minimum width for buttons */
+  flex: 1;
+  min-width: 60px;
   opacity: 1;
 }
 
@@ -1317,7 +1322,6 @@ background: linear-gradient(90deg, #dc2626, #ef4444, #f87171);
   background-color: var(--btn-primary-hover);
 }
 
-/* Ensure buttons are visible when not hovering over input */
 .container:hover .buttonGroup:not(.navigation:hover .buttonGroup) {
   opacity: 1;
   pointer-events: auto;
@@ -1343,13 +1347,12 @@ background: linear-gradient(90deg, #dc2626, #ef4444, #f87171);
   height: 16px;
 }
 
-/* Optional: Improve the input's appearance when not readonly (for edit mode) */
 .fileNameInput:not([readonly]) {
   cursor: text;
   background-color: var(--input-bg);
   border-color: #4d90fe;
 }
-
+**/
 /**  END OF INLINE STYLES **/
 
 
@@ -1405,7 +1408,7 @@ background: linear-gradient(90deg, #dc2626, #ef4444, #f87171);
 }
   
 
-
+/**
 #coderWrapper {
   display: flex;
   flex-direction: column;
@@ -1548,7 +1551,7 @@ background: linear-gradient(90deg, #dc2626, #ef4444, #f87171);
 }
 
 
-
+**/
 .loading-spinner {
   position: absolute;
   inset: 0;
@@ -1599,7 +1602,7 @@ background: linear-gradient(90deg, #dc2626, #ef4444, #f87171);
 }
 
 
-
+/**
 .container {
   display: flex;
   align-items: center;
@@ -1610,11 +1613,6 @@ background: linear-gradient(90deg, #dc2626, #ef4444, #f87171);
 
 
 
-
-/*
-  =========================
-     Code Viewer - Header
-  ========================== */
 
 .navigation {
   display: flex;
@@ -1775,5 +1773,5 @@ background: linear-gradient(90deg, #dc2626, #ef4444, #f87171);
   transition: visibility 0.25s ease;
 }
 
-
+**/
 /**  END OF code.css **/
