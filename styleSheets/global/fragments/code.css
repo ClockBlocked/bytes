@@ -682,3 +682,127 @@
     min-width: auto;
   }
 }
+
+
+
+
+
+
+
+
+
+
+
+.coderHeader {
+  background-color: var(--bgHeader);
+  border: 1px solid var(--borderDefault);
+  border-bottom: none;
+  border-radius: 0.375rem 0.375rem 0 0;
+  padding: 0.5rem 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  font-size: 0.75rem;
+  margin: 0 0.5rem;
+}
+
+.fileStats {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  color: var(--textMain);
+}
+
+.toolbarGroup {
+  display: inline-flex;
+  gap: 0.5rem;
+}
+
+.toolbarButton {
+  padding: 0.5rem;
+  border-radius: 0.25rem;
+  color: #8b949e;
+  background: none;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.toolbarButton:hover {
+  background-color: #21262d;
+  color: var(--accentBlue);
+}
+
+.smallIcon {
+  width: 1rem;
+  : 1rem;
+}
+
+.fontSizeControl {
+  display: flex;
+  align-items: center;
+  border: 1px solid #30363d;
+  border-radius: 0.375rem;
+  overflow: hidden;
+}
+
+.fontButton {
+  padding: 0.375rem;
+  color: #8b949e;
+  background: none;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.fontButton:hover {
+  background-color: #21262d;
+  color: #f0f6fc;
+}
+
+.tinyIcon {
+  width: 0.875rem;
+  height: 0.875rem;
+}
+
+.fontSizeDisplay {
+  padding: 0 0.5rem;
+  font-size: 0.75rem;
+  color: #f0f6fc;
+  border-left: 1px solid #30363d;
+  border-right: 1px solid #30363d;
+  min-width: 40px;
+  text-align: center;
+}
+
+.coderWrapper {
+  background-color: #0d1117;
+  border-left: 1px solid #30363d;
+  border-right: 1px solid #30363d;
+  overflow: hidden;
+  position: relative;
+  margin: 0 0.5rem;
+}
+
+.codeContainer {
+  display: flex;
+  height: 100%;
+}
+
+.codeEditor {
+  flex: 1;
+  overflow: auto;
+}
+
+.coderFooter {
+  background-color: #161b22;
+  border: 1px solid #30363d;
+  border-top: none;
+  border-radius: 0 0 0.375rem 0.375rem;
+  padding: 0.5rem 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  font-size: 0.75rem;
+  margin: 0 0.5rem;
+}
