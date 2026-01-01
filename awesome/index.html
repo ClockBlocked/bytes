@@ -1,0 +1,261 @@
+<! DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Icon Vault - Icon Library</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2? family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        background: 'hsl(215, 21%, 16%)',
+                        foreground: 'hsl(210, 16%, 73%)',
+                        card: 'hsl(216, 18%, 21%)',
+                        'card-foreground': 'hsl(210, 16%, 73%)',
+                        popover: 'hsl(216, 18%, 19%)',
+                        'popover-foreground': 'hsl(210, 16%, 73%)',
+                        primary:  'hsl(212, 83%, 64%)',
+                        'primary-foreground': 'hsl(215, 21%, 11%)',
+                        secondary: 'hsl(215, 14%, 25%)',
+                        'secondary-foreground': 'hsl(210, 16%, 73%)',
+                        muted: 'hsl(215, 14%, 25%)',
+                        'muted-foreground': 'hsl(213, 11%, 52%)',
+                        accent: 'hsl(212, 83%, 64%)',
+                        'accent-foreground': 'hsl(215, 21%, 11%)',
+                        destructive: 'hsl(0, 72%, 51%)',
+                        'destructive-foreground': 'hsl(210, 40%, 98%)',
+                        border: 'hsl(215, 13%, 30%)',
+                        input: 'hsl(215, 13%, 30%)',
+                        ring: 'hsl(212, 83%, 64%)',
+                        'icon-card': 'hsl(216, 18%, 24%)',
+                        'icon-card-hover': 'hsl(216, 18%, 28%)',
+                        success: 'hsl(142, 71%, 45%)',
+                        warning: 'hsl(38, 92%, 50%)',
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'system-ui', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'monospace'],
+                    },
+                },
+            },
+        }
+    </script>
+</head>
+<body class="bg-background text-foreground font-sans antialiased min-h-screen">
+    <!-- Header -->
+    <header class="sticky top-0 z-50 bg-background/80 backdrop-blur-lg border-b border-border">
+        <div class="container mx-auto px-4 py-4">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 bg-primary/10 rounded-lg flex items-center justify-center">
+                    <svg class="w-6 h-6 text-primary" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <rect x="3" y="3" width="7" height="7" rx="1"></rect>
+                        <rect x="14" y="3" width="7" height="7" rx="1"></rect>
+                        <rect x="3" y="14" width="7" height="7" rx="1"></rect>
+                        <rect x="14" y="14" width="7" height="7" rx="1"></rect>
+                    </svg>
+                </div>
+                <div>
+                    <h1 class="text-lg font-semibold text-foreground">Icon Library</h1>
+                    <p class="text-xs text-muted-foreground hidden sm:block">Browse and copy SVG icons</p>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="container mx-auto px-4 py-6 space-y-6">
+        <!-- Search Bar -->
+        <div class="relative w-full">
+            <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                <svg class="w-5 h-5 text-muted-foreground" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                </svg>
+            </div>
+            <input
+                id="searchInput"
+                type="text"
+                placeholder="Search icons by name or tag..."
+                class="w-full pl-12 pr-20 py-3 bg-card border border-border rounded-lg text-foreground placeholder: text-muted-foreground focus:outline-none focus:ring-2 focus: ring-primary/50 focus:border-primary transition-all"
+            >
+            <div class="absolute inset-y-0 right-0 pr-4 flex items-center gap-2">
+                <span id="resultCount" class="text-xs text-muted-foreground hidden"></span>
+                <kbd class="hidden sm:inline-flex items-center gap-1 px-2 py-1 text-xs text-muted-foreground bg-muted rounded border border-border">
+                    <span class="text-xs">⌘</span>K
+                </kbd>
+            </div>
+        </div>
+
+        <!-- Category Tabs -->
+        <div class="overflow-x-auto scrollbar-thin pb-2 -mx-4 px-4 sm:mx-0 sm: px-0">
+            <div id="categoryTabs" class="flex gap-2 min-w-max">
+                <!-- Tabs will be generated by JavaScript -->
+            </div>
+        </div>
+
+        <!-- Stats -->
+        <div class="flex items-center gap-4 text-sm text-muted-foreground">
+            <span>
+                Showing <span id="showingCount" class="font-medium text-foreground">0</span> icons
+            </span>
+            <span id="categoryLabel" class="hidden flex items-center gap-1">
+                in <span id="activeCategoryName" class="font-medium text-foreground"></span>
+            </span>
+        </div>
+
+        <!-- Icon Grid -->
+        <div id="iconGrid" class="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 xl:grid-cols-10 gap-3">
+            <!-- Icons will be generated by JavaScript -->
+        </div>
+
+        <!-- Empty State -->
+        <div id="emptyState" class="hidden flex-col items-center justify-center py-20 text-center">
+            <svg class="w-16 h-16 text-muted-foreground/50 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+            </svg>
+            <p class="text-muted-foreground text-lg font-medium">No icons found</p>
+            <p class="text-muted-foreground/70 text-sm mt-1">Try a different search term or category</p>
+        </div>
+    </main>
+
+    <!-- Modal -->
+    <div id="iconModal" class="fixed inset-0 z-50 hidden">
+        <!-- Backdrop -->
+        <div id="modalBackdrop" class="fixed inset-0 bg-black/80 backdrop-blur-sm"></div>
+        
+        <!-- Modal Content -->
+        <div class="fixed inset-0 flex items-center justify-center p-4">
+            <div class="bg-popover border border-border rounded-lg max-w-[95vw] sm:max-w-md w-full max-h-[90vh] overflow-y-auto shadow-xl">
+                <!-- Modal Header -->
+                <div class="flex items-center justify-between p-4 border-b border-border">
+                    <div class="flex items-center gap-2 flex-wrap">
+                        <span id="modalIconName" class="font-mono text-sm sm:text-base text-foreground"></span>
+                        <span id="modalIconCategory" class="text-xs px-2 py-0.5 rounded-full"></span>
+                    </div>
+                    <button id="closeModal" class="text-muted-foreground hover:text-foreground transition-colors p-1">
+                        <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                        </svg>
+                    </button>
+                </div>
+
+                <!-- Modal Body -->
+                <div class="p-4 space-y-4">
+                    <!-- Icon Preview -->
+                    <div class="flex items-center justify-center p-6 bg-icon-card rounded-lg border border-border">
+                        <div id="iconPreview" class="flex items-center justify-center"></div>
+                    </div>
+
+                    <!-- Size Options -->
+                    <div class="space-y-2">
+                        <span class="text-xs font-medium text-muted-foreground uppercase tracking-wide">Size</span>
+                        <div id="sizeOptions" class="flex flex-wrap gap-1.5">
+                            <!-- Size buttons generated by JS -->
+                        </div>
+                    </div>
+
+                    <!-- Color Options -->
+                    <div class="space-y-2">
+                        <span class="text-xs font-medium text-muted-foreground uppercase tracking-wide">Color</span>
+                        <div id="colorOptions" class="flex flex-wrap gap-1.5">
+                            <!-- Color buttons generated by JS -->
+                        </div>
+                        <div class="flex items-center gap-2 mt-2">
+                            <label class="text-xs text-muted-foreground">Custom: </label>
+                            <input
+                                type="color"
+                                id="customColorPicker"
+                                value="#58a6ff"
+                                class="w-8 h-6 rounded cursor-pointer border border-border bg-transparent"
+                            >
+                            <span id="customColorValue" class="text-xs font-mono text-muted-foreground">#58a6ff</span>
+                        </div>
+                    </div>
+
+                    <!-- Tags -->
+                    <div id="tagsSection" class="space-y-2">
+                        <span class="text-xs font-medium text-muted-foreground uppercase tracking-wide">Tags</span>
+                        <div id="tagsList" class="flex flex-wrap gap-1.5">
+                            <!-- Tags generated by JS -->
+                        </div>
+                    </div>
+
+                    <!-- Copy Options -->
+                    <div class="space-y-2">
+                        <span class="text-xs font-medium text-muted-foreground uppercase tracking-wide">Copy As</span>
+                        <div class="grid grid-cols-3 gap-2">
+                            <button id="copySvgBtn" class="px-3 py-2 text-xs rounded-md border border-border bg-secondary text-secondary-foreground hover: bg-secondary/80 transition-colors">
+                                SVG
+                            </button>
+                            <button id="copyDataUriBtn" class="px-3 py-2 text-xs rounded-md border border-border bg-secondary text-secondary-foreground hover:bg-secondary/80 transition-colors">
+                                Data URI
+                            </button>
+                            <button id="copyJsBtn" class="px-3 py-2 text-xs rounded-md border border-border bg-secondary text-secondary-foreground hover:bg-secondary/80 transition-colors">
+                                JS Component
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Download Options -->
+                    <div class="space-y-2">
+                        <span class="text-xs font-medium text-muted-foreground uppercase tracking-wide">Download</span>
+                        <div class="grid grid-cols-2 gap-2">
+                            <button id="downloadSvgBtn" class="flex items-center justify-center gap-1.5 px-3 py-2 text-xs rounded-md border border-border bg-secondary text-secondary-foreground hover:bg-secondary/80 transition-colors">
+                                <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
+                                </svg>
+                                SVG
+                            </button>
+                            <button id="downloadPngBtn" class="flex items-center justify-center gap-1.5 px-3 py-2 text-xs rounded-md border border-border bg-secondary text-secondary-foreground hover:bg-secondary/80 transition-colors">
+                                <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
+                                </svg>
+                                PNG
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- SVG Code Preview -->
+                    <div class="space-y-2">
+                        <span class="text-xs font-medium text-muted-foreground uppercase tracking-wide">SVG Code</span>
+                        <pre class="p-3 bg-background rounded-lg border border-border overflow-x-auto text-[10px] font-mono text-muted-foreground max-h-24 scrollbar-thin break-all whitespace-pre-wrap">
+                            <code id="svgCodePreview"></code>
+                        </pre>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="fixed bottom-4 right-4 z-50 hidden">
+        <div class="bg-card border border-border rounded-lg shadow-lg p-4 flex items-start gap-3 min-w-[280px]">
+            <div id="toastIcon" class="flex-shrink-0"></div>
+            <div>
+                <p id="toastTitle" class="text-sm font-medium text-foreground"></p>
+                <p id="toastDescription" class="text-xs text-muted-foreground mt-0.5"></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Icon Data (must load first) -->
+    <script src="iconData.js"></script>
+    
+    <!-- Individual Icon Files (load after iconData.js) -->
+    <script src="icons/solid.js"></script>
+    <script src="icons/regular.js"></script>
+    <script src="icons/light.js"></script>
+    <script src="icons/duotoneSolid.js"></script>
+    <script src="icons/duotoneRegular.js"></script>
+    <script src="icons/duotoneLight.js"></script>
+    <script src="icons/brands.js"></script>
+    
+    <!-- Main Application (must load last) -->
+    <script src="app.js"></script>
+</body>
+</html>
