@@ -832,3 +832,16 @@
     flex: 0 0 auto;
     margin: 0 10px;
 }
+
+.coderFooter {
+    background: #444C56;
+    border: 1px solid #373E47;
+    border-top: none;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    overflow: hidden;
+    white-space: nowrap;
+    scrollbar-width: none; 
+}
