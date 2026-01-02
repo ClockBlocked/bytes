@@ -1,6 +1,6 @@
 class coderViewEdit {
   constructor() {
-    this. currentFile = null;
+    this.currentFile = null;
     this.fileData = null;
     this.codeMirror = null;
     this.isEditing = false;
@@ -22,9 +22,9 @@ class coderViewEdit {
     };
     this.searchActive = false;
     this.lastSaveTime = null;
-    this. undoHistory = [];
+    this.undoHistory = [];
     this.redoHistory = [];
-    this. lastCursorPosition = null;
+    this.lastCursorPosition = null;
     this.languages = [
       { value: "javascript", label: "JavaScript", ext: ["js", "jsx"] },
       { value: "typescript", label: "TypeScript", ext: ["ts", "tsx"] },
@@ -51,7 +51,7 @@ class coderViewEdit {
 
   init() {
     if (this.isInitialized) return;
-    const filePage = document.querySelector('. pages[data-page="file"]');
+    const filePage = document.querySelector('.pages[data-page="file"]');
     if (!filePage) return;
     filePage.innerHTML = this.getTemplate();
     this.cacheElements();
@@ -71,7 +71,7 @@ class coderViewEdit {
       <div class="editorHeaderLeft">
         <div class="fileInfo">
           <svg class="fileIcon" viewBox="0 0 16 16" fill="currentColor">
-            <path d="M4 1. 75C4 . 784 4.784 0 5.75 0h5.586c.464 0 .909.184 1.237.513l2.914 2.914c.329.328.513.773.513 1.237v8.586A1.75 1.75 0 0 1 14.25 15h-9a. 75. 75 0 0 1 0-1.5h9a.25.25 0 0 0 . 25-. 25V6h-2.75A1.75 1.75 0 0 1 10 4.25V1.5H5. 75a.25.25 0 0 0-.25.25v2.5a.75.75 0 0 1-1.5 0v-2.5Zm7.5-. 188V4.25c0 .138.112.25.25.25h2.688l-2.938-2.938ZM5.72 6.72a. 75.75 0 0 0 0 1.06l1.47 1.47-1.47 1.47a.75.75 0 1 0 1.06 1.06l2-2a.75.75 0 0 0 0-1.06l-2-2a.75.75 0 0 0-1.06 0ZM3.28 7.78a.75.75 0 0 0-1.06-1.06l-2 2a.75.75 0 0 0 0 1.06l2 2a.75.75 0 0 0 1.06-1.06L1.81 9.25l1.47-1.47Z"/>
+            <path d="M4 1.75C4 .784 4.784 0 5.75 0h5.586c.464 0 .909.184 1.237.513l2.914 2.914c.329.328.513.773.513 1.237v8.586A1.75 1.75 0 0 1 14.25 15h-9a.75.75 0 0 1 0-1.5h9a.25.25 0 0 0 .25-.25V6h-2.75A1.75 1.75 0 0 1 10 4.25V1.5H5.75a.25.25 0 0 0-.25.25v2.5a.75.75 0 0 1-1.5 0v-2.5Zm7.5-.188V4.25c0 .138.112.25.25.25h2.688l-2.938-2.938ZM5.72 6.72a.75.75 0 0 0 0 1.06l1.47 1.47-1.47 1.47a.75.75 0 1 0 1.06 1.06l2-2a.75.75 0 0 0 0-1.06l-2-2a.75.75 0 0 0-1.06 0ZM3.28 7.78a.75.75 0 0 0-1.06-1.06l-2 2a.75.75 0 0 0 0 1.06l2 2a.75.75 0 0 0 1.06-1.06L1.81 9.25l1.47-1.47Z"/>
           </svg>
           <span id="fileNameDisplay" class="fileName">untitled.js</span>
           <span id="modifiedBadge" class="badge badgeSecondary hide">Modified</span>
@@ -80,11 +80,11 @@ class coderViewEdit {
         <div class="languageSelector">
           <button id="languageBtn" class="headerButton languageBtn">
             <svg class="buttonIcon" viewBox="0 0 16 16" fill="currentColor">
-              <path d="M0 1. 75C0 .784.784 0 1.75 0h12.5C15.216 0 16 .784 16 1.75v12.5A1.75 1.75 0 0 1 14.25 16H1.75A1.75 1.75 0 0 1 0 14.25Zm1.75-. 25a. 25.25 0 0 0-. 25.25v12.5c0 .138.112.25.25.25h12.5a.25.25 0 0 0 .25-.25V1.75a.25.25 0 0 0-.25-.25Zm5.03 3.47-3.5 3.5a.75.75 0 0 0 1.06 1.06l3.5-3.5a. 75.75 0 0 0-1.06-1.06Zm2.44 0a.75.75 0 0 0 0 1.06l3.5 3.5a.75.75 0 0 0 1.06-1.06l-3.5-3.5a. 75.75 0 0 0-1.06 0Z"/>
+              <path d="M0 1.75C0 .784.784 0 1.75 0h12.5C15.216 0 16 .784 16 1.75v12.5A1.75 1.75 0 0 1 14.25 16H1.75A1.75 1.75 0 0 1 0 14.25Zm1.75-.25a.25.25 0 0 0-.25.25v12.5c0 .138.112.25.25.25h12.5a.25.25 0 0 0 .25-.25V1.75a.25.25 0 0 0-.25-.25Zm5.03 3.47-3.5 3.5a.75.75 0 0 0 1.06 1.06l3.5-3.5a.75.75 0 0 0-1.06-1.06Zm2.44 0a.75.75 0 0 0 0 1.06l3.5 3.5a.75.75 0 0 0 1.06-1.06l-3.5-3.5a.75.75 0 0 0-1.06 0Z"/>
             </svg>
             <span id="languageLabel">JavaScript</span>
             <svg class="chevronIcon" viewBox="0 0 16 16" fill="currentColor">
-              <path d="M4. 427 7.427l3.396 3.396a. 25.25 0 0 0 . 354 0l3.396-3.396A.25.25 0 0 0 11.396 7H4.604a.25.25 0 0 0-.177. 427Z"/>
+              <path d="M4.427 7.427l3.396 3.396a.25.25 0 0 0 .354 0l3.396-3.396A.25.25 0 0 0 11.396 7H4.604a.25.25 0 0 0-.177.427Z"/>
             </svg>
           </button>
           <div id="languageDropdown" class="dropdown hide">
@@ -95,108 +95,108 @@ class coderViewEdit {
       <div class="editorHeaderCenter">
         <button id="editModeBtn" class="headerButton active" title="Edit Mode">
           <svg class="buttonIcon" viewBox="0 0 16 16" fill="currentColor">
-            <path d="M11. 013 1.427a1.75 1.75 0 0 1 2.474 0l1.086 1.086a1.75 1.75 0 0 1 0 2.474l-8.61 8.61c-.21.21-.47.364-.756.445l-3.251. 93a. 75.75 0 0 1-. 927-. 928l. 929-3.25c.081-.286.235-.547.445-.758l8.61-8.61Zm. 176 4.823L9.75 4.81l-6.286 6.287a.253.253 0 0 0-. 064.108l-.558 1.953 1.953-. 558a.253.253 0 0 0 .108-. 064Zm1.238-3.763a.25.25 0 0 0-.354 0L10. 811 3.75l1.439 1.44 1.263-1.263a.25.25 0 0 0 0-.354Z"/>
+            <path d="M11.013 1.427a1.75 1.75 0 0 1 2.474 0l1.086 1.086a1.75 1.75 0 0 1 0 2.474l-8.61 8.61c-.21.21-.47.364-.756.445l-3.251.93a.75.75 0 0 1-.927-.928l.929-3.25c.081-.286.235-.547.445-.758l8.61-8.61Zm.176 4.823L9.75 4.81l-6.286 6.287a.253.253 0 0 0-.064.108l-.558 1.953 1.953-.558a.253.253 0 0 0 .108-.064Zm1.238-3.763a.25.25 0 0 0-.354 0L10.811 3.75l1.439 1.44 1.263-1.263a.25.25 0 0 0 0-.354Z"/>
           </svg>
         </button>
         <button id="viewModeBtn" class="headerButton" title="View Mode">
           <svg class="buttonIcon" viewBox="0 0 16 16" fill="currentColor">
-            <path d="M8 2c1.981 0 3.671. 992 4.933 2.078 1.27 1.091 2.187 2.345 2.637 3.023a1.62 1.62 0 0 1 0 1.798c-.45.678-1.367 1.932-2.637 3.023C11.67 13.008 9.981 14 8 14c-1.981 0-3.671-. 992-4.933-2.078C1.797 10.831. 88 9.577. 43 8.899a1.62 1.62 0 0 1 0-1.798c.45-.678 1.367-1.932 2.637-3.023C4.33 2.992 6.019 2 8 2ZM1.679 7.932a. 12.12 0 0 0 0 .136c.411. 622 1.241 1.75 2.366 2.717C5.176 11.758 6.527 12. 5 8 12.5c1.473 0 2.825-.742 3.955-1.715 1.124-.967 1.954-2.096 2.366-2.717a.12.12 0 0 0 0-.136c-. 412-.621-1.242-1.75-2.366-2.717C10.824 4.242 9.473 3.5 8 3.5c-1.473 0-2.824.742-3.955 1.715-1.124.967-1.954 2.096-2.366 2.717ZM8 10a2 2 0 1 1-. 001-3.999A2 2 0 0 1 8 10Z"/>
+            <path d="M8 2c1.981 0 3.671.992 4.933 2.078 1.27 1.091 2.187 2.345 2.637 3.023a1.62 1.62 0 0 1 0 1.798c-.45.678-1.367 1.932-2.637 3.023C11.67 13.008 9.981 14 8 14c-1.981 0-3.671-.992-4.933-2.078C1.797 10.831.88 9.577.43 8.899a1.62 1.62 0 0 1 0-1.798c.45-.678 1.367-1.932 2.637-3.023C4.33 2.992 6.019 2 8 2ZM1.679 7.932a.12.12 0 0 0 0 .136c.411.622 1.241 1.75 2.366 2.717C5.176 11.758 6.527 12.5 8 12.5c1.473 0 2.825-.742 3.955-1.715 1.124-.967 1.954-2.096 2.366-2.717a.12.12 0 0 0 0-.136c-.412-.621-1.242-1.75-2.366-2.717C10.824 4.242 9.473 3.5 8 3.5c-1.473 0-2.824.742-3.955 1.715-1.124.967-1.954 2.096-2.366 2.717ZM8 10a2 2 0 1 1-.001-3.999A2 2 0 0 1 8 10Z"/>
           </svg>
         </button>
         <div class="headerSeparator"></div>
         <button id="undoBtn" class="headerButton" title="Undo (Ctrl+Z)">
           <svg class="buttonIcon" viewBox="0 0 16 16" fill="currentColor">
-            <path d="M2.5 5.724V2.75a. 75.75 0 0 0-1.5 0v5c0 .414.336.75.75.75h5a.75.75 0 0 0 0-1.5H3.534L6.41 4.086A5.25 5.25 0 1 1 2.75 10. 25a. 75.75 0 0 0-1.5 0A6.75 6.75 0 1 0 7.058 2.85L2.5 5.724Z"/>
+            <path d="M2.5 5.724V2.75a.75.75 0 0 0-1.5 0v5c0 .414.336.75.75.75h5a.75.75 0 0 0 0-1.5H3.534L6.41 4.086A5.25 5.25 0 1 1 2.75 10.25a.75.75 0 0 0-1.5 0A6.75 6.75 0 1 0 7.058 2.85L2.5 5.724Z"/>
           </svg>
         </button>
         <button id="redoBtn" class="headerButton" title="Redo (Ctrl+Y)">
           <svg class="buttonIcon" viewBox="0 0 16 16" fill="currentColor">
-            <path d="M13.5 5.724V2.75a.75.75 0 0 1 1.5 0v5a.75.75 0 0 1-. 75.75h-5a.75.75 0 0 1 0-1.5h3.216L9.59 4.086A5.25 5.25 0 1 0 13.25 10.25a.75.75 0 0 1 1.5 0A6.75 6.75 0 1 1 8.942 2.85l4.558 2.874Z"/>
+            <path d="M13.5 5.724V2.75a.75.75 0 0 1 1.5 0v5a.75.75 0 0 1-.75.75h-5a.75.75 0 0 1 0-1.5h3.216L9.59 4.086A5.25 5.25 0 1 0 13.25 10.25a.75.75 0 0 1 1.5 0A6.75 6.75 0 1 1 8.942 2.85l4.558 2.874Z"/>
           </svg>
         </button>
         <div class="headerSeparator"></div>
         <button id="searchBtn" class="headerButton" title="Search (Ctrl+F)">
           <svg class="buttonIcon" viewBox="0 0 16 16" fill="currentColor">
-            <path d="M10.68 11.74a6 6 0 0 1-7.922-8.982 6 6 0 0 1 8.982 7.922l3.04 3.04a. 749.749 0 0 1-. 326 1.275. 749.749 0 0 1-. 734-. 215ZM11.5 7a4.499 4.499 0 1 0-8. 997 0A4.499 4.499 0 0 0 11.5 7Z"/>
+            <path d="M10.68 11.74a6 6 0 0 1-7.922-8.982 6 6 0 0 1 8.982 7.922l3.04 3.04a.749.749 0 0 1-.326 1.275.749.749 0 0 1-.734-.215ZM11.5 7a4.499 4.499 0 1 0-8.997 0A4.499 4.499 0 0 0 11.5 7Z"/>
           </svg>
         </button>
         <button id="wrapBtn" class="headerButton" title="Toggle Word Wrap">
           <svg class="buttonIcon" viewBox="0 0 16 16" fill="currentColor">
-            <path d="M2.75 3.5a. 25.25 0 0 0-. 25.25v8.5c0 .138.112.25.25.25h10.5a.25.25 0 0 0 . 25-.25v-8.5a.25.25 0 0 0-.25-.25Zm10.5-1.5a1.75 1.75 0 0 1 1.75 1.75v8.5A1.75 1.75 0 0 1 13.25 14H2.75A1.75 1.75 0 0 1 1 12.25v-8.5A1.75 1.75 0 0 1 2.75 2Zm-9.5 5h3. 75a.75.75 0 0 1 0 1.5H3.75a.75.75 0 0 1 0-1.5ZM3 9.75a.75.75 0 0 1 .75-. 75h6.5a.75.75 0 0 1 0 1.5h-6.5a.75.75 0 0 1-.75-.75Z"/>
+            <path d="M2.75 3.5a.25.25 0 0 0-.25.25v8.5c0 .138.112.25.25.25h10.5a.25.25 0 0 0 .25-.25v-8.5a.25.25 0 0 0-.25-.25Zm10.5-1.5a1.75 1.75 0 0 1 1.75 1.75v8.5A1.75 1.75 0 0 1 13.25 14H2.75A1.75 1.75 0 0 1 1 12.25v-8.5A1.75 1.75 0 0 1 2.75 2Zm-9.5 5h3.75a.75.75 0 0 1 0 1.5H3.75a.75.75 0 0 1 0-1.5ZM3 9.75a.75.75 0 0 1 .75-.75h6.5a.75.75 0 0 1 0 1.5h-6.5a.75.75 0 0 1-.75-.75Z"/>
           </svg>
         </button>
         <div class="headerSeparator"></div>
         <button id="copyBtn" class="headerButton" title="Copy Code">
           <svg class="buttonIcon" viewBox="0 0 16 16" fill="currentColor">
-            <path d="M0 6.75C0 5.784.784 5 1.75 5h1.5a. 75.75 0 0 1 0 1.5h-1.5a.25.25 0 0 0-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 0 0 . 25-.25v-1.5a.75.75 0 0 1 1.5 0v1.5A1.75 1.75 0 0 1 9.25 16h-7.5A1.75 1.75 0 0 1 0 14.25ZM5 1.75C5 .784 5.784 0 6.75 0h7.5C15.216 0 16 .784 16 1.75v7.5A1.75 1.75 0 0 1 14.25 11h-7.5A1.75 1.75 0 0 1 5 9.25Zm1.75-. 25a.25.25 0 0 0-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 0 0 .25-. 25v-7.5a.25.25 0 0 0-.25-.25Z"/>
+            <path d="M0 6.75C0 5.784.784 5 1.75 5h1.5a.75.75 0 0 1 0 1.5h-1.5a.25.25 0 0 0-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 0 0 .25-.25v-1.5a.75.75 0 0 1 1.5 0v1.5A1.75 1.75 0 0 1 9.25 16h-7.5A1.75 1.75 0 0 1 0 14.25ZM5 1.75C5 .784 5.784 0 6.75 0h7.5C15.216 0 16 .784 16 1.75v7.5A1.75 1.75 0 0 1 14.25 11h-7.5A1.75 1.75 0 0 1 5 9.25Zm1.75-.25a.25.25 0 0 0-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 0 0 .25-.25v-7.5a.25.25 0 0 0-.25-.25Z"/>
           </svg>
         </button>
         <button id="downloadBtn" class="headerButton" title="Download File">
           <svg class="buttonIcon" viewBox="0 0 16 16" fill="currentColor">
-            <path d="M2.75 14A1.75 1.75 0 0 1 1 12.25v-2.5a. 75.75 0 0 1 1.5 0v2.5c0 .138.112.25.25.25h10.5a.25.25 0 0 0 . 25-.25v-2.5a. 75.75 0 0 1 1.5 0v2.5A1.75 1.75 0 0 1 13.25 14Zm-1-6a. 75.75 0 0 1 .75-. 75h2.5a.75.75 0 0 1 0 1.5h-2.5A. 75.75 0 0 1 1. 75 8Z"/>
-            <path d="M8 . 75a.75.75 0 0 1 . 75.75v6. 19l1.72-1.72a.75.75 0 1 1 1.06 1.06l-3 3a.75.75 0 0 1-1.06 0l-3-3a.75.75 0 0 1 1.06-1.06l1.72 1.72V1.5A.75.75 0 0 1 8 .75Z"/>
+            <path d="M2.75 14A1.75 1.75 0 0 1 1 12.25v-2.5a.75.75 0 0 1 1.5 0v2.5c0 .138.112.25.25.25h10.5a.25.25 0 0 0 .25-.25v-2.5a.75.75 0 0 1 1.5 0v2.5A1.75 1.75 0 0 1 13.25 14Zm-1-6a.75.75 0 0 1 .75-.75h2.5a.75.75 0 0 1 0 1.5h-2.5A.75.75 0 0 1 1.75 8Z"/>
+            <path d="M8 .75a.75.75 0 0 1 .75.75v6.19l1.72-1.72a.75.75 0 1 1 1.06 1.06l-3 3a.75.75 0 0 1-1.06 0l-3-3a.75.75 0 0 1 1.06-1.06l1.72 1.72V1.5A.75.75 0 0 1 8 .75Z"/>
           </svg>
         </button>
         <button id="uploadBtn" class="headerButton" title="Upload File">
           <svg class="buttonIcon" viewBox="0 0 16 16" fill="currentColor">
-            <path d="M2.75 14A1.75 1.75 0 0 1 1 12.25v-2.5a.75.75 0 0 1 1.5 0v2.5c0 .138.112.25.25.25h10.5a.25.25 0 0 0 . 25-.25v-2.5a. 75.75 0 0 1 1.5 0v2.5A1.75 1.75 0 0 1 13.25 14Z"/>
-            <path d="M8.75 1.75V8. 19l1.72-1.72a.75.75 0 1 1 1.06 1.06l-3 3a.75.75 0 0 1-1.06 0l-3-3a.75.75 0 0 1 1.06-1.06l1.72 1.72V1.75a.75.75 0 0 1 1.5 0Z" transform="rotate(180 8 5.5)"/>
+            <path d="M2.75 14A1.75 1.75 0 0 1 1 12.25v-2.5a.75.75 0 0 1 1.5 0v2.5c0 .138.112.25.25.25h10.5a.25.25 0 0 0 .25-.25v-2.5a.75.75 0 0 1 1.5 0v2.5A1.75 1.75 0 0 1 13.25 14Z"/>
+            <path d="M8.75 1.75V8.19l1.72-1.72a.75.75 0 1 1 1.06 1.06l-3 3a.75.75 0 0 1-1.06 0l-3-3a.75.75 0 0 1 1.06-1.06l1.72 1.72V1.75a.75.75 0 0 1 1.5 0Z" transform="rotate(180 8 5.5)"/>
           </svg>
         </button>
       </div>
       <div class="editorHeaderRight">
         <button id="themeBtn" class="headerButton" title="Toggle Theme">
           <svg id="themeIcon" class="buttonIcon" viewBox="0 0 16 16" fill="currentColor">
-            <path d="M8 12a4 4 0 1 1 0-8 4 4 0 0 1 0 8Zm0-1. 5a2. 5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5Zm5. 657-8.157a.75.75 0 0 1 0 1.061l-1.061 1.06a.749.749 0 0 1-1.275-. 326.749.749 0 0 1 . 215-. 734l1.06-1.06a. 75.75 0 0 1 1.06 0Zm-9.193 9.193a.75.75 0 0 1 0 1.06l-1.06 1.061a.75.75 0 1 1-1.061-1.06l1.06-1.061a.75.75 0 0 1 1.061 0ZM8 0a. 75.75 0 0 1 . 75.75v1.5a.75.75 0 0 1-1.5 0V.75A.75.75 0 0 1 8 0ZM3 8a.75.75 0 0 1-. 75.75H. 75a.75.75 0 0 1 0-1.5h1.5A.75.75 0 0 1 3 8Zm13 0a.75.75 0 0 1-.75.75h-1.5a.75.75 0 0 1 0-1.5h1.5A.75.75 0 0 1 16 8Zm-8 5a.75.75 0 0 1 .75.75v1.5a. 75.75 0 0 1-1.5 0v-1.5A.75.75 0 0 1 8 13Zm3. 536-1.464a.75.75 0 0 1 1.06 0l1.061 1.06a. 75.75 0 0 1-1.06 1.061l-1.061-1.06a. 75.75 0 0 1 0-1.061Zm-9.193-9.193a. 75.75 0 0 1 1.06 0l1.061 1.06a.75.75 0 0 1-1.06 1.061l-1.061-1.06a.75.75 0 0 1 0-1.061Z"/>
+            <path d="M8 12a4 4 0 1 1 0-8 4 4 0 0 1 0 8Zm0-1.5a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5Zm5.657-8.157a.75.75 0 0 1 0 1.061l-1.061 1.06a.749.749 0 0 1-1.275-.326.749.749 0 0 1 .215-.734l1.06-1.06a.75.75 0 0 1 1.06 0Zm-9.193 9.193a.75.75 0 0 1 0 1.06l-1.06 1.061a.75.75 0 1 1-1.061-1.06l1.06-1.061a.75.75 0 0 1 1.061 0ZM8 0a.75.75 0 0 1 .75.75v1.5a.75.75 0 0 1-1.5 0V.75A.75.75 0 0 1 8 0ZM3 8a.75.75 0 0 1-.75.75H.75a.75.75 0 0 1 0-1.5h1.5A.75.75 0 0 1 3 8Zm13 0a.75.75 0 0 1-.75.75h-1.5a.75.75 0 0 1 0-1.5h1.5A.75.75 0 0 1 16 8Zm-8 5a.75.75 0 0 1 .75.75v1.5a.75.75 0 0 1-1.5 0v-1.5A.75.75 0 0 1 8 13Zm3.536-1.464a.75.75 0 0 1 1.06 0l1.061 1.06a.75.75 0 0 1-1.06 1.061l-1.061-1.06a.75.75 0 0 1 0-1.061Zm-9.193-9.193a.75.75 0 0 1 1.06 0l1.061 1.06a.75.75 0 0 1-1.06 1.061l-1.061-1.06a.75.75 0 0 1 0-1.061Z"/>
           </svg>
         </button>
         <div class="fontSizeControl">
           <button id="fontDecreaseBtn" class="fontBtn" title="Decrease Font Size">
             <svg class="tinyIcon" viewBox="0 0 16 16" fill="currentColor">
-              <path d="M2 7.75A. 75.75 0 0 1 2.75 7h10a.75.75 0 0 1 0 1.5h-10A.75.75 0 0 1 2 7.75Z"/>
+              <path d="M2 7.75A.75.75 0 0 1 2.75 7h10a.75.75 0 0 1 0 1.5h-10A.75.75 0 0 1 2 7.75Z"/>
             </svg>
           </button>
           <span id="fontSizeLabel" class="fontSizeLabel">14px</span>
           <button id="fontIncreaseBtn" class="fontBtn" title="Increase Font Size">
             <svg class="tinyIcon" viewBox="0 0 16 16" fill="currentColor">
-              <path d="M7. 75 2a.75.75 0 0 1 . 75.75V7h4. 25a.75.75 0 0 1 0 1.5H8. 5v4.25a.75.75 0 0 1-1.5 0V8.5H2. 75a.75.75 0 0 1 0-1.5H7V2.75A.75.75 0 0 1 7.75 2Z"/>
+              <path d="M7.75 2a.75.75 0 0 1 .75.75V7h4.25a.75.75 0 0 1 0 1.5H8.5v4.25a.75.75 0 0 1-1.5 0V8.5H2.75a.75.75 0 0 1 0-1.5H7V2.75A.75.75 0 0 1 7.75 2Z"/>
             </svg>
           </button>
         </div>
         <button id="fullscreenBtn" class="headerButton" title="Toggle Fullscreen">
           <svg id="fullscreenIcon" class="buttonIcon" viewBox="0 0 16 16" fill="currentColor">
-            <path d="M1. 75 10a. 75.75 0 0 1 . 75.75v2.5c0 .138.112.25.25.25h2.5a.75.75 0 0 1 0 1.5h-2.5A1.75 1.75 0 0 1 1 13.25v-2.5a.75.75 0 0 1 . 75-.75Zm12.5 0a.75.75 0 0 1 .75.75v2.5A1.75 1.75 0 0 1 13.25 15h-2.5a.75.75 0 0 1 0-1.5h2.5a.25.25 0 0 0 . 25-.25v-2.5a. 75.75 0 0 1 . 75-.75ZM2.75 1a1.75 1.75 0 0 0-1.75 1.75v2.5a. 75.75 0 0 0 1.5 0v-2.5a. 25.25 0 0 1 .25-.25h2.5a. 75.75 0 0 0 0-1.5Zm8 0a. 75.75 0 0 0 0 1.5h2.5a. 25.25 0 0 1 .25.25v2.5a.75.75 0 0 0 1.5 0v-2.5A1.75 1.75 0 0 0 13.25 1Z"/>
+            <path d="M1.75 10a.75.75 0 0 1 .75.75v2.5c0 .138.112.25.25.25h2.5a.75.75 0 0 1 0 1.5h-2.5A1.75 1.75 0 0 1 1 13.25v-2.5a.75.75 0 0 1 .75-.75Zm12.5 0a.75.75 0 0 1 .75.75v2.5A1.75 1.75 0 0 1 13.25 15h-2.5a.75.75 0 0 1 0-1.5h2.5a.25.25 0 0 0 .25-.25v-2.5a.75.75 0 0 1 .75-.75ZM2.75 1a1.75 1.75 0 0 0-1.75 1.75v2.5a.75.75 0 0 0 1.5 0v-2.5a.25.25 0 0 1 .25-.25h2.5a.75.75 0 0 0 0-1.5Zm8 0a.75.75 0 0 0 0 1.5h2.5a.25.25 0 0 1 .25.25v2.5a.75.75 0 0 0 1.5 0v-2.5A1.75 1.75 0 0 0 13.25 1Z"/>
           </svg>
         </button>
         <button id="moreOptionsBtn" class="headerButton" title="More Options">
           <svg class="buttonIcon" viewBox="0 0 16 16" fill="currentColor">
-            <path d="M8 9a1. 5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3ZM1.5 9a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3Zm13 0a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3Z"/>
+            <path d="M8 9a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3ZM1.5 9a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3Zm13 0a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3Z"/>
           </svg>
         </button>
         <div id="moreOptionsDropdown" class="dropdown dropdownRight hide">
           <div class="dropdownContent">
             <button class="dropdownItem" id="formatBtn">
               <svg class="dropdownIcon" viewBox="0 0 16 16" fill="currentColor">
-                <path d="m11.28 3.22 4.25 4.25a. 75.75 0 0 1 0 1.06l-4.25 4.25a.749.749 0 0 1-1.275-. 326.749.749 0 0 1 .215-.734L13.94 8l-3.72-3.72a.749.749 0 0 1 .326-1.275.749.749 0 0 1 . 734.215Zm-6.56 0a.751.751 0 0 1 1.042. 018. 751.751 0 0 1 . 018 1.042L2.06 8l3.72 3.72a. 749.749 0 0 1-. 326 1.275.749.749 0 0 1-.734-.215L. 47 8. 53a.75.75 0 0 1 0-1.06Z"/>
+                <path d="m11.28 3.22 4.25 4.25a.75.75 0 0 1 0 1.06l-4.25 4.25a.749.749 0 0 1-1.275-.326.749.749 0 0 1 .215-.734L13.94 8l-3.72-3.72a.749.749 0 0 1 .326-1.275.749.749 0 0 1 .734.215Zm-6.56 0a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042L2.06 8l3.72 3.72a.749.749 0 0 1-.326 1.275.749.749 0 0 1-.734-.215L.47 8.53a.75.75 0 0 1 0-1.06Z"/>
               </svg>
               Format Document
             </button>
             <button class="dropdownItem" id="foldAllBtn">
               <svg class="dropdownIcon" viewBox="0 0 16 16" fill="currentColor">
-                <path d="M10.896 2H8.75V. 75a. 75.75 0 0 0-1.5 0V2H5.104a.25.25 0 0 0-.177. 427l2.896 2.896a.25.25 0 0 0 .354 0l2.896-2.896A.25.25 0 0 0 10.896 2ZM8.75 15. 25a. 75.75 0 0 1-1.5 0V14H5.104a. 25.25 0 0 1-. 177-. 427l2.896-2.896a.25.25 0 0 1 . 354 0l2.896 2.896a.25.25 0 0 1-. 177.427H8.75ZM9.78 7.22a.75.75 0 0 1 0 1.06l-2.25 2.25a.75.75 0 0 1-1.06-1.06L8. 19 7.75 6.47 6.03a.75.75 0 0 1 1.06-1.06l2.25 2.25Z"/>
+                <path d="M10.896 2H8.75V.75a.75.75 0 0 0-1.5 0V2H5.104a.25.25 0 0 0-.177.427l2.896 2.896a.25.25 0 0 0 .354 0l2.896-2.896A.25.25 0 0 0 10.896 2ZM8.75 15.25a.75.75 0 0 1-1.5 0V14H5.104a.25.25 0 0 1-.177-.427l2.896-2.896a.25.25 0 0 1 .354 0l2.896 2.896a.25.25 0 0 1-.177.427H8.75ZM9.78 7.22a.75.75 0 0 1 0 1.06l-2.25 2.25a.75.75 0 0 1-1.06-1.06L8.19 7.75 6.47 6.03a.75.75 0 0 1 1.06-1.06l2.25 2.25Z"/>
               </svg>
               Fold All
             </button>
             <button class="dropdownItem" id="unfoldAllBtn">
               <svg class="dropdownIcon" viewBox="0 0 16 16" fill="currentColor">
-                <path d="M5.427 2.573a.25.25 0 0 1 .354 0l2.896 2.896a.25.25 0 0 1-. 177.427H6.354v2.208a.75.75 0 0 1-1.5 0V5.896H2.75a. 25.25 0 0 1-. 177-.427l2.854-2.896Zm5.146 10.854a.25.25 0 0 1-. 354 0l-2.896-2.896a. 25.25 0 0 1 . 177-.427h2.146V7.896a.75.75 0 0 1 1.5 0v2.208h2.104a.25.25 0 0 1 .177.427Z"/>
+                <path d="M5.427 2.573a.25.25 0 0 1 .354 0l2.896 2.896a.25.25 0 0 1-.177.427H6.354v2.208a.75.75 0 0 1-1.5 0V5.896H2.75a.25.25 0 0 1-.177-.427l2.854-2.896Zm5.146 10.854a.25.25 0 0 1-.354 0l-2.896-2.896a.25.25 0 0 1 .177-.427h2.146V7.896a.75.75 0 0 1 1.5 0v2.208h2.104a.25.25 0 0 1 .177.427Z"/>
               </svg>
               Unfold All
             </button>
             <div class="dropdownDivider"></div>
             <button class="dropdownItem" id="showInvisiblesBtn">
               <svg class="dropdownIcon" viewBox="0 0 16 16" fill="currentColor">
-                <path d="M2.75 4.5a. 25.25 0 0 0-.25.25v6.5c0 .138.112.25.25.25h10.5a.25.25 0 0 0 . 25-.25v-6.5a. 25.25 0 0 0-. 25-.25Zm10.5-1.5a1.75 1.75 0 0 1 1.75 1.75v6.5A1.75 1.75 0 0 1 13.25 13H2.75A1.75 1.75 0 0 1 1 11.25v-6.5A1.75 1.75 0 0 1 2.75 3Z"/>
+                <path d="M2.75 4.5a.25.25 0 0 0-.25.25v6.5c0 .138.112.25.25.25h10.5a.25.25 0 0 0 .25-.25v-6.5a.25.25 0 0 0-.25-.25Zm10.5-1.5a1.75 1.75 0 0 1 1.75 1.75v6.5A1.75 1.75 0 0 1 13.25 13H2.75A1.75 1.75 0 0 1 1 11.25v-6.5A1.75 1.75 0 0 1 2.75 3Z"/>
               </svg>
               Show Invisibles
             </button>
@@ -221,17 +221,17 @@ class coderViewEdit {
             <span id="searchMatches" class="searchCount">0/0</span>
             <button id="searchPrevBtn" class="searchNavBtn" title="Previous">
               <svg class="tinyIcon" viewBox="0 0 16 16" fill="currentColor">
-                <path d="M11. 78 9. 78a. 75.75 0 0 1-1.06 0L8 7.06 5.28 9.78a.75.75 0 0 1-1.06-1.06l3.25-3.25a.75.75 0 0 1 1.06 0l3.25 3.25a.75.75 0 0 1 0 1.06Z"/>
+                <path d="M11.78 9.78a.75.75 0 0 1-1.06 0L8 7.06 5.28 9.78a.75.75 0 0 1-1.06-1.06l3.25-3.25a.75.75 0 0 1 1.06 0l3.25 3.25a.75.75 0 0 1 0 1.06Z"/>
               </svg>
             </button>
             <button id="searchNextBtn" class="searchNavBtn" title="Next">
               <svg class="tinyIcon" viewBox="0 0 16 16" fill="currentColor">
-                <path d="M4.22 6.22a.75.75 0 0 1 1.06 0L8 8.94l2.72-2.72a. 75.75 0 1 1 1.06 1.06l-3.25 3.25a.75.75 0 0 1-1.06 0L4.22 7.28a.75.75 0 0 1 0-1.06Z"/>
+                <path d="M4.22 6.22a.75.75 0 0 1 1.06 0L8 8.94l2.72-2.72a.75.75 0 1 1 1.06 1.06l-3.25 3.25a.75.75 0 0 1-1.06 0L4.22 7.28a.75.75 0 0 1 0-1.06Z"/>
               </svg>
             </button>
             <button id="closeSearchBtn" class="searchNavBtn" title="Close">
               <svg class="tinyIcon" viewBox="0 0 16 16" fill="currentColor">
-                <path d="M3.72 3.72a.75.75 0 0 1 1.06 0L8 6.94l3.22-3.22a.751.751 0 0 1 1.042. 018.751.751 0 0 1 .018 1.042L9.06 8l3.22 3.22a.749.749 0 0 1-. 326 1.275.749.749 0 0 1-.734-. 215L8 9.06l-3.22 3.22a.751.751 0 0 1-1.042-. 018.751.751 0 0 1-. 018-1.042L6.94 8 3.72 4.78a.75.75 0 0 1 0-1.06Z"/>
+                <path d="M3.72 3.72a.75.75 0 0 1 1.06 0L8 6.94l3.22-3.22a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042L9.06 8l3.22 3.22a.749.749 0 0 1-.326 1.275.749.749 0 0 1-.734-.215L8 9.06l-3.22 3.22a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042L6.94 8 3.72 4.78a.75.75 0 0 1 0-1.06Z"/>
               </svg>
             </button>
           </div>
@@ -258,7 +258,7 @@ class coderViewEdit {
         <div class="footerDivider"></div>
         <div class="footerItem">
           <svg class="footerIcon" viewBox="0 0 16 16" fill="currentColor">
-            <path d="M1 3.5A1.5 1.5 0 0 1 2.5 2h11a1.5 1.5 0 0 1 1.5 1.5v6a1.5 1.5 0 0 1-1.5 1.5h-11A1.5 1.5 0 0 1 1 9.5Zm0 8a. 75.75 0 0 1 . 75-. 75h12.5a.75.75 0 0 1 0 1.5H1.75A. 75.75 0 0 1 1 11.5Z"/>
+            <path d="M1 3.5A1.5 1.5 0 0 1 2.5 2h11a1.5 1.5 0 0 1 1.5 1.5v6a1.5 1.5 0 0 1-1.5 1.5h-11A1.5 1.5 0 0 1 1 9.5Zm0 8a.75.75 0 0 1 .75-.75h12.5a.75.75 0 0 1 0 1.5H1.75A.75.75 0 0 1 1 11.5Z"/>
           </svg>
           <span id="fileSize" class="footerValue">0 B</span>
         </div>
@@ -266,7 +266,7 @@ class coderViewEdit {
       <div class="editorFooterCenter">
         <div id="statusIndicator" class="statusIndicator statusOk">
           <svg class="statusIcon" viewBox="0 0 16 16" fill="currentColor">
-            <path d="M13.78 4.22a.75.75 0 0 1 0 1.06l-7.25 7.25a.75.75 0 0 1-1.06 0L2.22 9.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018L6 10.94l6. 72-6.72a.75.75 0 0 1 1.06 0Z"/>
+            <path d="M13.78 4.22a.75.75 0 0 1 0 1.06l-7.25 7.25a.75.75 0 0 1-1.06 0L2.22 9.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018L6 10.94l6.72-6.72a.75.75 0 0 1 1.06 0Z"/>
           </svg>
           <span>No Issues</span>
         </div>
@@ -274,7 +274,7 @@ class coderViewEdit {
       <div class="editorFooterRight">
         <div class="footerItem">
           <svg class="footerIcon" viewBox="0 0 16 16" fill="currentColor">
-            <path d="M8 0a8 8 0 1 1 0 16A8 8 0 0 1 8 0ZM1. 5 8a6.5 6.5 0 1 0 13 0 6.5 6.5 0 0 0-13 0Zm7-3. 25v2.992l2.028. 812a.75.75 0 0 1-. 556 1.392l-2.5-1A.751.751 0 0 1 7 8.25v-3.5a.75.75 0 0 1 1.5 0Z"/>
+            <path d="M8 0a8 8 0 1 1 0 16A8 8 0 0 1 8 0ZM1.5 8a6.5 6.5 0 1 0 13 0 6.5 6.5 0 0 0-13 0Zm7-3.25v2.992l2.028.812a.75.75 0 0 1-.556 1.392l-2.5-1A.751.751 0 0 1 7 8.25v-3.5a.75.75 0 0 1 1.5 0Z"/>
           </svg>
           <span id="lastSaved" class="footerValue">Never</span>
         </div>
@@ -284,7 +284,7 @@ class coderViewEdit {
         <span class="footerBadge">Spaces:  2</span>
         <span id="languageBadge" class="footerBadge footerBadgeAccent">
           <svg class="badgeIcon" viewBox="0 0 16 16" fill="currentColor">
-            <path d="m11.28 3.22 4.25 4.25a.75.75 0 0 1 0 1.06l-4.25 4.25a.749.749 0 0 1-1.275-.326.749.749 0 0 1 .215-.734L13.94 8l-3.72-3.72a.749.749 0 0 1 .326-1.275.749.749 0 0 1 .734.215Zm-6.56 0a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042L2.06 8l3.72 3.72a.749.749 0 0 1-.326 1.275.749.749 0 0 1-. 734-. 215L.47 8.53a. 75.75 0 0 1 0-1.06Z"/>
+            <path d="m11.28 3.22 4.25 4.25a.75.75 0 0 1 0 1.06l-4.25 4.25a.749.749 0 0 1-1.275-.326.749.749 0 0 1 .215-.734L13.94 8l-3.72-3.72a.749.749 0 0 1 .326-1.275.749.749 0 0 1 .734.215Zm-6.56 0a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042L2.06 8l3.72 3.72a.749.749 0 0 1-.326 1.275.749.749 0 0 1-.734-.215L.47 8.53a.75.75 0 0 1 0-1.06Z"/>
           </svg>
           JavaScript
         </span>
@@ -294,7 +294,7 @@ class coderViewEdit {
   <div id="commitPanel" class="commitPanel hide">
     <h3 class="commitTitle">Commit Changes</h3>
     <div class="commitContent">
-      <input type="text" id="commitTitleInput" class="commitInput" placeholder="Update filename. ext" spellcheck="false" />
+      <input type="text" id="commitTitleInput" class="commitInput" placeholder="Update filename.ext" spellcheck="false" />
       <textarea id="commitDescriptionInput" class="commitTextarea" rows="3" placeholder="Add an optional extended description..." spellcheck="false"></textarea>
       <div class="commitActions">
         <button id="cancelCommitBtn" class="commitBtnSecondary">Cancel</button>
@@ -302,31 +302,31 @@ class coderViewEdit {
       </div>
     </div>
   </div>
-  <input type="file" id="fileUploadInput" class="hide" accept=".js,.jsx,.ts,.tsx,. py,.html,. css,.json,.md,. txt,. yml,.yaml,.xml,. sql,.sh,.rb,.go,.rs,.java,.cpp,.c,.h,. cs,.php,.swift" />
+  <input type="file" id="fileUploadInput" class="hide" accept=".js,.jsx,.ts,.tsx,.py,.html,.css,.json,.md,.txt,.yml,.yaml,.xml,.sql,.sh,.rb,.go,.rs,.java,.cpp,.c,.h,.cs,.php,.swift" />
 </div>
     `;
   }
 
   cacheElements() {
     this.elements = {
-      filePage: document.querySelector('. pages[data-page="file"]'),
+      filePage: document.querySelector('.pages[data-page="file"]'),
       fileNameDisplay: document.getElementById("fileNameDisplay"),
       modifiedBadge: document.getElementById("modifiedBadge"),
       languageBtn: document.getElementById("languageBtn"),
       languageLabel: document.getElementById("languageLabel"),
       languageDropdown: document.getElementById("languageDropdown"),
       languageList: document.getElementById("languageList"),
-      editModeBtn: document. getElementById("editModeBtn"),
+      editModeBtn: document.getElementById("editModeBtn"),
       viewModeBtn: document.getElementById("viewModeBtn"),
-      undoBtn: document. getElementById("undoBtn"),
+      undoBtn: document.getElementById("undoBtn"),
       redoBtn: document.getElementById("redoBtn"),
       searchBtn: document.getElementById("searchBtn"),
       wrapBtn: document.getElementById("wrapBtn"),
       copyBtn: document.getElementById("copyBtn"),
       downloadBtn: document.getElementById("downloadBtn"),
       uploadBtn: document.getElementById("uploadBtn"),
-      themeBtn: document. getElementById("themeBtn"),
-      themeIcon: document. getElementById("themeIcon"),
+      themeBtn: document.getElementById("themeBtn"),
+      themeIcon: document.getElementById("themeIcon"),
       fontDecreaseBtn: document.getElementById("fontDecreaseBtn"),
       fontIncreaseBtn: document.getElementById("fontIncreaseBtn"),
       fontSizeLabel: document.getElementById("fontSizeLabel"),
@@ -337,23 +337,23 @@ class coderViewEdit {
       formatBtn: document.getElementById("formatBtn"),
       foldAllBtn: document.getElementById("foldAllBtn"),
       unfoldAllBtn:  document.getElementById("unfoldAllBtn"),
-      showInvisiblesBtn: document. getElementById("showInvisiblesBtn"),
+      showInvisiblesBtn: document.getElementById("showInvisiblesBtn"),
       editorBody: document.getElementById("editorBody"),
       codeMirrorContainer: document.getElementById("codeMirrorContainer"),
       loadingSpinner: document.getElementById("loadingSpinner"),
       searchPanel: document.getElementById("searchPanel"),
       searchInput: document.getElementById("searchInput"),
       searchMatches: document.getElementById("searchMatches"),
-      searchPrevBtn: document. getElementById("searchPrevBtn"),
-      searchNextBtn: document. getElementById("searchNextBtn"),
+      searchPrevBtn: document.getElementById("searchPrevBtn"),
+      searchNextBtn: document.getElementById("searchNextBtn"),
       closeSearchBtn: document.getElementById("closeSearchBtn"),
-      cursorLine: document. getElementById("cursorLine"),
-      cursorCol: document. getElementById("cursorCol"),
+      cursorLine: document.getElementById("cursorLine"),
+      cursorCol: document.getElementById("cursorCol"),
       lineCount: document.getElementById("lineCount"),
       charCount: document.getElementById("charCount"),
       fileSize: document.getElementById("fileSize"),
       statusIndicator: document.getElementById("statusIndicator"),
-      lastSaved: document. getElementById("lastSaved"),
+      lastSaved: document.getElementById("lastSaved"),
       languageBadge: document.getElementById("languageBadge"),
       commitPanel: document.getElementById("commitPanel"),
       commitTitleInput: document.getElementById("commitTitleInput"),
@@ -371,39 +371,39 @@ class coderViewEdit {
     this.languages.forEach(lang => {
       const btn = document.createElement("button");
       btn.className = "dropdownItem";
-      btn.textContent = lang. label;
-      btn. dataset.value = lang. value;
-      btn. addEventListener("click", () => this.setLanguage(lang. value));
+      btn.textContent = lang.label;
+      btn.dataset.value = lang.value;
+      btn.addEventListener("click", () => this.setLanguage(lang.value));
       this.elements.languageList.appendChild(btn);
     });
   }
 
   bindEvents() {
-    this.elements.editModeBtn?. addEventListener("click", () => this.enterEditMode());
+    this.elements.editModeBtn?.addEventListener("click", () => this.enterEditMode());
     this.elements.viewModeBtn?.addEventListener("click", () => this.exitEditMode());
     this.elements.undoBtn?.addEventListener("click", () => this.undo());
-    this.elements. redoBtn?.addEventListener("click", () => this.redo());
+    this.elements.redoBtn?.addEventListener("click", () => this.redo());
     this.elements.searchBtn?.addEventListener("click", () => this.openSearch());
     this.elements.wrapBtn?.addEventListener("click", () => this.toggleWrapLines());
-    this.elements.copyBtn?. addEventListener("click", () => this.copyCode());
-    this.elements.downloadBtn?. addEventListener("click", () => this.downloadFile());
-    this.elements.uploadBtn?. addEventListener("click", () => this.elements.fileUploadInput?.click());
+    this.elements.copyBtn?.addEventListener("click", () => this.copyCode());
+    this.elements.downloadBtn?.addEventListener("click", () => this.downloadFile());
+    this.elements.uploadBtn?.addEventListener("click", () => this.elements.fileUploadInput?.click());
     this.elements.fileUploadInput?.addEventListener("change", (e) => this.handleFileUpload(e));
     this.elements.themeBtn?.addEventListener("click", () => this.toggleTheme());
-    this.elements.fontDecreaseBtn?. addEventListener("click", () => this.adjustFontSize(-2));
+    this.elements.fontDecreaseBtn?.addEventListener("click", () => this.adjustFontSize(-2));
     this.elements.fontIncreaseBtn?.addEventListener("click", () => this.adjustFontSize(2));
     this.elements.fullscreenBtn?.addEventListener("click", () => this.toggleFullscreen());
     this.elements.formatBtn?.addEventListener("click", () => this.formatCode());
     this.elements.foldAllBtn?.addEventListener("click", () => this.foldAll());
     this.elements.unfoldAllBtn?.addEventListener("click", () => this.unfoldAll());
-    this.elements. showInvisiblesBtn?.addEventListener("click", () => this.toggleInvisibles());
+    this.elements.showInvisiblesBtn?.addEventListener("click", () => this.toggleInvisibles());
     this.elements.cancelCommitBtn?.addEventListener("click", () => this.cancelEdit());
     this.elements.saveCommitBtn?.addEventListener("click", () => this.saveChanges());
     this.elements.searchPrevBtn?.addEventListener("click", () => this.findPrevious());
-    this.elements. searchNextBtn?.addEventListener("click", () => this.findNext());
-    this.elements.closeSearchBtn?. addEventListener("click", () => this.closeSearch());
+    this.elements.searchNextBtn?.addEventListener("click", () => this.findNext());
+    this.elements.closeSearchBtn?.addEventListener("click", () => this.closeSearch());
     this.elements.searchInput?.addEventListener("input", () => this.performSearch(this.elements.searchInput.value));
-    this.elements. searchInput?.addEventListener("keydown", (e) => {
+    this.elements.searchInput?.addEventListener("keydown", (e) => {
       if (e.key === "Escape") this.closeSearch();
       else if (e.key === "Enter" && e.shiftKey) this.findPrevious();
       else if (e.key === "Enter") this.findNext();
@@ -414,16 +414,16 @@ class coderViewEdit {
     });
     this.elements.moreOptionsBtn?.addEventListener("click", (e) => {
       e.stopPropagation();
-      this.elements. moreOptionsDropdown?.classList.toggle("hide");
+      this.elements.moreOptionsDropdown?.classList.toggle("hide");
     });
     document.addEventListener("click", () => {
       this.elements.languageDropdown?.classList.add("hide");
-      this.elements.moreOptionsDropdown?. classList.add("hide");
+      this.elements.moreOptionsDropdown?.classList.add("hide");
     });
     document.addEventListener("keydown", (e) => {
       const ctrl = e.ctrlKey || e.metaKey;
       if (ctrl && e.key === "s" && this.isEditing) {
-        e. preventDefault();
+        e.preventDefault();
         this.saveChanges();
       }
       if (e.key === "Escape") {
@@ -439,7 +439,7 @@ class coderViewEdit {
         this.adjustFontSize(2);
       }
       if (ctrl && e.key === "-") {
-        e. preventDefault();
+        e.preventDefault();
         this.adjustFontSize(-2);
       }
       if (ctrl && e.key === "0") {
@@ -452,7 +452,7 @@ class coderViewEdit {
       }
     });
     window.addEventListener("beforeunload", (e) => {
-      if (this. isEditing && this.codeMirror && this.codeMirror.getValue() !== this.originalContent) {
+      if (this.isEditing && this.codeMirror && this.codeMirror.getValue() !== this.originalContent) {
         e.preventDefault();
         e.returnValue = "";
       }
@@ -509,20 +509,20 @@ class coderViewEdit {
     const wrap = localStorage.getItem("editor_wrapLines");
     if (wrap !== null) {
       this.state.wrapLines = wrap === "true";
-      this.codeMirror?. setOption("lineWrapping", this. state.wrapLines);
-      this.elements.wrapBtn?. classList.toggle("active", this.state. wrapLines);
+      this.codeMirror?.setOption("lineWrapping", this.state.wrapLines);
+      this.elements.wrapBtn?.classList.toggle("active", this.state.wrapLines);
     }
     const invisibles = localStorage.getItem("editor_showInvisibles");
     if (invisibles !== null) {
-      this.state. showInvisibles = invisibles === "true";
+      this.state.showInvisibles = invisibles === "true";
     }
   }
 
   setupAutoSave() {
-    if (this. state.autoSave) {
+    if (this.state.autoSave) {
       this.state.autoSaveInterval = setInterval(() => {
         if (this.isEditing && this.codeMirror && this.codeMirror.getValue() !== this.originalContent) {
-          this. autoSave();
+          this.autoSave();
         }
       }, 30000);
     }
@@ -541,10 +541,10 @@ class coderViewEdit {
     const lang = this.languages.find(l => l.value === langValue);
     if (!lang) return;
     this.currentLanguage = langValue;
-    this. elements.languageLabel && (this.elements. languageLabel.textContent = lang.label);
-    this.elements.languageBadge && (this.elements.languageBadge. innerHTML = `
+    this.elements.languageLabel && (this.elements.languageLabel.textContent = lang.label);
+    this.elements.languageBadge && (this.elements.languageBadge.innerHTML = `
       <svg class="badgeIcon" viewBox="0 0 16 16" fill="currentColor">
-        <path d="m11.28 3.22 4.25 4.25a.75.75 0 0 1 0 1.06l-4.25 4.25a. 749.749 0 0 1-1.275-.326.749.749 0 0 1 .215-.734L13.94 8l-3.72-3.72a.749.749 0 0 1 .326-1.275.749.749 0 0 1 . 734.215Zm-6.56 0a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042L2.06 8l3.72 3.72a.749.749 0 0 1-.326 1.275.749.749 0 0 1-.734-. 215L.47 8.53a. 75.75 0 0 1 0-1.06Z"/>
+        <path d="m11.28 3.22 4.25 4.25a.75.75 0 0 1 0 1.06l-4.25 4.25a.749.749 0 0 1-1.275-.326.749.749 0 0 1 .215-.734L13.94 8l-3.72-3.72a.749.749 0 0 1 .326-1.275.749.749 0 0 1 .734.215Zm-6.56 0a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042L2.06 8l3.72 3.72a.749.749 0 0 1-.326 1.275.749.749 0 0 1-.734-.215L.47 8.53a.75.75 0 0 1 0-1.06Z"/>
       </svg>
       ${lang.label}
     `);
@@ -580,9 +580,9 @@ class coderViewEdit {
   }
 
   detectLanguageFromExtension(filename) {
-    const ext = filename.split(". ").pop().toLowerCase();
+    const ext = filename.split(".").pop().toLowerCase();
     for (const lang of this.languages) {
-      if (lang. ext. includes(ext)) {
+      if (lang.ext.includes(ext)) {
         return lang.value;
       }
     }
@@ -590,20 +590,20 @@ class coderViewEdit {
   }
 
   show() {
-    this.elements.filePage?. classList.remove("hide");
+    this.elements.filePage?.classList.remove("hide");
     setTimeout(() => this.codeMirror?.refresh(), 50);
   }
 
   hide() {
-    this.elements. filePage?.classList. add("hide");
+    this.elements.filePage?.classList.add("hide");
   }
 
   enterEditMode() {
     if (!this.currentFile) return;
     this.isEditing = true;
     this.elements.editModeBtn?.classList.add("active");
-    this.elements.viewModeBtn?.classList. remove("active");
-    this.elements. commitPanel?.classList.remove("hide");
+    this.elements.viewModeBtn?.classList.remove("active");
+    this.elements.commitPanel?.classList.remove("hide");
     if (this.codeMirror) {
       this.codeMirror.setOption("readOnly", false);
       this.codeMirror.focus();
@@ -624,7 +624,7 @@ class coderViewEdit {
   cancelEdit() {
     if (!this.codeMirror) return;
     if (this.codeMirror.getValue() !== this.originalContent && !confirm("Discard unsaved changes?")) return;
-    this. codeMirror. setValue(this.originalContent);
+    this.codeMirror.setValue(this.originalContent);
     this.updateStats();
     this.exitEditMode();
     this.updateModifiedBadge();
@@ -634,8 +634,8 @@ class coderViewEdit {
     if (!this.isInitialized) this.init();
     this.currentFile = filename;
     this.fileData = fileData;
-    this.originalContent = fileData. content || "";
-    this. elements.fileNameDisplay && (this.elements. fileNameDisplay.textContent = filename);
+    this.originalContent = fileData.content || "";
+    this.elements.fileNameDisplay && (this.elements.fileNameDisplay.textContent = filename);
     const detectedLang = this.detectLanguageFromExtension(filename);
     this.setLanguage(detectedLang);
     if (!this.codeMirror) {
@@ -661,8 +661,8 @@ class coderViewEdit {
   }
 
   updateCommitMessage() {
-    if (!this. currentFile || !this.elements.commitTitleInput) return;
-    if (!this.elements.commitTitleInput.value. trim()) {
+    if (!this.currentFile || !this.elements.commitTitleInput) return;
+    if (!this.elements.commitTitleInput.value.trim()) {
       this.elements.commitTitleInput.value = `Update ${this.currentFile}`;
     }
   }
@@ -674,22 +674,22 @@ class coderViewEdit {
     const chars = content.length;
     const bytes = new Blob([content]).size;
     let sizeStr = bytes < 1024 ?  `${bytes} B` : bytes < 1024 * 1024 ? `${(bytes / 1024).toFixed(1)} KB` : `${(bytes / (1024 * 1024)).toFixed(2)} MB`;
-    this.elements.lineCount && (this. elements.lineCount. textContent = lines);
-    this.elements.charCount && (this.elements. charCount.textContent = chars. toLocaleString());
+    this.elements.lineCount && (this.elements.lineCount.textContent = lines);
+    this.elements.charCount && (this.elements.charCount.textContent = chars.toLocaleString());
     this.elements.fileSize && (this.elements.fileSize.textContent = sizeStr);
   }
 
   updateCursorPosition() {
     if (!this.codeMirror) return;
     const cursor = this.codeMirror.getCursor();
-    this.elements.cursorLine && (this.elements. cursorLine.textContent = cursor.line + 1);
-    this.elements. cursorCol && (this.elements.cursorCol.textContent = cursor.ch + 1);
+    this.elements.cursorLine && (this.elements.cursorLine.textContent = cursor.line + 1);
+    this.elements.cursorCol && (this.elements.cursorCol.textContent = cursor.ch + 1);
   }
 
   updateModifiedBadge() {
     if (!this.codeMirror) return;
-    const isModified = this. codeMirror. getValue() !== this.originalContent;
-    this.elements.modifiedBadge?. classList.toggle("hide", !isModified);
+    const isModified = this.codeMirror.getValue() !== this.originalContent;
+    this.elements.modifiedBadge?.classList.toggle("hide", !isModified);
   }
 
   updateLastSaved(saved) {
@@ -705,8 +705,8 @@ class coderViewEdit {
   }
 
   saveChanges() {
-    if (!this. currentFile || !this.fileData) return;
-    const commitTitle = this.elements. commitTitleInput?. value.trim();
+    if (!this.currentFile || !this.fileData) return;
+    const commitTitle = this.elements.commitTitleInput?.value.trim();
     if (!commitTitle) {
       if (typeof showErrorMessage === "function") showErrorMessage("Please enter a commit message");
       return;
@@ -717,10 +717,10 @@ class coderViewEdit {
         const newContent = this.codeMirror ?  this.codeMirror.getValue() : "";
         this.fileData.content = newContent;
         this.fileData.lastModified = Date.now();
-        this.fileData. lastCommit = commitTitle;
+        this.fileData.lastCommit = commitTitle;
         this.fileData.size = new Blob([newContent]).size;
-        const filePath = (window.currentState?. path ?  window.currentState. path + "/" : "") + this.currentFile;
-        if (typeof LocalStorageManager !== "undefined") LocalStorageManager.saveFile(window.currentState?. repository, filePath, this.fileData);
+        const filePath = (window.currentState?.path ?  window.currentState.path + "/" : "") + this.currentFile;
+        if (typeof LocalStorageManager !== "undefined") LocalStorageManager.saveFile(window.currentState?.repository, filePath, this.fileData);
         this.originalContent = newContent;
         if (typeof showSuccessMessage === "function") showSuccessMessage(`Saved ${this.currentFile}`);
         this.updateLastSaved(true);
@@ -731,21 +731,21 @@ class coderViewEdit {
         this.hideLoadingSpinner();
       } catch (error) {
         this.hideLoadingSpinner();
-        if (typeof showErrorMessage === "function") showErrorMessage(`Save failed: ${error. message}`);
+        if (typeof showErrorMessage === "function") showErrorMessage(`Save failed: ${error.message}`);
       }
     }, 300);
   }
 
   autoSave() {
-    if (!this. currentFile || !this.fileData || !this.isEditing) return;
-    const newContent = this. codeMirror ?  this.codeMirror.getValue() : "";
-    if (newContent === this. originalContent) return;
+    if (!this.currentFile || !this.fileData || !this.isEditing) return;
+    const newContent = this.codeMirror ?  this.codeMirror.getValue() : "";
+    if (newContent === this.originalContent) return;
     try {
-      this. fileData.content = newContent;
-      this.fileData. lastModified = Date.now();
-      this.fileData. lastCommit = "Auto-save";
-      this. fileData.size = new Blob([newContent]).size;
-      const filePath = (window.currentState?. path ? window.currentState.path + "/" : "") + this.currentFile;
+      this.fileData.content = newContent;
+      this.fileData.lastModified = Date.now();
+      this.fileData.lastCommit = "Auto-save";
+      this.fileData.size = new Blob([newContent]).size;
+      const filePath = (window.currentState?.path ? window.currentState.path + "/" : "") + this.currentFile;
       if (typeof LocalStorageManager !== "undefined") LocalStorageManager.saveFile(window.currentState?.repository, filePath, this.fileData);
       this.originalContent = newContent;
       this.updateLastSaved(true);
@@ -783,17 +783,17 @@ class coderViewEdit {
     if (!file) return;
     const reader = new FileReader();
     reader.onload = (event) => {
-      const content = event.target?. result;
+      const content = event.target?.result;
       if (this.codeMirror) {
         this.codeMirror.setValue(content);
         this.currentFile = file.name;
-        this. elements.fileNameDisplay && (this.elements. fileNameDisplay.textContent = file.name);
+        this.elements.fileNameDisplay && (this.elements.fileNameDisplay.textContent = file.name);
         const detectedLang = this.detectLanguageFromExtension(file.name);
         this.setLanguage(detectedLang);
         this.originalContent = content;
         this.updateStats();
         this.updateModifiedBadge();
-        if (typeof showSuccessMessage === "function") showSuccessMessage(`Loaded ${file. name}`);
+        if (typeof showSuccessMessage === "function") showSuccessMessage(`Loaded ${file.name}`);
       }
     };
     reader.readAsText(file);
@@ -803,21 +803,21 @@ class coderViewEdit {
   toggleWrapLines() {
     if (!this.codeMirror) return;
     this.state.wrapLines = !this.state.wrapLines;
-    this.codeMirror.setOption("lineWrapping", this. state.wrapLines);
-    localStorage.setItem("editor_wrapLines", this. state.wrapLines);
-    this.elements.wrapBtn?. classList.toggle("active", this.state. wrapLines);
+    this.codeMirror.setOption("lineWrapping", this.state.wrapLines);
+    localStorage.setItem("editor_wrapLines", this.state.wrapLines);
+    this.elements.wrapBtn?.classList.toggle("active", this.state.wrapLines);
   }
 
   toggleInvisibles() {
     if (!this.codeMirror) return;
-    this. state.showInvisibles = !this.state.showInvisibles;
-    localStorage.setItem("editor_showInvisibles", this.state. showInvisibles);
-    this.elements.showInvisiblesBtn?.classList. toggle("active", this.state.showInvisibles);
+    this.state.showInvisibles = !this.state.showInvisibles;
+    localStorage.setItem("editor_showInvisibles", this.state.showInvisibles);
+    this.elements.showInvisiblesBtn?.classList.toggle("active", this.state.showInvisibles);
     this.elements.moreOptionsDropdown?.classList.add("hide");
   }
 
   adjustFontSize(change) {
-    const newSize = Math.max(10, Math.min(24, this.state. fontSize + change));
+    const newSize = Math.max(10, Math.min(24, this.state.fontSize + change));
     if (newSize !== this.state.fontSize) this.setCodeMirrorFontSize(newSize);
   }
 
@@ -828,14 +828,14 @@ class coderViewEdit {
     html.setAttribute("data-theme", newTheme);
     localStorage.setItem("editor_theme", newTheme);
     this.updateThemeIcon(!isDark);
-    this.codeMirror?. setOption("theme", isDark ?  "default" : "one-dark");
+    this.codeMirror?.setOption("theme", isDark ?  "default" : "one-dark");
   }
 
   updateThemeIcon(isDark) {
     if (!this.elements.themeIcon) return;
     this.elements.themeIcon.innerHTML = isDark
-      ? '<path d="M9. 598 1.591a. 749.749 0 0 1 . 785-. 175 7.001 7.001 0 1 1-8.967 8.967.75. 75 0 0 1 .961-. 96 5.5 5.5 0 0 0 7.046-7.046.75.75 0 0 1 .175-.786Z"/>'
-      :  '<path d="M8 12a4 4 0 1 1 0-8 4 4 0 0 1 0 8Zm0-1.5a2. 5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5Zm5. 657-8.157a. 75.75 0 0 1 0 1.061l-1.061 1.06a.749.749 0 0 1-1.275-. 326. 749.749 0 0 1 . 215-.734l1.06-1.06a. 75.75 0 0 1 1.06 0Zm-9.193 9.193a.75.75 0 0 1 0 1.06l-1.06 1.061a.75.75 0 1 1-1.061-1.06l1.06-1.061a.75.75 0 0 1 1.061 0ZM8 0a. 75.75 0 0 1 . 75.75v1.5a.75.75 0 0 1-1.5 0V.75A.75.75 0 0 1 8 0ZM3 8a.75.75 0 0 1-. 75.75H. 75a.75.75 0 0 1 0-1.5h1.5A.75.75 0 0 1 3 8Zm13 0a.75.75 0 0 1-.75.75h-1.5a.75.75 0 0 1 0-1.5h1.5A.75.75 0 0 1 16 8Zm-8 5a.75.75 0 0 1 .75.75v1.5a. 75.75 0 0 1-1.5 0v-1.5A.75.75 0 0 1 8 13Zm3. 536-1.464a.75.75 0 0 1 1.06 0l1.061 1.06a.75.75 0 0 1-1.06 1.061l-1.061-1.06a. 75.75 0 0 1 0-1.061Zm-9.193-9.193a. 75.75 0 0 1 1.06 0l1.061 1.06a.75.75 0 0 1-1.06 1.061l-1.061-1.06a. 75.75 0 0 1 0-1.061Z"/>';
+      ? '<path d="M9.598 1.591a.749.749 0 0 1 .785-.175 7.001 7.001 0 1 1-8.967 8.967.75.75 0 0 1 .961-.96 5.5 5.5 0 0 0 7.046-7.046.75.75 0 0 1 .175-.786Z"/>'
+      :  '<path d="M8 12a4 4 0 1 1 0-8 4 4 0 0 1 0 8Zm0-1.5a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5Zm5.657-8.157a.75.75 0 0 1 0 1.061l-1.061 1.06a.749.749 0 0 1-1.275-.326.749.749 0 0 1 .215-.734l1.06-1.06a.75.75 0 0 1 1.06 0Zm-9.193 9.193a.75.75 0 0 1 0 1.06l-1.06 1.061a.75.75 0 1 1-1.061-1.06l1.06-1.061a.75.75 0 0 1 1.061 0ZM8 0a.75.75 0 0 1 .75.75v1.5a.75.75 0 0 1-1.5 0V.75A.75.75 0 0 1 8 0ZM3 8a.75.75 0 0 1-.75.75H.75a.75.75 0 0 1 0-1.5h1.5A.75.75 0 0 1 3 8Zm13 0a.75.75 0 0 1-.75.75h-1.5a.75.75 0 0 1 0-1.5h1.5A.75.75 0 0 1 16 8Zm-8 5a.75.75 0 0 1 .75.75v1.5a.75.75 0 0 1-1.5 0v-1.5A.75.75 0 0 1 8 13Zm3.536-1.464a.75.75 0 0 1 1.06 0l1.061 1.06a.75.75 0 0 1-1.06 1.061l-1.061-1.06a.75.75 0 0 1 0-1.061Zm-9.193-9.193a.75.75 0 0 1 1.06 0l1.061 1.06a.75.75 0 0 1-1.06 1.061l-1.061-1.06a.75.75 0 0 1 0-1.061Z"/>';
   }
 
   openSearch() {
@@ -850,21 +850,21 @@ class coderViewEdit {
 
   closeSearch() {
     this.searchActive = false;
-    this. elements.searchPanel?. classList.add("hide");
+    this.elements.searchPanel?.classList.add("hide");
     this.clearSearch();
     this.codeMirror?.focus();
   }
 
   clearSearch() {
     if (this.elements.searchInput) this.elements.searchInput.value = "";
-    if (this.elements. searchMatches) this.elements.searchMatches. textContent = "0/0";
+    if (this.elements.searchMatches) this.elements.searchMatches.textContent = "0/0";
     this.searchMatches = [];
     this.currentSearchIndex = 0;
   }
 
   performSearch(query) {
     if (!this.codeMirror || !query) {
-      if (this.elements.searchMatches) this.elements.searchMatches. textContent = "0/0";
+      if (this.elements.searchMatches) this.elements.searchMatches.textContent = "0/0";
       this.searchMatches = [];
       return;
     }
@@ -874,19 +874,19 @@ class coderViewEdit {
     lines.forEach((line, lineIndex) => {
       let pos = 0;
       const lowerLine = line.toLowerCase();
-      const lowerQuery = query. toLowerCase();
+      const lowerQuery = query.toLowerCase();
       while ((pos = lowerLine.indexOf(lowerQuery, pos)) !== -1) {
-        this. searchMatches.push({ line: lineIndex, ch: pos, length: query.length });
+        this.searchMatches.push({ line: lineIndex, ch: pos, length: query.length });
         pos += 1;
       }
     });
     this.currentSearchIndex = 0;
-    if (this.elements. searchMatches) {
+    if (this.elements.searchMatches) {
       if (this.searchMatches.length > 0) {
-        this.elements.searchMatches. textContent = `1/${this.searchMatches.length}`;
+        this.elements.searchMatches.textContent = `1/${this.searchMatches.length}`;
         this.highlightMatch(0);
       } else {
-        this.elements.searchMatches. textContent = "0/0";
+        this.elements.searchMatches.textContent = "0/0";
       }
     }
   }
@@ -894,7 +894,7 @@ class coderViewEdit {
   highlightMatch(index) {
     if (!this.codeMirror || index < 0 || index >= this.searchMatches.length) return;
     const match = this.searchMatches[index];
-    this.codeMirror.setSelection({ line: match.line, ch: match. ch }, { line: match.line, ch: match. ch + match.length });
+    this.codeMirror.setSelection({ line: match.line, ch: match.ch }, { line: match.line, ch: match.ch + match.length });
     this.codeMirror.scrollIntoView({ line: match.line, ch: match.ch }, 200);
     if (this.elements.searchMatches) {
       this.elements.searchMatches.textContent = `${index + 1}/${this.searchMatches.length}`;
@@ -903,28 +903,28 @@ class coderViewEdit {
 
   findNext() {
     if (this.searchMatches.length === 0) return;
-    this.currentSearchIndex = (this. currentSearchIndex + 1) % this.searchMatches.length;
-    this. highlightMatch(this.currentSearchIndex);
+    this.currentSearchIndex = (this.currentSearchIndex + 1) % this.searchMatches.length;
+    this.highlightMatch(this.currentSearchIndex);
   }
 
   findPrevious() {
     if (this.searchMatches.length === 0) return;
-    this.currentSearchIndex = (this.currentSearchIndex - 1 + this.searchMatches. length) % this.searchMatches.length;
-    this. highlightMatch(this.currentSearchIndex);
+    this.currentSearchIndex = (this.currentSearchIndex - 1 + this.searchMatches.length) % this.searchMatches.length;
+    this.highlightMatch(this.currentSearchIndex);
   }
 
   foldAll() {
-    if (!this. codeMirror) return;
+    if (!this.codeMirror) return;
     this.codeMirror.operation(() => {
       for (let i = 0; i < this.codeMirror.lineCount(); i++) {
         this.codeMirror.foldCode({ line: i, ch:  0 }, null, "fold");
       }
     });
-    this.elements.moreOptionsDropdown?. classList.add("hide");
+    this.elements.moreOptionsDropdown?.classList.add("hide");
   }
 
   unfoldAll() {
-    if (!this. codeMirror) return;
+    if (!this.codeMirror) return;
     this.codeMirror.operation(() => {
       for (let i = 0; i < this.codeMirror.lineCount(); i++) {
         this.codeMirror.foldCode({ line:  i, ch: 0 }, null, "unfold");
@@ -938,15 +938,15 @@ class coderViewEdit {
     this.isFullscreen = !this.isFullscreen;
     const container = document.querySelector(".editorContainer");
     if (this.isFullscreen) {
-      container?. classList.add("fullscreen");
+      container?.classList.add("fullscreen");
       document.body.style.overflow = "hidden";
-      this.elements.fullscreenIcon && (this.elements.fullscreenIcon.innerHTML = '<path d="M5. 5 2. 75A. 75.75 0 0 0 4. 75 2h-1.5A1.75 1.75 0 0 0 1.5 3.75v1.5a. 75.75 0 0 0 1.5 0v-1.5a.25.25 0 0 1 .25-.25h1.5a. 75.75 0 0 0 . 75-. 75Zm5 0a. 75.75 0 0 0 .75.75h1.5a. 25.25 0 0 1 .25.25v1.5a. 75.75 0 0 0 1. 5 0v-1.5A1.75 1.75 0 0 0 12.75 2h-1.5a. 75.75 0 0 0-. 75.75Zm5 10. 5a.75.75 0 0 0-. 75-. 75h-1.5a. 25.25 0 0 1-. 25-.25v-1.5a.75.75 0 0 0-1.5 0v1.5c0 .966.784 1.75 1.75 1.75h1.5a. 75.75 0 0 0 .75-. 75Zm-10.5 0a.75.75 0 0 0 .75-. 75v-1.5a. 25.25 0 0 1 .25-. 25h1.5a.75.75 0 0 0 0-1.5h-1.5A1.75 1.75 0 0 0 1.5 10.75v1.5a.75.75 0 0 0 . 75.75Z"/>');
+      this.elements.fullscreenIcon && (this.elements.fullscreenIcon.innerHTML = '<path d="M5.5 2.75A.75.75 0 0 0 4.75 2h-1.5A1.75 1.75 0 0 0 1.5 3.75v1.5a.75.75 0 0 0 1.5 0v-1.5a.25.25 0 0 1 .25-.25h1.5a.75.75 0 0 0 .75-.75Zm5 0a.75.75 0 0 0 .75.75h1.5a.25.25 0 0 1 .25.25v1.5a.75.75 0 0 0 1.5 0v-1.5A1.75 1.75 0 0 0 12.75 2h-1.5a.75.75 0 0 0-.75.75Zm5 10.5a.75.75 0 0 0-.75-.75h-1.5a.25.25 0 0 1-.25-.25v-1.5a.75.75 0 0 0-1.5 0v1.5c0 .966.784 1.75 1.75 1.75h1.5a.75.75 0 0 0 .75-.75Zm-10.5 0a.75.75 0 0 0 .75-.75v-1.5a.25.25 0 0 1 .25-.25h1.5a.75.75 0 0 0 0-1.5h-1.5A1.75 1.75 0 0 0 1.5 10.75v1.5a.75.75 0 0 0 .75.75Z"/>');
     } else {
-      container?. classList.remove("fullscreen");
-      document.body.style. overflow = "";
-      this.elements.fullscreenIcon && (this.elements.fullscreenIcon.innerHTML = '<path d="M1. 75 10a.75.75 0 0 1 . 75.75v2.5c0 .138. 112.25.25.25h2.5a.75.75 0 0 1 0 1.5h-2.5A1.75 1.75 0 0 1 1 13.25v-2.5a.75.75 0 0 1 .75-.75Zm12. 5 0a. 75.75 0 0 1 .75.75v2.5A1.75 1.75 0 0 1 13.25 15h-2.5a.75.75 0 0 1 0-1.5h2.5a.25.25 0 0 0 . 25-.25v-2.5a. 75.75 0 0 1 .75-.75ZM2.75 1a1. 75 1.75 0 0 0-1.75 1.75v2.5a. 75.75 0 0 0 1.5 0v-2.5a.25.25 0 0 1 .25-.25h2.5a. 75.75 0 0 0 0-1.5Zm8 0a. 75.75 0 0 0 0 1.5h2.5a.25.25 0 0 1 .25.25v2.5a. 75.75 0 0 0 1.5 0v-2.5A1.75 1.75 0 0 0 13.25 1Z"/>');
+      container?.classList.remove("fullscreen");
+      document.body.style.overflow = "";
+      this.elements.fullscreenIcon && (this.elements.fullscreenIcon.innerHTML = '<path d="M1.75 10a.75.75 0 0 1 .75.75v2.5c0 .138.112.25.25.25h2.5a.75.75 0 0 1 0 1.5h-2.5A1.75 1.75 0 0 1 1 13.25v-2.5a.75.75 0 0 1 .75-.75Zm12.5 0a.75.75 0 0 1 .75.75v2.5A1.75 1.75 0 0 1 13.25 15h-2.5a.75.75 0 0 1 0-1.5h2.5a.25.25 0 0 0 .25-.25v-2.5a.75.75 0 0 1 .75-.75ZM2.75 1a1.75 1.75 0 0 0-1.75 1.75v2.5a.75.75 0 0 0 1.5 0v-2.5a.25.25 0 0 1 .25-.25h2.5a.75.75 0 0 0 0-1.5Zm8 0a.75.75 0 0 0 0 1.5h2.5a.25.25 0 0 1 .25.25v2.5a.75.75 0 0 0 1.5 0v-2.5A1.75 1.75 0 0 0 13.25 1Z"/>');
     }
-    setTimeout(() => this.codeMirror?. refresh(), 100);
+    setTimeout(() => this.codeMirror?.refresh(), 100);
   }
 
   formatCode() {
@@ -971,17 +971,17 @@ class coderViewEdit {
     } catch (error) {
       if (typeof showErrorMessage === "function") showErrorMessage("Formatting failed");
     }
-    this.elements.moreOptionsDropdown?. classList.add("hide");
+    this.elements.moreOptionsDropdown?.classList.add("hide");
   }
 
   undo() {
     if (!this.codeMirror) return;
-    this. codeMirror. undo();
+    this.codeMirror.undo();
   }
 
   redo() {
     if (!this.codeMirror) return;
-    this.codeMirror. redo();
+    this.codeMirror.redo();
   }
 
   getValue() {
@@ -1012,7 +1012,7 @@ class coderViewEdit {
       clearInterval(this.state.autoSaveInterval);
       this.state.autoSaveInterval = null;
     }
-    if (this. codeMirror) {
+    if (this.codeMirror) {
       this.codeMirror.toTextArea();
       this.codeMirror = null;
     }
@@ -1023,5 +1023,5 @@ class coderViewEdit {
 
 window.coderViewEdit = new coderViewEdit();
 document.addEventListener("DOMContentLoaded", () => {
-  if (document.querySelector('. pages[data-page="file"]')) window.coderViewEdit.init();
+  if (document.querySelector('.pages[data-page="file"]')) window.coderViewEdit.init();
 });
