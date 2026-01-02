@@ -18,7 +18,7 @@ class coderViewEdit {
       showInvisibles: false,
       highlightActiveLine: true,
       autoSave: false,
-      autoSaveInterval: null
+      autoSaveInterval: null,
     };
     this.searchActive = false;
     this.lastSaveTime = null;
@@ -44,7 +44,7 @@ class coderViewEdit {
       { value: "cpp", label: "C++", ext: ["cpp", "c", "h"] },
       { value: "csharp", label: "C#", ext: ["cs"] },
       { value: "php", label: "PHP", ext: ["php"] },
-      { value: "swift", label: "Swift", ext: ["swift"] }
+      { value: "swift", label: "Swift", ext: ["swift"] },
     ];
     this.currentLanguage = "javascript";
   }
@@ -360,7 +360,7 @@ class coderViewEdit {
       commitDescriptionInput: document.getElementById("commitDescriptionInput"),
       cancelCommitBtn: document.getElementById("cancelCommitBtn"),
       saveCommitBtn: document.getElementById("saveCommitBtn"),
-      fileUploadInput: document.getElementById("fileUploadInput")
+      fileUploadInput: document.getElementById("fileUploadInput"),
     };
     this.populateLanguageDropdown();
   }
@@ -368,7 +368,7 @@ class coderViewEdit {
   populateLanguageDropdown() {
     if (!this.elements.languageList) return;
     this.elements.languageList.innerHTML = "";
-    this.languages.forEach(lang => {
+    this.languages.forEach((lang) => {
       const btn = document.createElement("button");
       btn.className = "dropdownItem";
       btn.textContent = lang.label;
@@ -467,7 +467,8 @@ class coderViewEdit {
     if (!this.elements.codeMirrorContainer || this.codeMirror) return;
     const fontSize = parseInt(localStorage.getItem("editor_fontsize")) || 14;
     const savedTheme = localStorage.getItem("editor_theme");
-    const isDark = savedTheme === "dark" || (!savedTheme && document.documentElement.getAttribute("data-theme") === "dark");
+    const isDark =
+      savedTheme === "dark" || (!savedTheme && document.documentElement.getAttribute("data-theme") === "dark");
     this.codeMirror = CodeMirror(this.elements.codeMirrorContainer, {
       value: "",
       mode: "javascript",
@@ -491,9 +492,9 @@ class coderViewEdit {
         "Cmd-S": () => this.saveChanges(),
         "Ctrl-F": () => this.openSearch(),
         "Ctrl-/": "toggleComment",
-        "Tab": "indentMore",
-        "Shift-Tab": "indentLess"
-      }
+        Tab: "indentMore",
+        "Shift-Tab": "indentLess",
+      },
     });
     this.elements.fontSizeLabel && (this.elements.fontSizeLabel.textContent = `${fontSize}px`);
     this.updateThemeIcon(isDark);
@@ -538,11 +539,12 @@ class coderViewEdit {
   }
 
   setLanguage(langValue) {
-    const lang = this.languages.find(l => l.value === langValue);
+    const lang = this.languages.find((l) => l.value === langValue);
     if (!lang) return;
     this.currentLanguage = langValue;
     this.elements.languageLabel && (this.elements.languageLabel.textContent = lang.label);
-    this.elements.languageBadge && (this.elements.languageBadge.innerHTML = `
+    this.elements.languageBadge &&
+      (this.elements.languageBadge.innerHTML = `
       <svg class="badgeIcon" viewBox="0 0 16 16" fill="currentColor">
         <path d="m11.28 3.22 4.25 4.25a.75.75 0 0 1 0 1.06l-4.25 4.25a.749.749 0 0 1-1.275-.326.749.749 0 0 1 .215-.734L13.94 8l-3.72-3.72a.749.749 0 0 1 .326-1.275.749.749 0 0 1 .734.215Zm-6.56 0a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042L2.06 8l3.72 3.72a.749.749 0 0 1-.326 1.275.749.749 0 0 1-.734-.215L.47 8.53a.75.75 0 0 1 0-1.06Z"/>
       </svg>
@@ -573,7 +575,7 @@ class coderViewEdit {
       cpp: "text/x-c++src",
       csharp: "text/x-csharp",
       php: "php",
-      swift: "swift"
+      swift: "swift",
     };
     const mode = modes[langValue] || "text";
     this.codeMirror.setOption("mode", mode);
@@ -673,7 +675,12 @@ class coderViewEdit {
     const lines = content.split("\n").length;
     const chars = content.length;
     const bytes = new Blob([content]).size;
-    let sizeStr = bytes < 1024 ? `${bytes} B` : bytes < 1024 * 1024 ? `${(bytes / 1024).toFixed(1)} KB` : `${(bytes / (1024 * 1024)).toFixed(2)} MB`;
+    let sizeStr =
+      bytes < 1024
+        ? `${bytes} B`
+        : bytes < 1024 * 1024
+          ? `${(bytes / 1024).toFixed(1)} KB`
+          : `${(bytes / (1024 * 1024)).toFixed(2)} MB`;
     this.elements.lineCount && (this.elements.lineCount.textContent = lines);
     this.elements.charCount && (this.elements.charCount.textContent = chars.toLocaleString());
     this.elements.fileSize && (this.elements.fileSize.textContent = sizeStr);
@@ -720,7 +727,8 @@ class coderViewEdit {
         this.fileData.lastCommit = commitTitle;
         this.fileData.size = new Blob([newContent]).size;
         const filePath = (window.currentState?.path ? window.currentState.path + "/" : "") + this.currentFile;
-        if (typeof LocalStorageManager !== "undefined") LocalStorageManager.saveFile(window.currentState?.repository, filePath, this.fileData);
+        if (typeof LocalStorageManager !== "undefined")
+          LocalStorageManager.saveFile(window.currentState?.repository, filePath, this.fileData);
         this.originalContent = newContent;
         if (typeof showSuccessMessage === "function") showSuccessMessage(`Saved ${this.currentFile}`);
         this.updateLastSaved(true);
@@ -746,21 +754,25 @@ class coderViewEdit {
       this.fileData.lastCommit = "Auto-save";
       this.fileData.size = new Blob([newContent]).size;
       const filePath = (window.currentState?.path ? window.currentState.path + "/" : "") + this.currentFile;
-      if (typeof LocalStorageManager !== "undefined") LocalStorageManager.saveFile(window.currentState?.repository, filePath, this.fileData);
+      if (typeof LocalStorageManager !== "undefined")
+        LocalStorageManager.saveFile(window.currentState?.repository, filePath, this.fileData);
       this.originalContent = newContent;
       this.updateLastSaved(true);
       this.updateModifiedBadge();
-    } catch (error) { }
+    } catch (error) {}
   }
 
   copyCode() {
     if (!this.codeMirror) return;
     const content = this.codeMirror.getSelection() || this.codeMirror.getValue();
-    navigator.clipboard.writeText(content).then(() => {
-      if (typeof showSuccessMessage === "function") showSuccessMessage("Copied to clipboard");
-    }).catch(() => {
-      if (typeof showErrorMessage === "function") showErrorMessage("Failed to copy");
-    });
+    navigator.clipboard
+      .writeText(content)
+      .then(() => {
+        if (typeof showSuccessMessage === "function") showSuccessMessage("Copied to clipboard");
+      })
+      .catch(() => {
+        if (typeof showErrorMessage === "function") showErrorMessage("Failed to copy");
+      });
   }
 
   downloadFile() {
@@ -940,11 +952,15 @@ class coderViewEdit {
     if (this.isFullscreen) {
       container?.classList.add("fullscreen");
       document.body.style.overflow = "hidden";
-      this.elements.fullscreenIcon && (this.elements.fullscreenIcon.innerHTML = '<path d="M5.5 2.75A.75.75 0 0 0 4.75 2h-1.5A1.75 1.75 0 0 0 1.5 3.75v1.5a.75.75 0 0 0 1.5 0v-1.5a.25.25 0 0 1 .25-.25h1.5a.75.75 0 0 0 .75-.75Zm5 0a.75.75 0 0 0 .75.75h1.5a.25.25 0 0 1 .25.25v1.5a.75.75 0 0 0 1.5 0v-1.5A1.75 1.75 0 0 0 12.75 2h-1.5a.75.75 0 0 0-.75.75Zm5 10.5a.75.75 0 0 0-.75-.75h-1.5a.25.25 0 0 1-.25-.25v-1.5a.75.75 0 0 0-1.5 0v1.5c0 .966.784 1.75 1.75 1.75h1.5a.75.75 0 0 0 .75-.75Zm-10.5 0a.75.75 0 0 0 .75-.75v-1.5a.25.25 0 0 1 .25-.25h1.5a.75.75 0 0 0 0-1.5h-1.5A1.75 1.75 0 0 0 1.5 10.75v1.5a.75.75 0 0 0 .75.75Z"/>');
+      this.elements.fullscreenIcon &&
+        (this.elements.fullscreenIcon.innerHTML =
+          '<path d="M5.5 2.75A.75.75 0 0 0 4.75 2h-1.5A1.75 1.75 0 0 0 1.5 3.75v1.5a.75.75 0 0 0 1.5 0v-1.5a.25.25 0 0 1 .25-.25h1.5a.75.75 0 0 0 .75-.75Zm5 0a.75.75 0 0 0 .75.75h1.5a.25.25 0 0 1 .25.25v1.5a.75.75 0 0 0 1.5 0v-1.5A1.75 1.75 0 0 0 12.75 2h-1.5a.75.75 0 0 0-.75.75Zm5 10.5a.75.75 0 0 0-.75-.75h-1.5a.25.25 0 0 1-.25-.25v-1.5a.75.75 0 0 0-1.5 0v1.5c0 .966.784 1.75 1.75 1.75h1.5a.75.75 0 0 0 .75-.75Zm-10.5 0a.75.75 0 0 0 .75-.75v-1.5a.25.25 0 0 1 .25-.25h1.5a.75.75 0 0 0 0-1.5h-1.5A1.75 1.75 0 0 0 1.5 10.75v1.5a.75.75 0 0 0 .75.75Z"/>');
     } else {
       container?.classList.remove("fullscreen");
       document.body.style.overflow = "";
-      this.elements.fullscreenIcon && (this.elements.fullscreenIcon.innerHTML = '<path d="M1.75 10a.75.75 0 0 1 .75.75v2.5c0 .138.112.25.25.25h2.5a.75.75 0 0 1 0 1.5h-2.5A1.75 1.75 0 0 1 1 13.25v-2.5a.75.75 0 0 1 .75-.75Zm12.5 0a.75.75 0 0 1 .75.75v2.5A1.75 1.75 0 0 1 13.25 15h-2.5a.75.75 0 0 1 0-1.5h2.5a.25.25 0 0 0 .25-.25v-2.5a.75.75 0 0 1 .75-.75ZM2.75 1a1.75 1.75 0 0 0-1.75 1.75v2.5a.75.75 0 0 0 1.5 0v-2.5a.25.25 0 0 1 .25-.25h2.5a.75.75 0 0 0 0-1.5Zm8 0a.75.75 0 0 0 0 1.5h2.5a.25.25 0 0 1 .25.25v2.5a.75.75 0 0 0 1.5 0v-2.5A1.75 1.75 0 0 0 13.25 1Z"/>');
+      this.elements.fullscreenIcon &&
+        (this.elements.fullscreenIcon.innerHTML =
+          '<path d="M1.75 10a.75.75 0 0 1 .75.75v2.5c0 .138.112.25.25.25h2.5a.75.75 0 0 1 0 1.5h-2.5A1.75 1.75 0 0 1 1 13.25v-2.5a.75.75 0 0 1 .75-.75Zm12.5 0a.75.75 0 0 1 .75.75v2.5A1.75 1.75 0 0 1 13.25 15h-2.5a.75.75 0 0 1 0-1.5h2.5a.25.25 0 0 0 .25-.25v-2.5a.75.75 0 0 1 .75-.75ZM2.75 1a1.75 1.75 0 0 0-1.75 1.75v2.5a.75.75 0 0 0 1.5 0v-2.5a.25.25 0 0 1 .25-.25h2.5a.75.75 0 0 0 0-1.5Zm8 0a.75.75 0 0 0 0 1.5h2.5a.25.25 0 0 1 .25.25v2.5a.75.75 0 0 0 1.5 0v-2.5A1.75 1.75 0 0 0 13.25 1Z"/>');
     }
     setTimeout(() => this.codeMirror?.refresh(), 100);
   }
