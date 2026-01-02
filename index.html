@@ -1318,6 +1318,76 @@ tbody tr:hover {
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
 
 
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            github: {
+              'canvas-default': '#22272e',
+              'tableHeader': '#2d333b',
+              'canvas-overlay': '#2d333b',
+              'canvas-inset': '#1c2128',
+              'canvas-subtle': '#2d333b',
+              'border-default': '#444c56',
+              'border-muted': '#373e47',
+              'neutral-emphasis': '#768390',
+              'neutral-muted': '#636e7b',
+              'fg-default': '#adbac7',
+              'fg-muted': '#768390',
+              'fg-subtle': '#545d68',
+              'accent-fg': '#539bf5',
+              'accent-emphasis': '#4184e4',
+              'success-fg': '#57ab5a',
+              'danger-fg': '#e5534b',
+              'warning-fg': '#c69026',
+              'btn-primary-bg': '#347d39',
+              'btn-primary-hover': '#46954a',
+              'btn-secondary-bg': '#373e47',
+              'btn-secondary-hover': '#444c56'
+            }
+          },
+          animation: {
+            'fade-in': 'fadeIn 0.2s ease-out',
+            'fade-out': 'fadeOut 0.2s ease-in',
+            'slide-up': 'slideUp 0.3s ease-out',
+            'slide-down': 'slideDown 0.3s ease-out',
+            'scale-in': 'scaleIn 0.2s ease-out',
+            'spin-slow': 'spin 1.5s linear infinite',
+            'pulse-soft': 'pulseSoft 2s ease-in-out infinite',
+          },
+          keyframes: {
+            fadeIn: {
+              '0%': { opacity: '0' },
+              '100%': { opacity: '1' }
+            },
+            fadeOut: {
+              '0%': { opacity: '1' },
+              '100%': { opacity: '0' }
+            },
+            slideUp: {
+              '0%': { transform: 'translateY(20px)', opacity: '0' },
+              '100%': { transform: 'translateY(0)', opacity: '1' }
+            },
+            slideDown: {
+              '0%': { transform: 'translateY(-20px)', opacity: '0' },
+              '100%': { transform: 'translateY(0)', opacity: '1' }
+            },
+            scaleIn: {
+              '0%': { transform: 'scale(0.95)', opacity: '0' },
+              '100%': { transform: 'scale(1)', opacity: '1' }
+            },
+            pulseSoft: {
+              '0%, 100%': { opacity: '1' },
+              '50%': { opacity: '0.7' }
+            }
+          }
+        }
+      }
+    }
+  </script>
+
 <style>
 .stickyFirst,
 .stickySecond {
