@@ -20,12 +20,12 @@
   --github-btn-secondary-bg: #373e47;
   --github-btn-secondary-hover: #444c56;
   
-  --header-bg: #1c2128;
-  --header-border: #444c56;
-  --body-bg: #22272e;
-  --body-border: #444c56;
-  --footer-bg: #1c2128;
-  --footer-border: #444c56;
+  --header-bg: #444C56;
+  --header-border: #373E47;
+  --body-bg: #1C2128;
+  --body-border: #373E47;
+  --footer-bg: #444C56;
+  --footer-border: #373E47;
   
   --btn-default: #373e47;
   --btn-hover: #444c56;
@@ -57,7 +57,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background-color: #2a3038;
+  background-color: #161b22
   border: 1px solid var(--header-border);
   border-bottom: none;
   border-radius: 8px 8px 0 0;
@@ -147,8 +147,6 @@
   scrollbar-width: thin;
   scrollbar-color: var(--github-border-muted) transparent;
   padding: 2px 0;
-  scroll-behavior: smooth;
-  -webkit-overflow-scrolling: touch;
 }
 
 .toolbarScroll::-webkit-scrollbar {
@@ -333,17 +331,11 @@
 #codeMirrorContainer .CodeMirror-foldgutter-open::after {
   content: "▾";
   display: inline-block;
-  font-size: 16px;
-  opacity: 1;
-  color: var(--text-primary);
 }
 
 #codeMirrorContainer .CodeMirror-foldgutter-folded::after {
   content: "▸";
   display: inline-block;
-  font-size: 16px;
-  opacity: 1;
-  color: var(--text-primary);
 }
 
 #codeMirrorContainer .CodeMirror-foldgutter-open:hover,
@@ -461,7 +453,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background-color: #2a3038;
+  background-color: var(--footer-bg);
   border: 1px solid var(--footer-border);
   border-top: none;
   border-radius: 0 0 8px 8px;
@@ -528,13 +520,12 @@
 
 .spinner-head {
   fill: none;
-  stroke: #ff1744;
+  stroke: var(--accent-primary);
   stroke-width: 4;
   stroke-linecap: round;
   stroke-dasharray: 60;
-  animation: spin 1s linear infinite, glow 2s ease-in-out infinite;
+  animation: spin 1s linear infinite;
   transform-origin: center;
-  filter: drop-shadow(0 0 6px #ff1744) drop-shadow(0 0 12px #ff5577);
 }
 
 @keyframes spin {
@@ -548,15 +539,6 @@
   100% {
     transform: rotate(360deg);
     stroke-dashoffset: 60;
-  }
-}
-
-@keyframes glow {
-  0%, 100% {
-    filter: drop-shadow(0 0 6px #ff1744) drop-shadow(0 0 12px #ff5577);
-  }
-  50% {
-    filter: drop-shadow(0 0 12px #ff1744) drop-shadow(0 0 20px #ff1744);
   }
 }
 
