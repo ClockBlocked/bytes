@@ -1115,7 +1115,6 @@ getTemplate() {
     this.highlightMatch(this.currentSearchIndex);
   }
 }
-}
 
 window.coderViewEdit = new coderViewEdit();
 document.addEventListener("DOMContentLoaded", () => {
