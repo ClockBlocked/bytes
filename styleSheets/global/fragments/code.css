@@ -52,7 +52,7 @@
   gap: 0;
 }
 
-/* HEADER */
+/**
 .coderHeader {
   display: flex;
   justify-content: space-between;
@@ -65,7 +65,6 @@
   min-height: 56px;
   gap: 16px;
 }
-
 .coderHeaderLeft {
   display: flex;
   align-items: center;
@@ -73,6 +72,8 @@
   flex-shrink: 0;
   min-width: 0;
 }
+**/
+
 
 .fileNameDisplay {
   min-width: 150px;
@@ -94,11 +95,9 @@
   overflow: hidden;
   transition: all 0.2s ease;
 }
-
 .fileNameInput:hover {
   background-color: var(--github-btn-secondary-bg);
 }
-
 .fileNameInput:not([readonly]) {
   cursor: text;
   border-color: var(--accent-primary);
@@ -110,7 +109,6 @@
   align-items: center;
   gap: 6px;
 }
-
 .actionButton {
   display: flex;
   align-items: center;
@@ -126,20 +124,23 @@
   transition: all 0.2s ease;
   flex-shrink: 0;
 }
-
 .actionButton:hover {
   background-color: var(--btn-hover);
   border-color: var(--github-neutral-emphasis);
 }
-
 .actionButton.hide {
   display: none;
 }
 
+
+/***
 .coderHeaderRight {
   flex: 1;
   min-width: 0;
 }
+***/
+
+
 
 .toolbarScroll {
   overflow-x: auto;
@@ -148,15 +149,12 @@
   scrollbar-color: var(--github-border-muted) transparent;
   padding: 2px 0;
 }
-
 .toolbarScroll::-webkit-scrollbar {
   height: 4px;
 }
-
 .toolbarScroll::-webkit-scrollbar-track {
   background: transparent;
 }
-
 .toolbarScroll::-webkit-scrollbar-thumb {
   background-color: var(--github-border-muted);
   border-radius: 2px;
@@ -169,7 +167,6 @@
   padding: 0 4px;
   min-width: min-content;
 }
-
 .toolbarButton {
   display: flex;
   align-items: center;
@@ -185,12 +182,10 @@
   transition: all 0.2s ease;
   flex-shrink: 0;
 }
-
 .toolbarButton:hover {
   background-color: var(--btn-hover);
   border-color: var(--github-neutral-emphasis);
 }
-
 .toolbarButton.active {
   background-color: var(--github-btn-secondary-hover);
   border-color: var(--accent-primary);
@@ -207,7 +202,6 @@
   overflow: hidden;
   flex-shrink: 0;
 }
-
 .fontButton {
   display: flex;
   align-items: center;
@@ -221,11 +215,9 @@
   padding: 0;
   transition: background-color 0.2s ease;
 }
-
 .fontButton:hover {
   background-color: var(--btn-hover);
 }
-
 .fontSizeDisplay {
   padding: 0 10px;
   font-size: 12px;
@@ -240,12 +232,10 @@
   width: 16px;
   height: 16px;
 }
-
 .smallIcon {
   width: 14px;
   height: 14px;
 }
-
 .tinyIcon {
   width: 12px;
   height: 12px;
@@ -448,7 +438,9 @@
   border-color: var(--github-neutral-emphasis);
 }
 
-/* FOOTER */
+
+
+/***
 .coderFooter {
   display: flex;
   justify-content: space-between;
@@ -469,6 +461,9 @@
   align-items: center;
   gap: 8px;
 }
+***/
+
+
 
 .footerDivider {
   color: var(--text-muted);
@@ -483,7 +478,8 @@
   white-space: nowrap;
 }
 
-/* Loading Spinner */
+
+
 .loading-spinner {
   position: absolute;
   inset: 0;
@@ -494,7 +490,6 @@
   z-index: 1000;
   backdrop-filter: blur(2px);
 }
-
 .loading-spinner[data-active="true"] {
   display: flex;
 }
@@ -506,18 +501,15 @@
   width: 100%;
   height: 100%;
 }
-
 .spinner-svg {
   width: 48px;
   height: 48px;
 }
-
 .spinner-track {
   fill: none;
   stroke: var(--github-border-muted);
   stroke-width: 4;
 }
-
 .spinner-head {
   fill: none;
   stroke: var(--accent-primary);
@@ -542,7 +534,8 @@
   }
 }
 
-/* Commit Panel */
+
+
 .commitPanel {
   background-color: var(--header-bg);
   border: 1px solid var(--header-border);
@@ -550,7 +543,6 @@
   padding: 16px;
   margin-top: 12px;
 }
-
 .commitPanel.hide {
   display: none;
 }
@@ -561,7 +553,6 @@
   font-size: 14px;
   font-weight: 600;
 }
-
 .panelContent {
   display: flex;
   flex-direction: column;
@@ -692,7 +683,7 @@
 
 
 
-
+/***
 .coderHeader {
   background-color: var(--bgHeader);
   border: 1px solid var(--borderDefault);
@@ -705,6 +696,9 @@
   font-size: 0.75rem;
   margin: 0 0.5rem;
 }
+**/
+
+
 
 .fileStats {
   display: flex;
@@ -794,6 +788,8 @@
   overflow: auto;
 }
 
+
+/**
 .coderFooter {
   background-color: var(--footer-bg);
   border: 1px solid var(--footer-border);
@@ -805,4 +801,34 @@
   justify-content: flex-start;
   font-size: 0.75rem;
   margin: 0 0.5rem;
+}
+***/
+
+
+
+
+
+
+
+.coderHeader {
+    background: #444C56;
+    border: 1px solid #373E47;
+    border-bottom: none;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    overflow-x: auto;
+    overflow-y: hidden;
+    white-space: nowrap;
+    scrollbar-width: none; 
+}
+
+.coderHeader::-webkit-scrollbar {
+    display: none;
+}
+
+.coderHeader > * {
+    flex: 0 0 auto;
+    margin: 0 10px;
 }
