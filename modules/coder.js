@@ -366,7 +366,7 @@ class coderViewEdit {
   }
 
   populateLanguageDropdown() {
-    if (! this.elements.languageList) return;
+    if (!this.elements.languageList) return;
     this.elements.languageList.innerHTML = "";
     this.languages.forEach(lang => {
       const btn = document.createElement("button");
@@ -464,10 +464,10 @@ class coderViewEdit {
       setTimeout(() => this.setupCodeMirror(), 100);
       return;
     }
-    if (! this.elements.codeMirrorContainer || this.codeMirror) return;
+    if (!this.elements.codeMirrorContainer || this.codeMirror) return;
     const fontSize = parseInt(localStorage.getItem("editor_fontsize")) || 14;
     const savedTheme = localStorage.getItem("editor_theme");
-    const isDark = savedTheme === "dark" || (! savedTheme && document.documentElement.getAttribute("data-theme") === "dark");
+    const isDark = savedTheme === "dark" || (!savedTheme && document.documentElement.getAttribute("data-theme") === "dark");
     this.codeMirror = CodeMirror(this.elements.codeMirrorContainer, {
       value: "",
       mode: "javascript",
@@ -529,7 +529,7 @@ class coderViewEdit {
   }
 
   setCodeMirrorFontSize(size) {
-    if (! this.codeMirror) return;
+    if (!this.codeMirror) return;
     this.codeMirror.getWrapperElement().style.fontSize = `${size}px`;
     this.state.fontSize = size;
     this.elements.fontSizeLabel && (this.elements.fontSizeLabel.textContent = `${size}px`);
@@ -539,7 +539,7 @@ class coderViewEdit {
 
   setLanguage(langValue) {
     const lang = this.languages.find(l => l.value === langValue);
-    if (! lang) return;
+    if (!lang) return;
     this.currentLanguage = langValue;
     this. elements.languageLabel && (this.elements. languageLabel.textContent = lang.label);
     this.elements.languageBadge && (this.elements.languageBadge. innerHTML = `
@@ -599,7 +599,7 @@ class coderViewEdit {
   }
 
   enterEditMode() {
-    if (! this.currentFile) return;
+    if (!this.currentFile) return;
     this.isEditing = true;
     this.elements.editModeBtn?.classList.add("active");
     this.elements.viewModeBtn?.classList. remove("active");
@@ -622,7 +622,7 @@ class coderViewEdit {
   }
 
   cancelEdit() {
-    if (! this.codeMirror) return;
+    if (!this.codeMirror) return;
     if (this.codeMirror.getValue() !== this.originalContent && !confirm("Discard unsaved changes?")) return;
     this. codeMirror. setValue(this.originalContent);
     this.updateStats();
@@ -631,14 +631,14 @@ class coderViewEdit {
   }
 
   displayFile(filename, fileData) {
-    if (! this.isInitialized) this.init();
+    if (!this.isInitialized) this.init();
     this.currentFile = filename;
     this.fileData = fileData;
     this.originalContent = fileData. content || "";
     this. elements.fileNameDisplay && (this.elements. fileNameDisplay.textContent = filename);
     const detectedLang = this.detectLanguageFromExtension(filename);
     this.setLanguage(detectedLang);
-    if (! this.codeMirror) {
+    if (!this.codeMirror) {
       this.setupCodeMirror();
       setTimeout(() => {
         if (this.codeMirror) {
@@ -662,13 +662,13 @@ class coderViewEdit {
 
   updateCommitMessage() {
     if (!this. currentFile || !this.elements.commitTitleInput) return;
-    if (! this.elements.commitTitleInput.value. trim()) {
+    if (!this.elements.commitTitleInput.value. trim()) {
       this.elements.commitTitleInput.value = `Update ${this.currentFile}`;
     }
   }
 
   updateStats() {
-    if (! this.codeMirror) return;
+    if (!this.codeMirror) return;
     const content = this.codeMirror.getValue();
     const lines = content.split("\n").length;
     const chars = content.length;
@@ -687,9 +687,9 @@ class coderViewEdit {
   }
 
   updateModifiedBadge() {
-    if (! this.codeMirror) return;
+    if (!this.codeMirror) return;
     const isModified = this. codeMirror. getValue() !== this.originalContent;
-    this.elements.modifiedBadge?. classList.toggle("hide", ! isModified);
+    this.elements.modifiedBadge?. classList.toggle("hide", !isModified);
   }
 
   updateLastSaved(saved) {
@@ -780,7 +780,7 @@ class coderViewEdit {
 
   handleFileUpload(e) {
     const file = e.target.files? .[0];
-    if (! file) return;
+    if (!file) return;
     const reader = new FileReader();
     reader.onload = (event) => {
       const content = event.target?. result;
@@ -801,7 +801,7 @@ class coderViewEdit {
   }
 
   toggleWrapLines() {
-    if (! this.codeMirror) return;
+    if (!this.codeMirror) return;
     this.state.wrapLines = !this.state.wrapLines;
     this.codeMirror.setOption("lineWrapping", this. state.wrapLines);
     localStorage.setItem("editor_wrapLines", this. state.wrapLines);
@@ -810,7 +810,7 @@ class coderViewEdit {
 
   toggleInvisibles() {
     if (!this.codeMirror) return;
-    this. state.showInvisibles = ! this.state.showInvisibles;
+    this. state.showInvisibles = !this.state.showInvisibles;
     localStorage.setItem("editor_showInvisibles", this.state. showInvisibles);
     this.elements.showInvisiblesBtn?.classList. toggle("active", this.state.showInvisibles);
     this.elements.moreOptionsDropdown?.classList.add("hide");
@@ -827,7 +827,7 @@ class coderViewEdit {
     const newTheme = isDark ? "light" : "dark";
     html.setAttribute("data-theme", newTheme);
     localStorage.setItem("editor_theme", newTheme);
-    this.updateThemeIcon(! isDark);
+    this.updateThemeIcon(!isDark);
     this.codeMirror?. setOption("theme", isDark ?  "default" : "one-dark");
   }
 
@@ -892,7 +892,7 @@ class coderViewEdit {
   }
 
   highlightMatch(index) {
-    if (! this.codeMirror || index < 0 || index >= this.searchMatches.length) return;
+    if (!this.codeMirror || index < 0 || index >= this.searchMatches.length) return;
     const match = this.searchMatches[index];
     this.codeMirror.setSelection({ line: match.line, ch: match. ch }, { line: match.line, ch: match. ch + match.length });
     this.codeMirror.scrollIntoView({ line: match.line, ch: match.ch }, 200);
