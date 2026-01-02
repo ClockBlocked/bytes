@@ -1,9 +1,9 @@
 :root {
   --editor-bg: #22272e;
   --editor-card-bg: #2d333b;
-  --editor-header-bg: rgba(45, 51, 59, 0.5);
-  --editor-footer-bg: rgba(45, 51, 59, 0.3);
-  --editor-border: #444c56;
+  --editor-header-bg: rgba(68,76,86,1);
+  --editor-footer-bg: rgba(68,76,86,1);
+  --editor-border: rgba(45,51,59,1);
   --editor-border-muted: #373e47;
   --editor-text:  #adbac7;
   --editor-text-muted: #768390;
