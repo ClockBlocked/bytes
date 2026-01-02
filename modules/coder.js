@@ -34,16 +34,16 @@ class coderViewEdit {
       { value: "json", label: "JSON", ext: ["json"] },
       { value: "markdown", label: "Markdown", ext: ["md", "markdown"] },
       { value: "yaml", label: "YAML", ext: ["yml", "yaml"] },
-      { value:  "xml", label:  "XML", ext:  ["xml"] },
+      { value: "xml", label: "XML", ext: ["xml"] },
       { value: "sql", label: "SQL", ext: ["sql"] },
       { value: "shell", label: "Shell", ext: ["sh", "bash"] },
-      { value:  "ruby", label:  "Ruby", ext:  ["rb"] },
+      { value: "ruby", label: "Ruby", ext: ["rb"] },
       { value: "go", label: "Go", ext: ["go"] },
-      { value:  "rust", label: "Rust", ext: ["rs"] },
+      { value: "rust", label: "Rust", ext: ["rs"] },
       { value: "java", label: "Java", ext: ["java"] },
       { value: "cpp", label: "C++", ext: ["cpp", "c", "h"] },
-      { value: "csharp", label:  "C#", ext: ["cs"] },
-      { value:  "php", label:  "PHP", ext:  ["php"] },
+      { value: "csharp", label: "C#", ext: ["cs"] },
+      { value: "php", label: "PHP", ext: ["php"] },
       { value: "swift", label: "Swift", ext: ["swift"] }
     ];
     this.currentLanguage = "javascript";
@@ -84,7 +84,7 @@ class coderViewEdit {
             </svg>
             <span id="languageLabel">JavaScript</span>
             <svg class="chevronIcon" viewBox="0 0 16 16" fill="currentColor">
-              <path d="M4.427 7.427l3.396 3.396a.25.25 0 0 0 .354 0l3.396-3.396A.25.25 0 0 0 11.396 7H4.604a.25.25 0 0 0-.177.427Z"/>
+              <path d="M4.427 7.427l3.396 3.396a.25.25 0 0 0 .354 0l3.396-3.396A.25.25 0 0 0 10.896 2H4.604a.25.25 0 0 0-.177.427Z"/>
             </svg>
           </button>
           <div id="languageDropdown" class="dropdown hide">
@@ -196,7 +196,7 @@ class coderViewEdit {
             <div class="dropdownDivider"></div>
             <button class="dropdownItem" id="showInvisiblesBtn">
               <svg class="dropdownIcon" viewBox="0 0 16 16" fill="currentColor">
-                <path d="M2.75 4.5a.25.25 0 0 0-.25.25v6.5c0 .138.112.25.25.25h10.5a.25.25 0 0 0 .25-.25v-6.5a.25.25 0 0 0-.25-.25Zm10.5-1.5a1.75 1.75 0 0 1 1.75 1.75v6.5A1.75 1.75 0 0 1 13.25 13H2.75A1.75 1.75 0 0 1 1 11.25v-6.5A1.75 1.75 0 0 1 2.75 3Z"/>
+                <path d="M2.75 4.5a.25.25 0 0 0-.25.25v6.5c0 .138.112.25.25.25h10.5a.25.25 0 0 0 .25-.25v-6.5a.25.25 0 0 0-.25-.25Zm10.5-1.5a1.75 1.75 0 0 1 1.75 1.75v6.5A1.75 1.75 0 0 1 13.25 13H2.75A1.75 1.75 0 0 1 1 12.25v-6.5A1.75 1.75 0 0 1 2.75 3Z"/>
               </svg>
               Show Invisibles
             </button>
@@ -332,11 +332,11 @@ class coderViewEdit {
       fontSizeLabel: document.getElementById("fontSizeLabel"),
       fullscreenBtn: document.getElementById("fullscreenBtn"),
       fullscreenIcon: document.getElementById("fullscreenIcon"),
-      moreOptionsBtn:  document.getElementById("moreOptionsBtn"),
+      moreOptionsBtn: document.getElementById("moreOptionsBtn"),
       moreOptionsDropdown: document.getElementById("moreOptionsDropdown"),
       formatBtn: document.getElementById("formatBtn"),
       foldAllBtn: document.getElementById("foldAllBtn"),
-      unfoldAllBtn:  document.getElementById("unfoldAllBtn"),
+      unfoldAllBtn: document.getElementById("unfoldAllBtn"),
       showInvisiblesBtn: document.getElementById("showInvisiblesBtn"),
       editorBody: document.getElementById("editorBody"),
       codeMirrorContainer: document.getElementById("codeMirrorContainer"),
@@ -359,7 +359,7 @@ class coderViewEdit {
       commitTitleInput: document.getElementById("commitTitleInput"),
       commitDescriptionInput: document.getElementById("commitDescriptionInput"),
       cancelCommitBtn: document.getElementById("cancelCommitBtn"),
-      saveCommitBtn:  document.getElementById("saveCommitBtn"),
+      saveCommitBtn: document.getElementById("saveCommitBtn"),
       fileUploadInput: document.getElementById("fileUploadInput")
     };
     this.populateLanguageDropdown();
@@ -481,9 +481,9 @@ class coderViewEdit {
       indentUnit: 2,
       smartIndent: true,
       matchBrackets: true,
-      autoCloseBrackets:  true,
+      autoCloseBrackets: true,
       scrollbarStyle: "native",
-      viewportMargin:  Infinity,
+      viewportMargin: Infinity,
       styleActiveLine: this.state.highlightActiveLine,
       highlightSelectionMatches: { showToken: /\w/ },
       extraKeys: {
@@ -563,7 +563,7 @@ class coderViewEdit {
       json: "application/json",
       markdown: "markdown",
       yaml: "yaml",
-      xml:  "xml",
+      xml: "xml",
       sql: "sql",
       shell: "shell",
       ruby: "ruby",
@@ -573,7 +573,7 @@ class coderViewEdit {
       cpp: "text/x-c++src",
       csharp: "text/x-csharp",
       php: "php",
-      swift:  "swift"
+      swift: "swift"
     };
     const mode = modes[langValue] || "text";
     this.codeMirror.setOption("mode", mode);
@@ -673,7 +673,7 @@ class coderViewEdit {
     const lines = content.split("\n").length;
     const chars = content.length;
     const bytes = new Blob([content]).size;
-    let sizeStr = bytes < 1024 ?  `${bytes} B` : bytes < 1024 * 1024 ? `${(bytes / 1024).toFixed(1)} KB` : `${(bytes / (1024 * 1024)).toFixed(2)} MB`;
+    let sizeStr = bytes < 1024 ? `${bytes} B` : bytes < 1024 * 1024 ? `${(bytes / 1024).toFixed(1)} KB` : `${(bytes / (1024 * 1024)).toFixed(2)} MB`;
     this.elements.lineCount && (this.elements.lineCount.textContent = lines);
     this.elements.charCount && (this.elements.charCount.textContent = chars.toLocaleString());
     this.elements.fileSize && (this.elements.fileSize.textContent = sizeStr);
@@ -714,12 +714,12 @@ class coderViewEdit {
     this.showLoadingSpinner();
     setTimeout(() => {
       try {
-        const newContent = this.codeMirror ?  this.codeMirror.getValue() : "";
+        const newContent = this.codeMirror ? this.codeMirror.getValue() : "";
         this.fileData.content = newContent;
         this.fileData.lastModified = Date.now();
         this.fileData.lastCommit = commitTitle;
         this.fileData.size = new Blob([newContent]).size;
-        const filePath = (window.currentState?.path ?  window.currentState.path + "/" : "") + this.currentFile;
+        const filePath = (window.currentState?.path ? window.currentState.path + "/" : "") + this.currentFile;
         if (typeof LocalStorageManager !== "undefined") LocalStorageManager.saveFile(window.currentState?.repository, filePath, this.fileData);
         this.originalContent = newContent;
         if (typeof showSuccessMessage === "function") showSuccessMessage(`Saved ${this.currentFile}`);
@@ -738,7 +738,7 @@ class coderViewEdit {
 
   autoSave() {
     if (!this.currentFile || !this.fileData || !this.isEditing) return;
-    const newContent = this.codeMirror ?  this.codeMirror.getValue() : "";
+    const newContent = this.codeMirror ? this.codeMirror.getValue() : "";
     if (newContent === this.originalContent) return;
     try {
       this.fileData.content = newContent;
@@ -750,7 +750,7 @@ class coderViewEdit {
       this.originalContent = newContent;
       this.updateLastSaved(true);
       this.updateModifiedBadge();
-    } catch (error) {}
+    } catch (error) { }
   }
 
   copyCode() {
@@ -765,8 +765,8 @@ class coderViewEdit {
 
   downloadFile() {
     if (!this.currentFile) return;
-    const content = this.codeMirror ?  this.codeMirror.getValue() : "";
-    const blob = new Blob([content], { type:  "text/plain;charset=utf-8" });
+    const content = this.codeMirror ? this.codeMirror.getValue() : "";
+    const blob = new Blob([content], { type: "text/plain;charset=utf-8" });
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
@@ -779,7 +779,7 @@ class coderViewEdit {
   }
 
   handleFileUpload(e) {
-    const file = e.target.files? .[0];
+    const file = e.target.files?.[0];
     if (!file) return;
     const reader = new FileReader();
     reader.onload = (event) => {
@@ -828,14 +828,14 @@ class coderViewEdit {
     html.setAttribute("data-theme", newTheme);
     localStorage.setItem("editor_theme", newTheme);
     this.updateThemeIcon(!isDark);
-    this.codeMirror?.setOption("theme", isDark ?  "default" : "one-dark");
+    this.codeMirror?.setOption("theme", isDark ? "default" : "one-dark");
   }
 
   updateThemeIcon(isDark) {
     if (!this.elements.themeIcon) return;
     this.elements.themeIcon.innerHTML = isDark
       ? '<path d="M9.598 1.591a.749.749 0 0 1 .785-.175 7.001 7.001 0 1 1-8.967 8.967.75.75 0 0 1 .961-.96 5.5 5.5 0 0 0 7.046-7.046.75.75 0 0 1 .175-.786Z"/>'
-      :  '<path d="M8 12a4 4 0 1 1 0-8 4 4 0 0 1 0 8Zm0-1.5a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5Zm5.657-8.157a.75.75 0 0 1 0 1.061l-1.061 1.06a.749.749 0 0 1-1.275-.326.749.749 0 0 1 .215-.734l1.06-1.06a.75.75 0 0 1 1.06 0Zm-9.193 9.193a.75.75 0 0 1 0 1.06l-1.06 1.061a.75.75 0 1 1-1.061-1.06l1.06-1.061a.75.75 0 0 1 1.061 0ZM8 0a.75.75 0 0 1 .75.75v1.5a.75.75 0 0 1-1.5 0V.75A.75.75 0 0 1 8 0ZM3 8a.75.75 0 0 1-.75.75H.75a.75.75 0 0 1 0-1.5h1.5A.75.75 0 0 1 3 8Zm13 0a.75.75 0 0 1-.75.75h-1.5a.75.75 0 0 1 0-1.5h1.5A.75.75 0 0 1 16 8Zm-8 5a.75.75 0 0 1 .75.75v1.5a.75.75 0 0 1-1.5 0v-1.5A.75.75 0 0 1 8 13Zm3.536-1.464a.75.75 0 0 1 1.06 0l1.061 1.06a.75.75 0 0 1-1.06 1.061l-1.061-1.06a.75.75 0 0 1 0-1.061Zm-9.193-9.193a.75.75 0 0 1 1.06 0l1.061 1.06a.75.75 0 0 1-1.06 1.061l-1.061-1.06a.75.75 0 0 1 0-1.061Z"/>';
+      : '<path d="M8 12a4 4 0 1 1 0-8 4 4 0 0 1 0 8Zm0-1.5a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5Zm5.657-8.157a.75.75 0 0 1 0 1.061l-1.061 1.06a.749.749 0 0 1-1.275-.326.749.749 0 0 1 .215-.734l1.06-1.06a.75.75 0 0 1 1.06 0Zm-9.193 9.193a.75.75 0 0 1 0 1.06l-1.06 1.061a.75.75 0 1 1-1.061-1.06l1.06-1.061a.75.75 0 0 1 1.061 0ZM8 0a.75.75 0 0 1 .75.75v1.5a.75.75 0 0 1-1.5 0V.75A.75.75 0 0 1 8 0ZM3 8a.75.75 0 0 1-.75.75H.75a.75.75 0 0 1 0-1.5h1.5A.75.75 0 0 1 3 8Zm13 0a.75.75 0 0 1-.75.75h-1.5a.75.75 0 0 1 0-1.5h1.5A.75.75 0 0 1 16 8Zm-8 5a.75.75 0 0 1 .75.75v1.5a.75.75 0 0 1-1.5 0v-1.5A.75.75 0 0 1 8 13Zm3.536-1.464a.75.75 0 0 1 1.06 0l1.061 1.06a.75.75 0 0 1-1.06 1.061l-1.061-1.06a.75.75 0 0 1 0-1.061Zm-9.193-9.193a.75.75 0 0 1 1.06 0l1.061 1.06a.75.75 0 0 1-1.06 1.061l-1.061-1.06a.75.75 0 0 1 0-1.061Z"/>';
   }
 
   openSearch() {
@@ -917,7 +917,7 @@ class coderViewEdit {
     if (!this.codeMirror) return;
     this.codeMirror.operation(() => {
       for (let i = 0; i < this.codeMirror.lineCount(); i++) {
-        this.codeMirror.foldCode({ line: i, ch:  0 }, null, "fold");
+        this.codeMirror.foldCode({ line: i, ch: 0 }, null, "fold");
       }
     });
     this.elements.moreOptionsDropdown?.classList.add("hide");
@@ -927,7 +927,7 @@ class coderViewEdit {
     if (!this.codeMirror) return;
     this.codeMirror.operation(() => {
       for (let i = 0; i < this.codeMirror.lineCount(); i++) {
-        this.codeMirror.foldCode({ line:  i, ch: 0 }, null, "unfold");
+        this.codeMirror.foldCode({ line: i, ch: 0 }, null, "unfold");
       }
     });
     this.elements.moreOptionsDropdown?.classList.add("hide");
@@ -985,7 +985,7 @@ class coderViewEdit {
   }
 
   getValue() {
-    return this.codeMirror ?  this.codeMirror.getValue() : "";
+    return this.codeMirror ? this.codeMirror.getValue() : "";
   }
 
   setValue(content) {
