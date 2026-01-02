@@ -66,33 +66,65 @@ class coderViewEdit {
   getTemplate() {
     return `
 <div class="editorContainer">
-  <div class="editorCard">
-    <div class="editorHeader">
-      <div class="editorHeaderLeft">
-        <div class="fileInfo">
-          <svg class="fileIcon" viewBox="0 0 16 16" fill="currentColor">
-            <path d="M4 1.75C4 .784 4.784 0 5.75 0h5.586c.464 0 .909.184 1.237.513l2.914 2.914c.329.328.513.773.513 1.237v8.586A1.75 1.75 0 0 1 14.25 15h-9a.75.75 0 0 1 0-1.5h9a.25.25 0 0 0 .25-.25V6h-2.75A1.75 1.75 0 0 1 10 4.25V1.5H5.75a.25.25 0 0 0-.25.25v2.5a.75.75 0 0 1-1.5 0v-2.5Zm7.5-.188V4.25c0 .138.112.25.25.25h2.688l-2.938-2.938ZM5.72 6.72a.75.75 0 0 0 0 1.06l1.47 1.47-1.47 1.47a.75.75 0 1 0 1.06 1.06l2-2a.75.75 0 0 0 0-1.06l-2-2a.75.75 0 0 0-1.06 0ZM3.28 7.78a.75.75 0 0 0-1.06-1.06l-2 2a.75.75 0 0 0 0 1.06l2 2a.75.75 0 0 0 1.06-1.06L1.81 9.25l1.47-1.47Z"/>
+  <div class="editorToolbar">
+    <div class="toolbarLeft">
+      <div class="toolbarItem">
+        <svg class="toolbarIcon" viewBox="0 0 16 16" fill="currentColor">
+          <path d="M4 1.75C4 .784 4.784 0 5.75 0h5.586c.464 0 .909.184 1.237.513l2.914 2.914c.329.328.513.773.513 1.237v8.586A1.75 1.75 0 0 1 14.25 15h-9a.75.75 0 0 1 0-1.5h9a.25.25 0 0 0 .25-.25V6h-2.75A1.75 1.75 0 0 1 10 4.25V1.5H5.75a.25.25 0 0 0-.25.25v2.5a.75.75 0 0 1-1.5 0v-2.5Zm7.5-.188V4.25c0 .138.112.25.25.25h2.688l-2.938-2.938ZM5.72 6.72a.75.75 0 0 0 0 1.06l1.47 1.47-1.47 1.47a.75.75 0 1 0 1.06 1.06l2-2a.75.75 0 0 0 0-1.06l-2-2a.75.75 0 0 0-1.06 0ZM3.28 7.78a.75.75 0 0 0-1.06-1.06l-2 2a.75.75 0 0 0 0 1.06l2 2a.75.75 0 0 0 1.06-1.06L1.81 9.25l1.47-1.47Z"/>
+        </svg>
+        <span id="fileNameDisplay" class="fileName">untitled.js</span>
+        <span id="modifiedBadge" class="badge badgeSecondary hide">Modified</span>
+      </div>
+      <div class="toolbarSeparator"></div>
+      <div class="languageSelector">
+        <button id="languageBtn" class="toolbarButton languageBtn">
+          <svg class="buttonIcon" viewBox="0 0 16 16" fill="currentColor">
+            <path d="M0 1.75C0 .784.784 0 1.75 0h12.5C15.216 0 16 .784 16 1.75v12.5A1.75 1.75 0 0 1 14.25 16H1.75A1.75 1.75 0 0 1 0 14.25Zm1.75-.25a.25.25 0 0 0-.25.25v12.5c0 .138.112.25.25.25h12.5a.25.25 0 0 0 .25-.25V1.75a.25.25 0 0 0-.25-.25Zm5.03 3.47-3.5 3.5a.75.75 0 0 0 1.06 1.06l3.5-3.5a.75.75 0 0 0-1.06-1.06Zm2.44 0a.75.75 0 0 0 0 1.06l3.5 3.5a.75.75 0 0 0 1.06-1.06l3.5-3.5a.75.75 0 0 0-1.06 0Z"/>
           </svg>
-          <span id="fileNameDisplay" class="fileName">untitled.js</span>
-          <span id="modifiedBadge" class="badge badgeSecondary hide">Modified</span>
+          <span id="languageLabel">JavaScript</span>
+          <svg class="chevronIcon" viewBox="0 0 16 16" fill="currentColor">
+            <path d="M4.427 7.427l3.396 3.396a.25.25 0 0 0 .354 0l3.396-3.396A.25.25 0 0 0 10.896 2H4.604a.25.25 0 0 0-.177.427Z"/>
+          </svg>
+        </button>
+        <div id="languageDropdown" class="dropdown hide">
+          <div class="dropdownContent" id="languageList"></div>
         </div>
-        <div class="headerSeparator"></div>
-        <div class="languageSelector">
-          <button id="languageBtn" class="headerButton languageBtn">
-            <svg class="buttonIcon" viewBox="0 0 16 16" fill="currentColor">
-              <path d="M0 1.75C0 .784.784 0 1.75 0h12.5C15.216 0 16 .784 16 1.75v12.5A1.75 1.75 0 0 1 14.25 16H1.75A1.75 1.75 0 0 1 0 14.25Zm1.75-.25a.25.25 0 0 0-.25.25v12.5c0 .138.112.25.25.25h12.5a.25.25 0 0 0 .25-.25V1.75a.25.25 0 0 0-.25-.25Zm5.03 3.47-3.5 3.5a.75.75 0 0 0 1.06 1.06l3.5-3.5a.75.75 0 0 0-1.06-1.06Zm2.44 0a.75.75 0 0 0 0 1.06l3.5 3.5a.75.75 0 0 0 1.06-1.06l-3.5-3.5a.75.75 0 0 0-1.06 0Z"/>
-            </svg>
-            <span id="languageLabel">JavaScript</span>
-            <svg class="chevronIcon" viewBox="0 0 16 16" fill="currentColor">
+      </div>
+    </div>
+    <div class="toolbarRight">
+      <div class="editSaveGroup">
+        <button id="editSaveButton" class="toolbarPrimaryButton">
+          <span id="editSaveLabel">Edit</span>
+        </button>
+        <div class="buttonDropdownWrapper">
+          <button id="editSaveDropdownButton" class="toolbarDropdownButton" disabled>
+            <svg class="dropdownChevron" viewBox="0 0 16 16" fill="currentColor">
               <path d="M4.427 7.427l3.396 3.396a.25.25 0 0 0 .354 0l3.396-3.396A.25.25 0 0 0 10.896 2H4.604a.25.25 0 0 0-.177.427Z"/>
             </svg>
           </button>
-          <div id="languageDropdown" class="dropdown hide">
-            <div class="dropdownContent" id="languageList"></div>
+          <div id="saveOptionsDropdown" class="dropdown dropdownRight hide">
+            <div class="dropdownContent">
+              <button class="dropdownItem" id="addCommitBtn">
+                <svg class="dropdownIcon" viewBox="0 0 16 16" fill="currentColor">
+                  <path d="M8 0a8 8 0 1 1 0 16A8 8 0 0 1 8 0ZM1.5 8a6.5 6.5 0 1 0 13 0 6.5 6.5 0 0 0-13 0Zm7-3.25v2.992l2.028.812a.75.75 0 0 1-.556 1.392l-2.5-1A.751.751 0 0 1 7 8.25v-3.5a.75.75 0 0 1 1.5 0Z"/>
+                </svg>
+                Add Commit
+              </button>
+              <button class="dropdownItem" id="saveNowBtn">
+                <svg class="dropdownIcon" viewBox="0 0 16 16" fill="currentColor">
+                  <path d="M13.78 4.22a.75.75 0 0 1 0 1.06l-7.25 7.25a.75.75 0 0 1-1.06 0L2.22 9.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018L6 10.94l6.72-6.72a.75.75 0 0 1 1.06 0Z"/>
+                </svg>
+                Save Now
+              </button>
+            </div>
           </div>
         </div>
       </div>
-      <div class="editorHeaderCenter">
+    </div>
+  </div>
+  <div class="editorCard">
+    <div class="editorHeader">
+      <div class="editorHeaderLeft">
         <button id="editModeBtn" class="headerButton active" title="Edit Mode">
           <svg class="buttonIcon" viewBox="0 0 16 16" fill="currentColor">
             <path d="M11.013 1.427a1.75 1.75 0 0 1 2.474 0l1.086 1.086a1.75 1.75 0 0 1 0 2.474l-8.61 8.61c-.21.21-.47.364-.756.445l-3.251.93a.75.75 0 0 1-.927-.928l.929-3.25c.081-.286.235-.547.445-.758l8.61-8.61Zm.176 4.823L9.75 4.81l-6.286 6.287a.253.253 0 0 0-.064.108l-.558 1.953 1.953-.558a.253.253 0 0 0 .108-.064Zm1.238-3.763a.25.25 0 0 0-.354 0L10.811 3.75l1.439 1.44 1.263-1.263a.25.25 0 0 0 0-.354Z"/>
@@ -106,7 +138,7 @@ class coderViewEdit {
         <div class="headerSeparator"></div>
         <button id="undoBtn" class="headerButton" title="Undo (Ctrl+Z)">
           <svg class="buttonIcon" viewBox="0 0 16 16" fill="currentColor">
-            <path d="M2.5 5.724V2.75a.75.75 0 0 0-1.5 0v5c0 .414.336.75.75.75h5a.75.75 0 0 0 0-1.5H3.534L6.41 4.086A5.25 5.25 0 1 1 2.75 10.25a.75.75 0 0 0-1.5 0A6.75 6.75 0 1 0 7.058 2.85L2.5 5.724Z"/>
+            <path d="M2.5 5.724V2.75a.75.75 0 0 0-1.5 0v5c0 .414.336.75.75.75h5a.75.75 0 0 1 0-1.5H3.534L6.41 4.086A5.25 5.25 0 1 1 2.75 10.25a.75.75 0 0 0-1.5 0A6.75 6.75 0 1 0 7.058 2.85L2.5 5.724Z"/>
           </svg>
         </button>
         <button id="redoBtn" class="headerButton" title="Redo (Ctrl+Y)">
@@ -144,6 +176,7 @@ class coderViewEdit {
           </svg>
         </button>
       </div>
+      <div class="editorHeaderCenter"></div>
       <div class="editorHeaderRight">
         <button id="themeBtn" class="headerButton" title="Toggle Theme">
           <svg id="themeIcon" class="buttonIcon" viewBox="0 0 16 16" fill="currentColor">
@@ -291,14 +324,14 @@ class coderViewEdit {
       </div>
     </div>
   </div>
-  <div id="commitPanel" class="commitPanel hide">
-    <h3 class="commitTitle">Commit Changes</h3>
-    <div class="commitContent">
-      <input type="text" id="commitTitleInput" class="commitInput" placeholder="Update filename.ext" spellcheck="false" />
-      <textarea id="commitDescriptionInput" class="commitTextarea" rows="3" placeholder="Add an optional extended description..." spellcheck="false"></textarea>
-      <div class="commitActions">
-        <button id="cancelCommitBtn" class="commitBtnSecondary">Cancel</button>
-        <button id="saveCommitBtn" class="commitBtnPrimary">Commit Changes</button>
+  <div id="commitPopover" class="popover hide">
+    <div class="popoverContent">
+      <h3 class="popoverTitle">Commit Changes</h3>
+      <input type="text" id="commitTitleInput" class="popoverInput" placeholder="Update filename.ext" spellcheck="false" />
+      <textarea id="commitDescriptionInput" class="popoverTextarea" rows="3" placeholder="Add an optional extended description..." spellcheck="false"></textarea>
+      <div class="popoverActions">
+        <button id="commitCancelBtn" class="popoverButtonSecondary">Cancel</button>
+        <button id="commitSaveBtn" class="popoverButtonPrimary">Save</button>
       </div>
     </div>
   </div>
@@ -355,12 +388,18 @@ class coderViewEdit {
       statusIndicator: document.getElementById("statusIndicator"),
       lastSaved: document.getElementById("lastSaved"),
       languageBadge: document.getElementById("languageBadge"),
-      commitPanel: document.getElementById("commitPanel"),
+      fileUploadInput: document.getElementById("fileUploadInput"),
+      editSaveButton: document.getElementById("editSaveButton"),
+      editSaveLabel: document.getElementById("editSaveLabel"),
+      editSaveDropdownButton: document.getElementById("editSaveDropdownButton"),
+      saveOptionsDropdown: document.getElementById("saveOptionsDropdown"),
+      addCommitBtn: document.getElementById("addCommitBtn"),
+      saveNowBtn: document.getElementById("saveNowBtn"),
+      commitPopover: document.getElementById("commitPopover"),
       commitTitleInput: document.getElementById("commitTitleInput"),
       commitDescriptionInput: document.getElementById("commitDescriptionInput"),
-      cancelCommitBtn: document.getElementById("cancelCommitBtn"),
-      saveCommitBtn: document.getElementById("saveCommitBtn"),
-      fileUploadInput: document.getElementById("fileUploadInput"),
+      commitCancelBtn: document.getElementById("commitCancelBtn"),
+      commitSaveBtn: document.getElementById("commitSaveBtn"),
     };
     this.populateLanguageDropdown();
   }
@@ -397,8 +436,6 @@ class coderViewEdit {
     this.elements.foldAllBtn?.addEventListener("click", () => this.foldAll());
     this.elements.unfoldAllBtn?.addEventListener("click", () => this.unfoldAll());
     this.elements.showInvisiblesBtn?.addEventListener("click", () => this.toggleInvisibles());
-    this.elements.cancelCommitBtn?.addEventListener("click", () => this.cancelEdit());
-    this.elements.saveCommitBtn?.addEventListener("click", () => this.saveChanges());
     this.elements.searchPrevBtn?.addEventListener("click", () => this.findPrevious());
     this.elements.searchNextBtn?.addEventListener("click", () => this.findNext());
     this.elements.closeSearchBtn?.addEventListener("click", () => this.closeSearch());
@@ -416,19 +453,33 @@ class coderViewEdit {
       e.stopPropagation();
       this.elements.moreOptionsDropdown?.classList.toggle("hide");
     });
+    this.elements.editSaveButton?.addEventListener("click", () => this.handleEditSaveClick());
+    this.elements.editSaveDropdownButton?.addEventListener("click", (e) => {
+      e.stopPropagation();
+      if (!this.elements.editSaveDropdownButton.disabled) {
+        this.elements.saveOptionsDropdown?.classList.toggle("hide");
+      }
+    });
+    this.elements.addCommitBtn?.addEventListener("click", () => this.showCommitPopover());
+    this.elements.saveNowBtn?.addEventListener("click", () => this.saveChanges(false));
+    this.elements.commitCancelBtn?.addEventListener("click", () => this.hideCommitPopover());
+    this.elements.commitSaveBtn?.addEventListener("click", () => this.saveChanges(true));
     document.addEventListener("click", () => {
       this.elements.languageDropdown?.classList.add("hide");
       this.elements.moreOptionsDropdown?.classList.add("hide");
+      this.elements.saveOptionsDropdown?.classList.add("hide");
+      this.hideCommitPopover();
     });
     document.addEventListener("keydown", (e) => {
       const ctrl = e.ctrlKey || e.metaKey;
       if (ctrl && e.key === "s" && this.isEditing) {
         e.preventDefault();
-        this.saveChanges();
+        this.saveChanges(false);
       }
       if (e.key === "Escape") {
         if (this.searchActive) this.closeSearch();
         else if (this.isFullscreen) this.toggleFullscreen();
+        else if (!this.elements.commitPopover.classList.contains("hide")) this.hideCommitPopover();
       }
       if (ctrl && e.key === "f") {
         e.preventDefault();
@@ -457,6 +508,31 @@ class coderViewEdit {
         e.returnValue = "";
       }
     });
+  }
+
+  handleEditSaveClick() {
+    if (!this.isEditing) {
+      this.enterEditMode();
+    } else {
+      this.saveChanges(false);
+    }
+  }
+
+  showCommitPopover() {
+    if (!this.elements.commitPopover) return;
+    this.elements.saveOptionsDropdown?.classList.add("hide");
+    this.elements.commitPopover.classList.remove("hide");
+    if (this.elements.commitTitleInput) {
+      this.elements.commitTitleInput.value = `Update ${this.currentFile}`;
+      setTimeout(() => this.elements.commitTitleInput?.focus(), 10);
+    }
+  }
+
+  hideCommitPopover() {
+    if (!this.elements.commitPopover) return;
+    this.elements.commitPopover.classList.add("hide");
+    if (this.elements.commitTitleInput) this.elements.commitTitleInput.value = "";
+    if (this.elements.commitDescriptionInput) this.elements.commitDescriptionInput.value = "";
   }
 
   setupCodeMirror() {
@@ -488,8 +564,8 @@ class coderViewEdit {
       styleActiveLine: this.state.highlightActiveLine,
       highlightSelectionMatches: { showToken: /\w/ },
       extraKeys: {
-        "Ctrl-S": () => this.saveChanges(),
-        "Cmd-S": () => this.saveChanges(),
+        "Ctrl-S": () => this.saveChanges(false),
+        "Cmd-S": () => this.saveChanges(false),
         "Ctrl-F": () => this.openSearch(),
         "Ctrl-/": "toggleComment",
         Tab: "indentMore",
@@ -605,22 +681,24 @@ class coderViewEdit {
     this.isEditing = true;
     this.elements.editModeBtn?.classList.add("active");
     this.elements.viewModeBtn?.classList.remove("active");
-    this.elements.commitPanel?.classList.remove("hide");
+    if (this.elements.editSaveLabel) this.elements.editSaveLabel.textContent = "Save";
+    if (this.elements.editSaveDropdownButton) this.elements.editSaveDropdownButton.disabled = false;
     if (this.codeMirror) {
       this.codeMirror.setOption("readOnly", false);
       this.codeMirror.focus();
     }
-    this.updateCommitMessage();
   }
 
   exitEditMode() {
     this.isEditing = false;
     this.elements.editModeBtn?.classList.remove("active");
     this.elements.viewModeBtn?.classList.add("active");
-    this.elements.commitPanel?.classList.add("hide");
+    if (this.elements.editSaveLabel) this.elements.editSaveLabel.textContent = "Edit";
+    if (this.elements.editSaveDropdownButton) this.elements.editSaveDropdownButton.disabled = true;
     if (this.codeMirror) {
       this.codeMirror.setOption("readOnly", true);
     }
+    this.hideCommitPopover();
   }
 
   cancelEdit() {
@@ -662,69 +740,30 @@ class coderViewEdit {
     setTimeout(() => this.codeMirror?.refresh(), 200);
   }
 
-  updateCommitMessage() {
-    if (!this.currentFile || !this.elements.commitTitleInput) return;
-    if (!this.elements.commitTitleInput.value.trim()) {
-      this.elements.commitTitleInput.value = `Update ${this.currentFile}`;
-    }
-  }
-
-  updateStats() {
-    if (!this.codeMirror) return;
-    const content = this.codeMirror.getValue();
-    const lines = content.split("\n").length;
-    const chars = content.length;
-    const bytes = new Blob([content]).size;
-    let sizeStr =
-      bytes < 1024
-        ? `${bytes} B`
-        : bytes < 1024 * 1024
-          ? `${(bytes / 1024).toFixed(1)} KB`
-          : `${(bytes / (1024 * 1024)).toFixed(2)} MB`;
-    this.elements.lineCount && (this.elements.lineCount.textContent = lines);
-    this.elements.charCount && (this.elements.charCount.textContent = chars.toLocaleString());
-    this.elements.fileSize && (this.elements.fileSize.textContent = sizeStr);
-  }
-
-  updateCursorPosition() {
-    if (!this.codeMirror) return;
-    const cursor = this.codeMirror.getCursor();
-    this.elements.cursorLine && (this.elements.cursorLine.textContent = cursor.line + 1);
-    this.elements.cursorCol && (this.elements.cursorCol.textContent = cursor.ch + 1);
-  }
-
-  updateModifiedBadge() {
-    if (!this.codeMirror) return;
-    const isModified = this.codeMirror.getValue() !== this.originalContent;
-    this.elements.modifiedBadge?.classList.toggle("hide", !isModified);
-  }
-
-  updateLastSaved(saved) {
-    if (!this.elements.lastSaved) return;
-    if (saved) {
-      const now = new Date();
-      this.lastSaveTime = now;
-      const timeStr = now.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
-      this.elements.lastSaved.textContent = timeStr;
-    } else {
-      this.elements.lastSaved.textContent = "Never";
-    }
-  }
-
-  saveChanges() {
+  saveChanges(withCommit = false) {
     if (!this.currentFile || !this.fileData) return;
-    const commitTitle = this.elements.commitTitleInput?.value.trim();
-    if (!commitTitle) {
-      if (typeof showErrorMessage === "function") showErrorMessage("Please enter a commit message");
-      return;
+    
+    if (withCommit) {
+      const commitTitle = this.elements.commitTitleInput?.value.trim();
+      if (!commitTitle) {
+        if (typeof showErrorMessage === "function") showErrorMessage("Please enter a commit message");
+        return;
+      }
+      this.hideCommitPopover();
+      this.performSave(commitTitle);
+    } else {
+      this.performSave("Saved changes");
     }
+  }
+
+  performSave(commitMessage) {
     this.showLoadingSpinner();
     setTimeout(() => {
       try {
         const newContent = this.codeMirror ? this.codeMirror.getValue() : "";
         this.fileData.content = newContent;
         this.fileData.lastModified = Date.now();
-        this.fileData.lastCommit = commitTitle;
+        this.fileData.lastCommit = commitMessage;
         this.fileData.size = new Blob([newContent]).size;
         const filePath = (window.currentState?.path ? window.currentState.path + "/" : "") + this.currentFile;
         if (typeof LocalStorageManager !== "undefined")
@@ -734,8 +773,6 @@ class coderViewEdit {
         this.updateLastSaved(true);
         this.updateModifiedBadge();
         this.exitEditMode();
-        this.elements.commitTitleInput && (this.elements.commitTitleInput.value = "");
-        this.elements.commitDescriptionInput && (this.elements.commitDescriptionInput.value = "");
         this.hideLoadingSpinner();
       } catch (error) {
         this.hideLoadingSpinner();
@@ -850,6 +887,48 @@ class coderViewEdit {
       : '<path d="M8 12a4 4 0 1 1 0-8 4 4 0 0 1 0 8Zm0-1.5a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5Zm5.657-8.157a.75.75 0 0 1 0 1.061l-1.061 1.06a.749.749 0 0 1-1.275-.326.749.749 0 0 1 .215-.734l1.06-1.06a.75.75 0 0 1 1.06 0Zm-9.193 9.193a.75.75 0 0 1 0 1.06l-1.06 1.061a.75.75 0 1 1-1.061-1.06l1.06-1.061a.75.75 0 0 1 1.061 0ZM8 0a.75.75 0 0 1 .75.75v1.5a.75.75 0 0 1-1.5 0V.75A.75.75 0 0 1 8 0ZM3 8a.75.75 0 0 1-.75.75H.75a.75.75 0 0 1 0-1.5h1.5A.75.75 0 0 1 3 8Zm13 0a.75.75 0 0 1-.75.75h-1.5a.75.75 0 0 1 0-1.5h1.5A.75.75 0 0 1 16 8Zm-8 5a.75.75 0 0 1 .75.75v1.5a.75.75 0 0 1-1.5 0v-1.5A.75.75 0 0 1 8 13Zm3.536-1.464a.75.75 0 0 1 1.06 0l1.061 1.06a.75.75 0 0 1-1.06 1.061l-1.061-1.06a.75.75 0 0 1 0-1.061Zm-9.193-9.193a.75.75 0 0 1 1.06 0l1.061 1.06a.75.75 0 0 1-1.06 1.061l-1.061-1.06a.75.75 0 0 1 0-1.061Z"/>';
   }
 
+  updateStats() {
+    if (!this.codeMirror) return;
+    const content = this.codeMirror.getValue();
+    const lines = content.split("\n").length;
+    const chars = content.length;
+    const bytes = new Blob([content]).size;
+    let sizeStr =
+      bytes < 1024
+        ? `${bytes} B`
+        : bytes < 1024 * 1024
+          ? `${(bytes / 1024).toFixed(1)} KB`
+          : `${(bytes / (1024 * 1024)).toFixed(2)} MB`;
+    this.elements.lineCount && (this.elements.lineCount.textContent = lines);
+    this.elements.charCount && (this.elements.charCount.textContent = chars.toLocaleString());
+    this.elements.fileSize && (this.elements.fileSize.textContent = sizeStr);
+  }
+
+  updateCursorPosition() {
+    if (!this.codeMirror) return;
+    const cursor = this.codeMirror.getCursor();
+    this.elements.cursorLine && (this.elements.cursorLine.textContent = cursor.line + 1);
+    this.elements.cursorCol && (this.elements.cursorCol.textContent = cursor.ch + 1);
+  }
+
+  updateModifiedBadge() {
+    if (!this.codeMirror) return;
+    const isModified = this.codeMirror.getValue() !== this.originalContent;
+    this.elements.modifiedBadge?.classList.toggle("hide", !isModified);
+  }
+
+  updateLastSaved(saved) {
+    if (!this.elements.lastSaved) return;
+    if (saved) {
+      const now = new Date();
+      this.lastSaveTime = now;
+      const timeStr = now.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+      this.elements.lastSaved.textContent = timeStr;
+    } else {
+      this.elements.lastSaved.textContent = "Never";
+    }
+  }
+
   openSearch() {
     if (!this.codeMirror) return;
     this.searchActive = true;
@@ -925,26 +1004,6 @@ class coderViewEdit {
     this.highlightMatch(this.currentSearchIndex);
   }
 
-  foldAll() {
-    if (!this.codeMirror) return;
-    this.codeMirror.operation(() => {
-      for (let i = 0; i < this.codeMirror.lineCount(); i++) {
-        this.codeMirror.foldCode({ line: i, ch: 0 }, null, "fold");
-      }
-    });
-    this.elements.moreOptionsDropdown?.classList.add("hide");
-  }
-
-  unfoldAll() {
-    if (!this.codeMirror) return;
-    this.codeMirror.operation(() => {
-      for (let i = 0; i < this.codeMirror.lineCount(); i++) {
-        this.codeMirror.foldCode({ line: i, ch: 0 }, null, "unfold");
-      }
-    });
-    this.elements.moreOptionsDropdown?.classList.add("hide");
-  }
-
   toggleFullscreen() {
     if (!this.elements.editorBody) return;
     this.isFullscreen = !this.isFullscreen;
@@ -963,6 +1022,26 @@ class coderViewEdit {
           '<path d="M1.75 10a.75.75 0 0 1 .75.75v2.5c0 .138.112.25.25.25h2.5a.75.75 0 0 1 0 1.5h-2.5A1.75 1.75 0 0 1 1 13.25v-2.5a.75.75 0 0 1 .75-.75Zm12.5 0a.75.75 0 0 1 .75.75v2.5A1.75 1.75 0 0 1 13.25 15h-2.5a.75.75 0 0 1 0-1.5h2.5a.25.25 0 0 0 .25-.25v-2.5a.75.75 0 0 1 .75-.75ZM2.75 1a1.75 1.75 0 0 0-1.75 1.75v2.5a.75.75 0 0 0 1.5 0v-2.5a.25.25 0 0 1 .25-.25h2.5a.75.75 0 0 0 0-1.5Zm8 0a.75.75 0 0 0 0 1.5h2.5a.25.25 0 0 1 .25.25v2.5a.75.75 0 0 0 1.5 0v-2.5A1.75 1.75 0 0 0 13.25 1Z"/>');
     }
     setTimeout(() => this.codeMirror?.refresh(), 100);
+  }
+
+  foldAll() {
+    if (!this.codeMirror) return;
+    this.codeMirror.operation(() => {
+      for (let i = 0; i < this.codeMirror.lineCount(); i++) {
+        this.codeMirror.foldCode({ line: i, ch: 0 }, null, "fold");
+      }
+    });
+    this.elements.moreOptionsDropdown?.classList.add("hide");
+  }
+
+  unfoldAll() {
+    if (!this.codeMirror) return;
+    this.codeMirror.operation(() => {
+      for (let i = 0; i < this.codeMirror.lineCount(); i++) {
+        this.codeMirror.foldCode({ line: i, ch: 0 }, null, "unfold");
+      }
+    });
+    this.elements.moreOptionsDropdown?.classList.add("hide");
   }
 
   formatCode() {
