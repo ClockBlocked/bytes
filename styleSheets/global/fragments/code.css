@@ -57,7 +57,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background-color: #161b22
+  background-color: var(--header-bg)
   border: 1px solid var(--header-border);
   border-bottom: none;
   border-radius: 8px 8px 0 0;
@@ -795,8 +795,8 @@
 }
 
 .coderFooter {
-  background-color: #161b22;
-  border: 1px solid #30363d;
+  background-color: var(--footer-bg);
+  border: 1px solid var(--footer-border);
   border-top: none;
   border-radius: 0 0 0.375rem 0.375rem;
   padding: 0.5rem 1rem;
