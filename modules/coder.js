@@ -65,133 +65,11 @@ class coderViewEdit {
 
   getTemplate() {
     return `
-    
-    
-<!-- From Uiverse.io by 0x3ther --> 
-<div class="flex items-center gap-2">
-  <button
-    class="relative inline-flex items-center justify-center gap-2 text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-white hover:bg-[#F5F5F5] h-9 rounded-md px-3 group"
-  >
-    <svg
-      class="lucide lucide-arrow-left"
-      stroke-linejoin="round"
-      stroke-linecap="round"
-      stroke-width="2"
-      stroke="currentColor"
-      fill="none"
-      viewBox="0 0 24 24"
-      height="22"
-      width="22"
-      xmlns="http://www.w3.org/2000/svg"
-    >
-      <path d="m12 19-7-7 7-7"></path>
-      <path d="M19 12H5"></path>
-    </svg>
-    <span class="origin-left scale-0 transition-transform group-hover:scale-100"
-      >Back</span
-    >
-  </button>
-  <button
-    class="cursor-pointer bg-white relative inline-flex items-center justify-center gap-2 rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:bg-[#F5F5F5] hover:text-[#06B6D4] h-9 rounded-md px-3"
-  >
-    <svg
-      class="lucide lucide-rocket text-cyan-500 dark:text-cyan-400"
-      stroke-linejoin="round"
-      stroke-linecap="round"
-      stroke-width="2"
-      stroke="#06B6D4"
-      fill="none"
-      viewBox="0 0 24 24"
-      height="22"
-      width="22"
-      xmlns="http://www.w3.org/2000/svg"
-    >
-      <path
-        d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"
-      ></path>
-      <path
-        d="m12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"
-      ></path>
-      <path d="M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0"></path>
-      <path d="M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5"></path>
-    </svg>
-    Dashboard
-  </button>
-  <button
-    class="cursor-pointer bg-white relative inline-flex items-center justify-center gap-2 rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:bg-[#F5F5F5] hover:text-[#60A5FA] h-9 rounded-md px-3"
-  >
-    <svg
-      class="lucide lucide-newspaper text-blue-400 dark:text-blue-600"
-      stroke-linejoin="round"
-      stroke-linecap="round"
-      stroke-width="2"
-      stroke="#60A5FA"
-      fill="none"
-      viewBox="0 0 24 24"
-      height="22"
-      width="22"
-      xmlns="http://www.w3.org/2000/svg"
-    >
-      <path
-        d="M4 22h16a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v16a2 2 0 0 1-2 2Zm0 0a2 2 0 0 1-2-2v-9c0-1.1.9-2 2-2h2"
-      ></path>
-      <path d="M18 14h-8"></path>
-      <path d="M15 18h-5"></path>
-      <path d="M10 6h8v4h-8V6Z"></path>
-    </svg>
-    Articles
-  </button>
-  <button
-    class="cursor-pointer bg-white relative inline-flex items-center justify-center gap-2 rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:bg-[#F5F5F5] hover:text-[#FACC14] h-9 rounded-md px-3"
-  >
-    <svg
-      class="lucide lucide-sticky-note text-yellow-400 dark:text-yellow-600"
-      stroke-linejoin="round"
-      stroke-linecap="round"
-      stroke-width="2"
-      stroke="#FACC14"
-      fill="none"
-      viewBox="0 0 24 24"
-      height="22"
-      width="22"
-      xmlns="http://www.w3.org/2000/svg"
-    >
-      <path
-        d="M15.5 3H5a2 2 0 0 0-2 2v14c0 1.1.9 2 2 2h14a2 2 0 0 0 2-2V8.5L15.5 3Z"
-      ></path>
-      <path d="M15 3v6h6"></path>
-    </svg>
-    Notes
-  </button>
-  <button
-    class="cursor-pointer bg-white relative inline-flex items-center justify-center gap-2 rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:bg-[#F5F5F5] hover:text-[#FB923C] h-9 rounded-md px-3"
-  >
-    <svg
-      class="lucide lucide-star text-orange-400 dark:text-orange-600"
-      stroke-linejoin="round"
-      stroke-linecap="round"
-      stroke-width="2"
-      stroke="#FB923C"
-      fill="#FB923C"
-      viewBox="0 0 24 24"
-      height="22"
-      width="22"
-      xmlns="http://www.w3.org/2000/svg"
-    >
-      <polygon
-        points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"
-      ></polygon>
-    </svg>
-    Reviews
-  </button>
-</div>
-    
-    
 <div class="editorContainer">
   <div class="editorToolbar">
     <div class="toolbarLeft">
       <div class="toolbarItem">
-        <svg class="toolbarIcon" viewBox="0 0 16 16" fill="currentColor">
+        <svg class="toolbarIcon" viewBox="0 0 16 16" fill="currentColor" width="16" height="16">
           <path d="M4 1.75C4 .784 4.784 0 5.75 0h5.586c.464 0 .909.184 1.237.513l2.914 2.914c.329.328.513.773.513 1.237v8.586A1.75 1.75 0 0 1 14.25 15h-9a.75.75 0 0 1 0-1.5h9a.25.25 0 0 0 .25-.25V6h-2.75A1.75 1.75 0 0 1 10 4.25V1.5H5.75a.25.25 0 0 0-.25.25v2.5a.75.75 0 0 1-1.5 0v-2.5Zm7.5-.188V4.25c0 .138.112.25.25.25h2.688l-2.938-2.938ZM5.72 6.72a.75.75 0 0 0 0 1.06l1.47 1.47-1.47 1.47a.75.75 0 1 0 1.06 1.06l2-2a.75.75 0 0 0 0-1.06l-2-2a.75.75 0 0 0-1.06 0ZM3.28 7.78a.75.75 0 0 0-1.06-1.06l-2 2a.75.75 0 0 0 0 1.06l2 2a.75.75 0 0 0 1.06-1.06L1.81 9.25l1.47-1.47Z"/>
         </svg>
         <span id="fileNameDisplay" class="fileName">untitled.js</span>
@@ -200,11 +78,11 @@ class coderViewEdit {
       <div class="toolbarSeparator"></div>
       <div class="languageSelector">
         <button id="languageBtn" class="toolbarButton languageBtn">
-          <svg class="buttonIcon" viewBox="0 0 16 16" fill="currentColor">
+          <svg class="buttonIcon" viewBox="0 0 16 16" fill="currentColor" width="14" height="14">
             <path d="M0 1.75C0 .784.784 0 1.75 0h12.5C15.216 0 16 .784 16 1.75v12.5A1.75 1.75 0 0 1 14.25 16H1.75A1.75 1.75 0 0 1 0 14.25Zm1.75-.25a.25.25 0 0 0-.25.25v12.5c0 .138.112.25.25.25h12.5a.25.25 0 0 0 .25-.25V1.75a.25.25 0 0 0-.25-.25Zm5.03 3.47-3.5 3.5a.75.75 0 0 0 1.06 1.06l3.5-3.5a.75.75 0 0 0-1.06-1.06Zm2.44 0a.75.75 0 0 0 0 1.06l3.5 3.5a.75.75 0 0 0 1.06-1.06l3.5-3.5a.75.75 0 0 0-1.06 0Z"/>
           </svg>
           <span id="languageLabel">JavaScript</span>
-          <svg class="chevronIcon" viewBox="0 0 16 16" fill="currentColor">
+          <svg class="chevronIcon" viewBox="0 0 16 16" fill="currentColor" width="12" height="12">
             <path d="M4.427 7.427l3.396 3.396a.25.25 0 0 0 .354 0l3.396-3.396A.25.25 0 0 0 10.896 2H4.604a.25.25 0 0 0-.177.427Z"/>
           </svg>
         </button>
@@ -215,25 +93,25 @@ class coderViewEdit {
     </div>
     <div class="toolbarRight">
       <div class="editSaveGroup">
-        <button id="editSaveButton" class="toolbarPrimaryButton">
+        <button id="editSaveButton" class="editSavePrimary">
           <span id="editSaveLabel">Edit</span>
         </button>
-        <div class="buttonDropdownWrapper">
-          <button id="editSaveDropdownButton" class="toolbarDropdownButton" disabled>
-            <svg class="dropdownChevron" viewBox="0 0 16 16" fill="currentColor">
+        <div class="editSaveDropdownWrapper">
+          <button id="editSaveDropdownButton" class="editSaveDropdown" disabled>
+            <svg class="dropdownChevron" viewBox="0 0 16 16" fill="currentColor" width="12" height="12">
               <path d="M4.427 7.427l3.396 3.396a.25.25 0 0 0 .354 0l3.396-3.396A.25.25 0 0 0 10.896 2H4.604a.25.25 0 0 0-.177.427Z"/>
             </svg>
           </button>
           <div id="saveOptionsDropdown" class="dropdown dropdownRight hide">
             <div class="dropdownContent">
               <button class="dropdownItem" id="addCommitBtn">
-                <svg class="dropdownIcon" viewBox="0 0 16 16" fill="currentColor">
+                <svg class="dropdownIcon" viewBox="0 0 16 16" fill="currentColor" width="14" height="14">
                   <path d="M8 0a8 8 0 1 1 0 16A8 8 0 0 1 8 0ZM1.5 8a6.5 6.5 0 1 0 13 0 6.5 6.5 0 0 0-13 0Zm7-3.25v2.992l2.028.812a.75.75 0 0 1-.556 1.392l-2.5-1A.751.751 0 0 1 7 8.25v-3.5a.75.75 0 0 1 1.5 0Z"/>
                 </svg>
                 Add Commit
               </button>
               <button class="dropdownItem" id="saveNowBtn">
-                <svg class="dropdownIcon" viewBox="0 0 16 16" fill="currentColor">
+                <svg class="dropdownIcon" viewBox="0 0 16 16" fill="currentColor" width="14" height="14">
                   <path d="M13.78 4.22a.75.75 0 0 1 0 1.06l-7.25 7.25a.75.75 0 0 1-1.06 0L2.22 9.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018L6 10.94l6.72-6.72a.75.75 0 0 1 1.06 0Z"/>
                 </svg>
                 Save Now
@@ -248,51 +126,51 @@ class coderViewEdit {
     <div class="editorHeader">
       <div class="editorHeaderLeft">
         <button id="editModeBtn" class="headerButton active" title="Edit Mode">
-          <svg class="buttonIcon" viewBox="0 0 16 16" fill="currentColor">
+          <svg class="buttonIcon" viewBox="0 0 16 16" fill="currentColor" width="14" height="14">
             <path d="M11.013 1.427a1.75 1.75 0 0 1 2.474 0l1.086 1.086a1.75 1.75 0 0 1 0 2.474l-8.61 8.61c-.21.21-.47.364-.756.445l-3.251.93a.75.75 0 0 1-.927-.928l.929-3.25c.081-.286.235-.547.445-.758l8.61-8.61Zm.176 4.823L9.75 4.81l-6.286 6.287a.253.253 0 0 0-.064.108l-.558 1.953 1.953-.558a.253.253 0 0 0 .108-.064Zm1.238-3.763a.25.25 0 0 0-.354 0L10.811 3.75l1.439 1.44 1.263-1.263a.25.25 0 0 0 0-.354Z"/>
           </svg>
         </button>
         <button id="viewModeBtn" class="headerButton" title="View Mode">
-          <svg class="buttonIcon" viewBox="0 0 16 16" fill="currentColor">
+          <svg class="buttonIcon" viewBox="0 0 16 16" fill="currentColor" width="14" height="14">
             <path d="M8 2c1.981 0 3.671.992 4.933 2.078 1.27 1.091 2.187 2.345 2.637 3.023a1.62 1.62 0 0 1 0 1.798c-.45.678-1.367 1.932-2.637 3.023C11.67 13.008 9.981 14 8 14c-1.981 0-3.671-.992-4.933-2.078C1.797 10.831.88 9.577.43 8.899a1.62 1.62 0 0 1 0-1.798c.45-.678 1.367-1.932 2.637-3.023C4.33 2.992 6.019 2 8 2ZM1.679 7.932a.12.12 0 0 0 0 .136c.411.622 1.241 1.75 2.366 2.717C5.176 11.758 6.527 12.5 8 12.5c1.473 0 2.825-.742 3.955-1.715 1.124-.967 1.954-2.096 2.366-2.717a.12.12 0 0 0 0-.136c-.412-.621-1.242-1.75-2.366-2.717C10.824 4.242 9.473 3.5 8 3.5c-1.473 0-2.824.742-3.955 1.715-1.124.967-1.954 2.096-2.366 2.717ZM8 10a2 2 0 1 1-.001-3.999A2 2 0 0 1 8 10Z"/>
           </svg>
         </button>
         <div class="headerSeparator"></div>
         <button id="undoBtn" class="headerButton" title="Undo (Ctrl+Z)">
-          <svg class="buttonIcon" viewBox="0 0 16 16" fill="currentColor">
+          <svg class="buttonIcon" viewBox="0 0 16 16" fill="currentColor" width="14" height="14">
             <path d="M2.5 5.724V2.75a.75.75 0 0 0-1.5 0v5c0 .414.336.75.75.75h5a.75.75 0 0 1 0-1.5H3.534L6.41 4.086A5.25 5.25 0 1 1 2.75 10.25a.75.75 0 0 0-1.5 0A6.75 6.75 0 1 0 7.058 2.85L2.5 5.724Z"/>
           </svg>
         </button>
         <button id="redoBtn" class="headerButton" title="Redo (Ctrl+Y)">
-          <svg class="buttonIcon" viewBox="0 0 16 16" fill="currentColor">
+          <svg class="buttonIcon" viewBox="0 0 16 16" fill="currentColor" width="14" height="14">
             <path d="M13.5 5.724V2.75a.75.75 0 0 1 1.5 0v5a.75.75 0 0 1-.75.75h-5a.75.75 0 0 1 0-1.5h3.216L9.59 4.086A5.25 5.25 0 1 0 13.25 10.25a.75.75 0 0 1 1.5 0A6.75 6.75 0 1 1 8.942 2.85l4.558 2.874Z"/>
           </svg>
         </button>
         <div class="headerSeparator"></div>
         <button id="searchBtn" class="headerButton" title="Search (Ctrl+F)">
-          <svg class="buttonIcon" viewBox="0 0 16 16" fill="currentColor">
+          <svg class="buttonIcon" viewBox="0 0 16 16" fill="currentColor" width="14" height="14">
             <path d="M10.68 11.74a6 6 0 0 1-7.922-8.982 6 6 0 0 1 8.982 7.922l3.04 3.04a.749.749 0 0 1-.326 1.275.749.749 0 0 1-.734-.215ZM11.5 7a4.499 4.499 0 1 0-8.997 0A4.499 4.499 0 0 0 11.5 7Z"/>
           </svg>
         </button>
         <button id="wrapBtn" class="headerButton" title="Toggle Word Wrap">
-          <svg class="buttonIcon" viewBox="0 0 16 16" fill="currentColor">
+          <svg class="buttonIcon" viewBox="0 0 16 16" fill="currentColor" width="14" height="14">
             <path d="M2.75 3.5a.25.25 0 0 0-.25.25v8.5c0 .138.112.25.25.25h10.5a.25.25 0 0 0 .25-.25v-8.5a.25.25 0 0 0-.25-.25Zm10.5-1.5a1.75 1.75 0 0 1 1.75 1.75v8.5A1.75 1.75 0 0 1 13.25 14H2.75A1.75 1.75 0 0 1 1 12.25v-8.5A1.75 1.75 0 0 1 2.75 2Zm-9.5 5h3.75a.75.75 0 0 1 0 1.5H3.75a.75.75 0 0 1 0-1.5ZM3 9.75a.75.75 0 0 1 .75-.75h6.5a.75.75 0 0 1 0 1.5h-6.5a.75.75 0 0 1-.75-.75Z"/>
           </svg>
         </button>
         <div class="headerSeparator"></div>
         <button id="copyBtn" class="headerButton" title="Copy Code">
-          <svg class="buttonIcon" viewBox="0 0 16 16" fill="currentColor">
+          <svg class="buttonIcon" viewBox="0 0 16 16" fill="currentColor" width="14" height="14">
             <path d="M0 6.75C0 5.784.784 5 1.75 5h1.5a.75.75 0 0 1 0 1.5h-1.5a.25.25 0 0 0-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 0 0 .25-.25v-1.5a.75.75 0 0 1 1.5 0v1.5A1.75 1.75 0 0 1 9.25 16h-7.5A1.75 1.75 0 0 1 0 14.25ZM5 1.75C5 .784 5.784 0 6.75 0h7.5C15.216 0 16 .784 16 1.75v7.5A1.75 1.75 0 0 1 14.25 11h-7.5A1.75 1.75 0 0 1 5 9.25Zm1.75-.25a.25.25 0 0 0-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 0 0 .25-.25v-7.5a.25.25 0 0 0-.25-.25Z"/>
           </svg>
         </button>
         <button id="downloadBtn" class="headerButton" title="Download File">
-          <svg class="buttonIcon" viewBox="0 0 16 16" fill="currentColor">
+          <svg class="buttonIcon" viewBox="0 0 16 16" fill="currentColor" width="14" height="14">
             <path d="M2.75 14A1.75 1.75 0 0 1 1 12.25v-2.5a.75.75 0 0 1 1.5 0v2.5c0 .138.112.25.25.25h10.5a.25.25 0 0 0 .25-.25v-2.5a.75.75 0 0 1 1.5 0v2.5A1.75 1.75 0 0 1 13.25 14Zm-1-6a.75.75 0 0 1 .75-.75h2.5a.75.75 0 0 1 0 1.5h-2.5A.75.75 0 0 1 1.75 8Z"/>
             <path d="M8 .75a.75.75 0 0 1 .75.75v6.19l1.72-1.72a.75.75 0 1 1 1.06 1.06l-3 3a.75.75 0 0 1-1.06 0l-3-3a.75.75 0 0 1 1.06-1.06l1.72 1.72V1.5A.75.75 0 0 1 8 .75Z"/>
           </svg>
         </button>
         <button id="uploadBtn" class="headerButton" title="Upload File">
-          <svg class="buttonIcon" viewBox="0 0 16 16" fill="currentColor">
+          <svg class="buttonIcon" viewBox="0 0 16 16" fill="currentColor" width="14" height="14">
             <path d="M2.75 14A1.75 1.75 0 0 1 1 12.25v-2.5a.75.75 0 0 1 1.5 0v2.5c0 .138.112.25.25.25h10.5a.25.25 0 0 0 .25-.25v-2.5a.75.75 0 0 1 1.5 0v2.5A1.75 1.75 0 0 1 13.25 14Z"/>
             <path d="M8.75 1.75V8.19l1.72-1.72a.75.75 0 1 1 1.06 1.06l-3 3a.75.75 0 0 1-1.06 0l-3-3a.75.75 0 0 1 1.06-1.06l1.72 1.72V1.75a.75.75 0 0 1 1.5 0Z" transform="rotate(180 8 5.5)"/>
           </svg>
@@ -301,56 +179,56 @@ class coderViewEdit {
       <div class="editorHeaderCenter"></div>
       <div class="editorHeaderRight">
         <button id="themeBtn" class="headerButton" title="Toggle Theme">
-          <svg id="themeIcon" class="buttonIcon" viewBox="0 0 16 16" fill="currentColor">
+          <svg id="themeIcon" class="buttonIcon" viewBox="0 0 16 16" fill="currentColor" width="14" height="14">
             <path d="M8 12a4 4 0 1 1 0-8 4 4 0 0 1 0 8Zm0-1.5a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5Zm5.657-8.157a.75.75 0 0 1 0 1.061l-1.061 1.06a.749.749 0 0 1-1.275-.326.749.749 0 0 1 .215-.734l1.06-1.06a.75.75 0 0 1 1.06 0Zm-9.193 9.193a.75.75 0 0 1 0 1.06l-1.06 1.061a.75.75 0 1 1-1.061-1.06l1.06-1.061a.75.75 0 0 1 1.061 0ZM8 0a.75.75 0 0 1 .75.75v1.5a.75.75 0 0 1-1.5 0V.75A.75.75 0 0 1 8 0ZM3 8a.75.75 0 0 1-.75.75H.75a.75.75 0 0 1 0-1.5h1.5A.75.75 0 0 1 3 8Zm13 0a.75.75 0 0 1-.75.75h-1.5a.75.75 0 0 1 0-1.5h1.5A.75.75 0 0 1 16 8Zm-8 5a.75.75 0 0 1 .75.75v1.5a.75.75 0 0 1-1.5 0v-1.5A.75.75 0 0 1 8 13Zm3.536-1.464a.75.75 0 0 1 1.06 0l1.061 1.06a.75.75 0 0 1-1.06 1.061l-1.061-1.06a.75.75 0 0 1 0-1.061Zm-9.193-9.193a.75.75 0 0 1 1.06 0l1.061 1.06a.75.75 0 0 1-1.06 1.061l-1.061-1.06a.75.75 0 0 1 0-1.061Z"/>
           </svg>
         </button>
         <div class="fontSizeControl">
           <button id="fontDecreaseBtn" class="fontBtn" title="Decrease Font Size">
-            <svg class="tinyIcon" viewBox="0 0 16 16" fill="currentColor">
+            <svg class="tinyIcon" viewBox="0 0 16 16" fill="currentColor" width="12" height="12">
               <path d="M2 7.75A.75.75 0 0 1 2.75 7h10a.75.75 0 0 1 0 1.5h-10A.75.75 0 0 1 2 7.75Z"/>
             </svg>
           </button>
           <span id="fontSizeLabel" class="fontSizeLabel">14px</span>
           <button id="fontIncreaseBtn" class="fontBtn" title="Increase Font Size">
-            <svg class="tinyIcon" viewBox="0 0 16 16" fill="currentColor">
+            <svg class="tinyIcon" viewBox="0 0 16 16" fill="currentColor" width="12" height="12">
               <path d="M7.75 2a.75.75 0 0 1 .75.75V7h4.25a.75.75 0 0 1 0 1.5H8.5v4.25a.75.75 0 0 1-1.5 0V8.5H2.75a.75.75 0 0 1 0-1.5H7V2.75A.75.75 0 0 1 7.75 2Z"/>
             </svg>
           </button>
         </div>
         <button id="fullscreenBtn" class="headerButton" title="Toggle Fullscreen">
-          <svg id="fullscreenIcon" class="buttonIcon" viewBox="0 0 16 16" fill="currentColor">
+          <svg id="fullscreenIcon" class="buttonIcon" viewBox="0 0 16 16" fill="currentColor" width="14" height="14">
             <path d="M1.75 10a.75.75 0 0 1 .75.75v2.5c0 .138.112.25.25.25h2.5a.75.75 0 0 1 0 1.5h-2.5A1.75 1.75 0 0 1 1 13.25v-2.5a.75.75 0 0 1 .75-.75Zm12.5 0a.75.75 0 0 1 .75.75v2.5A1.75 1.75 0 0 1 13.25 15h-2.5a.75.75 0 0 1 0-1.5h2.5a.25.25 0 0 0 .25-.25v-2.5a.75.75 0 0 1 .75-.75ZM2.75 1a1.75 1.75 0 0 0-1.75 1.75v2.5a.75.75 0 0 0 1.5 0v-2.5a.25.25 0 0 1 .25-.25h2.5a.75.75 0 0 0 0-1.5Zm8 0a.75.75 0 0 0 0 1.5h2.5a.25.25 0 0 1 .25.25v2.5a.75.75 0 0 0 1.5 0v-2.5A1.75 1.75 0 0 0 13.25 1Z"/>
           </svg>
         </button>
         <button id="moreOptionsBtn" class="headerButton" title="More Options">
-          <svg class="buttonIcon" viewBox="0 0 16 16" fill="currentColor">
+          <svg class="buttonIcon" viewBox="0 0 16 16" fill="currentColor" width="14" height="14">
             <path d="M8 9a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3ZM1.5 9a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3Zm13 0a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3Z"/>
           </svg>
         </button>
         <div id="moreOptionsDropdown" class="dropdown dropdownRight hide">
           <div class="dropdownContent">
             <button class="dropdownItem" id="formatBtn">
-              <svg class="dropdownIcon" viewBox="0 0 16 16" fill="currentColor">
+              <svg class="dropdownIcon" viewBox="0 0 16 16" fill="currentColor" width="14" height="14">
                 <path d="m11.28 3.22 4.25 4.25a.75.75 0 0 1 0 1.06l-4.25 4.25a.749.749 0 0 1-1.275-.326.749.749 0 0 1 .215-.734L13.94 8l-3.72-3.72a.749.749 0 0 1 .326-1.275.749.749 0 0 1 .734.215Zm-6.56 0a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042L2.06 8l3.72 3.72a.749.749 0 0 1-.326 1.275.749.749 0 0 1-.734-.215L.47 8.53a.75.75 0 0 1 0-1.06Z"/>
               </svg>
               Format Document
             </button>
             <button class="dropdownItem" id="foldAllBtn">
-              <svg class="dropdownIcon" viewBox="0 0 16 16" fill="currentColor">
+              <svg class="dropdownIcon" viewBox="0 0 16 16" fill="currentColor" width="14" height="14">
                 <path d="M10.896 2H8.75V.75a.75.75 0 0 0-1.5 0V2H5.104a.25.25 0 0 0-.177.427l2.896 2.896a.25.25 0 0 0 .354 0l2.896-2.896A.25.25 0 0 0 10.896 2ZM8.75 15.25a.75.75 0 0 1-1.5 0V14H5.104a.25.25 0 0 1-.177-.427l2.896-2.896a.25.25 0 0 1 .354 0l2.896 2.896a.25.25 0 0 1-.177.427H8.75ZM9.78 7.22a.75.75 0 0 1 0 1.06l-2.25 2.25a.75.75 0 0 1-1.06-1.06L8.19 7.75 6.47 6.03a.75.75 0 0 1 1.06-1.06l2.25 2.25Z"/>
               </svg>
               Fold All
             </button>
             <button class="dropdownItem" id="unfoldAllBtn">
-              <svg class="dropdownIcon" viewBox="0 0 16 16" fill="currentColor">
+              <svg class="dropdownIcon" viewBox="0 0 16 16" fill="currentColor" width="14" height="14">
                 <path d="M5.427 2.573a.25.25 0 0 1 .354 0l2.896 2.896a.25.25 0 0 1-.177.427H6.354v2.208a.75.75 0 0 1-1.5 0V5.896H2.75a.25.25 0 0 1-.177-.427l2.854-2.896Zm5.146 10.854a.25.25 0 0 1-.354 0l-2.896-2.896a.25.25 0 0 1 .177-.427h2.146V7.896a.75.75 0 0 1 1.5 0v2.208h2.104a.25.25 0 0 1 .177.427Z"/>
               </svg>
               Unfold All
             </button>
             <div class="dropdownDivider"></div>
             <button class="dropdownItem" id="showInvisiblesBtn">
-              <svg class="dropdownIcon" viewBox="0 0 16 16" fill="currentColor">
+              <svg class="dropdownIcon" viewBox="0 0 16 16" fill="currentColor" width="14" height="14">
                 <path d="M2.75 4.5a.25.25 0 0 0-.25.25v6.5c0 .138.112.25.25.25h10.5a.25.25 0 0 0 .25-.25v-6.5a.25.25 0 0 0-.25-.25Zm10.5-1.5a1.75 1.75 0 0 1 1.75 1.75v6.5A1.75 1.75 0 0 1 13.25 13H2.75A1.75 1.75 0 0 1 1 12.25v-6.5A1.75 1.75 0 0 1 2.75 3Z"/>
               </svg>
               Show Invisibles
@@ -375,17 +253,17 @@ class coderViewEdit {
           <div class="searchActions">
             <span id="searchMatches" class="searchCount">0/0</span>
             <button id="searchPrevBtn" class="searchNavBtn" title="Previous">
-              <svg class="tinyIcon" viewBox="0 0 16 16" fill="currentColor">
+              <svg class="tinyIcon" viewBox="0 0 16 16" fill="currentColor" width="12" height="12">
                 <path d="M11.78 9.78a.75.75 0 0 1-1.06 0L8 7.06 5.28 9.78a.75.75 0 0 1-1.06-1.06l3.25-3.25a.75.75 0 0 1 1.06 0l3.25 3.25a.75.75 0 0 1 0 1.06Z"/>
               </svg>
             </button>
             <button id="searchNextBtn" class="searchNavBtn" title="Next">
-              <svg class="tinyIcon" viewBox="0 0 16 16" fill="currentColor">
+              <svg class="tinyIcon" viewBox="0 0 16 16" fill="currentColor" width="12" height="12">
                 <path d="M4.22 6.22a.75.75 0 0 1 1.06 0L8 8.94l2.72-2.72a.75.75 0 1 1 1.06 1.06l-3.25 3.25a.75.75 0 0 1-1.06 0L4.22 7.28a.75.75 0 0 1 0-1.06Z"/>
               </svg>
             </button>
             <button id="closeSearchBtn" class="searchNavBtn" title="Close">
-              <svg class="tinyIcon" viewBox="0 0 16 16" fill="currentColor">
+              <svg class="tinyIcon" viewBox="0 0 16 16" fill="currentColor" width="12" height="12">
                 <path d="M3.72 3.72a.75.75 0 0 1 1.06 0L8 6.94l3.22-3.22a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042L9.06 8l3.22 3.22a.749.749 0 0 1-.326 1.275.749.749 0 0 1-.734-.215L8 9.06l-3.22 3.22a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042L6.94 8 3.72 4.78a.75.75 0 0 1 0-1.06Z"/>
               </svg>
             </button>
@@ -412,7 +290,7 @@ class coderViewEdit {
         </div>
         <div class="footerDivider"></div>
         <div class="footerItem">
-          <svg class="footerIcon" viewBox="0 0 16 16" fill="currentColor">
+          <svg class="footerIcon" viewBox="0 0 16 16" fill="currentColor" width="12" height="12">
             <path d="M1 3.5A1.5 1.5 0 0 1 2.5 2h11a1.5 1.5 0 0 1 1.5 1.5v6a1.5 1.5 0 0 1-1.5 1.5h-11A1.5 1.5 0 0 1 1 9.5Zm0 8a.75.75 0 0 1 .75-.75h12.5a.75.75 0 0 1 0 1.5H1.75A.75.75 0 0 1 1 11.5Z"/>
           </svg>
           <span id="fileSize" class="footerValue">0 B</span>
@@ -420,7 +298,7 @@ class coderViewEdit {
       </div>
       <div class="editorFooterCenter">
         <div id="statusIndicator" class="statusIndicator statusOk">
-          <svg class="statusIcon" viewBox="0 0 16 16" fill="currentColor">
+          <svg class="statusIcon" viewBox="0 0 16 16" fill="currentColor" width="14" height="14">
             <path d="M13.78 4.22a.75.75 0 0 1 0 1.06l-7.25 7.25a.75.75 0 0 1-1.06 0L2.22 9.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018L6 10.94l6.72-6.72a.75.75 0 0 1 1.06 0Z"/>
           </svg>
           <span>No Issues</span>
@@ -428,7 +306,7 @@ class coderViewEdit {
       </div>
       <div class="editorFooterRight">
         <div class="footerItem">
-          <svg class="footerIcon" viewBox="0 0 16 16" fill="currentColor">
+          <svg class="footerIcon" viewBox="0 0 16 16" fill="currentColor" width="12" height="12">
             <path d="M8 0a8 8 0 1 1 0 16A8 8 0 0 1 8 0ZM1.5 8a6.5 6.5 0 1 0 13 0 6.5 6.5 0 0 0-13 0Zm7-3.25v2.992l2.028.812a.75.75 0 0 1-.556 1.392l-2.5-1A.751.751 0 0 1 7 8.25v-3.5a.75.75 0 0 1 1.5 0Z"/>
           </svg>
           <span id="lastSaved" class="footerValue">Never</span>
@@ -438,7 +316,7 @@ class coderViewEdit {
         <span class="footerBadge">LF</span>
         <span class="footerBadge">Spaces:  2</span>
         <span id="languageBadge" class="footerBadge footerBadgeAccent">
-          <svg class="badgeIcon" viewBox="0 0 16 16" fill="currentColor">
+          <svg class="badgeIcon" viewBox="0 0 16 16" fill="currentColor" width="12" height="12">
             <path d="m11.28 3.22 4.25 4.25a.75.75 0 0 1 0 1.06l-4.25 4.25a.749.749 0 0 1-1.275-.326.749.749 0 0 1 .215-.734L13.94 8l-3.72-3.72a.749.749 0 0 1 .326-1.275.749.749 0 0 1 .734.215Zm-6.56 0a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042L2.06 8l3.72 3.72a.749.749 0 0 1-.326 1.275.749.749 0 0 1-.734-.215L.47 8.53a.75.75 0 0 1 0-1.06Z"/>
           </svg>
           JavaScript
@@ -743,7 +621,7 @@ class coderViewEdit {
     this.elements.languageLabel && (this.elements.languageLabel.textContent = lang.label);
     this.elements.languageBadge &&
       (this.elements.languageBadge.innerHTML = `
-      <svg class="badgeIcon" viewBox="0 0 16 16" fill="currentColor">
+      <svg class="badgeIcon" viewBox="0 0 16 16" fill="currentColor" width="12" height="12">
         <path d="m11.28 3.22 4.25 4.25a.75.75 0 0 1 0 1.06l-4.25 4.25a.749.749 0 0 1-1.275-.326.749.749 0 0 1 .215-.734L13.94 8l-3.72-3.72a.749.749 0 0 1 .326-1.275.749.749 0 0 1 .734.215Zm-6.56 0a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042L2.06 8l3.72 3.72a.749.749 0 0 1-.326 1.275.749.749 0 0 1-.734-.215L.47 8.53a.75.75 0 0 1 0-1.06Z"/>
       </svg>
       ${lang.label}
