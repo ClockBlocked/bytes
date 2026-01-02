@@ -9,6 +9,9 @@ class coderViewEdit {
     this.isInitialized = false;
     this.isFullscreen = false;
     this.elements = {};
+    this.boundEventHandlers = {};
+    this.currentSearchIndex = 0;
+    this.searchMatches = [];
     this.state = {
       fontSize: 12,
       wrapLines: true,
@@ -44,9 +47,6 @@ getTemplate() {
   <div class="coderHeader">
     <!-- Left: File Info and Actions -->
     <div class="coderHeaderLeft">
-      <div class="fileNameDisplay">
-        <input type="text" id="fileNameInput" class="fileNameInput" value="" readonly spellcheck="false" />
-      </div>
       <div class="actionButtons">
         <button id="editSaveBtn" class="actionButton" title="Edit">
           <svg id="editSaveIcon" class="icon" fill="currentColor" viewBox="0 0 16 16">
@@ -214,7 +214,7 @@ getTemplate() {
   cacheElements() {
     this.elements = {
       filePage: document.querySelector('.pages[data-page="file"]'),
-      fileNameInput: document.getElementById("fileNameInput"),
+      fileNameInput: document.querySelector('#fileName input') || document.getElementById("fileNameInput"),
       editSaveBtn: document.getElementById("editSaveBtn"),
       editSaveIcon: document.getElementById("editSaveIcon"),
       cancelBtn: document.getElementById("cancelBtn"),
@@ -246,7 +246,13 @@ getTemplate() {
       cancelEditBtn: document.getElementById("cancelEditBtn"),
       saveChangesBtn: document.getElementById("saveChangesBtn"),
       lastSavedIndicator: document.getElementById("lastSavedIndicator"),
-      loadingSpinner: document.getElementById("loadingSpinner")
+      loadingSpinner: document.getElementById("loadingSpinner"),
+      searchPanel: document.getElementById("searchPanel"),
+      searchInput: document.getElementById("searchInput"),
+      searchMatches: document.getElementById("searchMatches"),
+      searchNextBtn: document.getElementById("searchNextBtn"),
+      searchPrevBtn: document.getElementById("searchPrevBtn"),
+      closeSearchBtn: document.getElementById("closeSearchBtn")
     };
   }
 
@@ -955,153 +961,158 @@ getTemplate() {
     this.undoHistory = [];
     this.redoHistory = [];
   }
-  
-  
-  // Add to your class methods:
 
-openSearch() {
-  if (!this.codeMirror) {
-    return;
-  }
-  
-  // Show search panel
-  if (this.elements.searchPanel) {
-    this.elements.searchPanel.classList.remove("hide");
-  }
-  
-  // Focus search input
-  if (this.elements.searchInput) {
-    this.elements.searchInput.focus();
-    this.elements.searchInput.select();
-  }
-  
-  // Initialize search if CodeMirror has findPersistent
-  if (this.codeMirror.execCommand("findPersistent")) {
-    this.codeMirror.execCommand("findPersistent");
-  }
-  
-  // Setup search event listeners
-  this.setupSearchListeners();
-}
-
-setupSearchListeners() {
-  if (!this.elements.searchInput) return;
-  
-  // Debounced search handler
-  const handleSearch = () => {
-    const query = this.elements.searchInput.value;
-    if (!query) {
-      this.clearSearch();
-      return;
+  openSearch() {
+    if (!this.codeMirror) return;
+    
+    this.searchActive = true;
+    if (this.elements.searchPanel) {
+      this.elements.searchPanel.classList.remove("hide");
     }
     
-    // Use CodeMirror's search or implement custom search
-    if (typeof this.codeMirror.search !== 'undefined') {
-      this.codeMirror.search(query);
-    } else {
-      // Fallback search implementation
+    if (this.elements.searchInput) {
+      setTimeout(() => {
+        this.elements.searchInput.focus();
+        this.elements.searchInput.select();
+      }, 50);
+    }
+    
+    this.setupSearchListeners();
+  }
+
+  setupSearchListeners() {
+    if (!this.elements.searchInput) return;
+    
+    const handleSearch = () => {
+      const query = this.elements.searchInput.value;
+      if (!query) {
+        this.clearSearch();
+        return;
+      }
       this.performSearch(query);
+    };
+    
+    // Store handler for cleanup
+    this.boundEventHandlers.handleSearch = handleSearch;
+    this.boundEventHandlers.searchKeydown = (e) => {
+      if (e.key === 'Escape') {
+        e.preventDefault();
+        this.closeSearch();
+      } else if (e.key === 'Enter' && e.shiftKey) {
+        e.preventDefault();
+        this.findPrevious();
+      } else if (e.key === 'Enter') {
+        e.preventDefault();
+        this.findNext();
+      }
+    };
+    
+    this.elements.searchInput.addEventListener('input', this.boundEventHandlers.handleSearch);
+    this.elements.searchInput.addEventListener('keydown', this.boundEventHandlers.searchKeydown);
+    
+    if (this.elements.searchNextBtn) {
+      this.elements.searchNextBtn.addEventListener('click', () => this.findNext());
     }
-  };
-  
-  // Remove existing listeners
-  this.elements.searchInput.removeEventListener('input', handleSearch);
-  this.elements.searchInput.removeEventListener('keydown', this.boundEventHandlers.searchKeydown);
-  
-  // Add new listeners
-  this.boundEventHandlers.searchKeydown = (e) => {
-    if (e.key === 'Escape') {
-      this.closeSearch();
-    } else if (e.key === 'Enter' && e.shiftKey) {
-      this.findPrevious();
-    } else if (e.key === 'Enter') {
-      this.findNext();
+    if (this.elements.searchPrevBtn) {
+      this.elements.searchPrevBtn.addEventListener('click', () => this.findPrevious());
     }
-  };
-  
-  this.elements.searchInput.addEventListener('input', handleSearch);
-  this.elements.searchInput.addEventListener('keydown', this.boundEventHandlers.searchKeydown);
-  
-  // Search button listeners
-  if (this.elements.searchNextBtn) {
-    this.elements.searchNextBtn.onclick = () => this.findNext();
-  }
-  if (this.elements.searchPrevBtn) {
-    this.elements.searchPrevBtn.onclick = () => this.findPrevious();
-  }
-  if (this.elements.closeSearchBtn) {
-    this.elements.closeSearchBtn.onclick = () => this.closeSearch();
-  }
-}
-
-closeSearch() {
-  if (this.elements.searchPanel) {
-    this.elements.searchPanel.classList.add("hide");
-  }
-  this.clearSearch();
-  if (this.codeMirror) {
-    this.codeMirror.focus();
-  }
-}
-
-clearSearch() {
-  if (this.elements.searchInput) {
-    this.elements.searchInput.value = "";
-  }
-  if (this.elements.searchMatches) {
-    this.elements.searchMatches.textContent = "0/0";
-  }
-  // Clear any search highlights
-  if (this.codeMirror && typeof this.codeMirror.clearSearch === 'function') {
-    this.codeMirror.clearSearch();
-  }
-}
-
-findNext() {
-  if (!this.codeMirror) return;
-  
-  const query = this.elements.searchInput?.value;
-  if (!query) return;
-  
-  // Use CodeMirror's searchNext or implement custom
-  if (typeof this.codeMirror.searchNext === 'function') {
-    this.codeMirror.searchNext();
-  }
-}
-
-findPrevious() {
-  if (!this.codeMirror) return;
-  
-  const query = this.elements.searchInput?.value;
-  if (!query) return;
-  
-  if (typeof this.codeMirror.searchPrev === 'function') {
-    this.codeMirror.searchPrev();
-  }
-}
-
-performSearch(query) {
-  // Basic search implementation
-  if (!this.codeMirror || !query) return;
-  
-  const content = this.codeMirror.getValue();
-  const lines = content.split('\n');
-  let matches = [];
-  
-  lines.forEach((line, index) => {
-    let pos = -1;
-    while ((pos = line.indexOf(query, pos + 1)) !== -1) {
-      matches.push({
-        line: index,
-        ch: pos,
-        length: query.length
-      });
+    if (this.elements.closeSearchBtn) {
+      this.elements.closeSearchBtn.addEventListener('click', () => this.closeSearch());
     }
-  });
-  
-  // Update match count
-  if (this.elements.searchMatches) {
-    this.elements.searchMatches.textContent = `0/${matches.length}`;
+  }
+
+  closeSearch() {
+    this.searchActive = false;
+    if (this.elements.searchPanel) {
+      this.elements.searchPanel.classList.add("hide");
+    }
+    this.clearSearch();
+    if (this.codeMirror) {
+      this.codeMirror.focus();
+    }
+  }
+
+  clearSearch() {
+    if (this.elements.searchInput) {
+      this.elements.searchInput.value = "";
+    }
+    if (this.elements.searchMatches) {
+      this.elements.searchMatches.textContent = "0/0";
+    }
+    this.searchMatches = [];
+    this.currentSearchIndex = 0;
+    
+    // Clear highlights
+    if (this.codeMirror) {
+      this.codeMirror.clearSearch?.();
+    }
+  }
+
+  performSearch(query) {
+    if (!this.codeMirror || !query) return;
+    
+    const content = this.codeMirror.getValue();
+    const lines = content.split('\n');
+    this.searchMatches = [];
+    
+    lines.forEach((line, lineIndex) => {
+      let pos = 0;
+      while ((pos = line.indexOf(query, pos)) !== -1) {
+        this.searchMatches.push({
+          line: lineIndex,
+          ch: pos,
+          length: query.length
+        });
+        pos += 1;
+      }
+    });
+    
+    this.currentSearchIndex = 0;
+    
+    // Update match display
+    if (this.elements.searchMatches) {
+      if (this.searchMatches.length > 0) {
+        this.elements.searchMatches.textContent = `1/${this.searchMatches.length}`;
+        this.highlightMatch(0);
+      } else {
+        this.elements.searchMatches.textContent = `0/0`;
+      }
+    }
+  }
+
+  highlightMatch(index) {
+    if (!this.codeMirror || index < 0 || index >= this.searchMatches.length) return;
+    
+    const match = this.searchMatches[index];
+    this.codeMirror.setSelection(
+      { line: match.line, ch: match.ch },
+      { line: match.line, ch: match.ch + match.length }
+    );
+    
+    // Center the match in view
+    this.codeMirror.scrollIntoView(
+      { line: match.line, ch: match.ch },
+      200
+    );
+    
+    // Update display
+    if (this.elements.searchMatches) {
+      this.elements.searchMatches.textContent = `${index + 1}/${this.searchMatches.length}`;
+    }
+  }
+
+  findNext() {
+    if (this.searchMatches.length === 0) return;
+    
+    this.currentSearchIndex = (this.currentSearchIndex + 1) % this.searchMatches.length;
+    this.highlightMatch(this.currentSearchIndex);
+  }
+
+  findPrevious() {
+    if (this.searchMatches.length === 0) return;
+    
+    this.currentSearchIndex = (this.currentSearchIndex - 1 + this.searchMatches.length) % this.searchMatches.length;
+    this.highlightMatch(this.currentSearchIndex);
   }
 }
 }
