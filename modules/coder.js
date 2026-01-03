@@ -885,46 +885,6 @@ class coderViewEdit {
 
 
 
-  showCommitPopup(e) {
-    if (!this.elements.commitDropdown) return;
-
-      document.body.appendChild(this.elements.commitDropdown);    
-
-        this.calculateDropdownPosition();
-        this.elements.commitDropdown.classList.remove("hide");
-        this.elements.commitDropdown.style.display = "block";
-
-
-   
-    if (this.elements.popoverTitle) {
-        this.elements.popoverTitle.textContent = "Add Commit & Save";
-      }
-    
-
-   
-    if (this.elements.popoverSubtitle) {
-        this.elements.popoverSubtitle.textContent = "Enter a commit message before saving";
-      }
-
-
-
-    if (this.elements.commitMessage) {
-        this.elements.commitMessage.value = `Update ${this.currentFile}`;
-            setTimeout(() =>
-              this.elements.commitMessage?.focus(), 10);
-        }
-    }
-
-  hideCommitPopup() {
-    if (!this.elements.commitDropdown) return;
-    
-    this.elements.commitDropdown.classList.add("hide");
-    this.elements.commitDropdown.style.display = "none";
-    
-    if (this.elements.commitMessage) {
-      this.elements.commitMessage.value = "";
-    }
-  }
 
 
 
