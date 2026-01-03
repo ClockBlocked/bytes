@@ -372,16 +372,32 @@ class coderViewEdit {
       fileUploadInput: document.getElementById("fileUploadInput"),
       editSaveButton: document.getElementById("editSaveButton"),
       editSaveLabel: document.getElementById("editSaveLabel"),
+
+
+
+/**
+ *  Save File
+ *   PopOver
+ */
+      commitDropdown: document.getElementById("commitDropdown"),
+
       popoverTitle: document.getElementById("popoverTitle"),
       popoverSubtitle: document.getElementById("popoverSubtitle"),
+
       commitMessage: document.getElementById("commitMessage"),
+
       commitCancelBtn: document.getElementById("commitCancelBtn"),
       commitSaveBtn: document.getElementById("commitSaveBtn"),
-      commitDropdown: document.getElementById("commitDropdown"),
+
     };
+
     this.populateLanguageDropdown();
   }
 
+
+/**
+ *  Change Language
+ */
   populateLanguageDropdown() {
     if (!this.elements.languageList) return;
     this.elements.languageList.innerHTML = "";
@@ -394,6 +410,11 @@ class coderViewEdit {
       this.elements.languageList.appendChild(btn);
     });
   }
+  
+  
+  
+  
+  
 
   // =============================================
   // SETUP METHODS
