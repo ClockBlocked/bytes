@@ -535,13 +535,18 @@ class coderViewEdit {
     });
   }
 
+
+
+
+
   calculateDropdownPosition() {
     if (!this.elements.editSaveButton || !this.elements.commitDropdown) return;
     
     const buttonRect = this.elements.editSaveButton.getBoundingClientRect();
     const dropdown = this.elements.commitDropdown;
     
-    dropdown.style.position = "fixed";
+    dropdown.style.position = 'absolute';
+    dropdown.style.pointerEvents = 'auto';
     dropdown.style.left = `${buttonRect.left}px`;
     dropdown.style.top = `${buttonRect.bottom + 8}px`;
     dropdown.style.zIndex = "10000";
