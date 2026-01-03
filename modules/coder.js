@@ -459,7 +459,7 @@ class coderViewEdit {
         this.saveChanges(true);
       }
     });
-    
+
     document.addEventListener("click", (e) => {
       if (!this.elements.editSaveButton?.contains(e.target)) {
         this.hideCommitPopup();
@@ -467,7 +467,7 @@ class coderViewEdit {
       this.elements.languageDropdown?.classList.add("hide");
       this.elements.moreOptionsDropdown?.classList.add("hide");
     });
-    
+
     document.addEventListener("keydown", (e) => {
       const ctrl = e.ctrlKey || e.metaKey;
       if (ctrl && e.key === "s" && this.isEditing) {
@@ -502,7 +502,7 @@ class coderViewEdit {
         this.toggleFullscreen();
       }
     });
-    
+
     window.addEventListener("beforeunload", (e) => {
       if (this.isEditing && this.codeMirror && this.codeMirror.getValue() !== this.originalContent) {
         e.preventDefault();
@@ -520,12 +520,12 @@ class coderViewEdit {
   }
 
   showCommitPopup() {
-    const dropdown = this.elements.editSaveButton?.parentElement?.querySelector('.dropdown-menu');
+    const dropdown = this.elements.editSaveButton?.parentElement?.querySelector(".dropdown-menu");
     if (!dropdown) return;
-    
+
     dropdown.classList.remove("hide");
     dropdown.style.display = "block";
-    
+
     if (this.elements.popoverTitle) {
       this.elements.popoverTitle.textContent = "Add Commit & Save";
     }
@@ -539,12 +539,12 @@ class coderViewEdit {
   }
 
   hideCommitPopup() {
-    const dropdown = this.elements.editSaveButton?.parentElement?.querySelector('.dropdown-menu');
+    const dropdown = this.elements.editSaveButton?.parentElement?.querySelector(".dropdown-menu");
     if (!dropdown) return;
-    
+
     dropdown.classList.add("hide");
     dropdown.style.display = "none";
-    
+
     if (this.elements.commitMessage) {
       this.elements.commitMessage.value = "";
     }
@@ -759,7 +759,7 @@ class coderViewEdit {
 
   saveChanges(withCommit = false) {
     if (!this.currentFile || !this.fileData) return;
-    
+
     if (withCommit) {
       const commitMessage = this.elements.commitMessage?.value.trim();
       if (!commitMessage) {
