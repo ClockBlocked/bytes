@@ -547,6 +547,15 @@ document.addEventListener("click", (e) => {
         e.returnValue = "";
       }
     });
+    
+    
+    
+// Add resize handler to reposition dropdown on window resize:
+window.addEventListener("resize", () => {
+  if (this.elements.commitDropdown && !this.elements.commitDropdown.classList.contains("hide")) {
+    this.calculateDropdownPosition();
+  }
+});
   }
   handleEditSaveClick() {
     if (!this.isEditing) {
@@ -606,12 +615,6 @@ hideCommitPopup() {
 }
 
 
-// Add resize handler to reposition dropdown on window resize:
-window.addEventListener("resize", () => {
-  if (this.elements.commitDropdown && !this.elements.commitDropdown.classList.contains("hide")) {
-    this.calculateDropdownPosition();
-  }
-});
 
 
 /**
