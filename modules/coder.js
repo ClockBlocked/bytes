@@ -49,6 +49,10 @@ class coderViewEdit {
     this.currentLanguage = "javascript";
   }
 
+  // =============================================
+  // INITIALIZATION METHODS
+  // =============================================
+  
   init() {
     if (this.isInitialized) return;
     const filePage = document.querySelector('.pages[data-page="file"]');
@@ -91,7 +95,7 @@ class coderViewEdit {
         </div>
       </div>
     </div>
-  <div class="toolbarRight">
+    <div class="toolbarRight">
       <div class="dropdown-trigger">
         <button id="editSaveButton" class="trigger-button" aria-haspopup="true" aria-expanded="false">
           <span id="editSaveLabel">Edit</span>
@@ -106,7 +110,6 @@ class coderViewEdit {
     </div>
   </div>
   
-  <!-- Dropdown Menu placed outside of constrained containers -->
   <div id="commitDropdown" class="dropdown-menu hide" role="menu">
     <div class="dropdown-header">
       <svg class="header-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512" width="32" height="32">
@@ -134,9 +137,7 @@ class coderViewEdit {
         <button id="commitSaveBtn" class="btn btn-primary">Save Changes</button>
       </div>
     </div>
-  
-  
-  
+  </div>
   
   <div class="editorCard">
     <div class="editorHeader">
@@ -341,8 +342,7 @@ class coderViewEdit {
     </div>
   </div>
   <input type="file" id="fileUploadInput" class="hide" accept=".js,.jsx,.ts,.tsx,.py,.html,.css,.json,.md,.txt,.yml,.yaml,.xml,.sql,.sh,.rb,.go,.rs,.java,.cpp,.c,.h,.cs,.php,.swift" />
-</div>
-    `;
+</div>`;
   }
 
   cacheElements() {
@@ -401,7 +401,6 @@ class coderViewEdit {
       commitMessage: document.getElementById("commitMessage"),
       commitCancelBtn: document.getElementById("commitCancelBtn"),
       commitSaveBtn: document.getElementById("commitSaveBtn"),
-      
       commitDropdown: document.getElementById("commitDropdown"),
     };
     this.populateLanguageDropdown();
@@ -420,9 +419,10 @@ class coderViewEdit {
     });
   }
 
+  // =============================================
+  // SETUP METHODS
+  // =============================================
 
-//////////////////////////////////////////////////
-////////////////////////////  S E T U P //////////
   bindEvents() {
     this.elements.editModeBtn?.addEventListener("click", () => this.enterEditMode());
     this.elements.viewModeBtn?.addEventListener("click", () => this.exitEditMode());
@@ -460,16 +460,14 @@ class coderViewEdit {
       this.elements.moreOptionsDropdown?.classList.toggle("hide");
     });
 
-
-//    this.elements.editSaveButton?.addEventListener("click", () => this.handleEditSaveClick());
-this.elements.editSaveButton?.addEventListener("click", (e) => {
-    e.stopPropagation();
-    if (!this.isEditing) {
-      this.enterEditMode();
-    } else {
-      this.showCommitPopup(e);
-    }
-  });
+    this.elements.editSaveButton?.addEventListener("click", (e) => {
+      e.stopPropagation();
+      if (!this.isEditing) {
+        this.enterEditMode();
+      } else {
+        this.showCommitPopup(e);
+      }
+    });
 
     this.elements.commitCancelBtn?.addEventListener("click", () => this.hideCommitPopup());
     this.elements.commitSaveBtn?.addEventListener("click", () => this.saveChanges(true));
@@ -480,31 +478,16 @@ this.elements.editSaveButton?.addEventListener("click", (e) => {
       }
     });
 
-
-
-/**
- * 
- *    document.addEventListener("click", (e) => {
-      if (!this.elements.editSaveButton?.contains(e.target)) {
+    document.addEventListener("click", (e) => {
+      if (this.elements.editSaveButton && 
+          !this.elements.editSaveButton.contains(e.target) &&
+          this.elements.commitDropdown &&
+          !this.elements.commitDropdown.contains(e.target)) {
         this.hideCommitPopup();
       }
       this.elements.languageDropdown?.classList.add("hide");
       this.elements.moreOptionsDropdown?.classList.add("hide");
     });
- **/   
-    
-// Update document click handler to close dropdown when clicking outside:
-document.addEventListener("click", (e) => {
-  if (this.elements.editSaveButton && 
-      !this.elements.editSaveButton.contains(e.target) &&
-      this.elements.commitDropdown &&
-      !this.elements.commitDropdown.contains(e.target)) {
-    this.hideCommitPopup();
-  }
-  this.elements.languageDropdown?.classList.add("hide");
-  this.elements.moreOptionsDropdown?.classList.add("hide");
-});
-    
 
     document.addEventListener("keydown", (e) => {
       const ctrl = e.ctrlKey || e.metaKey;
@@ -547,107 +530,26 @@ document.addEventListener("click", (e) => {
         e.returnValue = "";
       }
     });
+
+    window.addEventListener("resize", () => {
+      if (this.elements.commitDropdown && !this.elements.commitDropdown.classList.contains("hide")) {
+        this.calculateDropdownPosition();
+      }
+    });
+  }
+
+  calculateDropdownPosition() {
+    if (!this.elements.editSaveButton || !this.elements.commitDropdown) return;
     
+    const buttonRect = this.elements.editSaveButton.getBoundingClientRect();
+    const dropdown = this.elements.commitDropdown;
     
-    
-// Add resize handler to reposition dropdown on window resize:
-window.addEventListener("resize", () => {
-  if (this.elements.commitDropdown && !this.elements.commitDropdown.classList.contains("hide")) {
-    this.calculateDropdownPosition();
-  }
-});
-  }
-  handleEditSaveClick() {
-    if (!this.isEditing) {
-      this.enterEditMode();
-    } else {
-      this.showCommitPopup();
-    }
+    dropdown.style.position = "fixed";
+    dropdown.style.left = `${buttonRect.left}px`;
+    dropdown.style.top = `${buttonRect.bottom + 8}px`;
+    dropdown.style.zIndex = "10000";
   }
 
-
-
-// New position calculation method:
-calculateDropdownPosition() {
-  if (!this.elements.editSaveButton || !this.elements.commitDropdown) return;
-  
-  const buttonRect = this.elements.editSaveButton.getBoundingClientRect();
-  const dropdown = this.elements.commitDropdown;
-  
-  // Position dropdown below the button
-  dropdown.style.position = "fixed";
-  dropdown.style.left = `${buttonRect.left}px`;
-  dropdown.style.top = `${buttonRect.bottom + 8}px`;
-  dropdown.style.zIndex = "10000";
-}
-
-// Updated showCommitPopup method:
-showCommitPopup(e) {
-  if (!this.elements.commitDropdown) return;
-  
-  this.calculateDropdownPosition();
-  
-  this.elements.commitDropdown.classList.remove("hide");
-  this.elements.commitDropdown.style.display = "block";
-  
-  if (this.elements.popoverTitle) {
-    this.elements.popoverTitle.textContent = "Add Commit & Save";
-  }
-  if (this.elements.popoverSubtitle) {
-    this.elements.popoverSubtitle.textContent = "Enter a commit message before saving";
-  }
-  if (this.elements.commitMessage) {
-    this.elements.commitMessage.value = `Update ${this.currentFile}`;
-    setTimeout(() => this.elements.commitMessage?.focus(), 10);
-  }
-}
-
-// Updated hideCommitPopup method:
-hideCommitPopup() {
-  if (!this.elements.commitDropdown) return;
-  
-  this.elements.commitDropdown.classList.add("hide");
-  this.elements.commitDropdown.style.display = "none";
-  
-  if (this.elements.commitMessage) {
-    this.elements.commitMessage.value = "";
-  }
-}
-
-
-
-
-/**
-  showCommitPopup() {
-    const dropdown = this.elements.editSaveButton?.parentElement?.querySelector(".dropdown-menu");
-    if (!dropdown) return;
-
-    dropdown.classList.remove("hide");
-    dropdown.style.display = "block";
-
-    if (this.elements.popoverTitle) {
-      this.elements.popoverTitle.textContent = "Add Commit & Save";
-    }
-    if (this.elements.popoverSubtitle) {
-      this.elements.popoverSubtitle.textContent = "Enter a commit message before saving";
-    }
-    if (this.elements.commitMessage) {
-      this.elements.commitMessage.value = `Update ${this.currentFile}`;
-      setTimeout(() => this.elements.commitMessage?.focus(), 10);
-    }
-  }
-  hideCommitPopup() {
-    const dropdown = this.elements.editSaveButton?.parentElement?.querySelector(".dropdown-menu");
-    if (!dropdown) return;
-
-    dropdown.classList.add("hide");
-    dropdown.style.display = "none";
-
-    if (this.elements.commitMessage) {
-      this.elements.commitMessage.value = "";
-    }
-  }
-**/
   setupCodeMirror() {
     if (typeof CodeMirror === "undefined") {
       setTimeout(() => this.setupCodeMirror(), 100);
@@ -721,14 +623,11 @@ hideCommitPopup() {
       }, 30000);
     }
   }
-  setCodeMirrorFontSize(size) {
-    if (!this.codeMirror) return;
-    this.codeMirror.getWrapperElement().style.fontSize = `${size}px`;
-    this.state.fontSize = size;
-    this.elements.fontSizeLabel && (this.elements.fontSizeLabel.textContent = `${size}px`);
-    localStorage.setItem("editor_fontsize", size);
-    this.codeMirror.refresh();
-  }
+
+  // =============================================
+  // LANGUAGE & FILE METHODS
+  // =============================================
+
   setLanguage(langValue) {
     const lang = this.languages.find((l) => l.value === langValue);
     if (!lang) return;
@@ -744,6 +643,7 @@ hideCommitPopup() {
     this.elements.languageDropdown?.classList.add("hide");
     this.setCodeMirrorMode(langValue);
   }
+
   setCodeMirrorMode(langValue) {
     if (!this.codeMirror) return;
     const modes = {
@@ -781,13 +681,22 @@ hideCommitPopup() {
     return "javascript";
   }
 
+  // =============================================
+  // DISPLAY & VISIBILITY METHODS
+  // =============================================
+
   show() {
     this.elements.filePage?.classList.remove("hide");
     setTimeout(() => this.codeMirror?.refresh(), 50);
   }
+
   hide() {
     this.elements.filePage?.classList.add("hide");
   }
+
+  // =============================================
+  // EDIT MODE METHODS
+  // =============================================
 
   enterEditMode() {
     if (!this.currentFile) return;
@@ -800,6 +709,7 @@ hideCommitPopup() {
       this.codeMirror.focus();
     }
   }
+
   exitEditMode() {
     this.isEditing = false;
     this.elements.editModeBtn?.classList.remove("active");
@@ -811,6 +721,9 @@ hideCommitPopup() {
     this.hideCommitPopup();
   }
 
+  // =============================================
+  // FILE OPERATIONS
+  // =============================================
 
   displayFile(filename, fileData) {
     if (!this.isInitialized) this.init();
@@ -841,8 +754,6 @@ hideCommitPopup() {
     this.show();
     setTimeout(() => this.codeMirror?.refresh(), 200);
   }
-
-
 
   autoSave() {
     if (!this.currentFile || !this.fileData || !this.isEditing) return;
@@ -887,10 +798,10 @@ hideCommitPopup() {
     }, 300);
   }
 
-  
-  
-//////////////////////////////////////////////////
-////////////////////////////  Actions  ///////////
+  // =============================================
+  // ACTIONS METHODS
+  // =============================================
+
   cancelEdit() {
     if (!this.codeMirror) return;
     if (this.codeMirror.getValue() !== this.originalContent && !confirm("Discard unsaved changes?")) return;
@@ -899,6 +810,7 @@ hideCommitPopup() {
     this.exitEditMode();
     this.updateModifiedBadge();
   }
+
   saveChanges(withCommit = false) {
     if (!this.currentFile || !this.fileData) return;
 
@@ -914,6 +826,7 @@ hideCommitPopup() {
       this.performSave("Saved changes");
     }
   }
+
   copyCode() {
     if (!this.codeMirror) return;
     const content = this.codeMirror.getSelection() || this.codeMirror.getValue();
@@ -926,6 +839,7 @@ hideCommitPopup() {
         if (typeof showErrorMessage === "function") showErrorMessage("Failed to copy");
       });
   }
+
   downloadFile() {
     if (!this.currentFile) return;
     const content = this.codeMirror ? this.codeMirror.getValue() : "";
@@ -963,22 +877,70 @@ hideCommitPopup() {
     e.target.value = "";
   }
 
+  // =============================================
+  // COMMIT POPUP METHODS
+  // =============================================
+
+  showCommitPopup(e) {
+    if (!this.elements.commitDropdown) return;
+    
+    this.calculateDropdownPosition();
+    
+    this.elements.commitDropdown.classList.remove("hide");
+    this.elements.commitDropdown.style.display = "block";
+    
+    if (this.elements.popoverTitle) {
+      this.elements.popoverTitle.textContent = "Add Commit & Save";
+    }
+    if (this.elements.popoverSubtitle) {
+      this.elements.popoverSubtitle.textContent = "Enter a commit message before saving";
+    }
+    if (this.elements.commitMessage) {
+      this.elements.commitMessage.value = `Update ${this.currentFile}`;
+      setTimeout(() => this.elements.commitMessage?.focus(), 10);
+    }
+  }
+
+  hideCommitPopup() {
+    if (!this.elements.commitDropdown) return;
+    
+    this.elements.commitDropdown.classList.add("hide");
+    this.elements.commitDropdown.style.display = "none";
+    
+    if (this.elements.commitMessage) {
+      this.elements.commitMessage.value = "";
+    }
+  }
+
+  // =============================================
+  // EDITOR CONFIGURATION METHODS
+  // =============================================
+
+  setCodeMirrorFontSize(size) {
+    if (!this.codeMirror) return;
+    this.codeMirror.getWrapperElement().style.fontSize = `${size}px`;
+    this.state.fontSize = size;
+    this.elements.fontSizeLabel && (this.elements.fontSizeLabel.textContent = `${size}px`);
+    localStorage.setItem("editor_fontsize", size);
+    this.codeMirror.refresh();
+  }
 
   adjustFontSize(change) {
     const newSize = Math.max(10, Math.min(24, this.state.fontSize + change));
     if (newSize !== this.state.fontSize) this.setCodeMirrorFontSize(newSize);
   }
-  
-  
-  
-//////////////////////////////////////////////////
-////////////////////////////  Updates ////////////
+
+  // =============================================
+  // UPDATE METHODS
+  // =============================================
+
   updateThemeIcon(isDark) {
     if (!this.elements.themeIcon) return;
     this.elements.themeIcon.innerHTML = isDark
       ? '<path d="M9.598 1.591a.749.749 0 0 1 .785-.175 7.001 7.001 0 1 1-8.967 8.967.75.75 0 0 1 .961-.96 5.5 5.5 0 0 0 7.046-7.046.75.75 0 0 1 .175-.786Z"/>'
       : '<path d="M8 12a4 4 0 1 1 0-8 4 4 0 0 1 0 8Zm0-1.5a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5Zm5.657-8.157a.75.75 0 0 1 0 1.061l-1.061 1.06a.749.749 0 0 1-1.275-.326.749.749 0 0 1 .215-.734l1.06-1.06a.75.75 0 0 1 1.06 0Zm-9.193 9.193a.75.75 0 0 1 0 1.06l-1.06 1.061a.75.75 0 1 1-1.061-1.06l1.06-1.061a.75.75 0 0 1 1.061 0ZM8 0a.75.75 0 0 1 .75.75v1.5a.75.75 0 0 1-1.5 0V.75A.75.75 0 0 1 8 0ZM3 8a.75.75 0 0 1-.75.75H.75a.75.75 0 0 1 0-1.5h1.5A.75.75 0 0 1 3 8Zm13 0a.75.75 0 0 1-.75.75h-1.5a.75.75 0 0 1 0-1.5h1.5A.75.75 0 0 1 16 8Zm-8 5a.75.75 0 0 1 .75.75v1.5a.75.75 0 0 1-1.5 0v-1.5A.75.75 0 0 1 8 13Zm3.536-1.464a.75.75 0 0 1 1.06 0l1.061 1.06a.75.75 0 0 1-1.06 1.061l-1.061-1.06a.75.75 0 0 1 0-1.061Zm-9.193-9.193a.75.75 0 0 1 1.06 0l1.061 1.06a.75.75 0 0 1-1.06 1.061l-1.061-1.06a.75.75 0 0 1 0-1.061Z"/>';
   }
+
   updateStats() {
     if (!this.codeMirror) return;
     const content = this.codeMirror.getValue();
@@ -995,17 +957,20 @@ hideCommitPopup() {
     this.elements.charCount && (this.elements.charCount.textContent = chars.toLocaleString());
     this.elements.fileSize && (this.elements.fileSize.textContent = sizeStr);
   }
+
   updateCursorPosition() {
     if (!this.codeMirror) return;
     const cursor = this.codeMirror.getCursor();
     this.elements.cursorLine && (this.elements.cursorLine.textContent = cursor.line + 1);
     this.elements.cursorCol && (this.elements.cursorCol.textContent = cursor.ch + 1);
   }
+
   updateModifiedBadge() {
     if (!this.codeMirror) return;
     const isModified = this.codeMirror.getValue() !== this.originalContent;
     this.elements.modifiedBadge?.classList.toggle("hide", !isModified);
   }
+
   updateLastSaved(saved) {
     if (!this.elements.lastSaved) return;
     if (saved) {
@@ -1018,10 +983,10 @@ hideCommitPopup() {
     }
   }
 
+  // =============================================
+  // SEARCH METHODS
+  // =============================================
 
-
-//////////////////////////////////////////////////
-////////////////////////////  Find & Replace /////
   openSearch() {
     if (!this.codeMirror) return;
     this.searchActive = true;
@@ -1031,12 +996,14 @@ hideCommitPopup() {
       this.elements.searchInput?.select();
     }, 50);
   }
+
   closeSearch() {
     this.searchActive = false;
     this.elements.searchPanel?.classList.add("hide");
     this.clearSearch();
     this.codeMirror?.focus();
   }
+
   clearSearch() {
     if (this.elements.searchInput) this.elements.searchInput.value = "";
     if (this.elements.searchMatches) this.elements.searchMatches.textContent = "0/0";
@@ -1088,12 +1055,16 @@ hideCommitPopup() {
     this.currentSearchIndex = (this.currentSearchIndex + 1) % this.searchMatches.length;
     this.highlightMatch(this.currentSearchIndex);
   }
+
   findPrevious() {
     if (this.searchMatches.length === 0) return;
     this.currentSearchIndex = (this.currentSearchIndex - 1 + this.searchMatches.length) % this.searchMatches.length;
     this.highlightMatch(this.currentSearchIndex);
   }
 
+  // =============================================
+  // TOGGLE METHODS
+  // =============================================
 
   toggleWrapLines() {
     if (!this.codeMirror) return;
@@ -1102,6 +1073,7 @@ hideCommitPopup() {
     localStorage.setItem("editor_wrapLines", this.state.wrapLines);
     this.elements.wrapBtn?.classList.toggle("active", this.state.wrapLines);
   }
+
   toggleInvisibles() {
     if (!this.codeMirror) return;
     this.state.showInvisibles = !this.state.showInvisibles;
@@ -1109,6 +1081,7 @@ hideCommitPopup() {
     this.elements.showInvisiblesBtn?.classList.toggle("active", this.state.showInvisibles);
     this.elements.moreOptionsDropdown?.classList.add("hide");
   }
+
   toggleTheme() {
     const html = document.documentElement;
     const isDark = html.getAttribute("data-theme") === "dark";
@@ -1118,6 +1091,7 @@ hideCommitPopup() {
     this.updateThemeIcon(!isDark);
     this.codeMirror?.setOption("theme", isDark ? "default" : "one-dark");
   }
+
   toggleFullscreen() {
     if (!this.elements.editorBody) return;
     this.isFullscreen = !this.isFullscreen;
@@ -1138,6 +1112,10 @@ hideCommitPopup() {
     setTimeout(() => this.codeMirror?.refresh(), 100);
   }
 
+  // =============================================
+  // EDITOR ACTIONS
+  // =============================================
+
   foldAll() {
     if (!this.codeMirror) return;
     this.codeMirror.operation(() => {
@@ -1147,6 +1125,7 @@ hideCommitPopup() {
     });
     this.elements.moreOptionsDropdown?.classList.add("hide");
   }
+
   unfoldAll() {
     if (!this.codeMirror) return;
     this.codeMirror.operation(() => {
@@ -1186,14 +1165,20 @@ hideCommitPopup() {
     if (!this.codeMirror) return;
     this.codeMirror.undo();
   }
+
   redo() {
     if (!this.codeMirror) return;
     this.codeMirror.redo();
   }
 
+  // =============================================
+  // UTILITY METHODS
+  // =============================================
+
   getValue() {
     return this.codeMirror ? this.codeMirror.getValue() : "";
   }
+
   setValue(content) {
     if (this.codeMirror) {
       this.codeMirror.setValue(content);
@@ -1206,6 +1191,7 @@ hideCommitPopup() {
       this.elements.loadingSpinner.setAttribute("data-active", "true");
     }
   }
+
   hideLoadingSpinner() {
     if (this.elements.loadingSpinner) {
       this.elements.loadingSpinner.setAttribute("data-active", "false");
