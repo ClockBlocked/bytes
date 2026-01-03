@@ -614,7 +614,7 @@ window.addEventListener("resize", () => {
 });
 
 
-
+/**
   showCommitPopup() {
     const dropdown = this.elements.editSaveButton?.parentElement?.querySelector(".dropdown-menu");
     if (!dropdown) return;
@@ -644,7 +644,7 @@ window.addEventListener("resize", () => {
       this.elements.commitMessage.value = "";
     }
   }
-
+**/
   setupCodeMirror() {
     if (typeof CodeMirror === "undefined") {
       setTimeout(() => this.setupCodeMirror(), 100);
