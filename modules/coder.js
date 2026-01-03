@@ -91,7 +91,7 @@ class coderViewEdit {
         </div>
       </div>
     </div>
-    <div class="toolbarRight">
+  <div class="toolbarRight">
       <div class="dropdown-trigger">
         <button id="editSaveButton" class="trigger-button" aria-haspopup="true" aria-expanded="false">
           <span id="editSaveLabel">Edit</span>
@@ -102,38 +102,42 @@ class coderViewEdit {
             </svg>
           </span>
         </button>
-        
-        <div class="dropdown-menu" role="menu">
-          <div class="dropdown-header">
-            <svg class="header-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512" width="32" height="32">
-              <path fill="currentColor" d="M64 48l112 0 0 88c0 39.8 32.2 72 72 72l88 0 0 240c0 8.8-7.2 16-16 16L64 464c-8.8 0-16-7.2-16-16L48 64c0-8.8 7.2-16 16-16zM224 67.9l92.1 92.1-68.1 0c-13.3 0-24-10.7-24-24l0-68.1zM64 0C28.7 0 0 28.7 0 64L0 448c0 35.3 28.7 64 64 64l256 0c35.3 0 64-28.7 64-64l0-261.5c0-17-6.7-33.3-18.7-45.3L242.7 18.7C230.7 6.7 214.5 0 197.5 0L64 0zm56 256c-13.3 0-24 10.7-24 24s10.7 24 24 24l144 0c13.3 0 24-10.7 24-24s-10.7-24-24-24l-144 0zm0 96c-13.3 0-24 10.7-24 24s10.7 24 24 24l144 0c13.3 0 24-10.7 24-24s-10.7-24-24-24l-144 0z"/>
-            </svg>
-            <div class="save-info">
-              <h4 class="save-title" id="popoverTitle">Add Commit & Save</h4>
-              <p class="save-subtitle" id="popoverSubtitle">Enter a commit message before saving</p>
-            </div>
-          </div>
-          
-          <div class="commit-form">
-            <div class="commit-input-group">
-              <label for="commitMessage" class="commit-label">Commit Message</label>
-              <textarea 
-                id="commitMessage" 
-                class="commit-textarea" 
-                placeholder="Describe what you changed..."
-                rows="3"
-              ></textarea>
-            </div>
-            
-            <div class="form-actions">
-              <button id="commitCancelBtn" class="btn btn-secondary">Cancel</button>
-              <button id="commitSaveBtn" class="btn btn-primary">Save Changes</button>
-            </div>
-          </div>
-        </div>
       </div>
     </div>
   </div>
+  
+  <!-- Dropdown Menu placed outside of constrained containers -->
+  <div id="commitDropdown" class="dropdown-menu hide" role="menu">
+    <div class="dropdown-header">
+      <svg class="header-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512" width="32" height="32">
+        <path fill="currentColor" d="M64 48l112 0 0 88c0 39.8 32.2 72 72 72l88 0 0 240c0 8.8-7.2 16-16 16L64 464c-8.8 0-16-7.2-16-16L48 64c0-8.8 7.2-16 16-16zM224 67.9l92.1 92.1-68.1 0c-13.3 0-24-10.7-24-24l0-68.1zM64 0C28.7 0 0 28.7 0 64L0 448c0 35.3 28.7 64 64 64l256 0c35.3 0 64-28.7 64-64l0-261.5c0-17-6.7-33.3-18.7-45.3L242.7 18.7C230.7 6.7 214.5 0 197.5 0L64 0zm56 256c-13.3 0-24 10.7-24 24s10.7 24 24 24l144 0c13.3 0 24-10.7 24-24s-10.7-24-24-24l-144 0zm0 96c-13.3 0-24 10.7-24 24s10.7 24 24 24l144 0c13.3 0 24-10.7 24-24s-10.7-24-24-24l-144 0z"/>
+      </svg>
+      <div class="save-info">
+        <h4 class="save-title" id="popoverTitle">Add Commit & Save</h4>
+        <p class="save-subtitle" id="popoverSubtitle">Enter a commit message before saving</p>
+      </div>
+    </div>
+    
+    <div class="commit-form">
+      <div class="commit-input-group">
+        <label for="commitMessage" class="commit-label">Commit Message</label>
+        <textarea 
+          id="commitMessage" 
+          class="commit-textarea" 
+          placeholder="Describe what you changed..."
+          rows="3"
+        ></textarea>
+      </div>
+      
+      <div class="form-actions">
+        <button id="commitCancelBtn" class="btn btn-secondary">Cancel</button>
+        <button id="commitSaveBtn" class="btn btn-primary">Save Changes</button>
+      </div>
+    </div>
+  
+  
+  
+  
   <div class="editorCard">
     <div class="editorHeader">
       <div class="editorHeaderLeft">
@@ -397,6 +401,8 @@ class coderViewEdit {
       commitMessage: document.getElementById("commitMessage"),
       commitCancelBtn: document.getElementById("commitCancelBtn"),
       commitSaveBtn: document.getElementById("commitSaveBtn"),
+      
+      commitDropdown: document.getElementById("commitDropdown"),
     };
     this.populateLanguageDropdown();
   }
@@ -453,7 +459,18 @@ class coderViewEdit {
       e.stopPropagation();
       this.elements.moreOptionsDropdown?.classList.toggle("hide");
     });
-    this.elements.editSaveButton?.addEventListener("click", () => this.handleEditSaveClick());
+
+
+//    this.elements.editSaveButton?.addEventListener("click", () => this.handleEditSaveClick());
+this.elements.editSaveButton?.addEventListener("click", (e) => {
+    e.stopPropagation();
+    if (!this.isEditing) {
+      this.enterEditMode();
+    } else {
+      this.showCommitPopup(e);
+    }
+  });
+
     this.elements.commitCancelBtn?.addEventListener("click", () => this.hideCommitPopup());
     this.elements.commitSaveBtn?.addEventListener("click", () => this.saveChanges(true));
     this.elements.commitMessage?.addEventListener("keydown", (e) => {
@@ -463,13 +480,31 @@ class coderViewEdit {
       }
     });
 
-    document.addEventListener("click", (e) => {
+
+
+/**
+ * 
+ *    document.addEventListener("click", (e) => {
       if (!this.elements.editSaveButton?.contains(e.target)) {
         this.hideCommitPopup();
       }
       this.elements.languageDropdown?.classList.add("hide");
       this.elements.moreOptionsDropdown?.classList.add("hide");
     });
+ **/   
+    
+// Update document click handler to close dropdown when clicking outside:
+document.addEventListener("click", (e) => {
+  if (this.elements.editSaveButton && 
+      !this.elements.editSaveButton.contains(e.target) &&
+      this.elements.commitDropdown &&
+      !this.elements.commitDropdown.contains(e.target)) {
+    this.hideCommitPopup();
+  }
+  this.elements.languageDropdown?.classList.add("hide");
+  this.elements.moreOptionsDropdown?.classList.add("hide");
+});
+    
 
     document.addEventListener("keydown", (e) => {
       const ctrl = e.ctrlKey || e.metaKey;
@@ -520,6 +555,65 @@ class coderViewEdit {
       this.showCommitPopup();
     }
   }
+
+
+
+// New position calculation method:
+calculateDropdownPosition() {
+  if (!this.elements.editSaveButton || !this.elements.commitDropdown) return;
+  
+  const buttonRect = this.elements.editSaveButton.getBoundingClientRect();
+  const dropdown = this.elements.commitDropdown;
+  
+  // Position dropdown below the button
+  dropdown.style.position = "fixed";
+  dropdown.style.left = `${buttonRect.left}px`;
+  dropdown.style.top = `${buttonRect.bottom + 8}px`;
+  dropdown.style.zIndex = "10000";
+}
+
+// Updated showCommitPopup method:
+showCommitPopup(e) {
+  if (!this.elements.commitDropdown) return;
+  
+  this.calculateDropdownPosition();
+  
+  this.elements.commitDropdown.classList.remove("hide");
+  this.elements.commitDropdown.style.display = "block";
+  
+  if (this.elements.popoverTitle) {
+    this.elements.popoverTitle.textContent = "Add Commit & Save";
+  }
+  if (this.elements.popoverSubtitle) {
+    this.elements.popoverSubtitle.textContent = "Enter a commit message before saving";
+  }
+  if (this.elements.commitMessage) {
+    this.elements.commitMessage.value = `Update ${this.currentFile}`;
+    setTimeout(() => this.elements.commitMessage?.focus(), 10);
+  }
+}
+
+// Updated hideCommitPopup method:
+hideCommitPopup() {
+  if (!this.elements.commitDropdown) return;
+  
+  this.elements.commitDropdown.classList.add("hide");
+  this.elements.commitDropdown.style.display = "none";
+  
+  if (this.elements.commitMessage) {
+    this.elements.commitMessage.value = "";
+  }
+}
+
+
+// Add resize handler to reposition dropdown on window resize:
+window.addEventListener("resize", () => {
+  if (this.elements.commitDropdown && !this.elements.commitDropdown.classList.contains("hide")) {
+    this.calculateDropdownPosition();
+  }
+});
+
+
 
   showCommitPopup() {
     const dropdown = this.elements.editSaveButton?.parentElement?.querySelector(".dropdown-menu");
