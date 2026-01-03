@@ -414,6 +414,9 @@ class coderViewEdit {
     });
   }
 
+
+//////////////////////////////////////////////////
+////////////////////////////  S E T U P //////////
   bindEvents() {
     this.elements.editModeBtn?.addEventListener("click", () => this.enterEditMode());
     this.elements.viewModeBtn?.addEventListener("click", () => this.exitEditMode());
@@ -510,7 +513,6 @@ class coderViewEdit {
       }
     });
   }
-
   handleEditSaveClick() {
     if (!this.isEditing) {
       this.enterEditMode();
@@ -537,7 +539,6 @@ class coderViewEdit {
       setTimeout(() => this.elements.commitMessage?.focus(), 10);
     }
   }
-
   hideCommitPopup() {
     const dropdown = this.elements.editSaveButton?.parentElement?.querySelector(".dropdown-menu");
     if (!dropdown) return;
@@ -623,7 +624,6 @@ class coderViewEdit {
       }, 30000);
     }
   }
-
   setCodeMirrorFontSize(size) {
     if (!this.codeMirror) return;
     this.codeMirror.getWrapperElement().style.fontSize = `${size}px`;
@@ -632,7 +632,6 @@ class coderViewEdit {
     localStorage.setItem("editor_fontsize", size);
     this.codeMirror.refresh();
   }
-
   setLanguage(langValue) {
     const lang = this.languages.find((l) => l.value === langValue);
     if (!lang) return;
@@ -648,7 +647,6 @@ class coderViewEdit {
     this.elements.languageDropdown?.classList.add("hide");
     this.setCodeMirrorMode(langValue);
   }
-
   setCodeMirrorMode(langValue) {
     if (!this.codeMirror) return;
     const modes = {
@@ -690,7 +688,6 @@ class coderViewEdit {
     this.elements.filePage?.classList.remove("hide");
     setTimeout(() => this.codeMirror?.refresh(), 50);
   }
-
   hide() {
     this.elements.filePage?.classList.add("hide");
   }
@@ -706,7 +703,6 @@ class coderViewEdit {
       this.codeMirror.focus();
     }
   }
-
   exitEditMode() {
     this.isEditing = false;
     this.elements.editModeBtn?.classList.remove("active");
@@ -718,14 +714,6 @@ class coderViewEdit {
     this.hideCommitPopup();
   }
 
-  cancelEdit() {
-    if (!this.codeMirror) return;
-    if (this.codeMirror.getValue() !== this.originalContent && !confirm("Discard unsaved changes?")) return;
-    this.codeMirror.setValue(this.originalContent);
-    this.updateStats();
-    this.exitEditMode();
-    this.updateModifiedBadge();
-  }
 
   displayFile(filename, fileData) {
     if (!this.isInitialized) this.init();
@@ -757,20 +745,24 @@ class coderViewEdit {
     setTimeout(() => this.codeMirror?.refresh(), 200);
   }
 
-  saveChanges(withCommit = false) {
-    if (!this.currentFile || !this.fileData) return;
 
-    if (withCommit) {
-      const commitMessage = this.elements.commitMessage?.value.trim();
-      if (!commitMessage) {
-        if (typeof showErrorMessage === "function") showErrorMessage("Please enter a commit message");
-        return;
-      }
-      this.hideCommitPopup();
-      this.performSave(commitMessage);
-    } else {
-      this.performSave("Saved changes");
-    }
+
+  autoSave() {
+    if (!this.currentFile || !this.fileData || !this.isEditing) return;
+    const newContent = this.codeMirror ? this.codeMirror.getValue() : "";
+    if (newContent === this.originalContent) return;
+    try {
+      this.fileData.content = newContent;
+      this.fileData.lastModified = Date.now();
+      this.fileData.lastCommit = "Auto-save";
+      this.fileData.size = new Blob([newContent]).size;
+      const filePath = (window.currentState?.path ? window.currentState.path + "/" : "") + this.currentFile;
+      if (typeof LocalStorageManager !== "undefined")
+        LocalStorageManager.saveFile(window.currentState?.repository, filePath, this.fileData);
+      this.originalContent = newContent;
+      this.updateLastSaved(true);
+      this.updateModifiedBadge();
+    } catch (error) {}
   }
 
   performSave(commitMessage) {
@@ -798,24 +790,33 @@ class coderViewEdit {
     }, 300);
   }
 
-  autoSave() {
-    if (!this.currentFile || !this.fileData || !this.isEditing) return;
-    const newContent = this.codeMirror ? this.codeMirror.getValue() : "";
-    if (newContent === this.originalContent) return;
-    try {
-      this.fileData.content = newContent;
-      this.fileData.lastModified = Date.now();
-      this.fileData.lastCommit = "Auto-save";
-      this.fileData.size = new Blob([newContent]).size;
-      const filePath = (window.currentState?.path ? window.currentState.path + "/" : "") + this.currentFile;
-      if (typeof LocalStorageManager !== "undefined")
-        LocalStorageManager.saveFile(window.currentState?.repository, filePath, this.fileData);
-      this.originalContent = newContent;
-      this.updateLastSaved(true);
-      this.updateModifiedBadge();
-    } catch (error) {}
+  
+  
+//////////////////////////////////////////////////
+////////////////////////////  Actions  ///////////
+  cancelEdit() {
+    if (!this.codeMirror) return;
+    if (this.codeMirror.getValue() !== this.originalContent && !confirm("Discard unsaved changes?")) return;
+    this.codeMirror.setValue(this.originalContent);
+    this.updateStats();
+    this.exitEditMode();
+    this.updateModifiedBadge();
   }
+  saveChanges(withCommit = false) {
+    if (!this.currentFile || !this.fileData) return;
 
+    if (withCommit) {
+      const commitMessage = this.elements.commitMessage?.value.trim();
+      if (!commitMessage) {
+        if (typeof showErrorMessage === "function") showErrorMessage("Please enter a commit message");
+        return;
+      }
+      this.hideCommitPopup();
+      this.performSave(commitMessage);
+    } else {
+      this.performSave("Saved changes");
+    }
+  }
   copyCode() {
     if (!this.codeMirror) return;
     const content = this.codeMirror.getSelection() || this.codeMirror.getValue();
@@ -828,7 +829,6 @@ class coderViewEdit {
         if (typeof showErrorMessage === "function") showErrorMessage("Failed to copy");
       });
   }
-
   downloadFile() {
     if (!this.currentFile) return;
     const content = this.codeMirror ? this.codeMirror.getValue() : "";
@@ -866,44 +866,22 @@ class coderViewEdit {
     e.target.value = "";
   }
 
-  toggleWrapLines() {
-    if (!this.codeMirror) return;
-    this.state.wrapLines = !this.state.wrapLines;
-    this.codeMirror.setOption("lineWrapping", this.state.wrapLines);
-    localStorage.setItem("editor_wrapLines", this.state.wrapLines);
-    this.elements.wrapBtn?.classList.toggle("active", this.state.wrapLines);
-  }
-
-  toggleInvisibles() {
-    if (!this.codeMirror) return;
-    this.state.showInvisibles = !this.state.showInvisibles;
-    localStorage.setItem("editor_showInvisibles", this.state.showInvisibles);
-    this.elements.showInvisiblesBtn?.classList.toggle("active", this.state.showInvisibles);
-    this.elements.moreOptionsDropdown?.classList.add("hide");
-  }
 
   adjustFontSize(change) {
     const newSize = Math.max(10, Math.min(24, this.state.fontSize + change));
     if (newSize !== this.state.fontSize) this.setCodeMirrorFontSize(newSize);
   }
-
-  toggleTheme() {
-    const html = document.documentElement;
-    const isDark = html.getAttribute("data-theme") === "dark";
-    const newTheme = isDark ? "light" : "dark";
-    html.setAttribute("data-theme", newTheme);
-    localStorage.setItem("editor_theme", newTheme);
-    this.updateThemeIcon(!isDark);
-    this.codeMirror?.setOption("theme", isDark ? "default" : "one-dark");
-  }
-
+  
+  
+  
+//////////////////////////////////////////////////
+////////////////////////////  Updates ////////////
   updateThemeIcon(isDark) {
     if (!this.elements.themeIcon) return;
     this.elements.themeIcon.innerHTML = isDark
       ? '<path d="M9.598 1.591a.749.749 0 0 1 .785-.175 7.001 7.001 0 1 1-8.967 8.967.75.75 0 0 1 .961-.96 5.5 5.5 0 0 0 7.046-7.046.75.75 0 0 1 .175-.786Z"/>'
       : '<path d="M8 12a4 4 0 1 1 0-8 4 4 0 0 1 0 8Zm0-1.5a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5Zm5.657-8.157a.75.75 0 0 1 0 1.061l-1.061 1.06a.749.749 0 0 1-1.275-.326.749.749 0 0 1 .215-.734l1.06-1.06a.75.75 0 0 1 1.06 0Zm-9.193 9.193a.75.75 0 0 1 0 1.06l-1.06 1.061a.75.75 0 1 1-1.061-1.06l1.06-1.061a.75.75 0 0 1 1.061 0ZM8 0a.75.75 0 0 1 .75.75v1.5a.75.75 0 0 1-1.5 0V.75A.75.75 0 0 1 8 0ZM3 8a.75.75 0 0 1-.75.75H.75a.75.75 0 0 1 0-1.5h1.5A.75.75 0 0 1 3 8Zm13 0a.75.75 0 0 1-.75.75h-1.5a.75.75 0 0 1 0-1.5h1.5A.75.75 0 0 1 16 8Zm-8 5a.75.75 0 0 1 .75.75v1.5a.75.75 0 0 1-1.5 0v-1.5A.75.75 0 0 1 8 13Zm3.536-1.464a.75.75 0 0 1 1.06 0l1.061 1.06a.75.75 0 0 1-1.06 1.061l-1.061-1.06a.75.75 0 0 1 0-1.061Zm-9.193-9.193a.75.75 0 0 1 1.06 0l1.061 1.06a.75.75 0 0 1-1.06 1.061l-1.061-1.06a.75.75 0 0 1 0-1.061Z"/>';
   }
-
   updateStats() {
     if (!this.codeMirror) return;
     const content = this.codeMirror.getValue();
@@ -920,20 +898,17 @@ class coderViewEdit {
     this.elements.charCount && (this.elements.charCount.textContent = chars.toLocaleString());
     this.elements.fileSize && (this.elements.fileSize.textContent = sizeStr);
   }
-
   updateCursorPosition() {
     if (!this.codeMirror) return;
     const cursor = this.codeMirror.getCursor();
     this.elements.cursorLine && (this.elements.cursorLine.textContent = cursor.line + 1);
     this.elements.cursorCol && (this.elements.cursorCol.textContent = cursor.ch + 1);
   }
-
   updateModifiedBadge() {
     if (!this.codeMirror) return;
     const isModified = this.codeMirror.getValue() !== this.originalContent;
     this.elements.modifiedBadge?.classList.toggle("hide", !isModified);
   }
-
   updateLastSaved(saved) {
     if (!this.elements.lastSaved) return;
     if (saved) {
@@ -946,6 +921,10 @@ class coderViewEdit {
     }
   }
 
+
+
+//////////////////////////////////////////////////
+////////////////////////////  Find & Replace /////
   openSearch() {
     if (!this.codeMirror) return;
     this.searchActive = true;
@@ -955,14 +934,12 @@ class coderViewEdit {
       this.elements.searchInput?.select();
     }, 50);
   }
-
   closeSearch() {
     this.searchActive = false;
     this.elements.searchPanel?.classList.add("hide");
     this.clearSearch();
     this.codeMirror?.focus();
   }
-
   clearSearch() {
     if (this.elements.searchInput) this.elements.searchInput.value = "";
     if (this.elements.searchMatches) this.elements.searchMatches.textContent = "0/0";
@@ -1014,13 +991,36 @@ class coderViewEdit {
     this.currentSearchIndex = (this.currentSearchIndex + 1) % this.searchMatches.length;
     this.highlightMatch(this.currentSearchIndex);
   }
-
   findPrevious() {
     if (this.searchMatches.length === 0) return;
     this.currentSearchIndex = (this.currentSearchIndex - 1 + this.searchMatches.length) % this.searchMatches.length;
     this.highlightMatch(this.currentSearchIndex);
   }
 
+
+  toggleWrapLines() {
+    if (!this.codeMirror) return;
+    this.state.wrapLines = !this.state.wrapLines;
+    this.codeMirror.setOption("lineWrapping", this.state.wrapLines);
+    localStorage.setItem("editor_wrapLines", this.state.wrapLines);
+    this.elements.wrapBtn?.classList.toggle("active", this.state.wrapLines);
+  }
+  toggleInvisibles() {
+    if (!this.codeMirror) return;
+    this.state.showInvisibles = !this.state.showInvisibles;
+    localStorage.setItem("editor_showInvisibles", this.state.showInvisibles);
+    this.elements.showInvisiblesBtn?.classList.toggle("active", this.state.showInvisibles);
+    this.elements.moreOptionsDropdown?.classList.add("hide");
+  }
+  toggleTheme() {
+    const html = document.documentElement;
+    const isDark = html.getAttribute("data-theme") === "dark";
+    const newTheme = isDark ? "light" : "dark";
+    html.setAttribute("data-theme", newTheme);
+    localStorage.setItem("editor_theme", newTheme);
+    this.updateThemeIcon(!isDark);
+    this.codeMirror?.setOption("theme", isDark ? "default" : "one-dark");
+  }
   toggleFullscreen() {
     if (!this.elements.editorBody) return;
     this.isFullscreen = !this.isFullscreen;
@@ -1050,7 +1050,6 @@ class coderViewEdit {
     });
     this.elements.moreOptionsDropdown?.classList.add("hide");
   }
-
   unfoldAll() {
     if (!this.codeMirror) return;
     this.codeMirror.operation(() => {
@@ -1090,7 +1089,6 @@ class coderViewEdit {
     if (!this.codeMirror) return;
     this.codeMirror.undo();
   }
-
   redo() {
     if (!this.codeMirror) return;
     this.codeMirror.redo();
@@ -1099,7 +1097,6 @@ class coderViewEdit {
   getValue() {
     return this.codeMirror ? this.codeMirror.getValue() : "";
   }
-
   setValue(content) {
     if (this.codeMirror) {
       this.codeMirror.setValue(content);
@@ -1112,7 +1109,6 @@ class coderViewEdit {
       this.elements.loadingSpinner.setAttribute("data-active", "true");
     }
   }
-
   hideLoadingSpinner() {
     if (this.elements.loadingSpinner) {
       this.elements.loadingSpinner.setAttribute("data-active", "false");
