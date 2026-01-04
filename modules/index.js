@@ -1,6 +1,7 @@
 (function() {
     const SCRIPT_REGISTRY = new Map();
     const SCRIPT_MANIFEST = [
+        { id: "templates", url: "https://clockblocked.github.io/bytes/modules/templates.js", category: "Core", priority: 1, critical: true },
         { id: "dependencies", url: "https://clockblocked.github.io/bytes/modules/dependencies.js", category: "Primary", priority: 2, critical: true },
         { id: "api", url: "https://clockblocked.github.io/bytes/modules/api.js", category: "Service", priority: 3, critical: true },
         { id: "storage", url: "https://clockblocked.github.io/bytes/modules/storage.js", category: "Service", priority: 4, critical: true },
