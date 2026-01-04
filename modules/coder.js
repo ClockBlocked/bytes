@@ -48,27 +48,182 @@ class coderViewEdit {
     ];
     this.currentLanguage = "javascript";
     this.DROPDOWN_TEMPLATE = `
-      <div id="commitDropdown" class="dropdown-menu hide" role="menu" style="display: none; position: absolute; z-index: 10000; background-color: #ffffff; color: #333333; border: 1px solid #d1d5db; border-radius: 8px; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); width: 320px; padding: 16px; font-family: sans-serif;">
-        <div class="dropdown-header" style="display: flex; align-items: flex-start; gap: 12px; margin-bottom: 16px;">
-          <svg class="header-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512" width="32" height="32" style="color: #4b5563;">
-            <path fill="currentColor" d="M64 48l112 0 0 88c0 39.8 32.2 72 72 72l88 0 0 240c0 8.8-7.2 16-16 16L64 464c-8.8 0-16-7.2-16-16L48 64c0-8.8 7.2-16 16-16zM224 67.9l92.1 92.1-68.1 0c-13.3 0-24-10.7-24-24l0-68.1zM64 0C28.7 0 0 28.7 0 64L0 448c0 35.3 28.7 64 64 64l256 0c35.3 0 64-28.7 64-64l0-261.5c0-17-6.7-33.3-18.7-45.3L242.7 18.7C230.7 6.7 214.5 0 197.5 0L64 0zm56 256c-13.3 0-24 10.7-24 24s10.7 24 24 24l144 0c13.3 0 24-10.7 24-24s-10.7-24-24-24l-144 0zm0 96c-13.3 0-24 10.7-24 24s10.7 24 24 24l144 0c13.3 0 24-10.7 24-24s-10.7-24-24-24l-144 0z"/>
-          </svg>
-          <div class="save-info">
-            <h4 class="save-title" id="popoverTitle" style="margin: 0; font-size: 16px; font-weight: 600; color: #111827;">Add Commit & Save</h4>
-            <p class="save-subtitle" id="popoverSubtitle" style="margin: 4px 0 0 0; font-size: 13px; color: #6b7280; line-height: 1.4;">Enter a commit message before saving</p>
-          </div>
-        </div>
-        <div class="commit-form">
-          <div class="commit-input-group" style="margin-bottom: 16px;">
-            <label for="commitMessage" class="commit-label" style="display: block; font-size: 12px; font-weight: 500; color: #374151; margin-bottom: 4px;">Commit Message</label>
-            <textarea id="commitMessage" class="commit-textarea" placeholder="Describe what you changed..." rows="3" style="width: 100%; padding: 8px; border: 1px solid #d1d5db; border-radius: 4px; font-size: 14px; resize: vertical; box-sizing: border-box;"></textarea>
-          </div>
-          <div class="form-actions" style="display: flex; justify-content: flex-end; gap: 8px;">
-            <button id="commitCancelBtn" class="btn btn-secondary" style="padding: 6px 12px; border: 1px solid #d1d5db; background: #ffffff; border-radius: 4px; font-size: 14px; cursor: pointer;">Cancel</button>
-            <button id="commitSaveBtn" class="btn btn-primary" style="padding: 6px 12px; border: none; background: #2563eb; color: #ffffff; border-radius: 4px; font-size: 14px; cursor: pointer;">Save Changes</button>
-          </div>
-        </div>
-      </div>
+<style>
+  /* Base styles for the dropdown */
+  .dropdown-menu {
+    display: none;
+    position: absolute;
+    z-index: 10000;
+    background-color: #ffffff;
+    color: #333333;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+    width: 320px;
+    padding: 16px;
+    font-family: sans-serif;
+  }
+
+  .dropdown-menu.hide {
+    display: none;
+  }
+
+  /* Dropdown header styles */
+  .dropdown-header {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    margin-bottom: 16px;
+  }
+
+  .header-icon {
+    color: #4b5563;
+  }
+
+  .save-title {
+    margin: 0;
+    font-size: 16px;
+    font-weight: 600;
+    color: #111827;
+  }
+
+  .save-subtitle {
+    margin: 4px 0 0 0;
+    font-size: 13px;
+    color: #6b7280;
+    line-height: 1.4;
+  }
+
+  /* Form and input styles */
+  .commit-input-group {
+    margin-bottom: 16px;
+  }
+
+  .commit-label {
+    display: block;
+    font-size: 12px;
+    font-weight: 500;
+    color: #374151;
+    margin-bottom: 4px;
+  }
+
+  .commit-textarea {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #d1d5db;
+    border-radius: 4px;
+    font-size: 14px;
+    resize: vertical;
+    box-sizing: border-box;
+  }
+
+  .commit-textarea:focus {
+    outline: none;
+    border-color: #2563eb;
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+  }
+
+  /* Button styles */
+  .form-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+  }
+
+  .btn {
+    padding: 6px 12px;
+    border-radius: 4px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+
+  .btn-secondary {
+    border: 1px solid #d1d5db;
+    background: #ffffff;
+    color: #374151;
+  }
+
+  .btn-secondary:hover {
+    background: #f9fafb;
+  }
+
+  .btn-primary {
+    border: none;
+    background: #2563eb;
+    color: #ffffff;
+  }
+
+  .btn-primary:hover {
+    background: #1d4ed8;
+  }
+
+  /* Responsive adjustments */
+  @media (max-width: 480px) {
+    .dropdown-menu {
+      width: 280px;
+      padding: 12px;
+    }
+
+    .dropdown-header {
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+
+    .header-icon {
+      width: 28px;
+      height: 28px;
+    }
+  }
+
+  /* Animation for dropdown appearance */
+  @keyframes dropdownFadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(-8px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .dropdown-menu.show {
+    display: block;
+    animation: dropdownFadeIn 0.2s ease-out;
+  }
+</style>
+
+<div id="commitDropdown" class="dropdown-menu hide" role="menu">
+  <div class="dropdown-header">
+    <svg class="header-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512" width="32" height="32">
+      <path
+        fill="currentColor"
+        d="M64 48l112 0 0 88c0 39.8 32.2 72 72 72l88 0 0 240c0 8.8-7.2 16-16 16L64 464c-8.8 0-16-7.2-16-16L48 64c0-8.8 7.2-16 16-16zM224 67.9l92.1 92.1-68.1 0c-13.3 0-24-10.7-24-24l0-68.1zM64 0C28.7 0 0 28.7 0 64L0 448c0 35.3 28.7 64 64 64l256 0c35.3 0 64-28.7 64-64l0-261.5c0-17-6.7-33.3-18.7-45.3L242.7 18.7C230.7 6.7 214.5 0 197.5 0L64 0zm56 256c-13.3 0-24 10.7-24 24s10.7 24 24 24l144 0c13.3 0 24-10.7 24-24s-10.7-24-24-24l-144 0zm0 96c-13.3 0-24 10.7-24 24s10.7 24 24 24l144 0c13.3 0 24-10.7 24-24s-10.7-24-24-24l-144 0z"
+      />
+    </svg>
+    <div class="save-info">
+      <h4 class="save-title" id="popoverTitle">Add Commit & Save</h4>
+      <p class="save-subtitle" id="popoverSubtitle">Enter a commit message before saving</p>
+    </div>
+  </div>
+  <div class="commit-form">
+    <div class="commit-input-group">
+      <label for="commitMessage" class="commit-label">Commit Message</label>
+      <textarea
+        id="commitMessage"
+        class="commit-textarea"
+        placeholder="Describe what you changed..."
+        rows="3"
+      ></textarea>
+    </div>
+    <div class="form-actions">
+      <button id="commitCancelBtn" class="btn btn-secondary">Cancel</button>
+      <button id="commitSaveBtn" class="btn btn-primary">Save Changes</button>
+    </div>
+  </div>
+</div>
+
     `;
   }
 
