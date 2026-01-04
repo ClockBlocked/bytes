@@ -71,25 +71,25 @@ function hideDeleteFileModal() {
 function showSuccessMessage(message) {
   LoadingProgress.show();
   const notification = document.createElement('div');
-  notification.className = 'fixed top-4 right-4 bg-github-success-fg text-white px-4 py-3 rounded-lg shadow-lg z-50 animate-slide-down';
-  notification.innerHTML = `<div class="flex items-center space-x-2"><svg class="w-5 h-5" fill="currentColor" viewBox="0 0 16 16"><path d="M13.78 4.22a.75.75 0 0 1 0 1.06l-7.25 7.25a.75.75 0 0 1-1.06 0L2.22 9.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018L6 10.94l6.72-6.72a.75.75 0 0 1 1.06 0Z"/></svg><span>${message}</span></div>`;
-  document.body.appendChild(notification);
+  notification.innerHTML = window.templates.notifications.success(message);
+  const notificationElement = notification.firstElementChild;
+  document.body.appendChild(notificationElement);
   setTimeout(() => {
     LoadingProgress.hide();
-    notification.style.animation = 'fadeOut 0.3s ease-in';
-    setTimeout(() => notification.parentNode?.removeChild(notification), 300);
+    notificationElement.style.animation = 'fadeOut 0.3s ease-in';
+    setTimeout(() => notificationElement.parentNode?.removeChild(notificationElement), 300);
   }, 3000);
 }
 
 function showErrorMessage(message) {
   const notification = document.createElement('div');
-  notification.className = 'fixed top-4 right-4 bg-github-danger-fg text-white px-4 py-3 rounded-lg shadow-lg animate-slide-down';
-  notification.dataset.notify = 'error';
-  notification.innerHTML = `<div class="flex items-center space-x-2"><svg class="w-5 h-5" fill="currentColor" viewBox="0 0 16 16"><path d="M8 16A8 8 0 1 1 8 0a8 8 0 0 1 0 16ZM5.354 4.646a.5.5 0 1 0-.708.708L7.293 8l-2.647 2.646a.5.5 0 0 0 .708.708L8 8.707l2.646 2.647a.5.5 0 0 0 .708-.708L8.707 8l2.647-2.646a.5.5 0 0 0-.708-.708L8 7.293 5.354 4.646Z"/></svg><span>${message}</span></div>`;
-  document.body.appendChild(notification);
+  notification.innerHTML = window.templates.notifications.error(message);
+  const notificationElement = notification.firstElementChild;
+  notificationElement.dataset.notify = 'error';
+  document.body.appendChild(notificationElement);
   setTimeout(() => {
-    notification.style.animation = 'fadeOut 0.5s ease-in';
-    setTimeout(() => notification.parentNode?.removeChild(notification), 300);
+    notificationElement.style.animation = 'fadeOut 0.5s ease-in';
+    setTimeout(() => notificationElement.parentNode?.removeChild(notificationElement), 300);
   }, 5000);
 }
 /**

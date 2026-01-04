@@ -69,9 +69,9 @@ const PageRouter = {
         // Remove any existing loading bars
         document.querySelectorAll('.page-loading-bar').forEach(el => el.remove());
         
-        this.loadingBar = document.createElement('div');
-        this.loadingBar.className = 'page-loading-bar';
-        this.loadingBar.innerHTML = '<div class="bar-fill"></div>';
+        const temp = document.createElement('div');
+        temp.innerHTML = window.templates.router.loadingBar();
+        this.loadingBar = temp.firstElementChild;
         document.body.appendChild(this.loadingBar);
     },
 

@@ -12,14 +12,7 @@ import { LocalStorageManager } from 'https://gitdev.wuaze.com/modules/storage.js
 function updateSelectedTags() {
   const container = document.getElementById('selectedTags');
   if (!container) return;
-  container.innerHTML = currentState.selectedTags.map(tag => `
-    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-github-accent-emphasis/20 border border-github-accent-emphasis/30 text-github-accent-fg">
-      ${tag}
-      <button onclick="removeTag('${tag}')" class="ml-1.5 w-3.5 h-3.5 rounded-full hover:bg-github-accent-emphasis/30 flex items-center justify-center">
-        <svg class="w-2.5 h-2.5" fill="currentColor" viewBox="0 0 16 16"><path d="M3.72 3.72a.75.75 0 0 1 1.06 0L8 6.94l3.22-3.22a.749.749 0 0 1 1.275.326.749.749 0 0 1-.215.734L9.06 8l3.22 3.22a.749.749 0 0 1-.326 1.275.749.749 0 0 1-.734-.215L8 9.06l-3.22 3.22a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042L6.94 8 3.72 4.78a.75.75 0 0 1 0-1.06Z"/></svg>
-      </button>
-    </span>
-  `).join('');
+  container.innerHTML = currentState.selectedTags.map(tag => window.templates.pageUpdates.tag(tag)).join('');
 }
 
 
@@ -95,9 +88,7 @@ function updateBreadcrumb() {
   if (currentState.repository) {
     html += `
       <div class="navDivider" aria-hidden="true">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16">
-          <path d="M6.22 13.72a.75.75 0 0 0 1.06 0l4.25-4.25a.75.75 0 0 0 0-1.06L7.28 4.22a.751.751 0 0 0-1.042.018.751.751 0 0 0-.018 1.042L9.94 8l-3.72 3.72a.75.75 0 0 0 0 1.06Z"/>
-        </svg>
+        ${window.templates.icons.navDivider}
       </div>
       <span data-navigate="explorer" class="breadCrumb">
         ${currentState.repository}
@@ -113,18 +104,7 @@ function updateBreadcrumb() {
       currentPath += (currentPath ? '/' : '') + segment;
       const isLast = index === segments.length - 1;
       
-      html += `
-        <div class="navDivider" aria-hidden="true">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16">
-            <path d="M6.22 13.72a.75.75 0 0 0 1.06 0l4.25-4.25a.75.75 0 0 0 0-1.06L7.28 4.22a.751.751 0 0 0-1.042.018.751.751 0 0 0-.018 1.042L9.94 8l-3.72 3.72a.75.75 0 0 0 0 1.06Z"/>
-          </svg>
-        </div>
-        <span 
-           data-navigate-path="${currentPath}"
-           class="breadCrumb ${isLast ? 'current' : ''}">
-          ${segment}
-        </span>
-      `;
+      html += window.templates.pageUpdates.breadcrumbItem(segment, currentPath, isLast);
     });
   }
 
@@ -267,19 +247,7 @@ function renderFileList() {
   tbody.innerHTML = '';
   
   if (currentState.files.length === 0) {
-    tbody.innerHTML = `
-    <tr>
-      <td colspan="4" class="px-4 py-8 text-center text-github-fg-muted">
-        <svg class="w-8 h-8 mx-auto mb-2" fill="currentColor" viewBox="0 0 16 16">
-          <path d="M2 2.5A2.5 2.5 0 0 1 4.5 0h8.75a.75.75 0 0 1 .75.75v12.5a.75.75 0 0 1-.75.75h-2.5a.75.75 0 0 1 0-1.5h1.75v-2h-8a1 1 0 0 0-.714 1.7.75.75 0 1 1-1.072 1.05A2.495 2.495 0 0 1 2 11.5Zm10.5-1h-8a1 1 0 0 0-1 1v6.708A2.486 2.486 0 0 1 4.5 9h8ZM5 12.25a.25.25 0 0 1 .25-.25h3.5a.25.25 0 0 1 .25.25v3.25a.25.25 0 0 1-.4.2l-1.45-1.087a.249.249 0 0 0-.3 0L5.4 15.7a.25.25 0 0 1-.4-.2Z"/>
-        </svg>
-        <p>No files in this directory</p>
-        <button onclick="showCreateFileModal()" class="mt-2 text-github-accent-fg hover:underline text-sm">
-          Create your first file
-        </button>
-      </td>
-    </tr>
-    `;
+    tbody.innerHTML = window.templates.pageUpdates.emptyFileList();
     return;
   }
   
@@ -287,7 +255,7 @@ function renderFileList() {
     const row = document.createElement('tr');
     row.className = 'hover:bg-github-canvas-subtle cursor-pointer border-b border-github-border-default transition-colors group';
     
-    const fileIconSVG = getFileIcon(file.name, file.type);
+    const fileIconSVG = window.templates.getFileIcon(file.name, file.type);
     
     row.innerHTML = `
       <td class="py-3 px-4">
@@ -304,9 +272,7 @@ function renderFileList() {
           onclick="fileMenuManager.showFileMenu('${escapeHTML(file.name)}', event)"
           data-tooltip="More options"
         >
-          <svg class="w-4 h-4 text-github-fg-muted" fill="currentColor" viewBox="0 0 16 16">
-            <path d="M9.5 13a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0zm0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0zm0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0z"/>
-          </svg>
+          ${window.templates.icons.moreMenu}
         </button>
       </td>
     `;
@@ -391,9 +357,7 @@ function displayFileContent(filename, fileData) {
     
     if (fileTags) {
         if (fileData.tags && fileData.tags.length > 0) {
-            fileTags.innerHTML = fileData.tags.map(tag => 
-                `<span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-github-accent-emphasis/20 border border-github-accent-emphasis/30 text-github-accent-fg">${tag}</span>`
-            ).join('');
+            fileTags.innerHTML = fileData.tags.map(tag => window.templates.pageUpdates.fileTag(tag)).join('');
         } else {
             fileTags.innerHTML = '<span class="text-github-fg-muted text-sm">No tags</span>';
         }
@@ -414,24 +378,7 @@ function updateRecentFilesUI() {
         </div>
       `;
     } else {
-      recentFilesList.innerHTML = recentFiles.map(file => `
-        <button onclick="openRecentFile('${file.repoName}', '${file.filePath}', '${file.fileName}')" 
-                class="w-full flex items-center justify-between p-2 rounded hover:bg-github-canvas-subtle text-left group">
-          <div class="flex-1 min-w-0">
-            <div class="flex items-center space-x-2">
-              <svg class="w-3 h-3 text-github-fg-muted flex-shrink-0" fill="currentColor" viewBox="0 0 16 16">
-                <path d="M2 2a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V2zm10-1H4a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1z"/>
-              </svg>
-              <span class="text-sm text-github-fg-default truncate">${file.fileName}</span>
-            </div>
-            <div class="text-xs text-github-fg-muted truncate mt-1">${file.repoName}</div>
-          </div>
-          <svg class="w-4 h-4 text-github-fg-muted opacity-0 group-hover:opacity-100 transition-opacity" 
-               fill="currentColor" viewBox="0 0 16 16">
-            <path d="M4.22 11.78a.75.75 0 0 1 0-1.06L9.44 5.5H5.75a.75.75 0 0 1 0-1.5h5.5a.75.75 0 0 1 .75.75v5.5a.75.75 0 0 1-1.5 0V6.56l-5.22 5.22a.75.75 0 0 1-1.06 0Z"/>
-          </svg>
-        </button>
-      `).join('');
+      recentFilesList.innerHTML = recentFiles.map(file => window.templates.pageUpdates.recentFileItem(file)).join('');
     }
   }
   
@@ -443,24 +390,7 @@ function updateRecentFilesUI() {
         </div>
       `;
     } else {
-      topRecentFilesList.innerHTML = recentFiles.map(file => `
-        <button onclick="openRecentFile('${file.repoName}', '${file.filePath}', '${file.fileName}')" 
-                class="w-full flex items-center justify-between p-2 rounded hover:bg-github-canvas-subtle text-left group">
-          <div class="flex-1 min-w-0">
-            <div class="flex items-center space-x-2">
-              <svg class="w-3 h-3 text-github-fg-muted flex-shrink-0" fill="currentColor" viewBox="0 0 16 16">
-                <path d="M2 2a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V2zm10-1H4a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1z"/>
-              </svg>
-              <span class="text-sm text-github-fg-default truncate">${file.fileName}</span>
-            </div>
-            <div class="text-xs text-github-fg-muted truncate mt-1">${file.repoName}</div>
-          </div>
-          <svg class="w-4 h-4 text-github-fg-muted opacity-0 group-hover:opacity-100 transition-opacity" 
-               fill="currentColor" viewBox="0 0 16 16">
-            <path d="M4.22 11.78a.75.75 0 0 1 0-1.06L9.44 5.5H5.75a.75.75 0 0 1 0-1.5h5.5a.75.75 0 0 1 .75.75v5.5a.75.75 0 0 1-1.5 0V6.56l-5.22 5.22a.75.75 0 0 1-1.06 0Z"/>
-          </svg>
-        </button>
-      `).join('');
+      topRecentFilesList.innerHTML = recentFiles.map(file => window.templates.pageUpdates.recentFileItem(file)).join('');
     }
   }
   
