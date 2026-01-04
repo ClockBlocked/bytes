@@ -47,17 +47,37 @@ class coderViewEdit {
       { value: "swift", label: "Swift", ext: ["swift"] },
     ];
     this.currentLanguage = "javascript";
+    this.DROPDOWN_TEMPLATE = `
+      <div id="commitDropdown" class="dropdown-menu hide" role="menu" style="display: none; position: absolute; z-index: 10000; background-color: #ffffff; color: #333333; border: 1px solid #d1d5db; border-radius: 8px; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); width: 320px; padding: 16px; font-family: sans-serif;">
+        <div class="dropdown-header" style="display: flex; align-items: flex-start; gap: 12px; margin-bottom: 16px;">
+          <svg class="header-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512" width="32" height="32" style="color: #4b5563;">
+            <path fill="currentColor" d="M64 48l112 0 0 88c0 39.8 32.2 72 72 72l88 0 0 240c0 8.8-7.2 16-16 16L64 464c-8.8 0-16-7.2-16-16L48 64c0-8.8 7.2-16 16-16zM224 67.9l92.1 92.1-68.1 0c-13.3 0-24-10.7-24-24l0-68.1zM64 0C28.7 0 0 28.7 0 64L0 448c0 35.3 28.7 64 64 64l256 0c35.3 0 64-28.7 64-64l0-261.5c0-17-6.7-33.3-18.7-45.3L242.7 18.7C230.7 6.7 214.5 0 197.5 0L64 0zm56 256c-13.3 0-24 10.7-24 24s10.7 24 24 24l144 0c13.3 0 24-10.7 24-24s-10.7-24-24-24l-144 0zm0 96c-13.3 0-24 10.7-24 24s10.7 24 24 24l144 0c13.3 0 24-10.7 24-24s-10.7-24-24-24l-144 0z"/>
+          </svg>
+          <div class="save-info">
+            <h4 class="save-title" id="popoverTitle" style="margin: 0; font-size: 16px; font-weight: 600; color: #111827;">Add Commit & Save</h4>
+            <p class="save-subtitle" id="popoverSubtitle" style="margin: 4px 0 0 0; font-size: 13px; color: #6b7280; line-height: 1.4;">Enter a commit message before saving</p>
+          </div>
+        </div>
+        <div class="commit-form">
+          <div class="commit-input-group" style="margin-bottom: 16px;">
+            <label for="commitMessage" class="commit-label" style="display: block; font-size: 12px; font-weight: 500; color: #374151; margin-bottom: 4px;">Commit Message</label>
+            <textarea id="commitMessage" class="commit-textarea" placeholder="Describe what you changed..." rows="3" style="width: 100%; padding: 8px; border: 1px solid #d1d5db; border-radius: 4px; font-size: 14px; resize: vertical; box-sizing: border-box;"></textarea>
+          </div>
+          <div class="form-actions" style="display: flex; justify-content: flex-end; gap: 8px;">
+            <button id="commitCancelBtn" class="btn btn-secondary" style="padding: 6px 12px; border: 1px solid #d1d5db; background: #ffffff; border-radius: 4px; font-size: 14px; cursor: pointer;">Cancel</button>
+            <button id="commitSaveBtn" class="btn btn-primary" style="padding: 6px 12px; border: none; background: #2563eb; color: #ffffff; border-radius: 4px; font-size: 14px; cursor: pointer;">Save Changes</button>
+          </div>
+        </div>
+      </div>
+    `;
   }
 
-  // =============================================
-  // INITIALIZATION METHODS
-  // =============================================
-  
   init() {
     if (this.isInitialized) return;
     const filePage = document.querySelector('.pages[data-page="file"]');
     if (!filePage) return;
     filePage.innerHTML = this.getTemplate();
+    this.injectPopover();
     this.cacheElements();
     this.bindEvents();
     if (typeof CodeMirror !== "undefined") this.setupCodeMirror();
@@ -96,9 +116,6 @@ class coderViewEdit {
       </div>
     </div>
     <div class="toolbarRight">
-
-
-<!-- T R I G G E R -->
       <div class="dropdown-trigger">
         <button id="editSaveButton" class="trigger-button" aria-haspopup="true" aria-expanded="false">
           <span id="editSaveLabel">Edit</span>
@@ -112,8 +129,6 @@ class coderViewEdit {
       </div>
     </div>
   </div>
-<!-----  E N D  --  E N D  --  E N D  ----->
-
   
   <div class="editorCard">
     <div class="editorHeader">
@@ -125,7 +140,7 @@ class coderViewEdit {
         </button>
         <button id="viewModeBtn" class="headerButton" title="View Mode">
           <svg class="buttonIcon" viewBox="0 0 16 16" fill="currentColor" width="14" height="14">
-            <path d="M8 2c1.981 0 3.671.992 4.933 2.078 1.27 1.091 2.187 2.345 2.637 3.023a1.62 1.62 0 0 1 0 1.798c-.45.678-1.367 1.932-2.637 3.023C11.67 13.008 9.981 14 8 14c-1.981 0-3.671-.992-4.933-2.078C1.797 10.831.88 9.577.43 8.899a1.62 1.62 0 0 1 0-1.798c.45-.678 1.367-1.932 2.637-3.023C4.33 2.992 6.019 2 8 2ZM1.679 7.932a.12.12 0 0 0 0 .136c.411.622 1.241 1.75 2.366 2.717C5.176 11.758 6.527 12.5 8 12.5c1.473 0 2.825-.742 3.955-1.715 1.124-.967 1.954-2.096 2.366-2.717a.12.12 0 0 0 0-.136c-.412-.621-1.242-1.75-2.366-2.717C10.824 4.242 9.473 3.5 8 3.5c-1.473 0-2.824.742-3.955 1.715-1.124.967-1.954 2.096-2.366 2.717ZM8 10a2 2 0 1 1-.001-3.999A2 2 0 0 1 8 10Z"/>
+            <path d="M8 2c1.981 0 3.671.992 4.933 2.078 1.27 1.091 2.187 2.345 2.637 3.023a1.62 1.62 0 0 1 0 1.798c-.45.678-1.367 1.932-2.637 3.023C11.67 13.008 9.981 14 8 14c-1.981 0-3.671-.992-4.933-2.078C1.797 10.831.88 9.577.43 8.899a1.62 1.62 0 0 1 0-1.798c.45-.678-1.367-1.932-2.637-3.023C4.33 2.992 6.019 2 8 2ZM1.679 7.932a.12.12 0 0 0 0 .136c.411.622 1.241 1.75 2.366 2.717C5.176 11.758 6.527 12.5 8 12.5c1.473 0 2.825-.742 3.955-1.715 1.124-.967 1.954-2.096 2.366-2.717a.12.12 0 0 0 0-.136c-.412-.621-1.242-1.75-2.366-2.717C10.824 4.242 9.473 3.5 8 3.5c-1.473 0-2.824.742-3.955 1.715-1.124.967-1.954 2.096-2.366 2.717ZM8 10a2 2 0 1 1-.001-3.999A2 2 0 0 1 8 10Z"/>
           </svg>
         </button>
         <div class="headerSeparator"></div>
@@ -321,8 +336,17 @@ class coderViewEdit {
 </div>`;
   }
 
+  injectPopover() {
+    const temp = document.createElement('div');
+    temp.innerHTML = this.DROPDOWN_TEMPLATE;
+    const popover = temp.firstElementChild;
+    document.body.appendChild(popover);
+    this.elements.commitDropdown = popover;
+  }
+
   cacheElements() {
     this.elements = {
+      ...this.elements,
       filePage: document.querySelector('.pages[data-page="file"]'),
       fileNameDisplay: document.getElementById("fileNameDisplay"),
       modifiedBadge: document.getElementById("modifiedBadge"),
@@ -372,32 +396,15 @@ class coderViewEdit {
       fileUploadInput: document.getElementById("fileUploadInput"),
       editSaveButton: document.getElementById("editSaveButton"),
       editSaveLabel: document.getElementById("editSaveLabel"),
-
-
-
-/**
- *  Save File
- *   PopOver
- */
-      commitDropdown: document.getElementById("commitDropdown"),
-
-      popoverTitle: document.getElementById("popoverTitle"),
-      popoverSubtitle: document.getElementById("popoverSubtitle"),
-
-      commitMessage: document.getElementById("commitMessage"),
-
-      commitCancelBtn: document.getElementById("commitCancelBtn"),
-      commitSaveBtn: document.getElementById("commitSaveBtn"),
-
+      popoverTitle: this.elements.commitDropdown.querySelector("#popoverTitle"),
+      popoverSubtitle: this.elements.commitDropdown.querySelector("#popoverSubtitle"),
+      commitMessage: this.elements.commitDropdown.querySelector("#commitMessage"),
+      commitCancelBtn: this.elements.commitDropdown.querySelector("#commitCancelBtn"),
+      commitSaveBtn: this.elements.commitDropdown.querySelector("#commitSaveBtn"),
     };
-
     this.populateLanguageDropdown();
   }
 
-
-/**
- *  Change Language
- */
   populateLanguageDropdown() {
     if (!this.elements.languageList) return;
     this.elements.languageList.innerHTML = "";
@@ -410,15 +417,6 @@ class coderViewEdit {
       this.elements.languageList.appendChild(btn);
     });
   }
-  
-  
-  
-  
-  
-
-  // =============================================
-  // SETUP METHODS
-  // =============================================
 
   bindEvents() {
     this.elements.editModeBtn?.addEventListener("click", () => this.enterEditMode());
@@ -456,7 +454,6 @@ class coderViewEdit {
       e.stopPropagation();
       this.elements.moreOptionsDropdown?.classList.toggle("hide");
     });
-
     this.elements.editSaveButton?.addEventListener("click", (e) => {
       e.stopPropagation();
       if (!this.isEditing) {
@@ -465,34 +462,28 @@ class coderViewEdit {
         this.showCommitPopup(e);
       }
     });
-
     this.elements.commitCancelBtn?.addEventListener("click", () => this.hideCommitPopup());
     this.elements.commitSaveBtn?.addEventListener("click", () => this.saveChanges(true));
     this.elements.commitMessage?.addEventListener("keydown", (e) => {
-      if (e.key === "Enter" && e.ctrlKey) {
+      if (e.key === "Enter" && (e.ctrlKey || e.metaKey)) {
         e.preventDefault();
         this.saveChanges(true);
       }
     });
-
     document.addEventListener("click", (e) => {
-      if (this.elements.editSaveButton && 
-          !this.elements.editSaveButton.contains(e.target) &&
-          this.elements.commitDropdown &&
-          !this.elements.commitDropdown.contains(e.target)) {
+      if (this.elements.commitDropdown && 
+          !this.elements.commitDropdown.contains(e.target) && 
+          !this.elements.editSaveButton.contains(e.target)) {
         this.hideCommitPopup();
       }
       this.elements.languageDropdown?.classList.add("hide");
       this.elements.moreOptionsDropdown?.classList.add("hide");
     });
-
     document.addEventListener("keydown", (e) => {
       const ctrl = e.ctrlKey || e.metaKey;
       if (ctrl && e.key === "s" && this.isEditing) {
         e.preventDefault();
-        if (this.isEditing) {
-          this.showCommitPopup();
-        }
+        this.showCommitPopup();
       }
       if (e.key === "Escape") {
         if (this.searchActive) this.closeSearch();
@@ -503,31 +494,7 @@ class coderViewEdit {
         e.preventDefault();
         this.openSearch();
       }
-      if (ctrl && (e.key === "+" || e.key === "=")) {
-        e.preventDefault();
-        this.adjustFontSize(2);
-      }
-      if (ctrl && e.key === "-") {
-        e.preventDefault();
-        this.adjustFontSize(-2);
-      }
-      if (ctrl && e.key === "0") {
-        e.preventDefault();
-        this.setCodeMirrorFontSize(14);
-      }
-      if (e.key === "F11") {
-        e.preventDefault();
-        this.toggleFullscreen();
-      }
     });
-
-    window.addEventListener("beforeunload", (e) => {
-      if (this.isEditing && this.codeMirror && this.codeMirror.getValue() !== this.originalContent) {
-        e.preventDefault();
-        e.returnValue = "";
-      }
-    });
-
     window.addEventListener("resize", () => {
       if (this.elements.commitDropdown && !this.elements.commitDropdown.classList.contains("hide")) {
         this.calculateDropdownPosition();
@@ -535,21 +502,35 @@ class coderViewEdit {
     });
   }
 
+  showCommitPopup(e) {
+    if (!this.elements.commitDropdown) return;
+    this.elements.commitDropdown.style.display = "block";
+    this.elements.commitDropdown.classList.remove("hide");
+    this.calculateDropdownPosition();
+    if (this.elements.popoverTitle) this.elements.popoverTitle.textContent = "Add Commit & Save";
+    if (this.elements.popoverSubtitle) this.elements.popoverSubtitle.textContent = "Enter a commit message before saving";
+    if (this.elements.commitMessage) {
+      this.elements.commitMessage.value = `Update ${this.currentFile}`;
+      setTimeout(() => this.elements.commitMessage?.focus(), 50);
+    }
+  }
 
-
-
+  hideCommitPopup() {
+    if (!this.elements.commitDropdown) return;
+    this.elements.commitDropdown.style.display = "none";
+    this.elements.commitDropdown.classList.add("hide");
+    if (this.elements.commitMessage) this.elements.commitMessage.value = "";
+  }
 
   calculateDropdownPosition() {
     if (!this.elements.editSaveButton || !this.elements.commitDropdown) return;
-    
     const buttonRect = this.elements.editSaveButton.getBoundingClientRect();
     const dropdown = this.elements.commitDropdown;
-    
-    dropdown.style.position = 'absolute';
-    dropdown.style.pointerEvents = 'auto';
-    dropdown.style.left = `${buttonRect.left}px`;
-    dropdown.style.top = `${buttonRect.bottom + 8}px`;
-    dropdown.style.zIndex = "10000";
+    const top = buttonRect.bottom + window.scrollY + 8;
+    let left = buttonRect.right - dropdown.offsetWidth + window.scrollX;
+    if (left < 10) left = 10;
+    dropdown.style.top = `${top}px`;
+    dropdown.style.left = `${left}px`;
   }
 
   setupCodeMirror() {
@@ -560,8 +541,7 @@ class coderViewEdit {
     if (!this.elements.codeMirrorContainer || this.codeMirror) return;
     const fontSize = parseInt(localStorage.getItem("editor_fontsize")) || 14;
     const savedTheme = localStorage.getItem("editor_theme");
-    const isDark =
-      savedTheme === "dark" || (!savedTheme && document.documentElement.getAttribute("data-theme") === "dark");
+    const isDark = savedTheme === "dark" || (!savedTheme && document.documentElement.getAttribute("data-theme") === "dark");
     this.codeMirror = CodeMirror(this.elements.codeMirrorContainer, {
       value: "",
       mode: "javascript",
@@ -581,12 +561,8 @@ class coderViewEdit {
       styleActiveLine: this.state.highlightActiveLine,
       highlightSelectionMatches: { showToken: /\w/ },
       extraKeys: {
-        "Ctrl-S": () => {
-          if (this.isEditing) this.showCommitPopup();
-        },
-        "Cmd-S": () => {
-          if (this.isEditing) this.showCommitPopup();
-        },
+        "Ctrl-S": () => { if (this.isEditing) this.showCommitPopup(); },
+        "Cmd-S": () => { if (this.isEditing) this.showCommitPopup(); },
         "Ctrl-F": () => this.openSearch(),
         "Ctrl-/": "toggleComment",
         Tab: "indentMore",
@@ -610,10 +586,6 @@ class coderViewEdit {
       this.codeMirror?.setOption("lineWrapping", this.state.wrapLines);
       this.elements.wrapBtn?.classList.toggle("active", this.state.wrapLines);
     }
-    const invisibles = localStorage.getItem("editor_showInvisibles");
-    if (invisibles !== null) {
-      this.state.showInvisibles = invisibles === "true";
-    }
   }
 
   setupAutoSave() {
@@ -626,22 +598,12 @@ class coderViewEdit {
     }
   }
 
-  // =============================================
-  // LANGUAGE & FILE METHODS
-  // =============================================
-
   setLanguage(langValue) {
     const lang = this.languages.find((l) => l.value === langValue);
     if (!lang) return;
     this.currentLanguage = langValue;
     this.elements.languageLabel && (this.elements.languageLabel.textContent = lang.label);
-    this.elements.languageBadge &&
-      (this.elements.languageBadge.innerHTML = `
-      <svg class="badgeIcon" viewBox="0 0 16 16" fill="currentColor" width="12" height="12">
-        <path d="m11.28 3.22 4.25 4.25a.75.75 0 0 1 0 1.06l-4.25 4.25a.749.749 0 0 1-1.275-.326.749.749 0 0 1 .215-.734L13.94 8l-3.72-3.72a.749.749 0 0 1 .326-1.275.749.749 0 0 1 .734.215Zm-6.56 0a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042L2.06 8l3.72 3.72a.749.749 0 0 1-.326 1.275.749.749 0 0 1-.734-.215L.47 8.53a.75.75 0 0 1 0-1.06Z"/>
-      </svg>
-      ${lang.label}
-    `);
+    this.elements.languageBadge && (this.elements.languageBadge.innerHTML = `<svg class="badgeIcon" viewBox="0 0 16 16" fill="currentColor" width="12" height="12"><path d="m11.28 3.22 4.25 4.25a.75.75 0 0 1 0 1.06l-4.25 4.25a.749.749 0 0 1-1.275-.326.749.749 0 0 1 .215-.734L13.94 8l-3.72-3.72a.749.749 0 0 1 .326-1.275.749.749 0 0 1 .734.215Zm-6.56 0a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042L2.06 8l3.72 3.72a.749.749 0 0 1-.326 1.275.749.749 0 0 1-.734-.215L.47 8.53a.75.75 0 0 1 0-1.06Z"/></svg>${lang.label}`);
     this.elements.languageDropdown?.classList.add("hide");
     this.setCodeMirrorMode(langValue);
   }
@@ -649,43 +611,21 @@ class coderViewEdit {
   setCodeMirrorMode(langValue) {
     if (!this.codeMirror) return;
     const modes = {
-      javascript: "javascript",
-      typescript: "javascript",
-      python: "python",
-      html: "htmlmixed",
-      css: "css",
-      json: "application/json",
-      markdown: "markdown",
-      yaml: "yaml",
-      xml: "xml",
-      sql: "sql",
-      shell: "shell",
-      ruby: "ruby",
-      go: "go",
-      rust: "rust",
-      java: "text/x-java",
-      cpp: "text/x-c++src",
-      csharp: "text/x-csharp",
-      php: "php",
-      swift: "swift",
+      javascript: "javascript", typescript: "javascript", python: "python",
+      html: "htmlmixed", css: "css", json: "application/json",
+      markdown: "markdown", yaml: "yaml", xml: "xml", sql: "sql",
+      shell: "shell", ruby: "ruby", go: "go", rust: "rust",
+      java: "text/x-java", cpp: "text/x-c++src", csharp: "text/x-csharp",
+      php: "php", swift: "swift",
     };
-    const mode = modes[langValue] || "text";
-    this.codeMirror.setOption("mode", mode);
+    this.codeMirror.setOption("mode", modes[langValue] || "text");
   }
 
   detectLanguageFromExtension(filename) {
     const ext = filename.split(".").pop().toLowerCase();
-    for (const lang of this.languages) {
-      if (lang.ext.includes(ext)) {
-        return lang.value;
-      }
-    }
+    for (const lang of this.languages) { if (lang.ext.includes(ext)) return lang.value; }
     return "javascript";
   }
-
-  // =============================================
-  // DISPLAY & VISIBILITY METHODS
-  // =============================================
 
   show() {
     this.elements.filePage?.classList.remove("hide");
@@ -695,10 +635,6 @@ class coderViewEdit {
   hide() {
     this.elements.filePage?.classList.add("hide");
   }
-
-  // =============================================
-  // EDIT MODE METHODS
-  // =============================================
 
   enterEditMode() {
     if (!this.currentFile) return;
@@ -717,15 +653,9 @@ class coderViewEdit {
     this.elements.editModeBtn?.classList.remove("active");
     this.elements.viewModeBtn?.classList.add("active");
     if (this.elements.editSaveLabel) this.elements.editSaveLabel.textContent = "Edit";
-    if (this.codeMirror) {
-      this.codeMirror.setOption("readOnly", true);
-    }
+    if (this.codeMirror) this.codeMirror.setOption("readOnly", true);
     this.hideCommitPopup();
   }
-
-  // =============================================
-  // FILE OPERATIONS
-  // =============================================
 
   displayFile(filename, fileData) {
     if (!this.isInitialized) this.init();
@@ -754,25 +684,6 @@ class coderViewEdit {
     this.exitEditMode();
     this.updateModifiedBadge();
     this.show();
-    setTimeout(() => this.codeMirror?.refresh(), 200);
-  }
-
-  autoSave() {
-    if (!this.currentFile || !this.fileData || !this.isEditing) return;
-    const newContent = this.codeMirror ? this.codeMirror.getValue() : "";
-    if (newContent === this.originalContent) return;
-    try {
-      this.fileData.content = newContent;
-      this.fileData.lastModified = Date.now();
-      this.fileData.lastCommit = "Auto-save";
-      this.fileData.size = new Blob([newContent]).size;
-      const filePath = (window.currentState?.path ? window.currentState.path + "/" : "") + this.currentFile;
-      if (typeof LocalStorageManager !== "undefined")
-        LocalStorageManager.saveFile(window.currentState?.repository, filePath, this.fileData);
-      this.originalContent = newContent;
-      this.updateLastSaved(true);
-      this.updateModifiedBadge();
-    } catch (error) {}
   }
 
   performSave(commitMessage) {
@@ -785,8 +696,7 @@ class coderViewEdit {
         this.fileData.lastCommit = commitMessage;
         this.fileData.size = new Blob([newContent]).size;
         const filePath = (window.currentState?.path ? window.currentState.path + "/" : "") + this.currentFile;
-        if (typeof LocalStorageManager !== "undefined")
-          LocalStorageManager.saveFile(window.currentState?.repository, filePath, this.fileData);
+        if (typeof LocalStorageManager !== "undefined") LocalStorageManager.saveFile(window.currentState?.repository, filePath, this.fileData);
         this.originalContent = newContent;
         if (typeof showSuccessMessage === "function") showSuccessMessage(`Saved ${this.currentFile}`);
         this.updateLastSaved(true);
@@ -800,22 +710,8 @@ class coderViewEdit {
     }, 300);
   }
 
-  // =============================================
-  // ACTIONS METHODS
-  // =============================================
-
-  cancelEdit() {
-    if (!this.codeMirror) return;
-    if (this.codeMirror.getValue() !== this.originalContent && !confirm("Discard unsaved changes?")) return;
-    this.codeMirror.setValue(this.originalContent);
-    this.updateStats();
-    this.exitEditMode();
-    this.updateModifiedBadge();
-  }
-
   saveChanges(withCommit = false) {
     if (!this.currentFile || !this.fileData) return;
-
     if (withCommit) {
       const commitMessage = this.elements.commitMessage?.value.trim();
       if (!commitMessage) {
@@ -832,14 +728,9 @@ class coderViewEdit {
   copyCode() {
     if (!this.codeMirror) return;
     const content = this.codeMirror.getSelection() || this.codeMirror.getValue();
-    navigator.clipboard
-      .writeText(content)
-      .then(() => {
-        if (typeof showSuccessMessage === "function") showSuccessMessage("Copied to clipboard");
-      })
-      .catch(() => {
-        if (typeof showErrorMessage === "function") showErrorMessage("Failed to copy");
-      });
+    navigator.clipboard.writeText(content).then(() => {
+      if (typeof showSuccessMessage === "function") showSuccessMessage("Copied to clipboard");
+    });
   }
 
   downloadFile() {
@@ -854,7 +745,6 @@ class coderViewEdit {
     a.click();
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
-    if (typeof showSuccessMessage === "function") showSuccessMessage(`Downloaded ${this.currentFile}`);
   }
 
   handleFileUpload(e) {
@@ -867,31 +757,14 @@ class coderViewEdit {
         this.codeMirror.setValue(content);
         this.currentFile = file.name;
         this.elements.fileNameDisplay && (this.elements.fileNameDisplay.textContent = file.name);
-        const detectedLang = this.detectLanguageFromExtension(file.name);
-        this.setLanguage(detectedLang);
+        this.setLanguage(this.detectLanguageFromExtension(file.name));
         this.originalContent = content;
         this.updateStats();
         this.updateModifiedBadge();
-        if (typeof showSuccessMessage === "function") showSuccessMessage(`Loaded ${file.name}`);
       }
     };
     reader.readAsText(file);
-    e.target.value = "";
   }
-
-  // =============================================
-  // COMMIT POPUP METHODS
-  // =============================================
-
-
-
-
-
-
-
-  // =============================================
-  // EDITOR CONFIGURATION METHODS
-  // =============================================
 
   setCodeMirrorFontSize(size) {
     if (!this.codeMirror) return;
@@ -907,10 +780,6 @@ class coderViewEdit {
     if (newSize !== this.state.fontSize) this.setCodeMirrorFontSize(newSize);
   }
 
-  // =============================================
-  // UPDATE METHODS
-  // =============================================
-
   updateThemeIcon(isDark) {
     if (!this.elements.themeIcon) return;
     this.elements.themeIcon.innerHTML = isDark
@@ -922,16 +791,10 @@ class coderViewEdit {
     if (!this.codeMirror) return;
     const content = this.codeMirror.getValue();
     const lines = content.split("\n").length;
-    const chars = content.length;
     const bytes = new Blob([content]).size;
-    let sizeStr =
-      bytes < 1024
-        ? `${bytes} B`
-        : bytes < 1024 * 1024
-          ? `${(bytes / 1024).toFixed(1)} KB`
-          : `${(bytes / (1024 * 1024)).toFixed(2)} MB`;
+    let sizeStr = bytes < 1024 ? `${bytes} B` : bytes < 1024 * 1024 ? `${(bytes / 1024).toFixed(1)} KB` : `${(bytes / (1024 * 1024)).toFixed(2)} MB`;
     this.elements.lineCount && (this.elements.lineCount.textContent = lines);
-    this.elements.charCount && (this.elements.charCount.textContent = chars.toLocaleString());
+    this.elements.charCount && (this.elements.charCount.textContent = content.length.toLocaleString());
     this.elements.fileSize && (this.elements.fileSize.textContent = sizeStr);
   }
 
@@ -944,77 +807,52 @@ class coderViewEdit {
 
   updateModifiedBadge() {
     if (!this.codeMirror) return;
-    const isModified = this.codeMirror.getValue() !== this.originalContent;
-    this.elements.modifiedBadge?.classList.toggle("hide", !isModified);
+    this.elements.modifiedBadge?.classList.toggle("hide", this.codeMirror.getValue() === this.originalContent);
   }
 
   updateLastSaved(saved) {
     if (!this.elements.lastSaved) return;
     if (saved) {
       const now = new Date();
-      this.lastSaveTime = now;
-      const timeStr = now.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
-      this.elements.lastSaved.textContent = timeStr;
+      this.elements.lastSaved.textContent = now.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
     } else {
       this.elements.lastSaved.textContent = "Never";
     }
   }
 
-  // =============================================
-  // SEARCH METHODS
-  // =============================================
-
   openSearch() {
     if (!this.codeMirror) return;
     this.searchActive = true;
     this.elements.searchPanel?.classList.remove("hide");
-    setTimeout(() => {
-      this.elements.searchInput?.focus();
-      this.elements.searchInput?.select();
-    }, 50);
+    setTimeout(() => { this.elements.searchInput?.focus(); this.elements.searchInput?.select(); }, 50);
   }
 
   closeSearch() {
     this.searchActive = false;
     this.elements.searchPanel?.classList.add("hide");
     this.clearSearch();
-    this.codeMirror?.focus();
   }
 
   clearSearch() {
     if (this.elements.searchInput) this.elements.searchInput.value = "";
-    if (this.elements.searchMatches) this.elements.searchMatches.textContent = "0/0";
     this.searchMatches = [];
-    this.currentSearchIndex = 0;
   }
 
   performSearch(query) {
-    if (!this.codeMirror || !query) {
-      if (this.elements.searchMatches) this.elements.searchMatches.textContent = "0/0";
-      this.searchMatches = [];
-      return;
-    }
+    if (!this.codeMirror || !query) return;
     const content = this.codeMirror.getValue();
     const lines = content.split("\n");
     this.searchMatches = [];
-    lines.forEach((line, lineIndex) => {
+    lines.forEach((line, idx) => {
       let pos = 0;
       const lowerLine = line.toLowerCase();
       const lowerQuery = query.toLowerCase();
       while ((pos = lowerLine.indexOf(lowerQuery, pos)) !== -1) {
-        this.searchMatches.push({ line: lineIndex, ch: pos, length: query.length });
+        this.searchMatches.push({ line: idx, ch: pos, length: query.length });
         pos += 1;
       }
     });
-    this.currentSearchIndex = 0;
-    if (this.elements.searchMatches) {
-      if (this.searchMatches.length > 0) {
-        this.elements.searchMatches.textContent = `1/${this.searchMatches.length}`;
-        this.highlightMatch(0);
-      } else {
-        this.elements.searchMatches.textContent = "0/0";
-      }
-    }
+    if (this.searchMatches.length > 0) this.highlightMatch(0);
   }
 
   highlightMatch(index) {
@@ -1022,41 +860,18 @@ class coderViewEdit {
     const match = this.searchMatches[index];
     this.codeMirror.setSelection({ line: match.line, ch: match.ch }, { line: match.line, ch: match.ch + match.length });
     this.codeMirror.scrollIntoView({ line: match.line, ch: match.ch }, 200);
-    if (this.elements.searchMatches) {
-      this.elements.searchMatches.textContent = `${index + 1}/${this.searchMatches.length}`;
-    }
   }
-
-  findNext() {
-    if (this.searchMatches.length === 0) return;
-    this.currentSearchIndex = (this.currentSearchIndex + 1) % this.searchMatches.length;
-    this.highlightMatch(this.currentSearchIndex);
-  }
-
-  findPrevious() {
-    if (this.searchMatches.length === 0) return;
-    this.currentSearchIndex = (this.currentSearchIndex - 1 + this.searchMatches.length) % this.searchMatches.length;
-    this.highlightMatch(this.currentSearchIndex);
-  }
-
-  // =============================================
-  // TOGGLE METHODS
-  // =============================================
 
   toggleWrapLines() {
     if (!this.codeMirror) return;
     this.state.wrapLines = !this.state.wrapLines;
     this.codeMirror.setOption("lineWrapping", this.state.wrapLines);
-    localStorage.setItem("editor_wrapLines", this.state.wrapLines);
     this.elements.wrapBtn?.classList.toggle("active", this.state.wrapLines);
   }
 
   toggleInvisibles() {
-    if (!this.codeMirror) return;
     this.state.showInvisibles = !this.state.showInvisibles;
-    localStorage.setItem("editor_showInvisibles", this.state.showInvisibles);
     this.elements.showInvisiblesBtn?.classList.toggle("active", this.state.showInvisibles);
-    this.elements.moreOptionsDropdown?.classList.add("hide");
   }
 
   toggleTheme() {
@@ -1064,128 +879,52 @@ class coderViewEdit {
     const isDark = html.getAttribute("data-theme") === "dark";
     const newTheme = isDark ? "light" : "dark";
     html.setAttribute("data-theme", newTheme);
-    localStorage.setItem("editor_theme", newTheme);
     this.updateThemeIcon(!isDark);
     this.codeMirror?.setOption("theme", isDark ? "default" : "one-dark");
   }
 
   toggleFullscreen() {
-    if (!this.elements.editorBody) return;
     this.isFullscreen = !this.isFullscreen;
     const container = document.querySelector(".editorContainer");
-    if (this.isFullscreen) {
-      container?.classList.add("fullscreen");
-      document.body.style.overflow = "hidden";
-      this.elements.fullscreenIcon &&
-        (this.elements.fullscreenIcon.innerHTML =
-          '<path d="M5.5 2.75A.75.75 0 0 0 4.75 2h-1.5A1.75 1.75 0 0 0 1.5 3.75v1.5a.75.75 0 0 0 1.5 0v-1.5a.25.25 0 0 1 .25-.25h1.5a.75.75 0 0 0 .75-.75Zm5 0a.75.75 0 0 0 .75.75h1.5a.25.25 0 0 1 .25.25v1.5a.75.75 0 0 0 1.5 0v-1.5A1.75 1.75 0 0 0 12.75 2h-1.5a.75.75 0 0 0-.75.75Zm5 10.5a.75.75 0 0 0-.75-.75h-1.5a.25.25 0 0 1-.25-.25v-1.5a.75.75 0 0 0-1.5 0v1.5c0 .966.784 1.75 1.75 1.75h1.5a.75.75 0 0 0 .75-.75Zm-10.5 0a.75.75 0 0 0 .75-.75v-1.5a.25.25 0 0 1 .25-.25h1.5a.75.75 0 0 0 0-1.5h-1.5A1.75 1.75 0 0 0 1.5 10.75v1.5a.75.75 0 0 0 .75.75Z"/>');
-    } else {
-      container?.classList.remove("fullscreen");
-      document.body.style.overflow = "";
-      this.elements.fullscreenIcon &&
-        (this.elements.fullscreenIcon.innerHTML =
-          '<path d="M1.75 10a.75.75 0 0 1 .75.75v2.5c0 .138.112.25.25.25h2.5a.75.75 0 0 1 0 1.5h-2.5A1.75 1.75 0 0 1 1 13.25v-2.5a.75.75 0 0 1 .75-.75Zm12.5 0a.75.75 0 0 1 .75.75v2.5A1.75 1.75 0 0 1 13.25 15h-2.5a.75.75 0 0 1 0-1.5h2.5a.25.25 0 0 0 .25-.25v-2.5a.75.75 0 0 1 .75-.75ZM2.75 1a1.75 1.75 0 0 0-1.75 1.75v2.5a.75.75 0 0 0 1.5 0v-2.5a.25.25 0 0 1 .25-.25h2.5a.75.75 0 0 0 0-1.5Zm8 0a.75.75 0 0 0 0 1.5h2.5a.25.25 0 0 1 .25.25v2.5a.75.75 0 0 0 1.5 0v-2.5A1.75 1.75 0 0 0 13.25 1Z"/>');
-    }
+    container?.classList.toggle("fullscreen", this.isFullscreen);
+    document.body.style.overflow = this.isFullscreen ? "hidden" : "";
     setTimeout(() => this.codeMirror?.refresh(), 100);
   }
-
-  // =============================================
-  // EDITOR ACTIONS
-  // =============================================
 
   foldAll() {
     if (!this.codeMirror) return;
     this.codeMirror.operation(() => {
-      for (let i = 0; i < this.codeMirror.lineCount(); i++) {
-        this.codeMirror.foldCode({ line: i, ch: 0 }, null, "fold");
-      }
+      for (let i = 0; i < this.codeMirror.lineCount(); i++) this.codeMirror.foldCode({ line: i, ch: 0 }, null, "fold");
     });
-    this.elements.moreOptionsDropdown?.classList.add("hide");
   }
 
   unfoldAll() {
     if (!this.codeMirror) return;
     this.codeMirror.operation(() => {
-      for (let i = 0; i < this.codeMirror.lineCount(); i++) {
-        this.codeMirror.foldCode({ line: i, ch: 0 }, null, "unfold");
-      }
+      for (let i = 0; i < this.codeMirror.lineCount(); i++) this.codeMirror.foldCode({ line: i, ch: 0 }, null, "unfold");
     });
-    this.elements.moreOptionsDropdown?.classList.add("hide");
   }
 
   formatCode() {
     if (!this.codeMirror || !this.isEditing) return;
     const content = this.codeMirror.getValue();
-    const mode = this.codeMirror.getOption("mode");
-    let formatted = content;
     try {
-      if (mode === "application/json") {
-        try {
-          formatted = JSON.stringify(JSON.parse(content), null, 2);
-        } catch (_) {
-          formatted = content;
-        }
-      }
-      if (formatted !== content) {
-        const cursor = this.codeMirror.getCursor();
-        this.codeMirror.setValue(formatted);
-        this.codeMirror.setCursor(cursor);
-        if (typeof showSuccessMessage === "function") showSuccessMessage("Code formatted");
-      }
-    } catch (error) {
-      if (typeof showErrorMessage === "function") showErrorMessage("Formatting failed");
-    }
-    this.elements.moreOptionsDropdown?.classList.add("hide");
+      const formatted = JSON.stringify(JSON.parse(content), null, 2);
+      this.codeMirror.setValue(formatted);
+    } catch (e) {}
   }
 
-  undo() {
-    if (!this.codeMirror) return;
-    this.codeMirror.undo();
-  }
+  undo() { this.codeMirror?.undo(); }
+  redo() { this.codeMirror?.redo(); }
 
-  redo() {
-    if (!this.codeMirror) return;
-    this.codeMirror.redo();
-  }
-
-  // =============================================
-  // UTILITY METHODS
-  // =============================================
-
-  getValue() {
-    return this.codeMirror ? this.codeMirror.getValue() : "";
-  }
-
-  setValue(content) {
-    if (this.codeMirror) {
-      this.codeMirror.setValue(content);
-      this.updateStats();
-    }
-  }
-
-  showLoadingSpinner() {
-    if (this.elements.loadingSpinner) {
-      this.elements.loadingSpinner.setAttribute("data-active", "true");
-    }
-  }
-
-  hideLoadingSpinner() {
-    if (this.elements.loadingSpinner) {
-      this.elements.loadingSpinner.setAttribute("data-active", "false");
-    }
-  }
+  showLoadingSpinner() { this.elements.loadingSpinner?.setAttribute("data-active", "true"); }
+  hideLoadingSpinner() { this.elements.loadingSpinner?.setAttribute("data-active", "false"); }
 
   destroy() {
-    if (this.state.autoSaveInterval) {
-      clearInterval(this.state.autoSaveInterval);
-      this.state.autoSaveInterval = null;
-    }
-    if (this.codeMirror) {
-      this.codeMirror.toTextArea();
-      this.codeMirror = null;
-    }
+    if (this.state.autoSaveInterval) clearInterval(this.state.autoSaveInterval);
+    if (this.codeMirror) this.codeMirror.toTextArea();
     this.isInitialized = false;
-    this.elements = {};
+    this.elements.commitDropdown?.remove();
   }
 }
 
