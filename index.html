@@ -94,25 +94,23 @@
         
         /* Dropdown Menu */
         .dropdown-menu {
-            position: absolute;
-            bottom: 100%;
-            left: 0;
-            width: 320px;
+            position: absolute; bottom: 100%; left: 0;
+            width: 26rem; height: 16rem;
             background-color: var(--bg-card);
             border: 1px solid var(--border-color);
             border-radius: var(--radius-lg);
             box-shadow: var(--shadow);
     
             transform: translateY(10px);
-            transition: opacity 0.2s, transform 0.2s, visibility 0.2s;
             z-index: 1000;
             margin-bottom: 8px;
-        }
         
-        .dropdown-trigger:hover .dropdown-menu {
             opacity: 1;
             visibility: visible;
             transform: translateY(0);
+            transition: opacity 0.2s,
+                        transform 0.2s,
+                        visibility 0.2s;
         }
         
         .dropdown-menu::before {
@@ -3367,7 +3365,6 @@ html {
 <style>
   /* Base styles for the dropdown */
   .dropdown-menu {
-    display: none;
     position: absolute;
     z-index: 10000;
     background-color: #ffffff;
