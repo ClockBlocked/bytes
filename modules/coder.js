@@ -511,26 +511,34 @@ class coderViewEdit {
       }
     });
   }
+  
+  
+  
+  
 
   showCommitPopup(e) {
     if (!this.elements.commitDropdown) return;
-    this.elements.commitDropdown.style.display = "block";
+//    this.elements.commitDropdown.style.display = "block";
     this.elements.commitDropdown.classList.remove("hide");
     this.calculateDropdownPosition();
     if (this.elements.popoverTitle) this.elements.popoverTitle.textContent = "Add Commit & Save";
     if (this.elements.popoverSubtitle) this.elements.popoverSubtitle.textContent = "Enter a commit message before saving";
     if (this.elements.commitMessage) {
       this.elements.commitMessage.value = `Update ${this.currentFile}`;
-      setTimeout(() => this.elements.commitMessage?.focus(), 50);
+//      setTimeout(() => this.elements.commitMessage?.focus(), 50);
     }
   }
 
   hideCommitPopup() {
     if (!this.elements.commitDropdown) return;
-    this.elements.commitDropdown.style.display = "none";
+//    this.elements.commitDropdown.style.display = "none";
     this.elements.commitDropdown.classList.add("hide");
     if (this.elements.commitMessage) this.elements.commitMessage.value = "";
   }
+
+
+
+
 
   calculateDropdownPosition() {
     if (!this.elements.editSaveButton || !this.elements.commitDropdown) return;
