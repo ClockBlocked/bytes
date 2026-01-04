@@ -65,9 +65,9 @@ function hideDeleteFileModal() {
 
 function showSuccessMessage(message) {
   LoadingProgress.show();
-  const notification = document.createElement('div');
-  notification.innerHTML = window.templates.notifications.success(message);
-  const notificationElement = notification.firstElementChild;
+  const temp = document.createElement('div');
+  temp.innerHTML = window.templates.notifications.success(message);
+  const notificationElement = temp.firstElementChild;
   document.body.appendChild(notificationElement);
   setTimeout(() => {
     LoadingProgress.hide();
@@ -77,9 +77,9 @@ function showSuccessMessage(message) {
 }
 
 function showErrorMessage(message) {
-  const notification = document.createElement('div');
-  notification.innerHTML = window.templates.notifications.error(message);
-  const notificationElement = notification.firstElementChild;
+  const temp = document.createElement('div');
+  temp.innerHTML = window.templates.notifications.error(message);
+  const notificationElement = temp.firstElementChild;
   notificationElement.dataset.notify = 'error';
   document.body.appendChild(notificationElement);
   setTimeout(() => {
