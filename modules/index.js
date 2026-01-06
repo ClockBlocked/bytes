@@ -13,7 +13,8 @@
         { id: "fileUpload", url: "https://clockblocked.github.io/bytes/modules/fileUpload.js", category: "Feature", priority: 11, critical: false },
         { id: "importExport", url: "https://clockblocked.github.io/bytes/modules/importExport.js", category: "Feature", priority: 12, critical: false },
         { id: "fileMenu", url: "https://clockblocked.github.io/bytes/modules/fileMenu.js", category: "UI", priority: 13, critical: false },
-        { id: "coder", url: "https://clockblocked.github.io/bytes/modules/coder.js", category: "Feature", priority: 14, critical: false }
+        { id: "assets", url: "https://clockblocked.github.io/bytes/modules/assets.js", category: "UI", priority: 14, critical: false },
+        { id: "coder", url: "https://clockblocked.github.io/bytes/modules/coder.js", category: "Feature", priority: 15, critical: false }
     ];
     const LOAD_ORDER = [];
     const EXPORT_MAP = new Map([
@@ -30,6 +31,7 @@
         ["fileUpload", ["FileUploader", "uploadFile"]],
         ["importExport", ["ImportExport", "exportData", "importData"]],
         ["fileMenu", ["FileMenu", "ContextMenu"]],
+        ["assets", ["AppAssets"]],
         ["coder", ["coderViewEdit"]]
     ]);
     const generateCacheBuster = () => `v=${Date.now()}`;
