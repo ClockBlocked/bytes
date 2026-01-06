@@ -13,25 +13,141 @@ class coderViewEdit {
     this.currentSearchIndex = 0;
     this.searchMatches = [];
     this.state = {
-      fontSize: 10,
+      fontSize: 14,
       wrapLines: false,
       showInvisibles: false,
       highlightActiveLine: true,
       autoSave: false,
-      autoSaveInterval: null
+      autoSaveInterval: null,
     };
     this.searchActive = false;
     this.lastSaveTime = null;
     this.undoHistory = [];
     this.redoHistory = [];
     this.lastCursorPosition = null;
+    this.languages = [{
+        value: "javascript",
+        label: "JavaScript",
+        ext: ["js",
+          "jsx"
+        ]
+      },
+      {
+        value: "typescript",
+        label: "TypeScript",
+        ext: ["ts",
+          "tsx"
+        ]
+      },
+      {
+        value: "python",
+        label: "Python",
+        ext: ["py"]
+      },
+      {
+        value: "html",
+        label: "HTML",
+        ext: ["html",
+          "htm"
+        ]
+      },
+      {
+        value: "css",
+        label: "CSS",
+        ext: ["css",
+          "scss",
+          "less"
+        ]
+      },
+      {
+        value: "json",
+        label: "JSON",
+        ext: ["json"]
+      },
+      {
+        value: "markdown",
+        label: "Markdown",
+        ext: ["md",
+          "markdown"
+        ]
+      },
+      {
+        value: "yaml",
+        label: "YAML",
+        ext: ["yml",
+          "yaml"
+        ]
+      },
+      {
+        value: "xml",
+        label: "XML",
+        ext: ["xml"]
+      },
+      {
+        value: "sql",
+        label: "SQL",
+        ext: ["sql"]
+      },
+      {
+        value: "shell",
+        label: "Shell",
+        ext: ["sh",
+          "bash"
+        ]
+      },
+      {
+        value: "ruby",
+        label: "Ruby",
+        ext: ["rb"]
+      },
+      {
+        value: "go",
+        label: "Go",
+        ext: ["go"]
+      },
+      {
+        value: "rust",
+        label: "Rust",
+        ext: ["rs"]
+      },
+      {
+        value: "java",
+        label: "Java",
+        ext: ["java"]
+      },
+      {
+        value: "cpp",
+        label: "C++",
+        ext: ["cpp",
+          "c",
+          "h"
+        ]
+      },
+      {
+        value: "csharp",
+        label: "C#",
+        ext: ["cs"]
+      },
+      {
+        value: "php",
+        label: "PHP",
+        ext: ["php"]
+      },
+      {
+        value: "swift",
+        label: "Swift",
+        ext: ["swift"]
+      },
+    ];
+    this.currentLanguage = "javascript";
   }
 
   init() {
     if (this.isInitialized) return;
     const filePage = document.querySelector('.pages[data-page="file"]');
     if (!filePage) return;
-    filePage.innerHTML = AppAssets.templates.coderContainer();
+    filePage.innerHTML = AppAssets.templates.editor();
+    this.injectPopover();
     this.cacheElements();
     this.bindEvents();
     if (typeof CodeMirror !== "undefined") this.setupCodeMirror();
@@ -41,140 +157,205 @@ class coderViewEdit {
     this.isInitialized = true;
   }
 
+  injectPopover() {
+    document.body.insertAdjacentHTML('beforeend', AppAssets.templates.commitDropdown());
+    this.elements.commitDropdown = document.getElementById("commitDropdown");
+  }
+
   cacheElements() {
     this.elements = {
+      ...this.elements,
       filePage: document.querySelector('.pages[data-page="file"]'),
-      fileNameInput: document.querySelector('#fileName input') || document.getElementById("fileNameInput"),
-      editSaveBtn: document.getElementById("editSaveBtn"),
-      editSaveIcon: document.getElementById("editSaveIcon"),
-      cancelBtn: document.getElementById("cancelBtn"),
+      fileNameDisplay: document.getElementById("fileNameDisplay"),
+      modifiedBadge: document.getElementById("modifiedBadge"),
+      languageBtn: document.getElementById("languageBtn"),
+      languageLabel: document.getElementById("languageLabel"),
+      languageDropdown: document.getElementById("languageDropdown"),
+      languageList: document.getElementById("languageList"),
+      editModeBtn: document.getElementById("editModeBtn"),
+      viewModeBtn: document.getElementById("viewModeBtn"),
+      undoBtn: document.getElementById("undoBtn"),
+      redoBtn: document.getElementById("redoBtn"),
+      searchBtn: document.getElementById("searchBtn"),
+      wrapBtn: document.getElementById("wrapBtn"),
       copyBtn: document.getElementById("copyBtn"),
       downloadBtn: document.getElementById("downloadBtn"),
-      fileLinesCount: document.getElementById("fileLinesCount"),
-      fileSize: document.getElementById("fileSize"),
-      fileLanguageDisplay: document.getElementById("fileLanguageDisplay"),
-      cursorPosition: document.getElementById("cursorPosition"),
-      selectionInfo: document.getElementById("selectionInfo"),
-      coderWrapper: document.getElementById("coderWrapper"),
-      codeMirrorContainer: document.getElementById("codeMirrorContainer"),
-      themeToggleBtn: document.getElementById("themeToggleBtn"),
+      uploadBtn: document.getElementById("uploadBtn"),
+      themeBtn: document.getElementById("themeBtn"),
       themeIcon: document.getElementById("themeIcon"),
-      decreaseFontBtn: document.getElementById("decreaseFontBtn"),
-      increaseFontBtn: document.getElementById("increaseFontBtn"),
-      fontSizeDisplay: document.getElementById("fontSizeDisplay"),
-      wrapLinesBtn: document.getElementById("wrapLinesBtn"),
-      searchBtn: document.getElementById("searchBtn"),
-      foldAllBtn: document.getElementById("foldAllBtn"),
-      unfoldAllBtn: document.getElementById("unfoldAllBtn"),
+      fontDecreaseBtn: document.getElementById("fontDecreaseBtn"),
+      fontIncreaseBtn: document.getElementById("fontIncreaseBtn"),
+      fontSizeLabel: document.getElementById("fontSizeLabel"),
       fullscreenBtn: document.getElementById("fullscreenBtn"),
       fullscreenIcon: document.getElementById("fullscreenIcon"),
-      formatCodeBtn: document.getElementById("formatCodeBtn"),
+      moreOptionsBtn: document.getElementById("moreOptionsBtn"),
+      moreOptionsDropdown: document.getElementById("moreOptionsDropdown"),
+      formatBtn: document.getElementById("formatBtn"),
+      foldAllBtn: document.getElementById("foldAllBtn"),
+      unfoldAllBtn: document.getElementById("unfoldAllBtn"),
       showInvisiblesBtn: document.getElementById("showInvisiblesBtn"),
-      commitPanel: document.getElementById("commitPanel"),
-      commitTitleInput: document.getElementById("commitTitleInput"),
-      commitDescriptionInput: document.getElementById("commitDescriptionInput"),
-      cancelEditBtn: document.getElementById("cancelEditBtn"),
-      saveChangesBtn: document.getElementById("saveChangesBtn"),
-      lastSavedIndicator: document.getElementById("lastSavedIndicator"),
+      editorBody: document.getElementById("editorBody"),
+      codeMirrorContainer: document.getElementById("codeMirrorContainer"),
       loadingSpinner: document.getElementById("loadingSpinner"),
       searchPanel: document.getElementById("searchPanel"),
       searchInput: document.getElementById("searchInput"),
       searchMatches: document.getElementById("searchMatches"),
-      searchNextBtn: document.getElementById("searchNextBtn"),
       searchPrevBtn: document.getElementById("searchPrevBtn"),
-      closeSearchBtn: document.getElementById("closeSearchBtn")
+      searchNextBtn: document.getElementById("searchNextBtn"),
+      closeSearchBtn: document.getElementById("closeSearchBtn"),
+      cursorLine: document.getElementById("cursorLine"),
+      cursorCol: document.getElementById("cursorCol"),
+      lineCount: document.getElementById("lineCount"),
+      charCount: document.getElementById("charCount"),
+      fileSize: document.getElementById("fileSize"),
+      statusIndicator: document.getElementById("statusIndicator"),
+      lastSaved: document.getElementById("lastSaved"),
+      languageBadge: document.getElementById("languageBadge"),
+      fileUploadInput: document.getElementById("fileUploadInput"),
+      editSaveButton: document.getElementById("editSaveButton"),
+      editSaveLabel: document.getElementById("editSaveLabel"),
+      popoverTitle: document.getElementById("popoverTitle"),
+      popoverSubtitle: document.getElementById("popoverSubtitle"),
+      commitMessage: document.getElementById("commitMessage"),
+      commitCancelBtn: document.getElementById("commitCancelBtn"),
+      commitSaveBtn: document.getElementById("commitSaveBtn"),
     };
+    this.populateLanguageDropdown();
+  }
+
+  populateLanguageDropdown() {
+    if (!this.elements.languageList) return;
+    this.elements.languageList.innerHTML = "";
+    this.languages.forEach((lang) => {
+      const btn = document.createElement("button");
+      btn.className = "dropdownItem";
+      btn.textContent = lang.label;
+      btn.dataset.value = lang.value;
+      btn.addEventListener("click", () => this.setLanguage(lang.value));
+      this.elements.languageList.appendChild(btn);
+    });
   }
 
   bindEvents() {
-    this.elements.editSaveBtn?.addEventListener("click", () => this.isEditing ? this.saveChanges() : this.enterEditMode());
-    this.elements.cancelBtn?.addEventListener("click", () => this.cancelEdit());
-    this.elements.decreaseFontBtn?.addEventListener("click", () => this.adjustFontSize(-1));
-    this.elements.increaseFontBtn?.addEventListener("click", () => this.adjustFontSize(1));
-    this.elements.themeToggleBtn?.addEventListener("click", () => this.toggleTheme());
-    this.elements.wrapLinesBtn?.addEventListener("click", () => this.toggleWrapLines());
+    this.elements.editModeBtn?.addEventListener("click", () => this.enterEditMode());
+    this.elements.viewModeBtn?.addEventListener("click", () => this.exitEditMode());
+    this.elements.undoBtn?.addEventListener("click", () => this.undo());
+    this.elements.redoBtn?.addEventListener("click", () => this.redo());
     this.elements.searchBtn?.addEventListener("click", () => this.openSearch());
-    this.elements.foldAllBtn?.addEventListener("click", () => this.foldAll());
-    this.elements.unfoldAllBtn?.addEventListener("click", () => this.unfoldAll());
-    this.elements.fullscreenBtn?.addEventListener("click", () => this.toggleFullscreen());
-    this.elements.formatCodeBtn?.addEventListener("click", () => this.formatCode());
-    this.elements.showInvisiblesBtn?.addEventListener("click", () => this.toggleInvisibles());
-    this.elements.saveChangesBtn?.addEventListener("click", () => this.saveChanges());
-    this.elements.cancelEditBtn?.addEventListener("click", () => this.cancelEdit());
+    this.elements.wrapBtn?.addEventListener("click", () => this.toggleWrapLines());
     this.elements.copyBtn?.addEventListener("click", () => this.copyCode());
     this.elements.downloadBtn?.addEventListener("click", () => this.downloadFile());
+    this.elements.uploadBtn?.addEventListener("click", () => this.elements.fileUploadInput?.click());
+    this.elements.fileUploadInput?.addEventListener("change", (e) => this.handleFileUpload(e));
+    this.elements.themeBtn?.addEventListener("click", () => this.toggleTheme());
+    this.elements.fontDecreaseBtn?.addEventListener("click", () => this.adjustFontSize(-2));
+    this.elements.fontIncreaseBtn?.addEventListener("click", () => this.adjustFontSize(2));
+    this.elements.fullscreenBtn?.addEventListener("click", () => this.toggleFullscreen());
+    this.elements.formatBtn?.addEventListener("click", () => this.formatCode());
+    this.elements.foldAllBtn?.addEventListener("click", () => this.foldAll());
+    this.elements.unfoldAllBtn?.addEventListener("click", () => this.unfoldAll());
+    this.elements.showInvisiblesBtn?.addEventListener("click", () => this.toggleInvisibles());
+    this.elements.searchPrevBtn?.addEventListener("click", () => this.findPrevious());
+    this.elements.searchNextBtn?.addEventListener("click", () => this.findNext());
+    this.elements.closeSearchBtn?.addEventListener("click", () => this.closeSearch());
+    this.elements.searchInput?.addEventListener("input", () => this.performSearch(this.elements.searchInput.value));
+    this.elements.searchInput?.addEventListener("keydown", (e) => {
+      if (e.key === "Escape") this.closeSearch();
+      else if (e.key === "Enter" && e.shiftKey) this.findPrevious();
+      else if (e.key === "Enter") this.findNext();
+    });
+    this.elements.languageBtn?.addEventListener("click",
+      (e) => {
+        e.stopPropagation();
+        this.elements.languageDropdown?.classList.toggle("hide");
+      });
+    this.elements.moreOptionsBtn?.addEventListener("click",
+      (e) => {
+        e.stopPropagation();
+        this.elements.moreOptionsDropdown?.classList.toggle("hide");
+      });
+    this.elements.editSaveButton?.addEventListener("click",
+      (e) => {
+        e.stopPropagation();
+        if (!this.isEditing) {
+          this.enterEditMode();
+        }
+        else {
+          this.showCommitPopup(e);
+        }
+      });
+    this.elements.commitCancelBtn?.addEventListener("click",
+      () => this.hideCommitPopup());
+    this.elements.commitSaveBtn?.addEventListener("click",
+      () => this.saveChanges(true));
+    this.elements.commitMessage?.addEventListener("keydown",
+      (e) => {
+        if (e.key === "Enter" && (e.ctrlKey || e.metaKey)) {
+          e.preventDefault();
+          this.saveChanges(true);
+        }
+      });
+    document.addEventListener("click",
+      (e) => {
+        if (this.elements.commitDropdown &&
+          !this.elements.commitDropdown.contains(e.target) &&
+          !this.elements.editSaveButton.contains(e.target)) {
+          this.hideCommitPopup();
+        }
+        this.elements.languageDropdown?.classList.add("hide");
+        this.elements.moreOptionsDropdown?.classList.add("hide");
+      });
+    document.addEventListener("keydown",
+      (e) => {
+        const ctrl = e.ctrlKey || e.metaKey;
+        if (ctrl && e.key === "s" && this.isEditing) {
+          e.preventDefault();
+          this.showCommitPopup();
+        }
+        if (e.key === "Escape") {
+          if (this.searchActive) this.closeSearch();
+          else if (this.isFullscreen) this.toggleFullscreen();
+          else this.hideCommitPopup();
+        }
+        if (ctrl && e.key === "f") {
+          e.preventDefault();
+          this.openSearch();
+        }
+      });
+    window.addEventListener("resize",
+      () => {
+        if (this.elements.commitDropdown && !this.elements.commitDropdown.classList.contains("hide")) {
+          this.calculateDropdownPosition();
+        }
+      });
+  }
 
-    this.elements.fileNameInput?.addEventListener("dblclick", () => {
-      if (this.isEditing) {
-        this.elements.fileNameInput.readOnly = false;
-        this.elements.fileNameInput.select();
-      }
-    });
-    this.elements.fileNameInput?.addEventListener("blur", () => {
-      this.elements.fileNameInput.readOnly = true;
-      if (this.currentFile && this.elements.fileNameInput.value !== this.currentFile) {
-        this.renameFile(this.elements.fileNameInput.value);
-      }
-    });
-    this.elements.fileNameInput?.addEventListener("keydown", e => {
-      if (e.key === "Enter") this.elements.fileNameInput.blur();
-      if (e.key === "Escape") {
-        this.elements.fileNameInput.value = this.currentFile;
-        this.elements.fileNameInput.blur();
-      }
-    });
+  showCommitPopup(e) {
+    if (!this.elements.commitDropdown) return;
+    this.elements.commitDropdown.classList.remove("hide");
+    this.calculateDropdownPosition();
+    if (this.elements.popoverTitle) this.elements.popoverTitle.textContent = "Add Commit & Save";
+    if (this.elements.popoverSubtitle) this.elements.popoverSubtitle.textContent = "Enter a commit message before saving";
+    if (this.elements.commitMessage) {
+      this.elements.commitMessage.value = `Update ${this.currentFile}`;
+    }
+  }
 
-    document.addEventListener("keydown", e => {
-      const ctrl = e.ctrlKey || e.metaKey;
-      if (ctrl && e.key === "s" && this.isEditing) {
-        e.preventDefault();
-        this.saveChanges();
-      }
-      if (e.key === "Escape") {
-        if (this.searchActive) this.closeSearch();
-        else if (this.isFullscreen) this.toggleFullscreen();
-        else if (this.isEditing) this.cancelEdit();
-      }
-      if (ctrl && e.key === "f") {
-        e.preventDefault();
-        this.openSearch();
-      }
-      if (ctrl && e.key === "h") {
-        e.preventDefault();
-        this.openSearchReplace();
-      }
-      if (ctrl && (e.key === "+" || e.key === "=")) {
-        e.preventDefault();
-        this.adjustFontSize(1);
-      }
-      if (ctrl && e.key === "-") {
-        e.preventDefault();
-        this.adjustFontSize(-1);
-      }
-      if (ctrl && e.key === "0") {
-        e.preventDefault();
-        this.setCodeMirrorFontSize(12);
-      }
-      if (e.key === "F11") {
-        e.preventDefault();
-        this.toggleFullscreen();
-      }
-      if (ctrl && e.key === "z" && !e.shiftKey && this.isEditing) {
-        e.preventDefault();
-        this.undo();
-      }
-      if (ctrl && e.key === "y" || (ctrl && e.shiftKey && e.key === "z")) {
-        e.preventDefault();
-        this.redo();
-      }
-    });
+  hideCommitPopup() {
+    if (!this.elements.commitDropdown) return;
+    this.elements.commitDropdown.classList.add("hide");
+    if (this.elements.commitMessage) this.elements.commitMessage.value = "";
+  }
 
-    window.addEventListener("beforeunload", (e) => {
-      if (this.isEditing && this.codeMirror && this.codeMirror.getValue() !== this.originalContent) {
-        e.preventDefault();
-        e.returnValue = "";
-      }
-    });
+  calculateDropdownPosition() {
+    if (!this.elements.editSaveButton || !this.elements.commitDropdown) return;
+    const buttonRect = this.elements.editSaveButton.getBoundingClientRect();
+    const dropdown = this.elements.commitDropdown;
+    const top = buttonRect.bottom + window.scrollY + 8;
+    let left = buttonRect.right - dropdown.offsetWidth + window.scrollX;
+    if (left < 10) left = 10;
+    dropdown.style.top = `${top}px`;
+    dropdown.style.left = `${left}px`;
   }
 
   setupCodeMirror() {
@@ -183,8 +364,8 @@ class coderViewEdit {
       return;
     }
     if (!this.elements.codeMirrorContainer || this.codeMirror) return;
-    const fontSize = parseInt(localStorage.getItem("gitcodr_fontsize")) || 12;
-    const savedTheme = localStorage.getItem("gitcodr_theme");
+    const fontSize = parseInt(localStorage.getItem("editor_fontsize")) || 14;
+    const savedTheme = localStorage.getItem("editor_theme");
     const isDark = savedTheme === "dark" || (!savedTheme && document.documentElement.getAttribute("data-theme") === "dark");
     this.codeMirror = CodeMirror(this.elements.codeMirrorContainer, {
       value: "",
@@ -193,7 +374,7 @@ class coderViewEdit {
       lineNumbers: true,
       lineWrapping: this.state.wrapLines,
       foldGutter: true,
-      gutters: ["CodeMirror-linenumbers", "CodeMirror-foldgutter", "CodeMirror-lint-markers"],
+      gutters: ["CodeMirror-linenumbers", "CodeMirror-foldgutter"],
       readOnly: true,
       tabSize: 2,
       indentUnit: 2,
@@ -203,115 +384,96 @@ class coderViewEdit {
       scrollbarStyle: "native",
       viewportMargin: Infinity,
       styleActiveLine: this.state.highlightActiveLine,
-      showInvisibles: this.state.showInvisibles,
-      lint: true,
-      highlightSelectionMatches: {showToken: /\w/},
+      highlightSelectionMatches: {
+        showToken: /\w/
+      },
       extraKeys: {
-        "Ctrl-S": () => this.saveChanges(),
-        "Cmd-S": () => this.saveChanges(),
-        "Ctrl-F": "findPersistent",
-        "Ctrl-H": "replace",
+        "Ctrl-S": () => {
+          if (this.isEditing) this.showCommitPopup();
+        },
+        "Cmd-S": () => {
+          if (this.isEditing) this.showCommitPopup();
+        },
+        "Ctrl-F": () => this.openSearch(),
         "Ctrl-/": "toggleComment",
-        "Ctrl-Z": () => this.undo(),
-        "Ctrl-Y": () => this.redo(),
-        "Shift-Ctrl-Z": () => this.redo(),
-        "Tab": "indentMore",
-        "Shift-Tab": "indentLess"
-      }
+        Tab: "indentMore",
+        "Shift-Tab": "indentLess",
+      },
     });
-    this.elements.fontSizeDisplay && (this.elements.fontSizeDisplay.textContent = `${fontSize}px`);
+    this.elements.fontSizeLabel && (this.elements.fontSizeLabel.textContent = `${fontSize}px`);
     this.updateThemeIcon(isDark);
     this.setCodeMirrorFontSize(fontSize);
-    this.codeMirror.on("change", (instance, change) => {
-      this.updateLineNumbers();
-      this.saveUndoState(change);
-      this.updateFileSize();
-      this.updateLastSavedIndicator(false);
-    });
-    this.codeMirror.on("cursorActivity", () => this.updateCursorPosition());
-    this.codeMirror.on("focus", () => this.onEditorFocus());
-    this.codeMirror.on("blur", () => this.onEditorBlur());
-    this.codeMirror.on("scroll", () => this.onEditorScroll());
+    this.codeMirror.on("change",
+      () => {
+        this.updateStats();
+        this.updateModifiedBadge();
+      });
+    this.codeMirror.on("cursorActivity",
+      () => this.updateCursorPosition());
   }
 
   loadUserPreferences() {
-    const wrap = localStorage.getItem("gitcodr_wrapLines");
+    const wrap = localStorage.getItem("editor_wrapLines");
     if (wrap !== null) {
       this.state.wrapLines = wrap === "true";
       this.codeMirror?.setOption("lineWrapping", this.state.wrapLines);
-      this.elements.wrapLinesBtn?.classList.toggle("active", this.state.wrapLines);
-    }
-    const invisibles = localStorage.getItem("gitcodr_showInvisibles");
-    if (invisibles !== null) {
-      this.state.showInvisibles = invisibles === "true";
-      this.codeMirror?.setOption("showInvisibles", this.state.showInvisibles);
-      this.elements.showInvisiblesBtn?.classList.toggle("active", this.state.showInvisibles);
-    }
-    const autoSave = localStorage.getItem("gitcodr_autoSave");
-    if (autoSave !== null) {
-      this.state.autoSave = autoSave === "true";
+      this.elements.wrapBtn?.classList.toggle("active", this.state.wrapLines);
     }
   }
 
   setupAutoSave() {
     if (this.state.autoSave) {
       this.state.autoSaveInterval = setInterval(() => {
-        if (this.isEditing && this.codeMirror && this.codeMirror.getValue() !== this.originalContent) {
-          this.autoSave();
-        }
-      }, 30000);
+          if (this.isEditing && this.codeMirror && this.codeMirror.getValue() !== this.originalContent) {
+            this.autoSave();
+          }
+        },
+        30000);
     }
   }
 
-  setCodeMirrorFontSize(size) {
-    if (!this.codeMirror) return;
-    this.codeMirror.getWrapperElement().style.fontSize = `${size}px`;
-    this.state.fontSize = size;
-    this.elements.fontSizeDisplay && (this.elements.fontSizeDisplay.textContent = `${size}px`);
-    localStorage.setItem("gitcodr_fontsize", size);
-    this.codeMirror.refresh();
+  setLanguage(langValue) {
+    const lang = this.languages.find((l) => l.value === langValue);
+    if (!lang) return;
+    this.currentLanguage = langValue;
+    this.elements.languageLabel && (this.elements.languageLabel.textContent = lang.label);
+    this.elements.languageBadge && (this.elements.languageBadge.innerHTML = AppAssets.icons.code(lang.label));
+    this.elements.languageDropdown?.classList.add("hide");
+    this.setCodeMirrorMode(langValue);
   }
 
-  setCodeMirrorMode(filename) {
+  setCodeMirrorMode(langValue) {
     if (!this.codeMirror) return;
-    const ext = filename.split(".").pop().toLowerCase();
     const modes = {
-      js: "javascript",
-      ts: "javascript",
-      jsx: "jsx",
-      tsx: "jsx",
+      javascript: "javascript",
+      typescript: "javascript",
+      python: "python",
       html: "htmlmixed",
-      htm: "htmlmixed",
       css: "css",
-      scss: "css",
-      less: "css",
       json: "application/json",
-      md: "markdown",
       markdown: "markdown",
-      py: "python",
-      php: "php",
-      java: "text/x-java",
+      yaml: "yaml",
       xml: "xml",
       sql: "sql",
-      yml: "yaml",
-      yaml: "yaml",
-      sh: "shell",
-      bash: "shell",
-      rb: "ruby",
+      shell: "shell",
+      ruby: "ruby",
       go: "go",
-      rs: "rust",
+      rust: "rust",
+      java: "text/x-java",
       cpp: "text/x-c++src",
-      c: "text/x-csrc",
-      cs: "text/x-csharp",
-      swift: "swift"
+      csharp: "text/x-csharp",
+      php: "php",
+      swift: "swift",
     };
-    const mode = modes[ext] || "text";
-    this.codeMirror.setOption("mode", mode);
-    if (mode === "javascript" || mode === "jsx" || mode === "text/x-c++src" || mode === "text/x-csrc" || mode === "python" || mode === "php") {
-      this.codeMirror.setOption("lint", true);
-    } else {
-      this.codeMirror.setOption("lint", false);
+    this.codeMirror.setOption("mode", modes[langValue] || "text");
+  }
+
+  detectLanguageFromExtension(filename) {
+    const ext = filename.split(".").pop().toLowerCase();
+    for (const lang of this.languages) {
+      if (lang.ext.includes(ext)) return lang.value;
     }
+    return "javascript";
   }
 
   show() {
@@ -325,49 +487,23 @@ class coderViewEdit {
 
   enterEditMode() {
     if (!this.currentFile) return;
-    this.showLoadingSpinner();
     this.isEditing = true;
-    this.elements.editSaveIcon.innerHTML = AppAssets.icons.save;
-    this.elements.editSaveBtn.title = "Save";
-    this.elements.cancelBtn?.classList.remove("hide");
-    this.elements.formatCodeBtn?.classList.remove("hide");
-    this.elements.commitPanel?.classList.remove("hide");
+    this.elements.editModeBtn?.classList.add("active");
+    this.elements.viewModeBtn?.classList.remove("active");
+    if (this.elements.editSaveLabel) this.elements.editSaveLabel.textContent = "Save";
     if (this.codeMirror) {
       this.codeMirror.setOption("readOnly", false);
-      this.codeMirror.getWrapperElement().style.cursor = "text";
-      this.saveUndoState();
+      this.codeMirror.focus();
     }
-    this.updateCommitMessage();
-    this.hideLoadingSpinner();
   }
 
   exitEditMode() {
     this.isEditing = false;
-    this.elements.editSaveIcon.innerHTML = AppAssets.icons.edit;
-    this.elements.editSaveBtn.title = "Edit";
-    this.elements.cancelBtn?.classList.add("hide");
-    this.elements.formatCodeBtn?.classList.add("hide");
-    this.elements.commitPanel?.classList.add("hide");
-    if (this.codeMirror) {
-      this.codeMirror.setOption("readOnly", true);
-      this.codeMirror.getWrapperElement().style.cursor = "default";
-      this.undoHistory = [];
-      this.redoHistory = [];
-    }
-    this.updateLastSavedIndicator(true);
-  }
-
-  cancelEdit() {
-    if (!this.codeMirror) return;
-    if (this.codeMirror.getValue() !== this.originalContent && !confirm("Discard unsaved changes?")) return;
-    this.showLoadingSpinner();
-    this.codeMirror.setValue(this.originalContent);
-    this.updateLineNumbers();
-    this.updateFileSize();
-    setTimeout(() => {
-      this.exitEditMode();
-      this.hideLoadingSpinner();
-    }, 300);
+    this.elements.editModeBtn?.classList.remove("active");
+    this.elements.viewModeBtn?.classList.add("active");
+    if (this.elements.editSaveLabel) this.elements.editSaveLabel.textContent = "Edit";
+    if (this.codeMirror) this.codeMirror.setOption("readOnly", true);
+    this.hideCommitPopup();
   }
 
   displayFile(filename, fileData) {
@@ -375,125 +511,72 @@ class coderViewEdit {
     this.currentFile = filename;
     this.fileData = fileData;
     this.originalContent = fileData.content || "";
-    this.elements.fileNameInput && (this.elements.fileNameInput.value = filename);
-    const ext = filename.split(".").pop().toLowerCase();
-    const language = typeof getLanguageName === "function" ? getLanguageName(ext) : ext.toUpperCase();
-    const size = typeof formatFileSize === "function" ? formatFileSize(new Blob([this.originalContent]).size) : `${(new Blob([this.originalContent]).size / 1024).toFixed(2)} KB`;
-    const lines = this.originalContent.split("\n").length;
-    this.elements.fileLanguageDisplay && (this.elements.fileLanguageDisplay.textContent = language);
-    this.elements.fileLinesCount && (this.elements.fileLinesCount.textContent = `${lines} ${lines === 1 ? "line" : "lines"}`);
-    this.elements.fileSize && (this.elements.fileSize.textContent = size);
+    this.elements.fileNameDisplay && (this.elements.fileNameDisplay.textContent = filename);
+    const detectedLang = this.detectLanguageFromExtension(filename);
+    this.setLanguage(detectedLang);
     if (!this.codeMirror) {
       this.setupCodeMirror();
       setTimeout(() => {
-        if (this.codeMirror) {
-          this.codeMirror.setValue(this.originalContent);
-          this.setCodeMirrorMode(filename);
-          this.codeMirror.refresh();
-          this.updateLastSavedIndicator(true);
-        }
-      }, 100);
-    } else {
+          if (this.codeMirror) {
+            this.codeMirror.setValue(this.originalContent);
+            this.codeMirror.refresh();
+            this.updateStats();
+            this.updateLastSaved(true);
+          }
+        },
+        100);
+    }
+    else {
       this.codeMirror.setValue(this.originalContent);
-      this.setCodeMirrorMode(filename);
       this.codeMirror.refresh();
-      this.updateLastSavedIndicator(true);
+      this.updateStats();
+      this.updateLastSaved(true);
     }
     this.exitEditMode();
+    this.updateModifiedBadge();
     this.show();
-    setTimeout(() => this.codeMirror?.refresh(), 200);
   }
 
-  updateCommitMessage() {
-    if (!this.currentFile || !this.elements.commitTitleInput) return;
-    if (!this.elements.commitTitleInput.value.trim()) this.elements.commitTitleInput.value = `Update ${this.currentFile}`;
-  }
-
-  updateLineNumbers() {
-    if (!this.codeMirror) return;
-    const lines = this.codeMirror.getValue().split("\n").length;
-    this.elements.fileLinesCount && (this.elements.fileLinesCount.textContent = `${lines} ${lines === 1 ? "line" : "lines"}`);
-  }
-
-  updateFileSize() {
-    if (!this.codeMirror || !this.elements.fileSize) return;
-    const content = this.codeMirror.getValue();
-    const size = typeof formatFileSize === "function" ? formatFileSize(new Blob([content]).size) : `${(new Blob([content]).size / 1024).toFixed(2)} KB`;
-    this.elements.fileSize.textContent = size;
-  }
-
-  updateCursorPosition() {
-    if (!this.codeMirror || !this.elements.cursorPosition) return;
-    const cursor = this.codeMirror.getCursor();
-    this.elements.cursorPosition.textContent = `Ln ${cursor.line + 1}, Col ${cursor.ch + 1}`;
-    const sel = this.codeMirror.getSelection();
-    this.elements.selectionInfo && (this.elements.selectionInfo.textContent = sel ? `${sel.length} selected` : "");
-  }
-
-  updateLastSavedIndicator(saved) {
-    if (!this.elements.lastSavedIndicator) return;
-    if (saved) {
-      const now = new Date();
-      this.lastSaveTime = now;
-      const timeStr = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-      this.elements.lastSavedIndicator.textContent = `Saved ${timeStr}`;
-      this.elements.lastSavedIndicator.classList.add("saved");
-      setTimeout(() => {
-        this.elements.lastSavedIndicator.classList.remove("saved");
-      }, 3000);
-    } else {
-      this.elements.lastSavedIndicator.textContent = "Unsaved";
-      this.elements.lastSavedIndicator.classList.remove("saved");
-    }
-  }
-
-  saveChanges() {
-    if (!this.currentFile || !this.fileData) return;
-    const commitTitle = this.elements.commitTitleInput?.value.trim();
-    if (!commitTitle) {
-      if (typeof showErrorMessage === "function") showErrorMessage("Please enter a commit message");
-      return;
-    }
-    if (typeof LoadingProgress !== "undefined") LoadingProgress.show();
+  performSave(commitMessage) {
+    this.showLoadingSpinner();
     setTimeout(() => {
-      try {
-        const newContent = this.codeMirror ? this.codeMirror.getValue() : "";
-        this.fileData.content = newContent;
-        this.fileData.lastModified = Date.now();
-        this.fileData.lastCommit = commitTitle;
-        this.fileData.size = new Blob([newContent]).size;
-        const filePath = (window.currentState?.path ? window.currentState.path + "/" : "") + this.currentFile;
-        if (typeof LocalStorageManager !== "undefined") LocalStorageManager.saveFile(window.currentState?.repository, filePath, this.fileData);
-        this.originalContent = newContent;
-        if (typeof showSuccessMessage === "function") showSuccessMessage(`Saved ${this.currentFile}`);
-        setTimeout(() => {
+        try {
+          const newContent = this.codeMirror ? this.codeMirror.getValue() : "";
+          this.fileData.content = newContent;
+          this.fileData.lastModified = Date.now();
+          this.fileData.lastCommit = commitMessage;
+          this.fileData.size = new Blob([newContent]).size;
+          const filePath = (window.currentState?.path ? window.currentState.path + "/" : "") + this.currentFile;
+          if (typeof LocalStorageManager !== "undefined") LocalStorageManager.saveFile(window.currentState?.repository, filePath, this.fileData);
+          this.originalContent = newContent;
+          if (typeof showSuccessMessage === "function") showSuccessMessage(`Saved ${this.currentFile}`);
+          this.updateLastSaved(true);
+          this.updateModifiedBadge();
           this.exitEditMode();
-          if (typeof LoadingProgress !== "undefined") LoadingProgress.hide();
-          if (this.elements.commitTitleInput) this.elements.commitTitleInput.value = "";
-          if (this.elements.commitDescriptionInput) this.elements.commitDescriptionInput.value = "";
-          this.updateLastSavedIndicator(true);
-        }, 500);
-      } catch (error) {
-        if (typeof LoadingProgress !== "undefined") LoadingProgress.hide();
-        if (typeof showErrorMessage === "function") showErrorMessage(`Save failed: ${error.message}`);
-      }
-    }, 500);
+          this.hideLoadingSpinner();
+        }
+        catch (error) {
+          this.hideLoadingSpinner();
+          if (typeof showErrorMessage === "function") showErrorMessage(`Save failed: ${error.message}`);
+        }
+      },
+      300);
   }
 
-  autoSave() {
-    if (!this.currentFile || !this.fileData || !this.isEditing) return;
-    const newContent = this.codeMirror ? this.codeMirror.getValue() : "";
-    if (newContent === this.originalContent) return;
-    try {
-      this.fileData.content = newContent;
-      this.fileData.lastModified = Date.now();
-      this.fileData.lastCommit = "Auto-save";
-      this.fileData.size = new Blob([newContent]).size;
-      const filePath = (window.currentState?.path ? window.currentState.path + "/" : "") + this.currentFile;
-      if (typeof LocalStorageManager !== "undefined") LocalStorageManager.saveFile(window.currentState?.repository, filePath, this.fileData);
-      this.originalContent = newContent;
-      this.updateLastSavedIndicator(true);
-    } catch (error) {}
+  saveChanges(withCommit = false) {
+    if (!this.currentFile || !this.fileData) return;
+    if (withCommit) {
+      const commitMessage = this.elements.commitMessage?.value.trim();
+      if (!commitMessage) {
+        if (typeof showErrorMessage === "function") showErrorMessage("Please enter a commit message");
+        return;
+      }
+      this.hideCommitPopup();
+      this.performSave(commitMessage);
+    }
+    else {
+      this.performSave("Saved changes");
+    }
   }
 
   copyCode() {
@@ -501,15 +584,15 @@ class coderViewEdit {
     const content = this.codeMirror.getSelection() || this.codeMirror.getValue();
     navigator.clipboard.writeText(content).then(() => {
       if (typeof showSuccessMessage === "function") showSuccessMessage("Copied to clipboard");
-    }).catch(() => {
-      if (typeof showErrorMessage === "function") showErrorMessage("Failed to copy");
     });
   }
 
   downloadFile() {
-    if (!this.currentFile || !this.fileData) return;
-    const content = this.codeMirror ? this.codeMirror.getValue() : this.fileData.content || "";
-    const blob = new Blob([content], { type: "text/plain;charset=utf-8" });
+    if (!this.currentFile) return;
+    const content = this.codeMirror ? this.codeMirror.getValue() : "";
+    const blob = new Blob([content], {
+      type: "text/plain;charset=utf-8"
+    });
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
@@ -518,48 +601,151 @@ class coderViewEdit {
     a.click();
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
-    if (typeof showSuccessMessage === "function") showSuccessMessage(`Downloaded ${this.currentFile}`);
   }
 
-  renameFile(newName) {
-    if (!this.currentFile || !newName || newName === this.currentFile) return;
-    if (!confirm(`Rename "${this.currentFile}" to "${newName}"?`)) {
-      this.elements.fileNameInput.value = this.currentFile;
-      return;
-    }
-    const oldPath = (window.currentState?.path ? window.currentState.path + "/" : "") + this.currentFile;
-    const newPath = (window.currentState?.path ? window.currentState.path + "/" : "") + newName;
-    if (typeof LocalStorageManager !== "undefined") {
-      const success = LocalStorageManager.renameFile(window.currentState?.repository, oldPath, newPath);
-      if (success) {
-        this.currentFile = newName;
-        if (typeof showSuccessMessage === "function") showSuccessMessage(`Renamed to ${newName}`);
-      } else {
-        this.elements.fileNameInput.value = this.currentFile;
-        if (typeof showErrorMessage === "function") showErrorMessage("Rename failed");
+  handleFileUpload(e) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      const content = event.target?.result;
+      if (this.codeMirror) {
+        this.codeMirror.setValue(content);
+        this.currentFile = file.name;
+        this.elements.fileNameDisplay && (this.elements.fileNameDisplay.textContent = file.name);
+        this.setLanguage(this.detectLanguageFromExtension(file.name));
+        this.originalContent = content;
+        this.updateStats();
+        this.updateModifiedBadge();
       }
+    };
+    reader.readAsText(file);
+  }
+
+  setCodeMirrorFontSize(size) {
+    if (!this.codeMirror) return;
+    this.codeMirror.getWrapperElement().style.fontSize = `${size}px`;
+    this.state.fontSize = size;
+    this.elements.fontSizeLabel && (this.elements.fontSizeLabel.textContent = `${size}px`);
+    localStorage.setItem("editor_fontsize", size);
+    this.codeMirror.refresh();
+  }
+
+  adjustFontSize(change) {
+    const newSize = Math.max(10, Math.min(24, this.state.fontSize + change));
+    if (newSize !== this.state.fontSize) this.setCodeMirrorFontSize(newSize);
+  }
+
+  updateThemeIcon(isDark) {
+    if (!this.elements.themeIcon) return;
+    this.elements.themeIcon.innerHTML = isDark ? AppAssets.icons.moon() : AppAssets.icons.sun();
+  }
+
+  updateStats() {
+    if (!this.codeMirror) return;
+    const content = this.codeMirror.getValue();
+    const lines = content.split("\n").length;
+    const bytes = new Blob([content]).size;
+    let sizeStr = bytes < 1024 ? `${bytes} B` : bytes < 1024 * 1024 ? `${(bytes / 1024).toFixed(1)} KB` : `${(bytes / (1024 * 1024)).toFixed(2)} MB`;
+    this.elements.lineCount && (this.elements.lineCount.textContent = lines);
+    this.elements.charCount && (this.elements.charCount.textContent = content.length.toLocaleString());
+    this.elements.fileSize && (this.elements.fileSize.textContent = sizeStr);
+  }
+
+  updateCursorPosition() {
+    if (!this.codeMirror) return;
+    const cursor = this.codeMirror.getCursor();
+    this.elements.cursorLine && (this.elements.cursorLine.textContent = cursor.line + 1);
+    this.elements.cursorCol && (this.elements.cursorCol.textContent = cursor.ch + 1);
+  }
+
+  updateModifiedBadge() {
+    if (!this.codeMirror) return;
+    this.elements.modifiedBadge?.classList.toggle("hide", this.codeMirror.getValue() === this.originalContent);
+  }
+
+  updateLastSaved(saved) {
+    if (!this.elements.lastSaved) return;
+    if (saved) {
+      const now = new Date();
+      this.elements.lastSaved.textContent = now.toLocaleTimeString([], {
+        hour: "2-digit",
+        minute: "2-digit"
+      });
     }
+    else {
+      this.elements.lastSaved.textContent = "Never";
+    }
+  }
+
+  openSearch() {
+    if (!this.codeMirror) return;
+    this.searchActive = true;
+    this.elements.searchPanel?.classList.remove("hide");
+    setTimeout(() => {
+      this.elements.searchInput?.focus();
+      this.elements.searchInput?.select();
+    }, 50);
+  }
+
+  closeSearch() {
+    this.searchActive = false;
+    this.elements.searchPanel?.classList.add("hide");
+    this.clearSearch();
+  }
+
+  clearSearch() {
+    if (this.elements.searchInput) this.elements.searchInput.value = "";
+    this.searchMatches = [];
+  }
+
+  performSearch(query) {
+    if (!this.codeMirror || !query) return;
+    const content = this.codeMirror.getValue();
+    const lines = content.split("\n");
+    this.searchMatches = [];
+    lines.forEach((line, idx) => {
+      let pos = 0;
+      const lowerLine = line.toLowerCase();
+      const lowerQuery = query.toLowerCase();
+      while ((pos = lowerLine.indexOf(lowerQuery, pos)) !== -1) {
+        this.searchMatches.push({
+          line: idx,
+          ch: pos,
+          length: query.length
+        });
+        pos += 1;
+      }
+    });
+    if (this.searchMatches.length > 0) this.highlightMatch(0);
+  }
+
+  highlightMatch(index) {
+    if (!this.codeMirror || index < 0 || index >= this.searchMatches.length) return;
+    const match = this.searchMatches[index];
+    this.codeMirror.setSelection({
+      line: match.line,
+      ch: match.ch
+    }, {
+      line: match.line,
+      ch: match.ch + match.length
+    });
+    this.codeMirror.scrollIntoView({
+      line: match.line,
+      ch: match.ch
+    }, 200);
   }
 
   toggleWrapLines() {
     if (!this.codeMirror) return;
     this.state.wrapLines = !this.state.wrapLines;
     this.codeMirror.setOption("lineWrapping", this.state.wrapLines);
-    localStorage.setItem("gitcodr_wrapLines", this.state.wrapLines);
-    this.elements.wrapLinesBtn?.classList.toggle("active", this.state.wrapLines);
+    this.elements.wrapBtn?.classList.toggle("active", this.state.wrapLines);
   }
 
   toggleInvisibles() {
-    if (!this.codeMirror) return;
     this.state.showInvisibles = !this.state.showInvisibles;
-    this.codeMirror.setOption("showInvisibles", this.state.showInvisibles);
-    localStorage.setItem("gitcodr_showInvisibles", this.state.showInvisibles);
     this.elements.showInvisiblesBtn?.classList.toggle("active", this.state.showInvisibles);
-  }
-
-  adjustFontSize(change) {
-    const newSize = Math.max(8, Math.min(32, this.state.fontSize + change));
-    if (newSize !== this.state.fontSize) this.setCodeMirrorFontSize(newSize);
   }
 
   toggleTheme() {
@@ -567,371 +753,67 @@ class coderViewEdit {
     const isDark = html.getAttribute("data-theme") === "dark";
     const newTheme = isDark ? "light" : "dark";
     html.setAttribute("data-theme", newTheme);
-    localStorage.setItem("gitcodr_theme", newTheme);
     this.updateThemeIcon(!isDark);
     this.codeMirror?.setOption("theme", isDark ? "default" : "one-dark");
   }
 
-  updateThemeIcon(isDark) {
-    if (!this.elements.themeIcon) return;
-    this.elements.themeIcon.innerHTML = isDark ? AppAssets.icons.moon : AppAssets.icons.sun;
-  }
-
-  openSearch() {
-    if (!this.codeMirror) return;
-    this.searchActive = true;
-    this.codeMirror.execCommand("findPersistent");
-    setTimeout(() => {
-      const input = document.querySelector(".CodeMirror-search-field");
-      if (input) {
-        input.focus();
-        input.select();
-      }
-    }, 50);
-  }
-
-  openSearchReplace() {
-    if (!this.codeMirror) return;
-    this.searchActive = true;
-    this.codeMirror.execCommand("replace");
-    setTimeout(() => {
-      const input = document.querySelector(".CodeMirror-search-field");
-      if (input) {
-        input.focus();
-        input.select();
-      }
-    }, 50);
-  }
-
-  closeSearch() {
-    this.searchActive = false;
-    const searchBox = document.querySelector(".CodeMirror-search");
-    if (searchBox) {
-      searchBox.style.display = "none";
-    }
+  toggleFullscreen() {
+    this.isFullscreen = !this.isFullscreen;
+    const container = document.querySelector(".editorContainer");
+    container?.classList.toggle("fullscreen", this.isFullscreen);
+    document.body.style.overflow = this.isFullscreen ? "hidden" : "";
+    setTimeout(() => this.codeMirror?.refresh(), 100);
   }
 
   foldAll() {
     if (!this.codeMirror) return;
     this.codeMirror.operation(() => {
-      for (let i = 0; i < this.codeMirror.lineCount(); i++) this.codeMirror.foldCode({ line: i, ch: 0 }, null, "fold");
+      for (let i = 0; i < this.codeMirror.lineCount(); i++) this.codeMirror.foldCode({
+        line: i,
+        ch: 0
+      }, null, "fold");
     });
   }
 
   unfoldAll() {
     if (!this.codeMirror) return;
     this.codeMirror.operation(() => {
-      for (let i = 0; i < this.codeMirror.lineCount(); i++) this.codeMirror.foldCode({ line: i, ch: 0 }, null, "unfold");
+      for (let i = 0; i < this.codeMirror.lineCount(); i++) this.codeMirror.foldCode({
+        line: i,
+        ch: 0
+      }, null, "unfold");
     });
-  }
-
-  toggleFullscreen() {
-    if (!this.elements.coderWrapper) return;
-    this.isFullscreen = !this.isFullscreen;
-    if (this.isFullscreen) {
-      this.elements.coderWrapper.classList.add("fullscreen");
-      document.body.style.overflow = "hidden";
-      this.elements.fullscreenIcon && (this.elements.fullscreenIcon.innerHTML = AppAssets.icons.fullscreenExit);
-    } else {
-      this.elements.coderWrapper.classList.remove("fullscreen");
-      document.body.style.overflow = "";
-      this.elements.fullscreenIcon && (this.elements.fullscreenIcon.innerHTML = AppAssets.icons.fullscreen);
-    }
-    setTimeout(() => this.codeMirror?.refresh(), 100);
   }
 
   formatCode() {
     if (!this.codeMirror || !this.isEditing) return;
     const content = this.codeMirror.getValue();
-    const mode = this.codeMirror.getOption("mode");
-    let formatted = content;
     try {
-      if (mode === "javascript" || mode === "jsx") {
-        try {
-          if (typeof prettier !== "undefined" && typeof prettierPlugins !== "undefined") {
-            formatted = prettier.format(content, { parser: "babel", plugins: prettierPlugins });
-          }
-        } catch (_) {
-          formatted = content;
-        }
-      }
-      if (mode === "application/json") {
-        try {
-          formatted = JSON.stringify(JSON.parse(content), null, 2);
-        } catch (_) {
-          formatted = content;
-        }
-      }
-      if (mode === "htmlmixed") {
-        try {
-          if (typeof html_beautify !== "undefined") {
-            formatted = html_beautify(content, { indent_size: 2, wrap_line_length: 80 });
-          }
-        } catch (_) {
-          formatted = content;
-        }
-      }
-      if (mode === "css") {
-        try {
-          if (typeof css_beautify !== "undefined") {
-            formatted = css_beautify(content, { indent_size: 2 });
-          }
-        } catch (_) {
-          formatted = content;
-        }
-      }
-      if (formatted !== content) {
-        const cursor = this.codeMirror.getCursor();
-        this.codeMirror.setValue(formatted);
-        this.codeMirror.setCursor(cursor);
-        if (typeof showSuccessMessage === "function") showSuccessMessage("Code formatted");
-      } else {
-        if (typeof showInfoMessage === "function") showInfoMessage("No formatting changes");
-      }
-    } catch (error) {
-      if (typeof showErrorMessage === "function") showErrorMessage("Formatting failed");
+      const formatted = JSON.stringify(JSON.parse(content), null, 2);
+      this.codeMirror.setValue(formatted);
     }
-  }
-
-  saveUndoState(change) {
-    if (!this.codeMirror || !this.isEditing) return;
-    if (change && change.origin === "undo") return;
-    this.undoHistory.push({
-      value: this.codeMirror.getValue(),
-      cursor: this.codeMirror.getCursor()
-    });
-    if (this.undoHistory.length > 50) {
-      this.undoHistory.shift();
-    }
-    this.redoHistory = [];
+    catch (e) {}
   }
 
   undo() {
-    if (!this.codeMirror || !this.isEditing || this.undoHistory.length === 0) return;
-    const currentState = {
-      value: this.codeMirror.getValue(),
-      cursor: this.codeMirror.getCursor()
-    };
-    this.redoHistory.push(currentState);
-    const prevState = this.undoHistory.pop();
-    this.codeMirror.setValue(prevState.value);
-    this.codeMirror.setCursor(prevState.cursor);
+    this.codeMirror?.undo();
   }
-
   redo() {
-    if (!this.codeMirror || !this.isEditing || this.redoHistory.length === 0) return;
-    const currentState = {
-      value: this.codeMirror.getValue(),
-      cursor: this.codeMirror.getCursor()
-    };
-    this.undoHistory.push(currentState);
-    const nextState = this.redoHistory.pop();
-    this.codeMirror.setValue(nextState.value);
-    this.codeMirror.setCursor(nextState.cursor);
+    this.codeMirror?.redo();
   }
-
-  setReadOnly(readOnly) {
-    if (!this.codeMirror) return;
-    this.codeMirror.setOption("readOnly", readOnly);
-    this.codeMirror.getWrapperElement().style.cursor = readOnly ? "default" : "text";
-  }
-
-  getValue() {
-    return this.codeMirror ? this.codeMirror.getValue() : "";
-  }
-
-  setValue(content) {
-    if (this.codeMirror) {
-      this.codeMirror.setValue(content);
-      this.updateLineNumbers();
-      this.updateFileSize();
-    }
-  }
-
-  onEditorFocus() {
-    this.elements.coderWrapper?.classList.add("focused");
-  }
-
-  onEditorBlur() {
-    this.elements.coderWrapper?.classList.remove("focused");
-  }
-
-  onEditorScroll() {}
 
   showLoadingSpinner() {
-    if (this.elements.loadingSpinner) {
-      this.elements.loadingSpinner.setAttribute("data-active", "true");
-    }
+    this.elements.loadingSpinner?.setAttribute("data-active", "true");
   }
-
   hideLoadingSpinner() {
-    if (this.elements.loadingSpinner) {
-      this.elements.loadingSpinner.setAttribute("data-active", "false");
-    }
+    this.elements.loadingSpinner?.setAttribute("data-active", "false");
   }
 
   destroy() {
-    if (this.state.autoSaveInterval) {
-      clearInterval(this.state.autoSaveInterval);
-      this.state.autoSaveInterval = null;
-    }
-    if (this.codeMirror) {
-      this.codeMirror.toTextArea();
-      this.codeMirror = null;
-    }
-    document.getElementById("coderViewEditStyles")?.remove();
+    if (this.state.autoSaveInterval) clearInterval(this.state.autoSaveInterval);
+    if (this.codeMirror) this.codeMirror.toTextArea();
     this.isInitialized = false;
-    this.elements = {};
-    this.undoHistory = [];
-    this.redoHistory = [];
-  }
-
-  openSearch() {
-    if (!this.codeMirror) return;
-    
-    this.searchActive = true;
-    if (this.elements.searchPanel) {
-      this.elements.searchPanel.classList.remove("hide");
-    }
-    
-    if (this.elements.searchInput) {
-      setTimeout(() => {
-        this.elements.searchInput.focus();
-        this.elements.searchInput.select();
-      }, 50);
-    }
-    
-    this.setupSearchListeners();
-  }
-
-  setupSearchListeners() {
-    if (!this.elements.searchInput) return;
-    
-    const handleSearch = () => {
-      const query = this.elements.searchInput.value;
-      if (!query) {
-        this.clearSearch();
-        return;
-      }
-      this.performSearch(query);
-    };
-    
-    this.boundEventHandlers.handleSearch = handleSearch;
-    this.boundEventHandlers.searchKeydown = (e) => {
-      if (e.key === 'Escape') {
-        e.preventDefault();
-        this.closeSearch();
-      } else if (e.key === 'Enter' && e.shiftKey) {
-        e.preventDefault();
-        this.findPrevious();
-      } else if (e.key === 'Enter') {
-        e.preventDefault();
-        this.findNext();
-      }
-    };
-    
-    this.elements.searchInput.addEventListener('input', this.boundEventHandlers.handleSearch);
-    this.elements.searchInput.addEventListener('keydown', this.boundEventHandlers.searchKeydown);
-    
-    if (this.elements.searchNextBtn) {
-      this.elements.searchNextBtn.addEventListener('click', () => this.findNext());
-    }
-    if (this.elements.searchPrevBtn) {
-      this.elements.searchPrevBtn.addEventListener('click', () => this.findPrevious());
-    }
-    if (this.elements.closeSearchBtn) {
-      this.elements.closeSearchBtn.addEventListener('click', () => this.closeSearch());
-    }
-  }
-
-  closeSearch() {
-    this.searchActive = false;
-    if (this.elements.searchPanel) {
-      this.elements.searchPanel.classList.add("hide");
-    }
-    this.clearSearch();
-    if (this.codeMirror) {
-      this.codeMirror.focus();
-    }
-  }
-
-  clearSearch() {
-    if (this.elements.searchInput) {
-      this.elements.searchInput.value = "";
-    }
-    if (this.elements.searchMatches) {
-      this.elements.searchMatches.textContent = "0/0";
-    }
-    this.searchMatches = [];
-    this.currentSearchIndex = 0;
-    
-    if (this.codeMirror) {
-      this.codeMirror.clearSearch?.();
-    }
-  }
-
-  performSearch(query) {
-    if (!this.codeMirror || !query) return;
-    
-    const content = this.codeMirror.getValue();
-    const lines = content.split('\n');
-    this.searchMatches = [];
-    
-    lines.forEach((line, lineIndex) => {
-      let pos = 0;
-      while ((pos = line.indexOf(query, pos)) !== -1) {
-        this.searchMatches.push({
-          line: lineIndex,
-          ch: pos,
-          length: query.length
-        });
-        pos += 1;
-      }
-    });
-    
-    this.currentSearchIndex = 0;
-    
-    if (this.elements.searchMatches) {
-      if (this.searchMatches.length > 0) {
-        this.elements.searchMatches.textContent = `1/${this.searchMatches.length}`;
-        this.highlightMatch(0);
-      } else {
-        this.elements.searchMatches.textContent = `0/0`;
-      }
-    }
-  }
-
-  highlightMatch(index) {
-    if (!this.codeMirror || index < 0 || index >= this.searchMatches.length) return;
-    
-    const match = this.searchMatches[index];
-    this.codeMirror.setSelection(
-      { line: match.line, ch: match.ch },
-      { line: match.line, ch: match.ch + match.length }
-    );
-    
-    this.codeMirror.scrollIntoView(
-      { line: match.line, ch: match.ch },
-      200
-    );
-    
-    if (this.elements.searchMatches) {
-      this.elements.searchMatches.textContent = `${index + 1}/${this.searchMatches.length}`;
-    }
-  }
-
-  findNext() {
-    if (this.searchMatches.length === 0) return;
-    
-    this.currentSearchIndex = (this.currentSearchIndex + 1) % this.searchMatches.length;
-    this.highlightMatch(this.currentSearchIndex);
-  }
-
-  findPrevious() {
-    if (this.searchMatches.length === 0) return;
-    
-    this.currentSearchIndex = (this.currentSearchIndex - 1 + this.searchMatches.length) % this.searchMatches.length;
-    this.highlightMatch(this.currentSearchIndex);
+    this.elements.commitDropdown?.remove();
   }
 }
 
