@@ -97,8 +97,8 @@
             position: absolute; bottom: 100%; left: 0;
             width: 26rem; height: 16rem; overflow: hidden;
             
-            background-color: var(--bg-card);
-            border: 1px solid var(--border-color);
+            background-color: var(--canvas-subtle);
+            border: 1px solid var(--border-subtle);
             border-radius: var(--radius-lg);
             box-shadow: var(--shadow);
     
@@ -123,7 +123,7 @@
             height: 0;
             border-left: 8px solid transparent;
             border-right: 8px solid transparent;
-            border-top: 8px solid var(--bg-card);
+            border-top: 8px solid var(--border-subtle);
             z-index: 1001;
         }
         
@@ -136,7 +136,7 @@
             height: 0;
             border-left: 9px solid transparent;
             border-right: 9px solid transparent;
-            border-top: 9px solid var(--border-color);
+            border-top: 9px solid var(--border-subtle);
             z-index: 999;
         }
         
@@ -146,7 +146,7 @@
             align-items: center;
             gap: 12px;
             padding: 16px;
-            border-bottom: 1px solid var(--border-color);
+            border-bottom: 1px solid var(--border-subtle);
         }
         
         .header-icon {
@@ -164,13 +164,13 @@
         .save-title {
             font-size: 16px;
             font-weight: 600;
-            color: var(--text-primary);
+            color: var(--fg-on-emphasis);
             margin-bottom: 2px;
         }
         
         .save-subtitle {
             font-size: 13px;
-            color: var(--text-secondary);
+            color: var(--fg-subtle);
             font-weight: 400;
         }
         
@@ -187,20 +187,20 @@
             display: block;
             font-size: 13px;
             font-weight: 500;
-            color: var(--text-primary);
+            color: var(--fg-default);
             margin-bottom: 6px;
         }
         
         .commit-textarea {
             width: 100%;
             padding: 10px 12px;
-            border: 1px solid var(--border-color);
+            border: 1px solid var(--border-subtle);
             border-radius: var(--radius-sm);
             font-family: 'Inter', sans-serif;
             font-size: 14px;
             line-height: 1.5;
-            color: var(--text-primary);
-            background-color: var(--bg-primary);
+            color: var(--fg-on-emphasis);
+            background-color: var(--canvas-default);
             resize: vertical;
             min-height: 80px;
             transition: var(--transition);
@@ -208,12 +208,12 @@
         
         .commit-textarea:focus {
             outline: none;
-            border-color: var(--primary-color);
+            border-color: var(--border-subtle);
             box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
         }
         
         .commit-textarea::placeholder {
-            color: var(--text-secondary);
+            color: var(--fg-subtle);
         }
         
         .form-actions {
@@ -237,59 +237,26 @@
         }
         
         .btn-primary {
-            background-color: var(--primary-color);
-            color: white;
-            border-color: var(--primary-dark);
+            background-color: var(--canvas-default);
+            color: var(--fg-on-emphasis);
+            border-color: var(--border-default);
         }
         
         .btn-primary:hover {
-            background-color: var(--primary-dark);
+            background-color: transparent;
         }
         
         .btn-secondary {
-            background-color: var(--bg-secondary);
-            color: var(--text-primary);
-            border-color: var(--border-color);
+            background-color: var(--canvas-overlay);
+            color: var(--fg-on-emphasis);
+            border-color: var(--border-overlay);
         }
         
         .btn-secondary:hover {
-            background-color: var(--border-color);
+            background-color: transparent;
         }
         
         
-        
-        /* Dark Mode Support */
-        @media (prefers-color-scheme: dark) {
-            :root {
-                --text-primary: #f9fafb;
-                --text-secondary: #9ca3af;
-                --bg-primary: #111827;
-                --bg-secondary: #1f2937;
-                --bg-card: #1f2937;
-                --border-color: #374151;
-            }
-            
-            .commit-textarea {
-                background-color: #374151;
-                border-color: #4b5563;
-                color: var(--text-primary);
-            }
-            
-            .commit-textarea:focus {
-                border-color: var(--primary-color);
-                box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
-            }
-            
-            .btn-secondary {
-                background-color: #374151;
-                border-color: #4b5563;
-                color: var(--text-primary);
-            }
-            
-            .btn-secondary:hover {
-                background-color: #4b5563;
-            }
-        }
     </style>
 
 <!--
