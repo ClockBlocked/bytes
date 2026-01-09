@@ -4175,3 +4175,61 @@ aside:hover .sidebar-title {
 .CodeMirror {
   height: 100%;
 }
+
+
+
+
+
+
+
+
+
+
+/* CodeMirror fold gutter visuals */
+.CodeMirror-gutters {
+  background: var(--editorGutterBg);
+  border-right: 1px solid var(--editorBorder);
+}
+
+.CodeMirror-foldgutter {
+  width: 0.9rem;
+}
+
+.CodeMirror-foldgutter-open:after {
+  content: "▾";
+  color: var(--fgMuted);
+}
+
+.CodeMirror-foldgutter-folded:after {
+  content: "▸";
+  color: var(--editorAccent);
+}
+
+
+
+
+
+
+/* Dropdowns */
+.dropdown {
+  position: absolute;
+  background: var(--canvasOverlay);
+  border: 1px solid var(--borderDefault);
+  border-radius: var(--radiusSm);
+  box-shadow: var(--shadowLg);
+  min-width: 12rem;
+  padding: 0.25rem;
+  z-index: 200;
+  opacity: 1;
+  transform: translateY(0);
+  transition: opacity var(--transitionBase), transform var(--transitionBase);
+}
+
+.dropdown.hide {
+  display: none;
+}
+
+.dropdownRight {
+  top: 100%;
+  right: 0;
+}
