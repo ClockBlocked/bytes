@@ -1821,6 +1821,21 @@ aside:hover .sidebar-title {
   overflow-y: auto;
 }
 
+.dropdown2 {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  margin-top: 0.25rem;
+  background: var(--editorCardBg);
+  border: 0.0625rem solid var(--neutralSubtle);
+  border-radius: var(--radiusMd);
+  box-shadow: 0 0.625rem 0.9375rem -0.1875rem rgba(0, 0, 0, 0.3);
+  z-index: 99999999;
+  min-width: 10rem;
+  max-height: 20rem;
+  overflow-y: auto;
+}
+
 .dropdownContent {
   padding: 0.25rem;
 }
