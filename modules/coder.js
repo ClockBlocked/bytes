@@ -235,6 +235,59 @@ class coderViewEdit {
       this.elements.languageList.appendChild(btn);
     });
   }
+  
+  
+  setupMoreOptionsDropdown() {
+    // Ensure dropdown is at body level
+    if (!document.getElementById('moreOptionsDropdown')) {
+      document.body.insertAdjacentHTML('beforeend', 
+        '<div id="moreOptionsDropdown" class="dropdown hide"></div>');
+    }
+    
+    // Populate dropdown content
+    this.elements.moreOptionsDropdown = document.getElementById('moreOptionsDropdown');
+    this.elements.moreOptionsDropdown.innerHTML = `
+      <button class="dropdownItem" data-action="format">Format Code</button>
+      <button class="dropdownItem" data-action="foldAll">Fold All</button>
+      <button class="dropdownItem" data-action="unfoldAll">Unfold All</button>
+      <button class="dropdownItem" data-action="showInvisibles">Show Invisibles</button>
+    `;
+    
+    // Bind dropdown item events
+    this.elements.moreOptionsDropdown.querySelectorAll('.dropdownItem')
+      .forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          const action = e.target.dataset.action;
+          if (action === 'format') this.formatCode();
+          else if (action === 'foldAll') this.foldAll();
+          else if (action === 'unfoldAll') this.unfoldAll();
+          else if (action === 'showInvisibles') this.toggleInvisibles();
+          this.hideMoreOptionsDropdown();
+        });
+      });
+  }
+
+  showMoreOptionsDropdown(e) {
+    if (!this.elements.moreOptionsDropdown) return;
+    
+    const btnRect = e.currentTarget.getBoundingClientRect();
+    const dropdown = this.elements.moreOptionsDropdown;
+    
+    dropdown.classList.remove('hide');
+    dropdown.style.position = 'fixed';
+    dropdown.style.top = `${btnRect.bottom + window.scrollY}px`;
+    dropdown.style.right = `${window.innerWidth - btnRect.right}px`;
+    dropdown.style.zIndex = '9999';
+    dropdown.style.minWidth = '200px';
+  }
+
+  hideMoreOptionsDropdown() {
+    if (!this.elements.moreOptionsDropdown) return;
+    this.elements.moreOptionsDropdown.classList.add('hide');
+  }
+  
+  
+  
 
   bindEvents() {
     this.elements.editModeBtn?.addEventListener("click", () => this.enterEditMode());
@@ -268,6 +321,9 @@ class coderViewEdit {
       e.stopPropagation();
       this.elements.languageDropdown?.classList.toggle("hide");
     });
+
+
+/**
     this.elements.moreOptionsBtn?.addEventListener("click", (e) => {
       e.stopPropagation();
       this.elements.moreOptionsDropdown?.classList.toggle("hide");
@@ -275,6 +331,30 @@ class coderViewEdit {
     this.elements.moreOptionsDropdown?.addEventListener("click", (e) => {
       e.stopPropagation();
     });
+**/
+
+    this.elements.moreOptionsBtn?.addEventListener("click", (e) => {
+      e.stopPropagation();
+      if (this.elements.moreOptionsDropdown?.classList.contains("hide")) {
+        this.showMoreOptionsDropdown(e);
+      } else {
+        this.hideMoreOptionsDropdown();
+      }
+    });
+    
+    // Close on outside click
+    document.addEventListener("click", (e) => {
+      if (this.elements.moreOptionsDropdown &&
+        !this.elements.moreOptionsDropdown.contains(e.target) &&
+        !this.elements.moreOptionsBtn.contains(e.target)) {
+        this.hideMoreOptionsDropdown();
+      }
+    });
+
+
+
+
+
     this.elements.editSaveButton?.addEventListener("click", (e) => {
       e.stopPropagation();
       if (!this.isEditing) {
@@ -298,7 +378,7 @@ class coderViewEdit {
         this.hideCommitPopup();
       }
       this.elements.languageDropdown?.classList.add("hide");
-      this.elements.moreOptionsDropdown?.classList.add("hide");
+//      this.elements.moreOptionsDropdown?.classList.add("hide");
     });
     document.addEventListener("keydown", (e) => {
       const ctrl = e.ctrlKey || e.metaKey;
@@ -808,6 +888,9 @@ class coderViewEdit {
     this.elements.commitDropdown?.remove();
   }
 }
+
+
+
 
 window.coderViewEdit = new coderViewEdit();
 document.addEventListener("DOMContentLoaded", () => {
