@@ -1719,16 +1719,6 @@ aside:hover .sidebar-title {
 }
 
 
-.editorHeaderLeft,
-.editorHeaderCenter,
-.editorHeaderRight {
-  display: flex;
-  align-items: center;
-  gap: 0.25rem;
-}
-.editorHeaderLeft {
-  gap: 0.75rem;
-}
 
 .fileInfo {
   display: flex;
