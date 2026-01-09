@@ -307,11 +307,13 @@ class coderViewEdit {
           this.hideCommitPopup();
         }
         if (this.elements.languageDropdown && 
+          this.elements.languageBtn &&
           !this.elements.languageDropdown.contains(e.target) &&
           !this.elements.languageBtn.contains(e.target)) {
           this.elements.languageDropdown?.classList.add("hide");
         }
         if (this.elements.moreOptionsDropdown && 
+          this.elements.moreOptionsBtn &&
           !this.elements.moreOptionsDropdown.contains(e.target) &&
           !this.elements.moreOptionsBtn.contains(e.target)) {
           this.elements.moreOptionsDropdown?.classList.add("hide");
