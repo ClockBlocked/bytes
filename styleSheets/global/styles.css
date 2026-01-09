@@ -3165,7 +3165,7 @@ aside:hover .sidebar-title {
 
 @media (max-width: 48rem) {
   .editorHeader {
-    flex-wrap: wrap;
+    flex-wrap: nowrap;
     gap: 0.5rem;
     padding: 0.5rem;
   }
