@@ -4233,3 +4233,29 @@ aside:hover .sidebar-title {
   top: 100%;
   right: 0;
 }
+
+
+
+
+
+
+
+
+/* Editor toolbar layout */
+.editorToolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  padding: 0.75rem 1rem;
+  background: var(--editorHeaderBg);
+  border-bottom: 1px solid var(--editorBorder);
+}
+
+.editorToolbar .toolbarLeft,
+.editorToolbar .toolbarRight {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
