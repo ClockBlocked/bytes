@@ -1717,11 +1717,9 @@ aside:hover .sidebar-title {
 .editorHeader::-webkit-scrollbar {
   display: none;
 }
-.editorHeader .left {
-  justify-content: flex-start;
-}
-.editorHeader .right {
-  justify-content: flex-end;
+.editorHeader .group {
+  margin-left: 2rem;
+  margin-right: 2rem;
 }
 
 
