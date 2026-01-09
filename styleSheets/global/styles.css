@@ -3208,6 +3208,35 @@ aside:hover .sidebar-title {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/**
 .editorContainer {
   display: flex;
   flex-direction: column;
@@ -4081,4 +4110,68 @@ aside:hover .sidebar-title {
     border-bottom: 0.0625rem solid var(--borderDefault);
     margin-bottom: 0.25rem;
   }
+}
+**/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* Editor container + fullscreen */
+.editorContainer {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  height: calc(100vh - 3.5rem);
+  min-height: 32rem;
+  background: var(--editorBg);
+  border: 1px solid var(--editorBorder);
+  border-radius: var(--radiusLg);
+  overflow: hidden;
+}
+
+.editorContainer.fullscreen {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  margin: 0;
+  border-radius: 0;
+  z-index: 9999;
+  background: var(--editorBg);
+}
+
+/* Ensure inner layout doesn’t clip */
+.editorCard {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+}
+
+.editorBody {
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.CodeMirror {
+  height: 100%;
 }
