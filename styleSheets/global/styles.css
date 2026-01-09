@@ -2433,6 +2433,16 @@ aside:hover .sidebar-title {
   font-weight: 400;
 }
 
+
+
+
+
+.commit-panel {
+  padding: 1rem;
+  background-color: var(--canvasSubtle);
+  border-top: 0.0625rem solid var(--borderDefault);
+}
+
 .commit-form {
   padding: 1rem;
 }
@@ -2457,19 +2467,17 @@ aside:hover .sidebar-title {
   font-family: 'Inter', sans-serif;
   font-size: 0.875rem;
   line-height: 1.5;
-  color: var(--fgOnEmphasis);
+  color: var(--fgSubtle);
   background-color: var(--canvasDefault);
   resize: vertical;
   min-height: 5rem;
   transition: var(--transitionBase);
 }
-
 .commit-textarea:focus {
   outline: none;
   border-color: var(--borderSubtle);
   box-shadow: 0 0 0 0.1875rem rgba(99, 102, 241, 0.1);
 }
-
 .commit-textarea::placeholder {
   color: var(--fgSubtle);
 }
@@ -2479,6 +2487,9 @@ aside:hover .sidebar-title {
   gap: 0.5rem;
   justify-content: flex-end;
 }
+
+
+
 
 .btn {
   display: inline-flex;
@@ -2495,11 +2506,10 @@ aside:hover .sidebar-title {
 }
 
 .btn-primary {
-  background-color: var(--canvasDefault);
-  color: var(--fgOnEmphasis);
-  border-color: var(--borderDefault);
+  background-color: var(--btnPrimaryBg);
+  color: var(--btnPrimaryText);
+  border-color: var(--btnPrimaryText);
 }
-
 .btn-primary:hover {
   background-color: transparent;
 }
@@ -2509,10 +2519,12 @@ aside:hover .sidebar-title {
   color: var(--fgOnEmphasis);
   border-color: var(--borderDefault);
 }
-
 .btn-secondary:hover {
   background-color: transparent;
 }
+
+
+
 
 .pages[data-page="file"] {
   display: flex;
@@ -2521,6 +2533,9 @@ aside:hover .sidebar-title {
   margin: 0 auto;
   overflow: hidden;
 }
+
+
+
 
 .code-viewer-header {
   display: flex;
@@ -2532,7 +2547,6 @@ aside:hover .sidebar-title {
   min-height: 3rem;
   gap: 1rem;
 }
-
 .code-viewer-toolbar {
   display: flex;
   align-items: center;
@@ -2563,19 +2577,16 @@ aside:hover .sidebar-title {
   border-bottom-left-radius: 0.5rem;
   border-bottom-right-radius: 0.5rem;
 }
-
 #codeMirrorContainer {
   flex: 1 1 auto;
   min-height: 0;
   width: 100%;
   overflow: hidden;
 }
-
 #codeMirrorContainer .cm-editor {
   height: 100% !important;
   background-color: var(--codeBg) !important;
 }
-
 #codeMirrorContainer .cm-scroller {
   overflow: auto !important;
 }
@@ -2587,11 +2598,7 @@ aside:hover .sidebar-title {
   background-color: var(--codeBg) !important;
 }
 
-.commit-panel {
-  padding: 1rem;
-  background-color: var(--canvasSubtle);
-  border-top: 0.0625rem solid var(--borderDefault);
-}
+
 
 *::-webkit-scrollbar {
   display: none;
