@@ -372,7 +372,10 @@ templates: {
   </div>
   
   <div class="editorCard">
+  
     <div class="editorHeader">
+    
+    
      <div class="hGroup">
         <button id="editModeBtn" class="headerButton active" title="Edit Mode">
           ${AppAssets.icons.edit()}
@@ -380,9 +383,14 @@ templates: {
         <button id="viewModeBtn" class="headerButton" title="View Mode">
           ${AppAssets.icons.view()}
         </button>
+        <button id="themeBtn" class="headerButton" title="Toggle Theme">
+          <svg id="themeIcon" class="buttonIcon" viewBox="0 0 16 16" fill="currentColor" width="14" height="14">
+            ${AppAssets.icons.sun()}
+          </svg>
+        </button>
      </div>
      
-  <div class="headerSeparator"></div>
+<div class="headerSeparator"></div>
         
      <div class="hGroup">
         <button id="undoBtn" class="headerButton" title="Undo (Ctrl+Z)">
@@ -393,7 +401,7 @@ templates: {
         </button>
      </div>
         
-  <div class="headerSeparator"></div>
+<div class="headerSeparator"></div>
        
        <div class="hGroup">
         <button id="searchBtn" class="headerButton" title="Search (Ctrl+F)">
@@ -414,8 +422,7 @@ templates: {
         </button>
         </div>
         
-  <div class="headerSeparator"></div>
-        
+<div class="headerSeparator"></div>
         
         <button id="copyBtn" class="headerButton" title="Copy Code">
           ${AppAssets.icons.copy()}
@@ -427,14 +434,10 @@ templates: {
           ${AppAssets.icons.upload()}
         </button>
       
-        <button id="themeBtn" class="headerButton" title="Toggle Theme">
-          <svg id="themeIcon" class="buttonIcon" viewBox="0 0 16 16" fill="currentColor" width="14" height="14">
-            ${AppAssets.icons.sun()}
-          </svg>
-        </button>
+
         
         
-        <div class="hGroup">
+      <div class="hGroup">
         <div class="fontSizeControl">
           <button id="fontDecreaseBtn" class="fontBtn" title="Decrease Font Size">
             ${AppAssets.icons.minus()}
@@ -444,12 +447,14 @@ templates: {
             ${AppAssets.icons.plus()}
           </button>
         </div>
-        </div>
+      </div>
+      
         
-
+  <!-- More Menu -->
         <button id="moreOptionsBtn" class="headerButton" title="More Options">
           ${AppAssets.icons.more()}
         </button>
+        
         <div id="moreOptionsDropdown" class="dropdown dropdownRight hide">
           <div class="dropdownContent">
             <button class="dropdownItem" id="formatBtn">
@@ -469,10 +474,14 @@ templates: {
               ${AppAssets.icons.invisibles()}
               Show Invisibles
             </button>
-        
+          </div>
         </div>
-      </div>
-    </div>
+  <!-- More Menu E N D -->
+      
+      
+    </div><!-- editorHeader END -->
+    
+    
     <div id="editorBody" class="editorBody">
       <div id="loadingSpinner" class="loadingSpinner" data-active="false">
         <div class="spinnerContainer">
