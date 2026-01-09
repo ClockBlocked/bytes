@@ -1711,8 +1711,8 @@ aside:hover .sidebar-title {
   
   height: 2.75rem;
   
+  overflow: hidden;
   overflow-x: scroll;
-  overflow-y: hidden;
 }
 .editorHeader::-webkit-scrollbar {
   display: none;
