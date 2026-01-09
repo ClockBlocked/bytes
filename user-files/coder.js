@@ -814,23 +814,13 @@ document.addEventListener("DOMContentLoaded", () => {
   if (document.querySelector('.pages[data-page="file"]')) window.coderViewEdit.init();
 });
 /**
-
  * 
-
  *  C R E A T E D  B Y
-
  * 
-
  *  William Hanson 
-
  * 
-
  *  Chevrolay@Outlook.com
-
  * 
-
  *  m.me/Chevrolay
-
  * 
-
  */
