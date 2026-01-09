@@ -58,6 +58,225 @@
 
   <!-- Font Awesome -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  
+  
+  
+  
+  
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            github: {
+              'canvas-default': '#22272e',
+              'tableHeader': '#2d333b',
+              'canvas-overlay': '#2d333b',
+              'canvas-inset': '#1c2128',
+              'canvas-subtle': '#2d333b',
+              'border-default': '#444c56',
+              'border-muted': '#373e47',
+              'neutral-emphasis': '#768390',
+              'neutral-muted': '#636e7b',
+              'fg-default': '#adbac7',
+              'fg-muted': '#768390',
+              'fg-subtle': '#545d68',
+              'accent-fg': '#539bf5',
+              'accent-emphasis': '#4184e4',
+              'success-fg': '#57ab5a',
+              'danger-fg': '#e5534b',
+              'warning-fg': '#c69026',
+              'btn-primary-bg': '#347d39',
+              'btn-primary-hover': '#46954a',
+              'btn-secondary-bg': '#373e47',
+              'btn-secondary-hover': '#444c56'
+            }
+          },
+          animation: {
+            'fade-in': 'fadeIn 0.2s ease-out',
+            'fade-out': 'fadeOut 0.2s ease-in',
+            'slide-up': 'slideUp 0.3s ease-out',
+            'slide-down': 'slideDown 0.3s ease-out',
+            'scale-in': 'scaleIn 0.2s ease-out',
+            'spin-slow': 'spin 1.5s linear infinite',
+            'pulse-soft': 'pulseSoft 2s ease-in-out infinite',
+          },
+          keyframes: {
+            fadeIn: {
+              '0%': { opacity: '0' },
+              '100%': { opacity: '1' }
+            },
+            fadeOut: {
+              '0%': { opacity: '1' },
+              '100%': { opacity: '0' }
+            },
+            slideUp: {
+              '0%': { transform: 'translateY(20px)', opacity: '0' },
+              '100%': { transform: 'translateY(0)', opacity: '1' }
+            },
+            slideDown: {
+              '0%': { transform: 'translateY(-20px)', opacity: '0' },
+              '100%': { transform: 'translateY(0)', opacity: '1' }
+            },
+            scaleIn: {
+              '0%': { transform: 'scale(0.95)', opacity: '0' },
+              '100%': { transform: 'scale(1)', opacity: '1' }
+            },
+            pulseSoft: {
+              '0%, 100%': { opacity: '1' },
+              '50%': { opacity: '0.7' }
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+<style>
+.stickyFirst,
+.stickySecond {
+  position: relative;
+}
+.breadCrumbsWrapper {
+  background-color: var(--overlay);
+  border-bottom: 1px solid var(--border);
+  padding: 12px 12px;
+  margin-bottom: 20px;
+  position: sticky;
+  top: 0;
+  z-index: 40;
+  transition: transform 0.3s ease-in-out;
+  backdrop-filter: blur(8px);
+  background-color: rgba(var(--overlay-rgb, 15 23 42), 0.8);
+}
+
+.breadCrumbsWrapper.hidden {
+  transform: translateY(-100%);
+}
+
+.breadCrumbContainer {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.breadCrumb {
+  display: inline-flex;
+  align-items: center;
+  color: #94a3b8;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.5;
+  text-decoration: none;
+  transition: color 0.2s ease;
+  white-space: nowrap;
+}
+
+.breadCrumb:hover {
+  color: #e2e8f0;
+}
+
+.breadCrumb.current {
+  color: var(--text);
+  font-weight: 500;
+  pointer-events: none;
+}
+
+.navDivider {
+  display: inline-flex;
+  align-items: center;
+  color: #475569;
+  margin: 0;
+}
+
+.navDivider svg {
+  width: 16px;
+  height: 16px;
+  fill: currentColor;
+  flex-shrink: 0;
+}
+
+
+
+/* Add to your existing CSS */
+.navbar {
+  position: sticky;
+  top: 0;
+  z-index: 50; /* Higher than breadcrumbs */
+}
+
+.breadCrumbsWrapper {
+  position: sticky;
+  top: 64px; /* Height of your main navbar + any padding */
+  z-index: 40;
+  transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  will-change: transform;
+}
+
+.breadCrumbsWrapper.hidden {
+  transform: translateY(-100%);
+  transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+
+
+/* Add to your existing CSS */
+.breadCrumbsWrapper {
+  /* ...existing styles ...*/
+  backdrop-filter: blur(8px) saturate(180%);
+  -webkit-backdrop-filter: blur(8px) saturate(180%);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 
+              0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  transition: transform 0.15s ease-out;
+}
+
+/* Ensure main navbar stays above */
+.navbar {
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+}
+
+
+
+
+
+/* to-do */
+/* needs to be somewhere where base logic is */
+.hide {
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-10px);
+  transition: all 0.3s ease-in-out;
+}
+
+
+
+#fileName {
+  position: absolute;
+  right: 1rem;
+}
+</style>
+
+<style id="overRide">
+html {
+  font-size: 13px !important;
+}
+
+* {
+.no-scrollbar {
+    &::-webkit-scrollbar {
+        display: none;
+    }
+
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+
+</style>
+  
 </head>
 
 <body class="bg-github-canvas-default text-github-fg-default font-sans">
