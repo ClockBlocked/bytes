@@ -1693,17 +1693,15 @@ aside:hover .sidebar-title {
 }
 
 
-.editorHeader {
+.editorHeader,
+.editorHeader .group {
   display: flex;
   flex-direction: row;
   flex-wrap: nowrap;
-  
-  overflow-x: scroll;
-  overflow-y: hidden;
-  -webkit-overflow-scrolling: touch;
-  -ms-overflow-style: none;
-  scrollbar-width: none;
-  
+  gap: 0.5rem;
+}
+
+.editorHeader {
   align-items: center;
   justify-content: space-around;
   padding: 0.5rem 1rem;
@@ -1712,7 +1710,12 @@ aside:hover .sidebar-title {
   border-bottom: 0.0625rem solid var(--neutralSubtle);
   
   height: 2.75rem;
-  gap: 0.5rem;
+  
+  overflow-x: scroll;
+  overflow-y: hidden;
+  -webkit-overflow-scrolling: touch;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 }
 .editorHeader::-webkit-scrollbar {
   display: none;
