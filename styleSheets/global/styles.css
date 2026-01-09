@@ -1694,7 +1694,7 @@ aside:hover .sidebar-title {
 
 
 .editorHeader,
-.editorHeader .group {
+.editorHeader .hGroup {
   display: flex;
   flex-direction: row;
   flex-wrap: nowrap;
@@ -1717,7 +1717,7 @@ aside:hover .sidebar-title {
 .editorHeader::-webkit-scrollbar {
   display: none;
 }
-.editorHeader .group {
+.editorHeader .hGroup {
   margin-left: 2rem;
   margin-right: 2rem;
 }
