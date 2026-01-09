@@ -373,27 +373,50 @@ templates: {
   
   <div class="editorCard">
     <div class="editorHeader">
+     <div class="group">
         <button id="editModeBtn" class="headerButton active" title="Edit Mode">
           ${AppAssets.icons.edit()}
         </button>
         <button id="viewModeBtn" class="headerButton" title="View Mode">
           ${AppAssets.icons.view()}
         </button>
-        <div class="headerSeparator"></div>
+     </div>
+     
+  <div class="headerSeparator"></div>
+        
+     <div class="group">
         <button id="undoBtn" class="headerButton" title="Undo (Ctrl+Z)">
           ${AppAssets.icons.undo()}
         </button>
         <button id="redoBtn" class="headerButton" title="Redo (Ctrl+Y)">
           ${AppAssets.icons.redo()}
         </button>
-        <div class="headerSeparator"></div>
+     </div>
+        
+  <div class="headerSeparator"></div>
+       
+       <div class="group">
         <button id="searchBtn" class="headerButton" title="Search (Ctrl+F)">
-          ${AppAssets.icons.search()}
+          ${AppAssets.icons.search()}  Search Code
         </button>
+       </div>
+        
+        
+        <div class="group">
         <button id="wrapBtn" class="headerButton" title="Toggle Word Wrap">
           ${AppAssets.icons.wrap()}
         </button>
-        <div class="headerSeparator"></div>
+        
+        <button id="fullscreenBtn" class="headerButton" title="Toggle Fullscreen">
+          <svg id="fullscreenIcon" class="buttonIcon" viewBox="0 0 16 16" fill="currentColor" width="14" height="14">
+            ${AppAssets.icons.fullscreen()}
+          </svg>
+        </button>
+        </div>
+        
+  <div class="headerSeparator"></div>
+        
+        
         <button id="copyBtn" class="headerButton" title="Copy Code">
           ${AppAssets.icons.copy()}
         </button>
@@ -409,6 +432,9 @@ templates: {
             ${AppAssets.icons.sun()}
           </svg>
         </button>
+        
+        
+        <div class="group">
         <div class="fontSizeControl">
           <button id="fontDecreaseBtn" class="fontBtn" title="Decrease Font Size">
             ${AppAssets.icons.minus()}
@@ -418,11 +444,9 @@ templates: {
             ${AppAssets.icons.plus()}
           </button>
         </div>
-        <button id="fullscreenBtn" class="headerButton" title="Toggle Fullscreen">
-          <svg id="fullscreenIcon" class="buttonIcon" viewBox="0 0 16 16" fill="currentColor" width="14" height="14">
-            ${AppAssets.icons.fullscreen()}
-          </svg>
-        </button>
+        </div>
+        
+
         <button id="moreOptionsBtn" class="headerButton" title="More Options">
           ${AppAssets.icons.more()}
         </button>
