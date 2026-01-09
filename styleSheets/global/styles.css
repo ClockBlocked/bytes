@@ -1717,7 +1717,12 @@ aside:hover .sidebar-title {
 .editorHeader::-webkit-scrollbar {
   display: none;
 }
-
+.editorHeader .left {
+  justify-content: flex-start;
+}
+.editorHeader .right {
+  justify-content: flex-end;
+}
 
 
 .fileInfo {
