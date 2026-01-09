@@ -424,6 +424,7 @@ templates: {
         
 <div class="headerSeparator"></div>
         
+        <div class="hGroup">
         <button id="copyBtn" class="headerButton" title="Copy Code">
           ${AppAssets.icons.copy()}
         </button>
@@ -433,7 +434,7 @@ templates: {
         <button id="uploadBtn" class="headerButton" title="Upload File">
           ${AppAssets.icons.upload()}
         </button>
-      
+        </div>
 
         
         
@@ -451,10 +452,11 @@ templates: {
       
         
   <!-- More Menu -->
+  <div class="hGroup">
         <button id="moreOptionsBtn" class="headerButton" title="More Options">
           ${AppAssets.icons.more()}
         </button>
-        
+   </div>     
         <div id="moreOptionsDropdown" class="dropdown dropdownRight hide">
           <div class="dropdownContent">
             <button class="dropdownItem" id="formatBtn">
