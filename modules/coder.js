@@ -264,72 +264,64 @@ class coderViewEdit {
       else if (e.key === "Enter" && e.shiftKey) this.findPrevious();
       else if (e.key === "Enter") this.findNext();
     });
-    this.elements.languageBtn?.addEventListener("click",
-      (e) => {
-        e.stopPropagation();
-        this.elements.languageDropdown?.classList.toggle("hide");
-      });
-    this.elements.moreOptionsBtn?.addEventListener("click",
-      (e) => {
-        e.stopPropagation();
-        this.elements.moreOptionsDropdown?.classList.toggle("hide");
-      });
-    this.elements.editSaveButton?.addEventListener("click",
-      (e) => {
-        e.stopPropagation();
-        if (!this.isEditing) {
-          this.enterEditMode();
-        }
-        else {
-          this.showCommitPopup(e);
-        }
-      });
-    this.elements.commitCancelBtn?.addEventListener("click",
-      () => this.hideCommitPopup());
-    this.elements.commitSaveBtn?.addEventListener("click",
-      () => this.saveChanges(true));
-    this.elements.commitMessage?.addEventListener("keydown",
-      (e) => {
-        if (e.key === "Enter" && (e.ctrlKey || e.metaKey)) {
-          e.preventDefault();
-          this.saveChanges(true);
-        }
-      });
-    document.addEventListener("click",
-      (e) => {
-        if (this.elements.commitDropdown &&
-          !this.elements.commitDropdown.contains(e.target) &&
-          !this.elements.editSaveButton.contains(e.target)) {
-          this.hideCommitPopup();
-        }
-        this.elements.languageDropdown?.classList.add("hide");
-        this.elements.moreOptionsDropdown?.classList.add("hide");
-      });
-    document.addEventListener("keydown",
-      (e) => {
-        const ctrl = e.ctrlKey || e.metaKey;
-        if (ctrl && e.key === "s" && this.isEditing) {
-          e.preventDefault();
-          this.showCommitPopup();
-        }
-        if (e.key === "Escape") {
-          if (this.searchActive) this.closeSearch();
-          else if (this.isFullscreen) this.toggleFullscreen();
-          else this.hideCommitPopup();
-        }
-        if (ctrl && e.key === "f") {
-          e.preventDefault();
-          this.openSearch();
-        }
-      });
-    window.addEventListener("resize",
-      () => {
-        if (this.elements.commitDropdown && !this.elements.commitDropdown.classList.contains("hide")) {
-          this.calculateDropdownPosition();
-        }
-      });
+    this.elements.languageBtn?.addEventListener("click", (e) => {
+      e.stopPropagation();
+      this.elements.languageDropdown?.classList.toggle("hide");
+    });
+    this.elements.moreOptionsBtn?.addEventListener("click", (e) => {
+      e.stopPropagation();
+      this.elements.moreOptionsDropdown?.classList.toggle("hide");
+    });
+    this.elements.moreOptionsDropdown?.addEventListener("click", (e) => {
+      e.stopPropagation();
+    });
+    this.elements.editSaveButton?.addEventListener("click", (e) => {
+      e.stopPropagation();
+      if (!this.isEditing) {
+        this.enterEditMode();
+      } else {
+        this.showCommitPopup(e);
+      }
+    });
+    this.elements.commitCancelBtn?.addEventListener("click", () => this.hideCommitPopup());
+    this.elements.commitSaveBtn?.addEventListener("click", () => this.saveChanges(true));
+    this.elements.commitMessage?.addEventListener("keydown", (e) => {
+      if (e.key === "Enter" && (e.ctrlKey || e.metaKey)) {
+        e.preventDefault();
+        this.saveChanges(true);
+      }
+    });
+    document.addEventListener("click", (e) => {
+      if (this.elements.commitDropdown &&
+        !this.elements.commitDropdown.contains(e.target) &&
+        !this.elements.editSaveButton.contains(e.target)) {
+        this.hideCommitPopup();
+      }
+      this.elements.languageDropdown?.classList.add("hide");
+      this.elements.moreOptionsDropdown?.classList.add("hide");
+    });
+    document.addEventListener("keydown", (e) => {
+      const ctrl = e.ctrlKey || e.metaKey;
+      if (ctrl && e.key === "s" && this.isEditing) {
+        e.preventDefault();
+        this.showCommitPopup();
+      }
+      if (e.key === "Escape") {
+        if (this.searchActive) this.closeSearch();
+        else if (this.isFullscreen) this.toggleFullscreen();
+        else this.hideCommitPopup();
+      }
+      if (ctrl && e.key === "f") {
+        e.preventDefault();
+        this.openSearch();
+      }
+    });
+    window.addEventListener("resize", () => {
+      if (this.elements.commitDropdown && !this.elements.commitDropdown.classList.contains("hide")) {
+        this.calculateDropdownPosition();
+      }
+    });
   }
-
   showCommitPopup(e) {
     if (!this.elements.commitDropdown) return;
     this.elements.commitDropdown.classList.remove("hide");
@@ -821,3 +813,9 @@ window.coderViewEdit = new coderViewEdit();
 document.addEventListener("DOMContentLoaded", () => {
   if (document.querySelector('.pages[data-page="file"]')) window.coderViewEdit.init();
 });
+
+
+
+
+
+
