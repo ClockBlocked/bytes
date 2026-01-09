@@ -1666,25 +1666,42 @@ aside:hover .sidebar-title {
   gap: 0.75rem;
   padding: 0.5rem;
   width: 100%;
+  height: 100%;
   box-sizing: border-box;
 }
 .editorContainer.fullscreen {
   position: fixed;
   inset: 0;
+  width: 100vw;
+  height: 100vh;
   z-index: 9999;
   background: var(--editorBg);
   padding: 1rem;
+  margin: 0;
+  gap: 0;
 }
 .editorContainer.fullscreen .editorCard {
   height: 100%;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
 }
 .editorContainer.fullscreen .editorBody {
   flex: 1;
+  min-height: 0;
   max-height: none;
+  overflow: hidden;
+}
+.editorContainer.fullscreen .codeMirrorContainer {
+  height: 100%;
+}
+.editorContainer.fullscreen .CodeMirror {
+  height: 100% !important;
 }
 .editorCard {
   display: flex;
   flex-direction: column;
+  flex: 1;
   background: var(--editorCardBg);
   border: 0.0625rem solid var(--neutralSubtle);
   border-radius: var(--radiusMd);
@@ -1703,23 +1720,23 @@ aside:hover .sidebar-title {
 
 .editorHeader {
   align-items: center;
-  justify-content: space-around;
+  justify-content: space-between;
   padding: 0.5rem 1rem;
   
   background: var(--editorHeaderBg);
   border-bottom: 0.0625rem solid var(--neutralSubtle);
   
-  height: 2.75rem;
+  min-height: 2.75rem;
   
   overflow: hidden;
-  overflow-x: scroll;
+  overflow-x: auto;
 }
 .editorHeader::-webkit-scrollbar {
   display: none;
 }
 .editorHeader .hGroup {
-  margin-left: 2rem;
-  margin-right: 2rem;
+  margin-left: 0.5rem;
+  margin-right: 0.5rem;
 }
 
 
@@ -1907,10 +1924,14 @@ aside:hover .sidebar-title {
   max-height: calc(100vh - 15.625rem);
   background: var(--editorBg);
   overflow: hidden;
+  display: flex;
+  flex-direction: column;
 }
 .codeMirrorContainer {
   width: 100%;
   height: 100%;
+  flex: 1;
+  overflow: hidden;
 }
 
 .codeMirrorContainer .CodeMirror {
@@ -1940,27 +1961,46 @@ aside:hover .sidebar-title {
 
 .codeMirrorContainer .CodeMirror-foldgutter {
   width: 1rem;
+  padding: 0 0.125rem;
 }
 .codeMirrorContainer .CodeMirror-foldgutter-open,
 .codeMirrorContainer .CodeMirror-foldgutter-folded {
   cursor: pointer;
-  color: var(--editorTextSubtle);
-  font-size: 0.875rem;
+  color: var(--fgMuted);
+  font-size: 0.75rem;
   line-height: 1.6;
   text-align: center;
   transition: color 0.15s ease;
+  display: inline-block;
+  width: 100%;
 }
 
-.codeMirrorContainer .CodeMirror-foldgutter-open:: after {
-  content: "▾";
+.codeMirrorContainer .CodeMirror-foldgutter-open::after {
+  content: "▼";
+  font-weight: bold;
 }
 .codeMirrorContainer .CodeMirror-foldgutter-folded::after {
-  content: "▸";
+  content: "▶";
+  font-weight: bold;
 }
 
-.codeMirrorContainer .CodeMirror-foldgutter-open: hover,
+.codeMirrorContainer .CodeMirror-foldgutter-open:hover,
 .codeMirrorContainer .CodeMirror-foldgutter-folded:hover {
-  color: var(--editorText);
+  color: var(--accentFg);
+  background: var(--accentSubtle);
+  border-radius: var(--radiusSm);
+}
+
+.codeMirrorContainer .CodeMirror-foldmarker {
+  color: var(--accentFg);
+  background: var(--accentSubtle);
+  border-radius: var(--radiusSm);
+  padding: 0 0.25rem;
+  margin: 0 0.125rem;
+  cursor: pointer;
+  font-size: var(--textXs);
+  line-height: 1.4;
+  display: inline-block;
 }
 
 .codeMirrorContainer .CodeMirror-activeline-background {
@@ -3278,30 +3318,37 @@ aside:hover .sidebar-title {
 
 .CodeMirror-foldgutter {
   width: 1rem;
+  padding: 0 0.125rem;
 }
 
 .CodeMirror-foldgutter-open,
 .CodeMirror-foldgutter-folded {
   cursor: pointer;
   color: var(--fgMuted);
-  font-size: 0.625rem;
+  font-size: 0.75rem;
   line-height: 1.4;
   text-align: center;
   padding: 0 0.125rem;
   transition: color var(--transitionFast);
+  display: inline-block;
+  width: 100%;
 }
 
-.CodeMirror-foldgutter-open:: after {
+.CodeMirror-foldgutter-open::after {
   content: "▼";
+  font-weight: bold;
 }
 
-.CodeMirror-foldgutter-folded:: after {
+.CodeMirror-foldgutter-folded::after {
   content: "▶";
+  font-weight: bold;
 }
 
-.CodeMirror-foldgutter-open: hover,
-.CodeMirror-foldgutter-folded: hover {
+.CodeMirror-foldgutter-open:hover,
+.CodeMirror-foldgutter-folded:hover {
   color: var(--accentFg);
+  background: var(--accentSubtle);
+  border-radius: var(--radiusSm);
 }
 
 .CodeMirror-foldmarker {
@@ -3309,9 +3356,11 @@ aside:hover .sidebar-title {
   background: var(--accentSubtle);
   border-radius: var(--radiusSm);
   padding: 0 0.25rem;
-  margin: 0 0.25rem;
+  margin: 0 0.125rem;
   cursor: pointer;
   font-size: var(--textXs);
+  line-height: 1.4;
+  display: inline-block;
 }
 
 .CodeMirror-gutters {

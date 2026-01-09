@@ -274,6 +274,10 @@ class coderViewEdit {
         e.stopPropagation();
         this.elements.moreOptionsDropdown?.classList.toggle("hide");
       });
+    this.elements.moreOptionsDropdown?.addEventListener("click",
+      (e) => {
+        e.stopPropagation();
+      });
     this.elements.editSaveButton?.addEventListener("click",
       (e) => {
         e.stopPropagation();
@@ -302,8 +306,18 @@ class coderViewEdit {
           !this.elements.editSaveButton.contains(e.target)) {
           this.hideCommitPopup();
         }
-        this.elements.languageDropdown?.classList.add("hide");
-        this.elements.moreOptionsDropdown?.classList.add("hide");
+        if (this.elements.languageDropdown && 
+          this.elements.languageBtn &&
+          !this.elements.languageDropdown.contains(e.target) &&
+          !this.elements.languageBtn.contains(e.target)) {
+          this.elements.languageDropdown?.classList.add("hide");
+        }
+        if (this.elements.moreOptionsDropdown && 
+          this.elements.moreOptionsBtn &&
+          !this.elements.moreOptionsDropdown.contains(e.target) &&
+          !this.elements.moreOptionsBtn.contains(e.target)) {
+          this.elements.moreOptionsDropdown?.classList.add("hide");
+        }
       });
     document.addEventListener("keydown",
       (e) => {
