@@ -337,6 +337,8 @@ templates: {
 
         editor: () => `
 <div class="editorContainer">
+
+
   <div class="editorToolbar">
     <div class="toolbarLeft">
       <div class="toolbarItem">
