@@ -1,6 +1,6 @@
 @font-face {
   font-family: "WF Visual Sans Text";
-  src:  url("https://assets.website-files.com/6491b4dd238fa881faab3d5c/65258e6f9f50f2d876a4f384_WFVisualSans-RegularText.woff2") format("woff2");
+  src: url("https://assets.website-files.com/6491b4dd238fa881faab3d5c/65258e6f9f50f2d876a4f384_WFVisualSans-RegularText.woff2") format("woff2");
   font-weight: 400;
   font-display: swap;
 }
@@ -47,7 +47,7 @@
   --text2xl: 1.5rem;
   --text3xl: 1.875rem;
 
-  --h1: 2. 5rem;
+  --h1: 2.5rem;
   --h2: 3rem;
   --h3: 1.75rem;
   --h4: 1.5rem;
@@ -63,10 +63,10 @@
   --spaceMd: 1rem;
   --spaceLg: 1.5rem;
   --spaceXl: 2rem;
-  --space2xl:  3rem;
+  --space2xl: 3rem;
 
   --radiusSm: 0.25rem;
-  --radiusMd:  0.5rem;
+  --radiusMd: 0.5rem;
   --radiusLg: 0.75rem;
   --radiusXl: 1rem;
   --radiusFull: 9999px;
@@ -82,8 +82,8 @@
   --transitionSlow: 300ms ease;
   --transitionBounce: 200ms cubic-bezier(0.4, 0, 0.2, 1);
 
-  --sidebarWidth: 18. 5rem;
-  --miniSidebarWidth:  3. 75rem;
+  --sidebarWidth: 18.5rem;
+  --miniSidebarWidth: 3.75rem;
 }
 
 
@@ -98,7 +98,7 @@
   --borderSubtle: #636e7b;
 
   --fgDefault: #adbac7;
-  --fgMuted:  #768390;
+  --fgMuted: #768390;
   --fgSubtle: #545d68;
   --fgOnEmphasis: #ffffff;
 
@@ -114,12 +114,12 @@
   --successSubtle: rgba(52, 125, 57, 0.15);
 
   --dangerFg: #e5534b;
-  --dangerEmphasis:  #c93c37;
+  --dangerEmphasis: #c93c37;
   --dangerMuted: rgba(201, 60, 55, 0.4);
   --dangerSubtle: rgba(201, 60, 55, 0.15);
 
   --warningFg: #c69026;
-  --warningEmphasis:  #ae7c14;
+  --warningEmphasis: #ae7c14;
   --warningMuted: rgba(174, 124, 20, 0.4);
   --warningSubtle: rgba(174, 124, 20, 0.15);
 
@@ -133,22 +133,22 @@
   --btnSecondaryActive: #2D333B;
   --btnSecondaryText: #ADBAC7;
 
-  --btnTertiaryBg:  transparent;
+  --btnTertiaryBg: transparent;
   --btnTertiaryHover: #373e47;
   --btnTertiaryActive: #444c56;
   --btnTertiaryText: #adbac7;
 
-  --btnDangerBg:  #c93c37;
+  --btnDangerBg: #c93c37;
   --btnDangerHover: #e5534b;
   --btnDangerActive: #b62a25;
-  --btnDangerText:  #ffffff;
+  --btnDangerText: #ffffff;
 
   --inputBg: #1c2128;
   --inputBorder: #444c56;
   --inputBorderHover: #768390;
   --inputBorderFocus: #539bf5;
   --inputText: #adbac7;
-  --inputPlaceholder:  #636e7b;
+  --inputPlaceholder: #636e7b;
 
   --codeBg: #2d333b;
   --codeText: #adbac7;
@@ -196,7 +196,7 @@
   --editorScrollbarHover: #768390;
 
   --neutralDefault: #444c56;
-  --neutralMuted:  #768390;
+  --neutralMuted: #768390;
   --neutralSubtle: #636e7b;
 
   --bgMain: #2a313c;
@@ -219,7 +219,7 @@
   --badgeDangerBg: rgba(248, 81, 73, 0.15);
   --badgeDangerFg: #f85149;
   --badgeInfoBg: rgba(47, 129, 247, 0.15);
-  --badgeInfoFg:  #2f81f7;
+  --badgeInfoFg: #2f81f7;
 
   --fileTypeHtml: #e34c26;
   --fileTypeCss: #1572b6;
@@ -242,11 +242,11 @@
 
   --iconJs: #f1dd3f;
   --iconTs: #3178c6;
-  --iconHtml:  #e34c26;
+  --iconHtml: #e34c26;
   --iconCss: #2965f1;
   --iconJson: #5382a1;
   --iconMd: #083fa1;
-  --iconPy:  #3776ab;
+  --iconPy: #3776ab;
   --iconJava: #f89820;
   --iconPhp: #8892bf;
   --iconRb: #cc342d;
@@ -258,7 +258,7 @@
 [data-theme="light"] {
   --canvasDefault: #ffffff;
   --canvasOverlay: #f6f8fa;
-  --canvasInset:  #f6f8fa;
+  --canvasInset: #f6f8fa;
   --canvasSubtle: #f6f8fa;
 
   --borderDefault: #d0d7de;
@@ -271,59 +271,59 @@
   --fgOnEmphasis: #ffffff;
 
   --accentFg: #0969da;
-  --accentEmphasis:  #0969da;
+  --accentEmphasis: #0969da;
   --accentMuted: rgba(9, 105, 218, 0.4);
   --accentSubtle: rgba(9, 105, 218, 0.15);
   --accentBlue: #0969da;
 
-  --successFg:  #1a7f37;
+  --successFg: #1a7f37;
   --successEmphasis: #1f883d;
   --successMuted: rgba(31, 136, 61, 0.4);
   --successSubtle: rgba(31, 136, 61, 0.15);
 
   --dangerFg: #d1242f;
   --dangerEmphasis: #cf222e;
-  --dangerMuted:  rgba(207, 34, 46, 0.4);
+  --dangerMuted: rgba(207, 34, 46, 0.4);
   --dangerSubtle: rgba(207, 34, 46, 0.15);
 
   --warningFg: #9a6700;
   --warningEmphasis: #9a6700;
-  --warningMuted:  rgba(154, 103, 0, 0.4);
+  --warningMuted: rgba(154, 103, 0, 0.4);
   --warningSubtle: rgba(154, 103, 0, 0.15);
 
   --btnPrimaryBg: #1f883d;
   --btnPrimaryHover: #2c974b;
-  --btnPrimaryActive:  #1a7f37;
-  --btnPrimaryText:  #ffffff;
+  --btnPrimaryActive: #1a7f37;
+  --btnPrimaryText: #ffffff;
 
   --btnSecondaryBg: #f6f8fa;
-  --btnSecondaryHover:  #f3f4f6;
+  --btnSecondaryHover: #f3f4f6;
   --btnSecondaryActive: #e7ebef;
-  --btnSecondaryText:  #1f2328;
+  --btnSecondaryText: #1f2328;
 
-  --btnTertiaryBg:  transparent;
+  --btnTertiaryBg: transparent;
   --btnTertiaryHover: #f6f8fa;
   --btnTertiaryActive: #e7ebef;
-  --btnTertiaryText:  #1f2328;
+  --btnTertiaryText: #1f2328;
 
   --btnDangerBg: #d1242f;
   --btnDangerHover: #da3633;
-  --btnDangerActive:  #b62324;
-  --btnDangerText:  #ffffff;
+  --btnDangerActive: #b62324;
+  --btnDangerText: #ffffff;
 
-  --inputBg:  #ffffff;
+  --inputBg: #ffffff;
   --inputBorder: #d0d7de;
   --inputBorderHover: #8c959f;
-  --inputBorderFocus:  #0969da;
+  --inputBorderFocus: #0969da;
   --inputText: #1f2328;
   --inputPlaceholder: #6e7781;
 
-  --codeBg:  #f6f8fa;
+  --codeBg: #f6f8fa;
   --codeText: #1f2328;
-  --codeComment:  #6e7781;
+  --codeComment: #6e7781;
 
   --syntaxKeyword: #cf222e;
-  --syntaxString:  #0a3069;
+  --syntaxString: #0a3069;
   --syntaxVariable: #953800;
   --syntaxFunction: #6639ba;
   --syntaxNumber: #0550ae;
@@ -342,7 +342,7 @@
 
   --editorBg: #ffffff;
   --editorCardBg: #f6f8fa;
-  --editorHeaderBg:  #f6f8fa;
+  --editorHeaderBg: #f6f8fa;
   --editorFooterBg: #f6f8fa;
   --editorBorder: #d0d7de;
   --editorBorderMuted: #d8dee4;
@@ -355,41 +355,41 @@
   --editorDanger: #d1242f;
   --editorWarning: #9a6700;
   --editorBtnBg: #f6f8fa;
-  --editorBtnHover:  #f3f4f6;
+  --editorBtnHover: #f3f4f6;
   --editorBtnActive: #0969da;
   --editorGutterBg: #f6f8fa;
-  --editorLineHighlight:  rgba(9, 105, 218, 0.1);
+  --editorLineHighlight: rgba(9, 105, 218, 0.1);
   --editorSelection: rgba(9, 105, 218, 0.2);
   --editorScrollbar: #d0d7de;
-  --editorScrollbarHover:  #afb8c1;
+  --editorScrollbarHover: #afb8c1;
 
   --neutralDefault: #6e7781;
-  --neutralMuted:  #656d76;
-  --neutralSubtle:  #8c959f;
+  --neutralMuted: #656d76;
+  --neutralSubtle: #8c959f;
 
-  --bgMain:  #ffffff;
+  --bgMain: #ffffff;
   --bgBody: #ffffff;
   --bgSections: #f6f8fa;
   --bgHeader: #f6f8fa;
-  --colorTextPrimary:  #1f2328;
-  --colorTextSecondary:  #656d76;
+  --colorTextPrimary: #1f2328;
+  --colorTextSecondary: #656d76;
   --colorLink: #0969da;
   --colorBorder: #d0d7de;
   --btnDefault: #f6f8fa;
   --btnHover: #f3f4f6;
   --textMain: #1f2328;
-  --textMuted:  #656d76;
+  --textMuted: #656d76;
 
   --badgeSuccessBg: rgba(46, 160, 67, 0.15);
   --badgeSuccessFg: #1a7f37;
-  --badgeWarningBg:  rgba(219, 168, 43, 0.15);
-  --badgeWarningFg:  #9a6700;
+  --badgeWarningBg: rgba(219, 168, 43, 0.15);
+  --badgeWarningFg: #9a6700;
   --badgeDangerBg: rgba(248, 81, 73, 0.15);
   --badgeDangerFg: #d1242f;
   --badgeInfoBg: rgba(47, 129, 247, 0.15);
   --badgeInfoFg: #0969da;
 
-  --fileTypeHtml:  #e34c26;
+  --fileTypeHtml: #e34c26;
   --fileTypeCss: #1572b6;
   --fileTypeJs: #f1e05a;
   --fileTypeTs: #2b7489;
@@ -406,16 +406,16 @@
   --fileTypeRs: #dea584;
   --fileTypeYml: #cb171e;
   --fileTypeXml: #0060ac;
-  --fileTypeSql:  #e38c00;
+  --fileTypeSql: #e38c00;
 
   --iconJs: #f1dd3f;
-  --iconTs:  #3178c6;
+  --iconTs: #3178c6;
   --iconHtml: #e34c26;
   --iconCss: #2965f1;
   --iconJson: #5382a1;
   --iconMd: #083fa1;
   --iconPy: #3776ab;
-  --iconJava:  #f89820;
+  --iconJava: #f89820;
   --iconPhp: #8892bf;
   --iconRb: #cc342d;
   --iconGo: #00add8;
@@ -441,8 +441,8 @@
 }
 
 
-:: selection {
-  background:  var(--accentSubtle);
+::selection {
+  background: var(--accentSubtle);
 }
 
 ::-moz-selection {
@@ -450,7 +450,7 @@
 }
 
 ::-webkit-scrollbar {
-  width: 0. 75rem;
+  width: 0.75rem;
   height: 0.75rem;
 }
 
@@ -460,7 +460,7 @@
 
 ::-webkit-scrollbar-thumb {
   background: var(--borderDefault);
-  border:  0.1875rem solid var(--canvasDefault);
+  border: 0.1875rem solid var(--canvasDefault);
   border-radius: var(--radiusSm);
 }
 
@@ -469,7 +469,7 @@
 }
 
 ::-webkit-scrollbar-corner {
-  background:  var(--canvasDefault);
+  background: var(--canvasDefault);
 }
 
 
@@ -501,7 +501,7 @@ body {
 
 
 h1,
-. h1 {
+.h1 {
   font-family: var(--fontHead);
   font-size: var(--h1);
   font-weight: var(--weightSemibold);
@@ -511,7 +511,7 @@ h1,
 h2,
 .h2 {
   font-family: var(--fontHead);
-  font-size:  var(--h2);
+  font-size: var(--h2);
   font-weight: var(--weightSemibold);
   line-height: 1;
 }
@@ -519,7 +519,7 @@ h2,
 h3,
 .h3 {
   font-family: var(--fontHead);
-  font-size:  var(--h3);
+  font-size: var(--h3);
   font-weight: var(--weightSemibold);
   line-height: 1.0;
 }
@@ -529,7 +529,7 @@ h4,
   font-family: var(--fontHead);
   font-size: var(--h4);
   font-weight: var(--weightSemibold);
-  line-height:  1.0;
+  line-height: 1.0;
 }
 
 
@@ -537,7 +537,7 @@ h4,
 
 pre,
 code,
-. code-block,
+.code-block,
 pre code,
 .hljs,
 .prism-code,
@@ -555,7 +555,7 @@ pre code,
 input,
 textarea {
   -webkit-user-select: text;
-  -moz-user-select:  text;
+  -moz-user-select: text;
   -ms-user-select: text;
   user-select: text;
 }
@@ -575,7 +575,7 @@ button: focus-visible,
 input:focus-visible,
 select:focus-visible,
 textarea: focus-visible {
-  outline: 0. 125rem solid var(--accentEmphasis);
+  outline: 0.125rem solid var(--accentEmphasis);
   outline-offset: 0.125rem;
 }
 
@@ -597,7 +597,7 @@ textarea: focus-visible {
   width: var(--sidebarWidth);
   overflow-y: auto;
 
-  border:  0.0625rem solid var(--borderDefault);
+  border: 0.0625rem solid var(--borderDefault);
 
   position: relative;
   flex-shrink: 0;
@@ -612,10 +612,10 @@ textarea: focus-visible {
 
 #rightSidebar {
   border-left: 0.0625rem solid var(--colorBorder);
-  border-top-left-radius:  0.9375rem;
+  border-top-left-radius: 0.9375rem;
 }
 
-#leftSidebar. open,
+#leftSidebar.open,
 #rightSidebar.open {
   transform: translateX(0);
 }
@@ -625,7 +625,7 @@ textarea: focus-visible {
 
 #mainArea {
   padding: 0.35rem;
-  min-height: calc(100vh - 3. 75rem);
+  min-height: calc(100vh - 3.75rem);
   overflow-x: hidden;
 
   position: relative;
@@ -648,7 +648,7 @@ textarea: focus-visible {
   top: 0;
   bottom: 0;
   left: 0;
-  right:  0;
+  right: 0;
 
   visibility: hidden;
   opacity: 0;
@@ -657,7 +657,7 @@ textarea: focus-visible {
   transition: opacity 0.3s ease, visibility 0.3s ease;
 }
 
-#overlay. active {
+#overlay.active {
   z-index: 9;
 
   visibility: visible;
@@ -669,7 +669,7 @@ textarea: focus-visible {
 
 
 .sidebar-title {
-  padding: 0.5rem 0. 75rem;
+  padding: 0.5rem 0.75rem;
 
   color: var(--colorTextPrimary);
   font-size: var(--textXs);
@@ -684,14 +684,14 @@ textarea: focus-visible {
 }
 
 aside: hover .sidebar-title {
-  opacity:  1;
+  opacity: 1;
 
   transition: opacity 0.65s ease-in-out;
 }
 
 
 .sidebar-link {
-  display:  block;
+  display: block;
 
   padding: 0.25rem 0.5rem;
 
@@ -706,11 +706,11 @@ aside: hover .sidebar-title {
 }
 
 .sidebar-link:hover {
-  background-color:  var(--btnSecondaryHover);
+  background-color: var(--btnSecondaryHover);
   color: #ffffff;
 }
 
-.sidebar-link. active {
+.sidebar-link.active {
   background-color: var(--btnSecondaryBg);
   color: #ffffff;
   font-weight: 600;
@@ -723,17 +723,17 @@ aside: hover .sidebar-title {
   margin-bottom: 1rem;
   padding-bottom: 1rem;
 
-  border-bottom:  0.0625rem solid var(--colorBorder);
+  border-bottom: 0.0625rem solid var(--colorBorder);
 }
 
 .profile-avatar {
-  width:  3rem;
-  height:  3rem;
+  width: 3rem;
+  height: 3rem;
 
   margin-bottom: 0.75rem;
 
-  border:  0.125rem solid var(--colorBorder);
-  border-radius:  50%;
+  border: 0.125rem solid var(--colorBorder);
+  border-radius: 50%;
 }
 
 .profile-name {
@@ -744,8 +744,8 @@ aside: hover .sidebar-title {
 }
 
 .profile-username {
-  color:  var(--colorTextSecondary);
-  font-size:  var(--textSm);
+  color: var(--colorTextSecondary);
+  font-size: var(--textSm);
 }
 
 
@@ -753,7 +753,7 @@ aside: hover .sidebar-title {
 
 .repo-list {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(18. 75rem, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(18.75rem, 1fr));
   gap: 1rem;
 
   width: 100%;
@@ -761,11 +761,11 @@ aside: hover .sidebar-title {
 
 
 .repo-card {
-  background:  var(--canvasOverlay);
+  background: var(--canvasOverlay);
 
   padding: 1rem;
 
-  border:  0.0625rem solid var(--borderDefault);
+  border: 0.0625rem solid var(--borderDefault);
   border-radius: var(--radiusLg);
 
   position: relative;
@@ -799,7 +799,7 @@ aside: hover .sidebar-title {
 
 .repo-card-content {
   min-width: 0;
-  flex:  1;
+  flex: 1;
 }
 
 
@@ -816,10 +816,10 @@ aside: hover .sidebar-title {
 .repo-description {
   display: -webkit-box;
   -webkit-line-clamp: 2;
-  -webkit-box-orient:  vertical;
+  -webkit-box-orient: vertical;
   overflow: hidden;
 
-  margin:  0 0 0.75rem 0;
+  margin: 0 0 0.75rem 0;
 
   color: var(--fgMuted);
   font-size: var(--textSm);
@@ -828,7 +828,7 @@ aside: hover .sidebar-title {
 
 
 .repo-meta {
-  display:  flex;
+  display: flex;
   align-items: center;
   gap: 1rem;
 
@@ -837,22 +837,22 @@ aside: hover .sidebar-title {
 }
 
 .repo-meta-item {
-  display:  flex;
+  display: flex;
   align-items: center;
   gap: 0.25rem;
 }
 
 
 .repo-visibility {
-  display:  flex;
+  display: flex;
   align-items: center;
   gap: 0.25rem;
 
-  background:  var(--accentSubtle);
+  background: var(--accentSubtle);
 
   padding: 0.125rem 0.375rem;
 
-  border-radius:  var(--radiusSm);
+  border-radius: var(--radiusSm);
 
   color: var(--accentFg);
   font-size: var(--textXs);
@@ -861,7 +861,7 @@ aside: hover .sidebar-title {
 
 
 .repo-delete-button {
-  background:  transparent;
+  background: transparent;
 
   padding: 0.25rem;
 
@@ -882,8 +882,8 @@ aside: hover .sidebar-title {
 }
 
 .repo-delete-button:focus-visible {
-  outline:  0.125rem solid var(--dangerFg);
-  outline-offset:  0.125rem;
+  outline: 0.125rem solid var(--dangerFg);
+  outline-offset: 0.125rem;
 }
 
 
@@ -893,7 +893,7 @@ aside: hover .sidebar-title {
   gap: 0.5rem;
 
   margin-bottom: 0.125rem;
-  padding:  0.375rem 0.75rem;
+  padding: 0.375rem 0.75rem;
 
   border-radius: var(--radiusMd);
 
@@ -902,7 +902,7 @@ aside: hover .sidebar-title {
   text-decoration: none;
   cursor: pointer;
 
-  transition:  all 0.2s ease;
+  transition: all 0.2s ease;
 }
 
 .repo-item:hover {
@@ -919,15 +919,15 @@ aside: hover .sidebar-title {
   font-size: var(--textXs);
 }
 
-.repo-icon. public {
-  color:  var(--successFg);
+.repo-icon.public {
+  color: var(--successFg);
 }
 
 
 
 
 .recent-file-item {
-  display:  flex;
+  display: flex;
   align-items: center;
   gap: 0.5rem;
 
@@ -937,11 +937,11 @@ aside: hover .sidebar-title {
   border-radius: var(--radiusMd);
 
   color: var(--colorTextPrimary);
-  font-size:  var(--textSm);
+  font-size: var(--textSm);
   text-decoration: none;
   cursor: pointer;
 
-  transition:  all 0.2s ease;
+  transition: all 0.2s ease;
 }
 
 .recent-file-item:hover {
@@ -959,39 +959,39 @@ aside: hover .sidebar-title {
 
 
 .navbar {
-  background:  var(--canvasOverlay);
+  background: var(--canvasOverlay);
 
-  padding: 0. 75rem 1rem;
+  padding: 0.75rem 1rem;
 
   border-bottom: 0.0625rem solid var(--borderDefault);
 
   position: sticky;
   z-index: 40;
-  top:  0;
+  top: 0;
 }
 
 .navbar-inner {
-  display:  flex;
+  display: flex;
   align-items: center;
   justify-content: space-between;
 
-  max-width:  100%;
-  margin:  0 auto;
+  max-width: 100%;
+  margin: 0 auto;
 }
 
 .navbar-section {
-  display:  flex;
+  display: flex;
   align-items: center;
   gap: 1rem;
 }
 
 .navbar-left,
 .navbar-right {
-  display:  flex;
+  display: flex;
   align-items: center;
   gap: 1rem;
 
-  flex:  1;
+  flex: 1;
 }
 
 .navbar-center {
@@ -999,7 +999,7 @@ aside: hover .sidebar-title {
   flex: 2;
 }
 
-. navbar-left {
+.navbar-left {
   justify-content: flex-start;
 }
 
@@ -1011,17 +1011,17 @@ aside: hover .sidebar-title {
 .navbar-container {
   background-color: #2d333b;
 
-  height: 3. 875rem;
+  height: 3.875rem;
 
   border-bottom: 0.0625rem solid var(--colorBorder);
 
   position: fixed;
   z-index: 99;
-  top:  0;
+  top: 0;
   left: 0;
   right: 0;
 
-  box-shadow: 0 0. 0625rem 0.1875rem rgba(0, 0, 0, 0.3);
+  box-shadow: 0 0.0625rem 0.1875rem rgba(0, 0, 0, 0.3);
 }
 
 .navbar-content {
@@ -1029,14 +1029,14 @@ aside: hover .sidebar-title {
   align-items: center;
   justify-content: space-between;
 
-  max-width:  100%;
+  max-width: 100%;
   height: 100%;
   padding: 0 1rem;
 }
 
 
 .navbar-brand {
-  display:  flex;
+  display: flex;
   align-items: center;
   gap: 0.5rem;
 
@@ -1050,7 +1050,7 @@ aside: hover .sidebar-title {
   opacity: 0.8;
 }
 
-. navbar-brand-icon {
+.navbar-brand-icon {
   color: var(--accentFg);
   font-size: var(--text2xl);
 }
@@ -1063,7 +1063,7 @@ aside: hover .sidebar-title {
 
 
 .navbar-button {
-  display:  flex;
+  display: flex;
   align-items: center;
   justify-content: center;
   gap: 0.5rem;
@@ -1096,7 +1096,7 @@ aside: hover .sidebar-title {
 .navbar-button-icon {
   padding: 0.5rem;
 
-  font-size:  var(--textMd);
+  font-size: var(--textMd);
 
   aspect-ratio: 1;
 }
@@ -1117,7 +1117,7 @@ aside: hover .sidebar-title {
 
 .navbar-button-search:hover {
   background: var(--canvasSubtle);
-  border-color:  var(--borderDefault);
+  border-color: var(--borderDefault);
 }
 
 .navbar-button-label {
@@ -1125,10 +1125,10 @@ aside: hover .sidebar-title {
   white-space: nowrap;
 }
 
-. navbar-button-text {
+.navbar-button-text {
   margin-left: 0.25rem;
 
-  font-size:  var(--textSm);
+  font-size: var(--textSm);
   font-weight: var(--weightNormal);
 }
 
@@ -1138,7 +1138,7 @@ aside: hover .sidebar-title {
   margin-left: auto;
   padding: 0.125rem 0.375rem;
 
-  border:  0.0625rem solid var(--borderMuted);
+  border: 0.0625rem solid var(--borderMuted);
   border-radius: var(--radiusSm);
 
   color: var(--fgMuted);
@@ -1164,7 +1164,7 @@ aside: hover .sidebar-title {
   transition: all 0.2s ease;
 }
 
-. menu-button:hover {
+.menu-button:hover {
   background-color: var(--btnSecondaryHover);
 }
 
@@ -1178,7 +1178,7 @@ aside: hover .sidebar-title {
   gap: 1rem;
 
   height: 2rem;
-  padding:  0.35rem 0.75rem;
+  padding: 0.35rem 0.75rem;
 }
 
 
@@ -1196,7 +1196,7 @@ aside: hover .sidebar-title {
   opacity: 0;
   visibility: hidden;
   pointer-events: none;
-  transform: translateY(7. 5rem);
+  transform: translateY(7.5rem);
 
   transition: opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1), transform 0.4s cubic-bezier(0.4, 0, 0.2, 1), visibility 0s linear 0.4s;
 }
@@ -1213,17 +1213,17 @@ aside: hover .sidebar-title {
   transition: opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1), transform 0.4s cubic-bezier(0.4, 0, 0.2, 1), visibility 0s linear 0s;
 }
 
-. pages.hide {
+.pages.hide {
   min-height: 50vh;
 
   position: absolute;
   z-index: 1;
   top: 0;
   left: 0;
-  right:  0;
+  right: 0;
 
   opacity: 0;
-  visibility:  hidden;
+  visibility: hidden;
   pointer-events: none;
   transform: translateY(7.5rem);
 
@@ -1231,11 +1231,11 @@ aside: hover .sidebar-title {
 }
 
 .pages[data-page="file"] {
-  display:  flex;
+  display: flex;
   flex-direction: column;
 
   max-width: 80rem;
-  margin:  0 auto;
+  margin: 0 auto;
   overflow: hidden;
 }
 
@@ -1250,7 +1250,7 @@ aside: hover .sidebar-title {
 
   position: fixed;
   z-index: 1001;
-  top:  0;
+  top: 0;
   left: 0;
 
   opacity: 0;
@@ -1259,8 +1259,8 @@ aside: hover .sidebar-title {
   transition: opacity 0.3s ease;
 }
 
-.page-progress. visible {
-  opacity:  1;
+.page-progress.visible {
+  opacity: 1;
 }
 
 .progress-bar {
@@ -1272,7 +1272,7 @@ aside: hover .sidebar-title {
 }
 
 .progress-fill {
-  background:  linear-gradient(90deg, #dc2626, #ef4444, #f87171);
+  background: linear-gradient(90deg, #dc2626, #ef4444, #f87171);
 
   width: 0%;
   height: 100%;
@@ -1290,7 +1290,7 @@ aside: hover .sidebar-title {
 .file-type-js,
 .file-type-javascript { color: var(--fileTypeJs); }
 .file-type-ts,
-.file-type-typescript { color:  var(--fileTypeTs); }
+.file-type-typescript { color: var(--fileTypeTs); }
 .file-type-json { color: var(--fileTypeJson); }
 .file-type-md,
 .file-type-markdown { color: var(--fileTypeMd); }
@@ -1303,12 +1303,12 @@ aside: hover .sidebar-title {
 .file-type-cs { color: var(--fileTypeCs); }
 .file-type-rb,
 .file-type-ruby { color: var(--fileTypeRb); }
-.file-type-go { color:  var(--fileTypeGo); }
+.file-type-go { color: var(--fileTypeGo); }
 .file-type-rs,
-.file-type-rust { color:  var(--fileTypeRs); }
+.file-type-rust { color: var(--fileTypeRs); }
 .file-type-yml,
 .file-type-yaml { color: var(--fileTypeYml); }
-.file-type-xml { color:  var(--fileTypeXml); }
+.file-type-xml { color: var(--fileTypeXml); }
 .file-type-sql { color: var(--fileTypeSql); }
 
 
@@ -1317,13 +1317,13 @@ aside: hover .sidebar-title {
 .file-icon {
   display: flex;
   align-items: center;
-  justify-content:  center;
+  justify-content: center;
 
-  width: 1. 25rem;
+  width: 1.25rem;
   height: 1.25rem;
 }
 
-.file-icon. js { color: var(--iconJs); }
+.file-icon.js { color: var(--iconJs); }
 .file-icon.ts { color: var(--iconTs); }
 .file-icon.html { color: var(--iconHtml); }
 .file-icon.css { color: var(--iconCss); }
@@ -1334,14 +1334,14 @@ aside: hover .sidebar-title {
 .file-icon.php { color: var(--iconPhp); }
 .file-icon.rb { color: var(--iconRb); }
 .file-icon.go { color: var(--iconGo); }
-.file-icon. rs { color: var(--iconRs); }
+.file-icon.rs { color: var(--iconRs); }
 
 
 
 
 .fileNameDisplay {
-  min-width: 9. 375rem;
-  max-width: 18. 75rem;
+  min-width: 9.375rem;
+  max-width: 18.75rem;
 }
 
 .fileNameInput {
@@ -1351,7 +1351,7 @@ aside: hover .sidebar-title {
   padding: 0.375rem 0.625rem;
   overflow: hidden;
 
-  border:  0.0625rem solid var(--borderMuted);
+  border: 0.0625rem solid var(--borderMuted);
   border-radius: var(--radiusSm);
 
   color: var(--fgDefault);
@@ -1361,7 +1361,7 @@ aside: hover .sidebar-title {
   white-space: nowrap;
   cursor: default;
 
-  transition:  all 0.2s ease;
+  transition: all 0.2s ease;
 }
 
 .fileNameInput:hover {
@@ -1378,38 +1378,38 @@ aside: hover .sidebar-title {
 
 
 .file-menu-popover {
-  background:  var(--canvasDefault);
+  background: var(--canvasDefault);
 
   min-width: 15rem;
 
-  border:  0.0625rem solid var(--borderDefault);
+  border: 0.0625rem solid var(--borderDefault);
   border-radius: var(--radiusLg);
 
   position: fixed;
   z-index: 1000;
 
   opacity: 0;
-  pointer-events:  none;
+  pointer-events: none;
   box-shadow: var(--shadowLg);
   transform: translateY(-0.625rem) scale(0.95);
 
   transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.file-menu-popover. show {
-  opacity:  1;
+.file-menu-popover.show {
+  opacity: 1;
   pointer-events: all;
-  transform:  translateY(0) scale(1);
+  transform: translateY(0) scale(1);
 }
 
 .file-menu-header {
-  display:  flex;
+  display: flex;
   align-items: center;
   gap: 0.5rem;
 
   padding: 0.75rem 1rem;
 
-  border-bottom:  0.0625rem solid var(--borderDefault);
+  border-bottom: 0.0625rem solid var(--borderDefault);
 
   color: var(--fgDefault);
   font-size: var(--textSm);
@@ -1442,7 +1442,7 @@ aside: hover .sidebar-title {
 }
 
 .file-menu-item:hover {
-  background:  var(--canvasSubtle);
+  background: var(--canvasSubtle);
 }
 
 .file-menu-item.danger {
@@ -1462,7 +1462,7 @@ aside: hover .sidebar-title {
 }
 
 .file-menu-divider {
-  background:  var(--borderDefault);
+  background: var(--borderDefault);
 
   height: 0.0625rem;
   margin: 0.375rem 0;
@@ -1470,9 +1470,9 @@ aside: hover .sidebar-title {
 
 
 .file-more-menu-btn {
-  background:  transparent;
+  background: transparent;
 
-  padding:  0.25rem 0.5rem;
+  padding: 0.25rem 0.5rem;
 
   border: none;
   border-radius: var(--radiusMd);
@@ -1485,7 +1485,7 @@ aside: hover .sidebar-title {
 }
 
 tr:hover .file-more-menu-btn {
-  opacity:  1;
+  opacity: 1;
 }
 
 .file-more-menu-btn: hover {
@@ -1509,7 +1509,7 @@ tr:hover .file-more-menu-btn {
 
   background-color: var(--btnSecondaryBg);
 
-  width: 2. 25rem;
+  width: 2.25rem;
   height: 2rem;
   padding: 0;
 
@@ -1525,12 +1525,12 @@ tr:hover .file-more-menu-btn {
 }
 
 .actionButton:hover {
-  background-color:  var(--btnSecondaryHover);
+  background-color: var(--btnSecondaryHover);
   border-color: var(--fgMuted);
 }
 
-.actionButton. hide {
-  display:  none;
+.actionButton.hide {
+  display: none;
 }
 
 
@@ -1553,14 +1553,14 @@ tr:hover .file-more-menu-btn {
   background: transparent;
 }
 
-. toolbarScroll: :-webkit-scrollbar-thumb {
+.toolbarScroll: :-webkit-scrollbar-thumb {
   background-color: var(--borderMuted);
-  border-radius:  0.125rem;
+  border-radius: 0.125rem;
 }
 
 
 .toolbarButtons {
-  display:  flex;
+  display: flex;
   align-items: center;
   gap: 0.375rem;
 
@@ -1571,15 +1571,15 @@ tr:hover .file-more-menu-btn {
 .toolbarButton {
   display: flex;
   align-items: center;
-  justify-content:  center;
+  justify-content: center;
 
   background-color: var(--btnSecondaryBg);
 
   width: 2rem;
-  height:  2rem;
+  height: 2rem;
   padding: 0;
 
-  border:  0.0625rem solid var(--borderDefault);
+  border: 0.0625rem solid var(--borderDefault);
   border-radius: var(--radiusSm);
 
   flex-shrink: 0;
@@ -1590,12 +1590,12 @@ tr:hover .file-more-menu-btn {
   transition: all 0.2s ease;
 }
 
-. toolbarButton:hover {
+.toolbarButton:hover {
   background-color: var(--btnSecondaryHover);
   border-color: var(--fgMuted);
 }
 
-.toolbarButton. active {
+.toolbarButton.active {
   background-color: var(--btnSecondaryHover);
   border-color: var(--accentFg);
   color: var(--accentFg);
@@ -1605,7 +1605,7 @@ tr:hover .file-more-menu-btn {
 
 
 .fontSizeControl {
-  display:  flex;
+  display: flex;
   align-items: center;
 
   background-color: var(--btnSecondaryBg);
@@ -1613,18 +1613,18 @@ tr:hover .file-more-menu-btn {
   height: 2rem;
   overflow: hidden;
 
-  border:  0.0625rem solid var(--borderDefault);
+  border: 0.0625rem solid var(--borderDefault);
   border-radius: var(--radiusSm);
 
   flex-shrink: 0;
 }
 
 .fontButton {
-  display:  flex;
+  display: flex;
   align-items: center;
   justify-content: center;
 
-  background:  transparent;
+  background: transparent;
 
   width: 1.75rem;
   height: 100%;
@@ -1643,7 +1643,7 @@ tr:hover .file-more-menu-btn {
 }
 
 .fontSizeDisplay {
-  min-width: 2. 75rem;
+  min-width: 2.75rem;
   padding: 0 0.625rem;
 
   color: var(--fgDefault);
@@ -1658,7 +1658,7 @@ tr:hover .file-more-menu-btn {
 
 .icon {
   width: 1rem;
-  height:  1rem;
+  height: 1rem;
 }
 
 .smallIcon {
@@ -1674,7 +1674,7 @@ tr:hover .file-more-menu-btn {
 
 
 
-#searchModal . bg-github-canvas-default {
+#searchModal .bg-github-canvas-default {
   animation: modalSlideIn 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
@@ -1695,7 +1695,7 @@ tr:hover .file-more-menu-btn {
 }
 
 #searchResults::-webkit-scrollbar-thumb {
-  background:  var(--borderDefault);
+  background: var(--borderDefault);
   border-radius: var(--radiusSm);
 }
 
@@ -1710,13 +1710,13 @@ tr:hover .file-more-menu-btn {
   position: relative;
 }
 
-[data-drop-zone]. dragging {
+[data-drop-zone].dragging {
   background-color: var(--accentSubtle);
   border-color: var(--accentEmphasis) !important;
 }
 
 [data-drop-zone]::after {
-  content:  '';
+  content: '';
 
   border: 0.125rem dashed transparent;
   border-radius: var(--radiusMd);
@@ -1729,7 +1729,7 @@ tr:hover .file-more-menu-btn {
   transition: all 0.2s ease;
 }
 
-[data-drop-zone]. dragging::after {
+[data-drop-zone].dragging::after {
   border-color: var(--accentEmphasis);
 }
 
@@ -1740,13 +1740,13 @@ tr:hover .file-more-menu-btn {
 
 #uploadDropZone: hover {
   background-color: var(--accentSubtle);
-  border-color:  var(--accentEmphasis);
+  border-color: var(--accentEmphasis);
 }
 
 
 .drop-target {
   background-color: var(--accentSubtle) !important;
-  border:  0.125rem dashed var(--accentEmphasis) !important;
+  border: 0.125rem dashed var(--accentEmphasis) !important;
 }
 
 .drop-target:: after {
@@ -1767,14 +1767,14 @@ tr:hover .file-more-menu-btn {
 
 
 .preview-code {
-  background:  var(--canvasInset);
+  background: var(--canvasInset);
 
   padding: 1rem;
   overflow-x: auto;
 
-  border-radius:  var(--radiusMd);
+  border-radius: var(--radiusMd);
 
-  font-family:  var(--fontMono);
+  font-family: var(--fontMono);
   font-size: 0.8125rem;
   line-height: 1.6;
 }
@@ -1784,10 +1784,10 @@ tr:hover .file-more-menu-btn {
 }
 
 .preview-iframe {
-  width:  100%;
+  width: 100%;
   height: 37.5rem;
 
-  border:  0.0625rem solid var(--borderDefault);
+  border: 0.0625rem solid var(--borderDefault);
   border-radius: var(--radiusMd);
 }
 
@@ -1803,7 +1803,7 @@ tr:hover .file-more-menu-btn {
   margin-bottom: 1rem;
   padding-bottom: 0.5rem;
 
-  border-bottom:  0.0625rem solid var(--borderDefault);
+  border-bottom: 0.0625rem solid var(--borderDefault);
 
   font-size: 2em;
   font-weight: var(--weightSemibold);
@@ -1813,7 +1813,7 @@ tr:hover .file-more-menu-btn {
   margin-top: 1.5rem;
   margin-bottom: 0.75rem;
 
-  font-size:  1.5em;
+  font-size: 1.5em;
   font-weight: var(--weightSemibold);
 }
 
@@ -1826,7 +1826,7 @@ tr:hover .file-more-menu-btn {
 }
 
 .markdown-preview code {
-  background:  var(--canvasInset);
+  background: var(--canvasInset);
 
   padding: 0.125rem 0.375rem;
 
@@ -1863,7 +1863,7 @@ tr:hover .file-more-menu-btn {
 
 
 .badge {
-  display:  inline-flex;
+  display: inline-flex;
   align-items: center;
   gap: 0.25rem;
 
@@ -1871,22 +1871,22 @@ tr:hover .file-more-menu-btn {
 
   border-radius: var(--radiusFull);
 
-  font-size:  0.6875rem;
+  font-size: 0.6875rem;
   font-weight: var(--weightMedium);
 }
 
 .badge-success {
-  background:  var(--badgeSuccessBg);
+  background: var(--badgeSuccessBg);
   color: var(--badgeSuccessFg);
 }
 
 .badge-warning {
-  background:  var(--badgeWarningBg);
+  background: var(--badgeWarningBg);
   color: var(--badgeWarningFg);
 }
 
 .badge-danger {
-  background:  var(--badgeDangerBg);
+  background: var(--badgeDangerBg);
   color: var(--badgeDangerFg);
 }
 
@@ -1903,14 +1903,14 @@ tr:hover .file-more-menu-btn {
 }
 
 [data-tooltip]::before {
-  content:  attr(data-tooltip);
+  content: attr(data-tooltip);
 
   background: var(--fgMuted);
 
   margin-bottom: 0.3125rem;
   padding: 0.375rem 0.75rem;
 
-  border-radius:  var(--radiusMd);
+  border-radius: var(--radiusMd);
 
   position: absolute;
   z-index: 1001;
@@ -1944,30 +1944,30 @@ tr:hover .file-more-menu-btn {
 
   position: fixed;
   z-index: 999;
-  bottom:  1rem;
+  bottom: 1rem;
   right: 1rem;
 
   color: var(--fgMuted);
   font-size: var(--textXs);
   opacity: 0;
-  pointer-events:  none;
-  box-shadow: 0 0. 25rem 0.75rem rgba(0, 0, 0, 0.3);
+  pointer-events: none;
+  box-shadow: 0 0.25rem 0.75rem rgba(0, 0, 0, 0.3);
   transform: translateY(0.625rem);
 
   transition: all 0.3s ease;
 }
 
-.shortcut-hint. show {
+.shortcut-hint.show {
   opacity: 1;
   transform: translateY(0);
 }
 
 .shortcut-hint kbd {
-  background:  var(--canvasInset);
+  background: var(--canvasInset);
 
   padding: 0.125rem 0.375rem;
 
-  border:  0.0625rem solid var(--borderDefault);
+  border: 0.0625rem solid var(--borderDefault);
   border-radius: 0.1875rem;
 
   font-family: var(--fontMono);
@@ -1984,14 +1984,14 @@ tr:hover .file-more-menu-btn {
 
 
 
-. show {
+.show {
   opacity: 1;
 
   transition: opacity 0.45s ease-in;
 }
 
 .hide {
-  opacity:  0;
+  opacity: 0;
   visibility: hidden;
 
   transition: opacity 0.25s ease-in-out, visibility 1s ease-in-out;
@@ -2008,7 +2008,7 @@ tr:hover .file-more-menu-btn {
 
 
 .flex {
-  display:  flex !important;
+  display: flex !important;
 }
 
 .items-center {
@@ -2028,7 +2028,7 @@ tr:hover .file-more-menu-btn {
 }
 
 .gap-4 {
-  gap:  1rem;
+  gap: 1rem;
 }
 
 .rounded {
@@ -2063,7 +2063,7 @@ tr:hover .file-more-menu-btn {
 
 
 .editorContainer {
-  display:  flex;
+  display: flex;
   flex-direction: column;
   gap: 0.75rem;
 
@@ -2073,7 +2073,7 @@ tr:hover .file-more-menu-btn {
   box-sizing: border-box;
 }
 
-.editorContainer. fullscreen {
+.editorContainer.fullscreen {
   background: var(--editorBg);
 
   padding: 1rem;
@@ -2089,7 +2089,7 @@ tr:hover .file-more-menu-btn {
 
 .editorContainer.fullscreen .editorBody {
   max-height: none;
-  flex:  1;
+  flex: 1;
 }
 
 
@@ -2101,22 +2101,22 @@ tr:hover .file-more-menu-btn {
 
   overflow: hidden;
 
-  border:  0.0625rem solid var(--editorBorder);
+  border: 0.0625rem solid var(--editorBorder);
   border-radius: var(--radiusMd);
 
   box-shadow: 0 0.25rem 0.375rem -0.0625rem rgba(0, 0, 0, 0.1), 0 0.125rem 0.25rem -0.125rem rgba(0, 0, 0, 0.1);
 }
 
 
-. editorHeader {
-  display:  flex;
+.editorHeader {
+  display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 1rem;
 
   background: var(--editorHeaderBg);
 
-  min-height: 2. 75rem;
+  min-height: 2.75rem;
   padding: 0.5rem 1rem;
 
   border-bottom: 0.0625rem solid var(--editorBorder);
@@ -2126,7 +2126,7 @@ tr:hover .file-more-menu-btn {
 .editorHeaderCenter,
 .editorHeaderRight {
   display: flex;
-  align-items:  center;
+  align-items: center;
   gap: 0.25rem;
 }
 
@@ -2139,8 +2139,8 @@ tr:hover .file-more-menu-btn {
   background: var(--editorBg);
 
   min-height: 25rem;
-  max-height: calc(100vh - 15. 625rem);
-  overflow:  hidden;
+  max-height: calc(100vh - 15.625rem);
+  overflow: hidden;
 
   position: relative;
 
@@ -2165,7 +2165,7 @@ tr:hover .file-more-menu-btn {
 }
 
 .editorFooterLeft,
-. editorFooterCenter,
+.editorFooterCenter,
 .editorFooterRight {
   display: flex;
   align-items: center;
@@ -2176,14 +2176,14 @@ tr:hover .file-more-menu-btn {
 
 
 .fileInfo {
-  display:  flex;
+  display: flex;
   align-items: center;
   gap: 0.5rem;
 }
 
 .fileIcon {
-  width:  1rem;
-  height:  1rem;
+  width: 1rem;
+  height: 1rem;
 
   flex-shrink: 0;
 
@@ -2191,7 +2191,7 @@ tr:hover .file-more-menu-btn {
 }
 
 .fileName {
-  max-width: 12. 5rem;
+  max-width: 12.5rem;
   overflow: hidden;
 
   color: var(--editorText);
@@ -2207,7 +2207,7 @@ tr:hover .file-more-menu-btn {
 .badgeSecondary {
   background: var(--editorBtnBg);
 
-  border:  0.0625rem solid var(--editorBorderMuted);
+  border: 0.0625rem solid var(--editorBorderMuted);
 
   color: var(--editorTextMuted);
 }
@@ -2259,30 +2259,30 @@ tr:hover .file-more-menu-btn {
   color: var(--editorText);
 }
 
-.headerButton. active {
+.headerButton.active {
   background: var(--editorBtnActive);
   color: #ffffff;
 }
 
-. headerButton. active:hover {
+.headerButton.active:hover {
   background: var(--editorAccentEmphasis);
 }
 
 
 .languageBtn {
-  padding:  0 0.5rem;
+  padding: 0 0.5rem;
 }
 
 
 .buttonIcon {
-  width:  0.875rem;
+  width: 0.875rem;
   height: 0.875rem;
 
   flex-shrink: 0;
 }
 
 .chevronIcon {
-  width:  0.625rem;
+  width: 0.625rem;
   height: 0.625rem;
 
   flex-shrink: 0;
@@ -2297,21 +2297,21 @@ tr:hover .file-more-menu-btn {
   min-width: 10rem;
   max-height: 20rem;
   margin-top: 0.25rem;
-  overflow-y:  auto;
+  overflow-y: auto;
 
   border: 0.0625rem solid var(--editorBorder);
   border-radius: var(--radiusMd);
 
   position: absolute;
   z-index: 1000;
-  top:  100%;
+  top: 100%;
   left: 0;
 
   box-shadow: 0 0.625rem 0.9375rem -0.1875rem rgba(0, 0, 0, 0.3);
 }
 
 .dropdown.dropdownRight {
-  left:  auto;
+  left: auto;
   right: 0;
 }
 
@@ -2322,7 +2322,7 @@ tr:hover .file-more-menu-btn {
 .dropdownItem {
   display: flex;
   align-items: center;
-  gap:  0.5rem;
+  gap: 0.5rem;
 
   background: transparent;
 
@@ -2341,12 +2341,12 @@ tr:hover .file-more-menu-btn {
   transition: background 0.15s ease;
 }
 
-. dropdownItem:hover {
-  background:  var(--editorBtnBg);
+.dropdownItem:hover {
+  background: var(--editorBtnBg);
 }
 
 .dropdownIcon {
-  width:  1rem;
+  width: 1rem;
   height: 1rem;
 
   color: var(--editorTextMuted);
@@ -2372,7 +2372,7 @@ tr:hover .file-more-menu-btn {
   width: 1.5rem;
   height: 100%;
 
-  border:  none;
+  border: none;
 
   color: var(--editorTextMuted);
   cursor: pointer;
@@ -2386,7 +2386,7 @@ tr:hover .file-more-menu-btn {
 }
 
 .fontSizeLabel {
-  min-width: 2. 5rem;
+  min-width: 2.5rem;
   padding: 0 0.5rem;
 
   border-left: 0.0625rem solid var(--editorBorder);
@@ -2406,7 +2406,7 @@ tr:hover .file-more-menu-btn {
   height: 100%;
 }
 
-.codeMirrorContainer . CodeMirror {
+.codeMirrorContainer .CodeMirror {
   background: var(--editorBg) !important;
 
   width: 100% !important;
@@ -2427,11 +2427,11 @@ tr:hover .file-more-menu-btn {
 
   padding-right: 0.5rem;
 
-  border-right:  0.0625rem solid var(--editorBorder);
+  border-right: 0.0625rem solid var(--editorBorder);
 }
 
-.codeMirrorContainer . CodeMirror-linenumber {
-  padding:  0 0.75rem 0 0.5rem;
+.codeMirrorContainer .CodeMirror-linenumber {
+  padding: 0 0.75rem 0 0.5rem;
 
   color: var(--editorTextSubtle);
   font-family: "JetBrains Mono", monospace;
@@ -2461,17 +2461,17 @@ tr:hover .file-more-menu-btn {
   content: "▸";
 }
 
-. codeMirrorContainer .CodeMirror-foldgutter-open: hover,
+.codeMirrorContainer .CodeMirror-foldgutter-open: hover,
 .codeMirrorContainer .CodeMirror-foldgutter-folded:hover {
   color: var(--editorText);
 }
 
 .codeMirrorContainer .CodeMirror-activeline-background {
-  background:  var(--editorLineHighlight) !important;
+  background: var(--editorLineHighlight) !important;
 }
 
 .codeMirrorContainer .CodeMirror-selected {
-  background:  var(--editorSelection) !important;
+  background: var(--editorSelection) !important;
 }
 
 .codeMirrorContainer .CodeMirror-matchingbracket {
@@ -2490,15 +2490,15 @@ tr:hover .file-more-menu-btn {
 
 
 #coderWrapper {
-  display:  flex;
+  display: flex;
   flex-direction: column;
 
   background-color: var(--codeBg);
 
-  min-height: 18. 75rem;
+  min-height: 18.75rem;
   height: 65svh;
-  margin:  0 0. 5rem;
-  overflow:  hidden;
+  margin: 0 0.5rem;
+  overflow: hidden;
 
   border: 0.0625rem solid var(--borderDefault);
   border-bottom-left-radius: 0.5rem;
@@ -2510,7 +2510,7 @@ tr:hover .file-more-menu-btn {
 #codeMirrorContainer {
   width: 100%;
   min-height: 0;
-  overflow:  hidden;
+  overflow: hidden;
 
   flex: 1 1 auto;
 }
@@ -2521,10 +2521,10 @@ tr:hover .file-more-menu-btn {
 }
 
 #codeMirrorContainer .cm-scroller {
-  overflow:  auto !important;
+  overflow: auto !important;
 }
 
-#codeMirrorContainer .cm-editor . cm-content,
+#codeMirrorContainer .cm-editor .cm-content,
 #codeMirrorContainer .cm-editor .cm-gutters,
 #codeMirrorContainer .cm-editor .cm-gutter,
 #codeMirrorContainer .cm-editor .cm-activeLineGutter {
@@ -2534,8 +2534,8 @@ tr:hover .file-more-menu-btn {
 
 
 
-. code-viewer-header {
-  display:  flex;
+.code-viewer-header {
+  display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 1rem;
@@ -2549,7 +2549,7 @@ tr:hover .file-more-menu-btn {
 }
 
 .code-viewer-toolbar {
-  display:  flex;
+  display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 1rem;
@@ -2558,14 +2558,14 @@ tr:hover .file-more-menu-btn {
 
   padding: 0.5rem 1rem;
 
-  border-bottom:  0.0625rem solid var(--borderDefault);
+  border-bottom: 0.0625rem solid var(--borderDefault);
 }
 
 
 
 
 .gutter-container {
-  display:  flex;
+  display: flex;
 
   background-color: var(--canvasSubtle);
 
@@ -2595,9 +2595,9 @@ tr:hover .file-more-menu-btn {
   display: flex;
 }
 
-. spinnerContainer {
+.spinnerContainer {
   display: flex;
-  align-items:  center;
+  align-items: center;
   justify-content: center;
 }
 
@@ -2608,15 +2608,15 @@ tr:hover .file-more-menu-btn {
   animation: rotate 1s linear infinite;
 }
 
-. spinnerTrack {
+.spinnerTrack {
   fill: none;
-  stroke:  var(--editorBorder);
+  stroke: var(--editorBorder);
   stroke-width: 4;
 }
 
-. spinnerHead {
-  fill:  none;
-  stroke:  var(--editorAccent);
+.spinnerHead {
+  fill: none;
+  stroke: var(--editorAccent);
   stroke-width: 4;
   stroke-linecap: round;
   stroke-dasharray: 80;
@@ -2626,10 +2626,10 @@ tr:hover .file-more-menu-btn {
 }
 
 
-. loading-spinner {
+.loading-spinner {
   display: none;
   align-items: center;
-  justify-content:  center;
+  justify-content: center;
 
   background: rgba(0, 0, 0, 0.35);
 
@@ -2657,14 +2657,14 @@ tr:hover .file-more-menu-btn {
 .spinner-overlay {
   display: flex;
   align-items: center;
-  justify-content:  center;
+  justify-content: center;
 
   width: 100%;
   height: 100%;
 }
 
 .spinner-svg {
-  width:  6. 25rem;
+  width: 6.25rem;
   height: 6.25rem;
 
   animation: spinner-rotate 2s linear infinite;
@@ -2672,16 +2672,16 @@ tr:hover .file-more-menu-btn {
 
 .spinner-track {
   fill: none;
-  stroke:  rgba(110, 118, 129, 0.4);
+  stroke: rgba(110, 118, 129, 0.4);
   stroke-width: 3;
 }
 
-. spinner-circle {
+.spinner-circle {
   fill: none;
-  stroke:  var(--colorLink);
+  stroke: var(--colorLink);
   stroke-width: 3;
   stroke-linecap: round;
-  stroke-dasharray: 125. 6;
+  stroke-dasharray: 125.6;
   stroke-dashoffset: 125.6;
 
   transform-origin: center;
@@ -2690,7 +2690,7 @@ tr:hover .file-more-menu-btn {
 }
 
 .spinner-head {
-  fill:  none;
+  fill: none;
   stroke: var(--accentFg);
   stroke-width: 6;
   stroke-linecap: round;
@@ -2702,7 +2702,7 @@ tr:hover .file-more-menu-btn {
 
 
 
-. searchPanel {
+.searchPanel {
   background: var(--editorCardBg);
 
   border: 0.0625rem solid var(--editorBorder);
@@ -2710,13 +2710,13 @@ tr:hover .file-more-menu-btn {
 
   position: absolute;
   z-index: 50;
-  top:  0. 75rem;
+  top: 0.75rem;
   right: 0.75rem;
 
   box-shadow: 0 0.625rem 0.9375rem -0.1875rem rgba(0, 0, 0, 0.3);
 }
 
-.searchPanel. hide {
+.searchPanel.hide {
   opacity: 0;
   visibility: hidden;
 
@@ -2724,7 +2724,7 @@ tr:hover .file-more-menu-btn {
 }
 
 .searchContainer {
-  display:  flex;
+  display: flex;
   align-items: center;
   gap: 0.5rem;
 
@@ -2734,12 +2734,12 @@ tr:hover .file-more-menu-btn {
 .searchInput {
   background: var(--editorBg);
 
-  width: 12. 5rem;
+  width: 12.5rem;
   height: 1.75rem;
   padding: 0 0.625rem;
 
   border: 0.0625rem solid var(--editorBorder);
-  border-radius:  var(--radiusSm);
+  border-radius: var(--radiusSm);
 
   color: var(--editorText);
   font-family: inherit;
@@ -2750,16 +2750,16 @@ tr:hover .file-more-menu-btn {
 }
 
 .searchInput:focus {
-  border-color:  var(--editorAccent);
+  border-color: var(--editorAccent);
   box-shadow: 0 0 0 0.125rem rgba(83, 155, 245, 0.2);
 }
 
 .searchInput::placeholder {
-  color:  var(--editorTextSubtle);
+  color: var(--editorTextSubtle);
 }
 
 .searchActions {
-  display:  flex;
+  display: flex;
   align-items: center;
   gap: 0.25rem;
 }
@@ -2774,7 +2774,7 @@ tr:hover .file-more-menu-btn {
   text-align: center;
 }
 
-. searchNavBtn {
+.searchNavBtn {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -2785,7 +2785,7 @@ tr:hover .file-more-menu-btn {
   height: 1.5rem;
 
   border: 0.0625rem solid var(--editorBorder);
-  border-radius:  var(--radiusSm);
+  border-radius: var(--radiusSm);
 
   color: var(--editorTextMuted);
   cursor: pointer;
@@ -2805,7 +2805,7 @@ tr:hover .file-more-menu-btn {
 
 
 .footerItem {
-  display:  flex;
+  display: flex;
   align-items: center;
   gap: 0.25rem;
 }
@@ -2815,18 +2815,18 @@ tr:hover .file-more-menu-btn {
 }
 
 .footerValue {
-  color:  var(--editorTextMuted);
+  color: var(--editorTextMuted);
   font-family: "JetBrains Mono", monospace;
 }
 
 .footerBullet {
-  margin:  0 0.125rem;
+  margin: 0 0.125rem;
 
   color: var(--editorTextSubtle);
 }
 
 .footerIcon {
-  width:  0.75rem;
+  width: 0.75rem;
   height: 0.75rem;
 
   color: var(--editorTextSubtle);
@@ -2842,7 +2842,7 @@ tr:hover .file-more-menu-btn {
 .footerBadge {
   display: inline-flex;
   align-items: center;
-  gap:  0.25rem;
+  gap: 0.25rem;
 
   background: transparent;
 
@@ -2859,13 +2859,13 @@ tr:hover .file-more-menu-btn {
 .footerBadgeAccent {
   background: rgba(83, 155, 245, 0.1);
 
-  border-color:  rgba(83, 155, 245, 0.3);
+  border-color: rgba(83, 155, 245, 0.3);
 
   color: var(--editorAccent);
 }
 
 .badgeIcon {
-  width:  0.625rem;
+  width: 0.625rem;
   height: 0.625rem;
 }
 
@@ -2875,12 +2875,12 @@ tr:hover .file-more-menu-btn {
 .statusIndicator {
   display: flex;
   align-items: center;
-  gap:  0.25rem;
+  gap: 0.25rem;
 }
 
 .statusIcon {
-  width:  0.75rem;
-  height:  0.75rem;
+  width: 0.75rem;
+  height: 0.75rem;
 }
 
 .statusOk {
@@ -2899,12 +2899,12 @@ tr:hover .file-more-menu-btn {
 
 
 .commitPanel {
-  background:  var(--editorCardBg);
+  background: var(--editorCardBg);
 
   padding: 1rem;
 
   border: 0.0625rem solid var(--editorBorder);
-  border-radius:  var(--radiusMd);
+  border-radius: var(--radiusMd);
 }
 
 .commitPanel.hide {
@@ -2912,7 +2912,7 @@ tr:hover .file-more-menu-btn {
 }
 
 .commitTitle {
-  margin:  0 0 0.75rem 0;
+  margin: 0 0 0.75rem 0;
 
   color: var(--editorText);
   font-size: var(--textSm);
@@ -2947,12 +2947,12 @@ tr:hover .file-more-menu-btn {
 
 .commitInput:focus,
 .commitTextarea:focus {
-  border-color:  var(--editorAccent);
+  border-color: var(--editorAccent);
 }
 
 .commitInput::placeholder,
-. commitTextarea::placeholder {
-  color:  var(--editorTextSubtle);
+.commitTextarea::placeholder {
+  color: var(--editorTextSubtle);
 }
 
 .commitTextarea {
@@ -2963,7 +2963,7 @@ tr:hover .file-more-menu-btn {
 }
 
 .commitActions {
-  display:  flex;
+  display: flex;
   justify-content: flex-end;
   gap: 0.5rem;
 
@@ -2978,7 +2978,7 @@ tr:hover .file-more-menu-btn {
 
   font-family: inherit;
   font-size: var(--textSm);
-  font-weight:  500;
+  font-weight: 500;
   cursor: pointer;
 
   transition: all 0.15s ease;
@@ -2987,16 +2987,16 @@ tr:hover .file-more-menu-btn {
 .commitBtnPrimary {
   background: #347d39;
 
-  border:  none;
+  border: none;
 
   color: #ffffff;
 }
 
 .commitBtnPrimary:hover {
-  background:  #46954a;
+  background: #46954a;
 }
 
-. commitBtnSecondary {
+.commitBtnSecondary {
   background: transparent;
 
   border: 0.0625rem solid var(--editorBorder);
@@ -3031,7 +3031,7 @@ tr:hover .file-more-menu-btn {
 .commit-label {
   display: block;
 
-  margin-bottom:  0.375rem;
+  margin-bottom: 0.375rem;
 
   color: var(--fgDefault);
   font-size: 0.8125rem;
@@ -3052,7 +3052,7 @@ tr:hover .file-more-menu-btn {
   font-family: 'Inter', sans-serif;
   font-size: 0.875rem;
   line-height: 1.5;
-  resize:  vertical;
+  resize: vertical;
 
   transition: var(--transitionBase);
 }
@@ -3065,12 +3065,12 @@ tr:hover .file-more-menu-btn {
 }
 
 .commit-textarea::placeholder {
-  color:  var(--fgSubtle);
+  color: var(--fgSubtle);
 }
 
 .form-actions {
   display: flex;
-  justify-content:  flex-end;
+  justify-content: flex-end;
   gap: 0.5rem;
 }
 
@@ -3079,11 +3079,11 @@ tr:hover .file-more-menu-btn {
 
 .dropdown-wrapper {
   max-width: 25rem;
-  margin:  0 auto;
+  margin: 0 auto;
 }
 
 .dropdown-trigger {
-  display:  inline-block;
+  display: inline-block;
 
   position: relative;
 }
@@ -3129,7 +3129,7 @@ tr:hover .file-more-menu-btn {
 
   border: none;
 
-  color:  white;
+  color: white;
   cursor: pointer;
 }
 
@@ -3143,7 +3143,7 @@ tr:hover .file-more-menu-btn {
 }
 
 .dropdown-trigger:hover .chevron {
-  transform:  rotate(180deg);
+  transform: rotate(180deg);
 }
 
 
@@ -3161,10 +3161,10 @@ tr:hover .file-more-menu-btn {
   position: absolute;
   z-index: 1000;
   bottom: 100%;
-  left:  0;
+  left: 0;
 
   opacity: 1;
-  visibility:  visible;
+  visibility: visible;
   box-shadow: var(--shadowLg);
   transform: translateY(0);
 
@@ -3172,7 +3172,7 @@ tr:hover .file-more-menu-btn {
 }
 
 .dropdown-menu:: before {
-  content:  '';
+  content: '';
 
   width: 0;
   height: 0;
@@ -3184,37 +3184,37 @@ tr:hover .file-more-menu-btn {
   position: absolute;
   z-index: 1001;
   bottom: -0.5rem;
-  left: 1. 25rem;
+  left: 1.25rem;
 }
 
 .dropdown-menu::after {
   content: '';
 
   width: 0;
-  height:  0;
+  height: 0;
 
   border-left: 0.5625rem solid transparent;
-  border-right:  0.5625rem solid transparent;
-  border-top:  0.5625rem solid var(--borderSubtle);
+  border-right: 0.5625rem solid transparent;
+  border-top: 0.5625rem solid var(--borderSubtle);
 
   position: absolute;
   z-index: 999;
-  bottom:  -0.5625rem;
+  bottom: -0.5625rem;
   left: 1.1875rem;
 }
 
 .dropdown-header {
-  display:  flex;
+  display: flex;
   align-items: center;
   gap: 0.75rem;
 
   padding: 1rem;
 
-  border-bottom:  0.0625rem solid var(--borderSubtle);
+  border-bottom: 0.0625rem solid var(--borderSubtle);
 }
 
 .header-icon {
-  width:  2rem;
+  width: 2rem;
   height: 2rem;
 
   flex-shrink: 0;
@@ -3224,7 +3224,7 @@ tr:hover .file-more-menu-btn {
 
 .save-info {
   min-width: 0;
-  flex:  1;
+  flex: 1;
 }
 
 .save-title {
@@ -3236,7 +3236,7 @@ tr:hover .file-more-menu-btn {
 }
 
 .save-subtitle {
-  color:  var(--fgSubtle);
+  color: var(--fgSubtle);
   font-size: 0.8125rem;
   font-weight: 400;
 }
@@ -3297,13 +3297,13 @@ tr:hover .file-more-menu-btn {
     top: 0;
     bottom: 0;
 
-    box-shadow: 0. 125rem 0 0.5rem rgba(0, 0, 0, 0.1);
+    box-shadow: 0.125rem 0 0.5rem rgba(0, 0, 0, 0.1);
     transform: translateX(-100%);
   }
 
   #rightSidebar {
     left: auto;
-    right:  0;
+    right: 0;
 
     transform: translateX(100%);
   }
@@ -3317,11 +3317,11 @@ tr:hover .file-more-menu-btn {
 
 @media (max-width: 48rem) {
   .file-menu-popover {
-    min-width: 12. 5rem;
+    min-width: 12.5rem;
     max-width: calc(100vw - 2rem);
   }
 
-  #searchModal . bg-github-canvas-default {
+  #searchModal .bg-github-canvas-default {
     max-width: calc(100vw - 1rem);
     margin: 1rem;
   }
@@ -3329,11 +3329,11 @@ tr:hover .file-more-menu-btn {
   #uploadModal .bg-github-canvas-default,
   #importModal .bg-github-canvas-default,
   #exportModal .bg-github-canvas-default {
-    max-width:  calc(100vw - 1rem);
+    max-width: calc(100vw - 1rem);
     margin: 1rem;
   }
 
-  . navbar-button-label {
+  .navbar-button-label {
     display: none;
   }
 
@@ -3347,7 +3347,7 @@ tr:hover .file-more-menu-btn {
   }
 
   .navbar-button-text {
-    display:  none;
+    display: none;
   }
 
   .navbar-button-with-text {
@@ -3356,14 +3356,14 @@ tr:hover .file-more-menu-btn {
   }
 
   .repo-list {
-    grid-template-columns:  1fr;
+    grid-template-columns: 1fr;
   }
 
-  . coderHeader {
+  .coderHeader {
     display: flex;
     flex-direction: column;
     align-items: stretch;
-    gap:  0.75rem;
+    gap: 0.75rem;
 
     padding: 0.75rem;
   }
@@ -3372,7 +3372,7 @@ tr:hover .file-more-menu-btn {
     width: 100%;
   }
 
-  . coderHeaderRight {
+  .coderHeaderRight {
     width: 100%;
   }
 
@@ -3380,7 +3380,7 @@ tr:hover .file-more-menu-btn {
     display: flex;
     flex-direction: column;
     align-items: stretch;
-    gap:  0.5rem;
+    gap: 0.5rem;
 
     text-align: center;
   }
@@ -3394,7 +3394,7 @@ tr:hover .file-more-menu-btn {
     min-width: auto;
 
     position: fixed;
-    top: 1. 25rem;
+    top: 1.25rem;
     left: 1.25rem;
     right: 1.25rem;
   }
@@ -3413,28 +3413,28 @@ tr:hover .file-more-menu-btn {
   }
 
   .fileName {
-    max-width: 7. 5rem;
+    max-width: 7.5rem;
   }
 
   .editorFooter {
-    flex-wrap:  wrap;
+    flex-wrap: wrap;
     justify-content: center;
     gap: 0.5rem;
   }
 
-  . editorFooterLeft,
+  .editorFooterLeft,
   .editorFooterCenter,
   .editorFooterRight {
     justify-content: center;
   }
 
   .searchPanel {
-    left: 0. 5rem;
+    left: 0.5rem;
     right: 0.5rem;
   }
 
   .searchInput {
-    width:  100%;
+    width: 100%;
     flex: 1;
   }
 }
@@ -3442,7 +3442,7 @@ tr:hover .file-more-menu-btn {
 
 @media (max-width: 40rem) {
   .hidden-mobile {
-    display:  none;
+    display: none;
   }
 }
 
@@ -3469,7 +3469,7 @@ tr:hover .file-more-menu-btn {
 @keyframes modalSlideIn {
   from {
     opacity: 0;
-    transform: translateY(-1. 25rem) scale(0.95);
+    transform: translateY(-1.25rem) scale(0.95);
   }
   to {
     opacity: 1;
@@ -3491,7 +3491,7 @@ tr:hover .file-more-menu-btn {
 @keyframes slideUp {
   from {
     opacity: 1;
-    transform:  translateY(0);
+    transform: translateY(0);
   }
   to {
     opacity: 0;
@@ -3501,7 +3501,7 @@ tr:hover .file-more-menu-btn {
 
 @keyframes fadeIn {
   from {
-    opacity:  0;
+    opacity: 0;
   }
   to {
     opacity: 1;
@@ -3530,7 +3530,7 @@ tr:hover .file-more-menu-btn {
     stroke-dashoffset: 80;
   }
   50% {
-    stroke-dashoffset:  20;
+    stroke-dashoffset: 20;
   }
   100% {
     stroke-dashoffset: 80;
@@ -3545,7 +3545,7 @@ tr:hover .file-more-menu-btn {
 
 @keyframes spinner-dash {
   0% {
-    stroke-dasharray: 1, 125. 6;
+    stroke-dasharray: 1, 125.6;
     stroke-dashoffset: 0;
   }
   50% {
@@ -3569,11 +3569,11 @@ tr:hover .file-more-menu-btn {
 
 
 .animate-slide-down {
-  animation:  slideDown 0.3s ease forwards;
+  animation: slideDown 0.3s ease forwards;
 }
 
-. animate-slide-up {
-  animation:  slideUp 0.3s ease forwards;
+.animate-slide-up {
+  animation: slideUp 0.3s ease forwards;
 }
 
 .animate-fade-in {
