@@ -117,15 +117,15 @@
   --warningMuted: rgba(174, 124, 20, 0.4);
   --warningSubtle: rgba(174, 124, 20, 0.15);
   
-  --btnPrimaryBg: #347d39;
-  --btnPrimaryHover: #46954a;
-  --btnPrimaryActive: #2a6b2f;
-  --btnPrimaryText: #ffffff;
+  --btnPrimaryBg: #347D39;
+  --btnPrimaryHover: #46954A;
+  --btnPrimaryActive: #2A6B2F;
+  --btnPrimaryText: #EDEDED;
   
-  --btnSecondaryBg: #373e47;
-  --btnSecondaryHover: #444c56;
-  --btnSecondaryActive: #2d333b;
-  --btnSecondaryText: #adbac7;
+  --btnSecondaryBg: #373E47;
+  --btnSecondaryHover: #444C56;
+  --btnSecondaryActive: #2D333B;
+  --btnSecondaryText: #ADBAC7;
   
   --btnTertiaryBg: transparent;
   --btnTertiaryHover: #373e47;
