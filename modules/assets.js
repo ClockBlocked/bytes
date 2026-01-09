@@ -459,7 +459,7 @@ templates: {
           ${AppAssets.icons.more()}
         </button>
    </div>     
-        <div id="moreOptionsDropdown" class="dropdown hide">
+        <div id="moreOptionsDropdown" class="dropdown2 hide">
           <div class="dropdownContent">
             <button class="dropdownItem" id="formatBtn">
               ${AppAssets.icons.format()}
