@@ -1695,7 +1695,7 @@ aside:hover .sidebar-title {
 
 .editorHeader,
 .editorHeader .group {
-  display: flex;
+  display: inline-flex;
   flex-direction: row;
   flex-wrap: nowrap;
   gap: 0.5rem;
