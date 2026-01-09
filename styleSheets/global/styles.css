@@ -1711,7 +1711,7 @@ aside:hover .sidebar-title {
   background: var(--editorHeaderBg);
   border-bottom: 0.0625rem solid var(--editorBorder);
   
-  height: 2.15rem;
+  height: 2.55rem;
   gap: 1rem;
 }
 .editorHeader::-webkit-scrollbar {
