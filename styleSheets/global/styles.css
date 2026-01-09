@@ -1705,7 +1705,7 @@ aside:hover .sidebar-title {
   scrollbar-width: none;
   
   align-items: center;
-  justify-content: space-between;
+  justify-content: space-evely;
   padding: 0.5rem 1rem;
   
   background: var(--editorHeaderBg);
