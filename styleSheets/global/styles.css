@@ -1820,10 +1820,6 @@ aside:hover .sidebar-title {
   max-height: 20rem;
   overflow-y: auto;
 }
-.dropdown.dropdownRight {
-  left: auto;
-  right: 0;
-}
 
 .dropdownContent {
   padding: 0.25rem;
