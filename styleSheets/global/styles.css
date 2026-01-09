@@ -4225,9 +4225,7 @@ aside:hover .sidebar-title {
   transition: opacity var(--transitionBase), transform var(--transitionBase);
 }
 
-.dropdown.hide {
-  display: none;
-}
+
 
 .dropdownRight {
   top: 100%;
