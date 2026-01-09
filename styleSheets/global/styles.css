@@ -4234,7 +4234,7 @@ aside:hover .sidebar-title {
   box-shadow: var(--shadowLg);
   min-width: 12rem;
   padding: 0.25rem;
-  z-index: 200;
+  z-index: 9999999;
   opacity: 1;
   transform: translateY(0);
   transition: opacity var(--transitionBase), transform var(--transitionBase);
