@@ -373,7 +373,6 @@ templates: {
   
   <div class="editorCard">
     <div class="editorHeader">
-      <div class="editorHeaderLeft">
         <button id="editModeBtn" class="headerButton active" title="Edit Mode">
           ${AppAssets.icons.edit()}
         </button>
@@ -404,9 +403,7 @@ templates: {
         <button id="uploadBtn" class="headerButton" title="Upload File">
           ${AppAssets.icons.upload()}
         </button>
-      </div>
-      <div class="editorHeaderCenter"></div>
-      <div class="editorHeaderRight">
+      
         <button id="themeBtn" class="headerButton" title="Toggle Theme">
           <svg id="themeIcon" class="buttonIcon" viewBox="0 0 16 16" fill="currentColor" width="14" height="14">
             ${AppAssets.icons.sun()}
@@ -448,7 +445,7 @@ templates: {
               ${AppAssets.icons.invisibles()}
               Show Invisibles
             </button>
-          </div>
+        
         </div>
       </div>
     </div>
