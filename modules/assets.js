@@ -373,7 +373,7 @@ templates: {
   
   <div class="editorCard">
     <div class="editorHeader">
-     <div class="group">
+     <div class="hGroup">
         <button id="editModeBtn" class="headerButton active" title="Edit Mode">
           ${AppAssets.icons.edit()}
         </button>
@@ -384,7 +384,7 @@ templates: {
      
   <div class="headerSeparator"></div>
         
-     <div class="group">
+     <div class="hGroup">
         <button id="undoBtn" class="headerButton" title="Undo (Ctrl+Z)">
           ${AppAssets.icons.undo()}
         </button>
@@ -395,14 +395,14 @@ templates: {
         
   <div class="headerSeparator"></div>
        
-       <div class="group">
+       <div class="hGroup">
         <button id="searchBtn" class="headerButton" title="Search (Ctrl+F)">
           ${AppAssets.icons.search()}  Search Code
         </button>
        </div>
         
         
-        <div class="group">
+        <div class="hGroup">
         <button id="wrapBtn" class="headerButton" title="Toggle Word Wrap">
           ${AppAssets.icons.wrap()}
         </button>
@@ -434,7 +434,7 @@ templates: {
         </button>
         
         
-        <div class="group">
+        <div class="hGroup">
         <div class="fontSizeControl">
           <button id="fontDecreaseBtn" class="fontBtn" title="Decrease Font Size">
             ${AppAssets.icons.minus()}
