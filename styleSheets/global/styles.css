@@ -1698,21 +1698,21 @@ aside:hover .sidebar-title {
   flex-direction: row;
   flex-wrap: nowrap;
   
-  overflow-x: auto;
+  overflow-x: scroll;
   overflow-y: hidden;
   -webkit-overflow-scrolling: touch;
   -ms-overflow-style: none;
   scrollbar-width: none;
   
   align-items: center;
-  justify-content: space-evely;
+  justify-content: space-around;
   padding: 0.5rem 1rem;
   
   background: var(--editorHeaderBg);
   border-bottom: 0.0625rem solid var(--editorBorder);
   
   height: 2.55rem;
-  gap: 1rem;
+  gap: 0.5rem;
 }
 .editorHeader::-webkit-scrollbar {
   display: none;
