@@ -968,9 +968,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
 
-/**
- * Manages fullscreen functionality for the editor
- */
+
 class FullscreenManager {
   constructor(containerSelector = ".editorContainer") {
     this.isFullscreen = false;
@@ -984,7 +982,6 @@ class FullscreenManager {
     this.initializeListeners();
   }
   
-  // Standard method syntax for proper highlighting
   enter = function() {
     const elem = this.editorCard;
     
@@ -1008,7 +1005,6 @@ class FullscreenManager {
       this.fallbackFullscreen(true);
     }
   }.bind(this);
-  
   exit = function() {
     this.container?.setAttribute('data-fullscreen', 'false');
     
@@ -1024,7 +1020,6 @@ class FullscreenManager {
       this.fallbackFullscreen(false);
     }
   }.bind(this);
-  
   toggle = function() {
     if (this.isFullscreen) {
       this.exit();
@@ -1051,7 +1046,6 @@ class FullscreenManager {
     });
     this.container?.dispatchEvent(event);
   }.bind(this);
-  
   initializeListeners = function() {
     const events = [
       'fullscreenchange',
@@ -1084,8 +1078,9 @@ class FullscreenManager {
   }
 }
 
+
 /**
- * Supported programming languages
+ *  Languages  &  Modes
  */
 const SUPPORTED_LANGUAGES = [
   { value: "javascript", label: "JavaScript", ext: ["js", "jsx"] },
@@ -1108,10 +1103,6 @@ const SUPPORTED_LANGUAGES = [
   { value: "php", label: "PHP", ext: ["php"] },
   { value: "swift", label: "Swift", ext: ["swift"] },
 ];
-
-/**
- * CodeMirror mode mappings
- */
 const CODEMIRROR_MODES = {
   javascript: "javascript",
   typescript: "javascript",
@@ -1134,9 +1125,7 @@ const CODEMIRROR_MODES = {
   swift: "swift",
 };
 
-/**
- * Main editor view controller
- */
+
 class CodeViewEditor {
   constructor() {
     this.currentFile = null;
@@ -2087,7 +2076,6 @@ class CodeViewEditor {
   }.bind(this);
 }
 
-// Initialize and expose globally
 window.CodeViewEditor = CodeViewEditor;
 window.coderViewEdit = new CodeViewEditor();
 
