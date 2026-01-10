@@ -862,62 +862,6 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 
-// Initialize at the beginning of your class/component
-class YourComponent {
-  constructor() {
-    // Initialize fullscreen manager
-    this.fullscreenManager = new FullscreenManager(".editorContainer");
-    
-    // Your existing initialization code...
-    this.isEditing = false;
-    this.searchActive = false;
-    
-    this.setupEventListeners();
-  }
-  
-  setupEventListeners() {
-    // 1. Keydown listener
-    document.addEventListener("keydown", (e) => {
-      const ctrl = e.ctrlKey || e.metaKey;
-      if (ctrl && e.key === "s" && this.isEditing) {
-        e.preventDefault();
-        this.showCommitPopup();
-      }
-      if (e.key === "Escape") {
-        if (this.searchActive) this.closeSearch();
-        // Check fullscreen state using the manager
-        else if (this.fullscreenManager.isActive) this.toggleFullscreen();
-        else this.hideCommitPopup();
-      }
-      if (ctrl && e.key === "f") {
-        e.preventDefault();
-        this.openSearch();
-      }
-    });
-
-    // 2. Fullscreen button listener
-    this.elements.fullscreenBtn?.addEventListener("click", () => this.toggleFullscreen());
-  }
-  
-  // 3. Updated toggleFullscreen method
-  toggleFullscreen() {
-    this.fullscreenManager.toggle();
-    
-    // Refresh CodeMirror after fullscreen change
-    setTimeout(() => {
-      if (this.codeMirror && typeof this.codeMirror.refresh === 'function') {
-        this.codeMirror.refresh();
-      }
-    }, 100);
-  }
-  
-  // Your other methods...
-  showCommitPopup() { /* ... */ }
-  hideCommitPopup() { /* ... */ }
-  openSearch() { /* ... */ }
-  closeSearch() { /* ... */ }
-}
-
 
 
 
