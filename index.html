@@ -276,24 +276,24 @@ html {
 }
 
 </style>
+
+
   
 </head>
+<body class="bg-github-canvas-default">
 
-<body class="bg-github-canvas-default text-github-fg-default font-sans">
-  
 
-<!-- STATIC --> 
-<!-- Nunber 1 -->
+
 <!-- Progress Bar -->
 <div id="pageProgress" class="ph-progress page-progress">
     <div class="progress-bar">
       <div class="ph-fill progress-fill"></div>
     </div>
   </div>
-<!-- END OF STATIC --> 
 
 
-<!-- STATIC -->
+
+
 <!-- Top Navigation Bar -->
 <nav class="navbar" aria-label="Main navigation">
   <div class="navbar-inner">
@@ -365,114 +365,19 @@ html {
   </div>
 </nav>
 
+
 <!-- Breadcrumbs navbar -->
 <nav class="breadCrumbsWrapper" id="pathBreadcrumb">
   <div class="breadCrumbContainer">
     <!-- Content will be populated by JavaScript -->
-    
-<div id="fileName">
-  <div class="filePath">
-    <input type="text" id="fileNameInput" class="fileNameInput" value="" readonly />
-  </div>
-</div>
   </div>
 </nav>
-<!-- END OF STATIC --> 
-
-
-<script>
-class ScrollHideNavbar {
-  constructor() {
-    this.breadcrumbsNav = document.getElementById('pathBreadcrumb');
-    this.lastScrollTop = 0;
-    this.scrollThreshold = 10; // Minimum scroll distance before hiding
-    this.navbarHeight = 0;
-    this.hidden = false;
-    
-    this.init();
-  }
-  
-  init() {
-    // Calculate navbar height
-    if (this.breadcrumbsNav) {
-      this.navbarHeight = this.breadcrumbsNav.offsetHeight;
-      
-      // Set initial top position based on main navbar height
-      const mainNavbar = document.querySelector('.navbar');
-      if (mainNavbar) {
-        const mainNavHeight = mainNavbar.offsetHeight;
-        this.breadcrumbsNav.style.top = `${mainNavHeight}px`;
-      }
-      
-      // Add scroll event listener
-      window.addEventListener('scroll', this.handleScroll.bind(this), { passive: true });
-      
-      // Handle resize
-      window.addEventListener('resize', this.handleResize.bind(this));
-    }
-  }
-  
-  handleResize() {
-    // Update navbar height on resize
-    if (this.breadcrumbsNav) {
-      this.navbarHeight = this.breadcrumbsNav.offsetHeight;
-      
-      // Update top position
-      const mainNavbar = document.querySelector('.navbar');
-      if (mainNavbar) {
-        const mainNavHeight = mainNavbar.offsetHeight;
-        this.breadcrumbsNav.style.top = `${mainNavHeight}px`;
-      }
-    }
-  }
-  
-  handleScroll() {
-    const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-    const scrollDelta = scrollTop - this.lastScrollTop;
-    
-    // Only trigger if scrolled more than threshold
-    if (Math.abs(scrollDelta) > this.scrollThreshold) {
-      if (scrollDelta > 0 && scrollTop > this.navbarHeight) {
-        // Scrolling DOWN
-        if (!this.hidden) {
-          this.breadcrumbsNav.classList.add('hidden');
-          this.hidden = true;
-        }
-      } else if (scrollDelta < 0) {
-        // Scrolling UP
-        if (this.hidden) {
-          this.breadcrumbsNav.classList.remove('hidden');
-          this.hidden = false;
-        }
-      }
-      
-      this.lastScrollTop = scrollTop;
-    }
-  }
-  
-  destroy() {
-    window.removeEventListener('scroll', this.handleScroll);
-    window.removeEventListener('resize', this.handleResize);
-  }
-}
-
-// Initialize when DOM is loaded
-document.addEventListener('DOMContentLoaded', () => {
-  window.breadcrumbsScroll = new ScrollHideNavbar();
-});
-</script>
 
 
 
 
-
-
-
-
-
-<!-- STATIC -->
   <!-- Left & Right Sidebars / Overlay -->
-  <div id="overlay" class="fixed inset-0 bg-black"></div>
+<div id="overlay" class="fixed inset-0 bg-black"></div>
   <aside id="leftSidebar" class="sidebar left-sidebar">
     <div class="p-4 h-full overflow-y-auto">
       <!-- User Profile -->
@@ -627,20 +532,22 @@ document.addEventListener('DOMContentLoaded', () => {
       </div>
     </div>
   </aside>
-<!-- END OF STATIC --> 
 
 
 
-<!-- STATIC --> 
-<!-- Page Wrapper -->
+
+
+<!--  P A G E  W R A P P E R 
+===================================================
+===================================================-->
 <main id="mainArea">
 
 
 
 
-<!-- DYNAMIC --> 
-<!-- Number 2 -->
-<!-- Repository Selector View -->
+<!-------
+     Repository Selector View
+                  --------------------->
 <div
   data-page="repo"
   id="repoSelectorView"
@@ -649,17 +556,17 @@ document.addEventListener('DOMContentLoaded', () => {
 
   <div class="flex items-center justify-between mb-6">
     <h2 class="text-2xl font-bold text-github-fg-default">Your Repositories</h2>
-    <!-- New repository button removed - repositories are managed on server -->
   </div>
 
   <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4" id="repoList">
   </div>
+</div><!-- E N D -->
 
 
-</div>
 
-<!-- Number 3 -->
-<!-- File Explorer View -->
+<!-------
+     File Explorer View
+                  --------------------->
 <div
   data-page="explorer"
   id="explorerView"
@@ -687,16 +594,6 @@ document.addEventListener('DOMContentLoaded', () => {
           </div>
         </div>
       </div>
-
-
-
-
-
-      
-      
-      
-      
-      
     </div>
 
     <div class="flex items-center space-x-2">
@@ -841,32 +738,32 @@ document.addEventListener('DOMContentLoaded', () => {
       </div>
     </div>
   </div>
+</div><!-- E N D -->
 
 
-</div>
 
-<!-- Nunber 4 -->
-<!-- Viewing a file -->
+
+<!-------
+     File Viewer & File Editor
+                  --------------------->
 <div
   data-page="file"
   class="pages">
-<!-- See router.js -->
-</div>
-<!-- END OF DYNAMIC --> 
 
+</div><!-- E N D -->
 
 
 
 
 </main>
-<!-- END OF STATIC --> 
+<!-- Page Wrapper E N D ---- E N D ---- E N D --------------->
 
 
 
 
-<!-- DYNAMIC -->
-<!-- Number 5 -->
-<!-- Modals -->
+
+
+<!-- Modals ------------------------------------->
 <div id="createFileModal" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 hidden items-center justify-center p-4">
     <div class="bg-github-canvas-overlay border border-github-border-default rounded-lg shadow-2xl w-full max-w-2xl animate-scale-in">
       <div class="px-6 py-4 border-b border-github-border-default">
@@ -954,10 +851,12 @@ document.addEventListener('DOMContentLoaded', () => {
       </div>
     </div>
   </div>
-<!-- END OF DYNAMIC --> 
+<!-- E N D -- E N D -->
 
-<!-- PopOver Element -->
-  <div id="commitDropdown" class="dropdown-menu hide" role="menu">
+
+
+<!-- PopOver Element ---------------------------->
+<div id="commitDropdown" class="dropdown-menu hide" role="menu">
     <div class="dropdown-header">
       <svg class="header-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512" width="32" height="32">
         <path fill="currentColor" d="M64 48l112 0 0 88c0 39.8 32.2 72 72 72l88 0 0 240c0 8.8-7.2 16-16 16L64 464c-8.8 0-16-7.2-16-16L48 64c0-8.8 7.2-16 16-16zM224 67.9l92.1 92.1-68.1 0c-13.3 0-24-10.7-24-24l0-68.1zM64 0C28.7 0 0 28.7 0 64L0 448c0 35.3 28.7 64 64 64l256 0c35.3 0 64-28.7 64-64l0-261.5c0-17-6.7-33.3-18.7-45.3L242.7 18.7C230.7 6.7 214.5 0 197.5 0L64 0zm56 256c-13.3 0-24 10.7-24 24s10.7 24 24 24l144 0c13.3 0 24-10.7 24-24s-10.7-24-24-24l-144 0zm0 96c-13.3 0-24 10.7-24 24s10.7 24 24 24l144 0c13.3 0 24-10.7 24-24s-10.7-24-24-24l-144 0z"/>
@@ -985,8 +884,12 @@ document.addEventListener('DOMContentLoaded', () => {
       </div>
     </div>
   </div>
+<!-- E N D -- E N D -->
 
-<!-- STATIC -->
+
+
+
+
 <script type="module" src="modules/index.js">
 /**
  *  Main script
