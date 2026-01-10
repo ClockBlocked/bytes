@@ -140,7 +140,51 @@ class coderViewEdit {
       },
     ];
     this.currentLanguage = "javascript";
+    
+    
+    
+    this.fullscreenManager = new FullscreenManager(".editorContainer");
+    
+    
+    this.setupEventListeners();    
   }
+
+  setupEventListeners() {
+    // 1. Keydown listener
+    document.addEventListener("keydown", (e) => {
+      const ctrl = e.ctrlKey || e.metaKey;
+      if (ctrl && e.key === "s" && this.isEditing) {
+        e.preventDefault();
+        this.showCommitPopup();
+      }
+      if (e.key === "Escape") {
+        if (this.searchActive) this.closeSearch();
+        // Check fullscreen state using the manager
+        else if (this.fullscreenManager.isActive) this.toggleFullscreen();
+        else this.hideCommitPopup();
+      }
+      if (ctrl && e.key === "f") {
+        e.preventDefault();
+        this.openSearch();
+      }
+    });
+
+    // 2. Fullscreen button listener
+    this.elements.fullscreenBtn?.addEventListener("click", () => this.toggleFullscreen());
+  }
+  
+  toggleFullscreen() {
+    this.fullscreenManager.toggle();
+    
+    // Refresh CodeMirror after fullscreen change
+    setTimeout(() => {
+      if (this.codeMirror && typeof this.codeMirror.refresh === 'function') {
+        this.codeMirror.refresh();
+      }
+    }, 100);
+  }
+
+
 
 
   init() {
@@ -251,7 +295,7 @@ class coderViewEdit {
     this.elements.themeBtn?.addEventListener("click", () => this.toggleTheme());
     this.elements.fontDecreaseBtn?.addEventListener("click", () => this.adjustFontSize(-2));
     this.elements.fontIncreaseBtn?.addEventListener("click", () => this.adjustFontSize(2));
-    this.elements.fullscreenBtn?.addEventListener("click", () => this.toggleFullscreen());
+//    this.elements.fullscreenBtn?.addEventListener("click", () => this.toggleFullscreen());
     this.elements.formatBtn?.addEventListener("click", () => this.formatCode());
     this.elements.foldAllBtn?.addEventListener("click", () => this.foldAll());
     this.elements.unfoldAllBtn?.addEventListener("click", () => this.unfoldAll());
@@ -316,7 +360,7 @@ class coderViewEdit {
       }
       if (e.key === "Escape") {
         if (this.searchActive) this.closeSearch();
-        else if (this.isFullscreen) this.toggleFullscreen();
+//        else if (this.isFullscreen) this.toggleFullscreen();
         else this.hideCommitPopup();
       }
       if (ctrl && e.key === "f") {
@@ -756,13 +800,6 @@ class coderViewEdit {
     this.codeMirror?.setOption("theme", isDark ? "default" : "one-dark");
   }
 
-  toggleFullscreen() {
-    this.isFullscreen = !this.isFullscreen;
-    const container = document.querySelector(".editorContainer");
-    container?.classList.toggle("fullscreen", this.isFullscreen);
-    document.body.style.overflow = this.isFullscreen ? "hidden" : "";
-    setTimeout(() => this.codeMirror?.refresh(), 100);
-  }
 
   foldAll() {
     if (!this.codeMirror) return;
@@ -825,7 +862,158 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 
+// Initialize at the beginning of your class/component
+class YourComponent {
+  constructor() {
+    // Initialize fullscreen manager
+    this.fullscreenManager = new FullscreenManager(".editorContainer");
+    
+    // Your existing initialization code...
+    this.isEditing = false;
+    this.searchActive = false;
+    
+    this.setupEventListeners();
+  }
+  
+  setupEventListeners() {
+    // 1. Keydown listener
+    document.addEventListener("keydown", (e) => {
+      const ctrl = e.ctrlKey || e.metaKey;
+      if (ctrl && e.key === "s" && this.isEditing) {
+        e.preventDefault();
+        this.showCommitPopup();
+      }
+      if (e.key === "Escape") {
+        if (this.searchActive) this.closeSearch();
+        // Check fullscreen state using the manager
+        else if (this.fullscreenManager.isActive) this.toggleFullscreen();
+        else this.hideCommitPopup();
+      }
+      if (ctrl && e.key === "f") {
+        e.preventDefault();
+        this.openSearch();
+      }
+    });
+
+    // 2. Fullscreen button listener
+    this.elements.fullscreenBtn?.addEventListener("click", () => this.toggleFullscreen());
+  }
+  
+  // 3. Updated toggleFullscreen method
+  toggleFullscreen() {
+    this.fullscreenManager.toggle();
+    
+    // Refresh CodeMirror after fullscreen change
+    setTimeout(() => {
+      if (this.codeMirror && typeof this.codeMirror.refresh === 'function') {
+        this.codeMirror.refresh();
+      }
+    }, 100);
+  }
+  
+  // Your other methods...
+  showCommitPopup() { /* ... */ }
+  hideCommitPopup() { /* ... */ }
+  openSearch() { /* ... */ }
+  closeSearch() { /* ... */ }
+}
 
 
 
 
+
+
+class FullscreenManager {
+  constructor(containerSelector = ".editorContainer") {
+    this.isFullscreen = false;
+    this.container = document.querySelector(containerSelector);
+    this.initializeListeners();
+  }
+  
+  toggle() {
+    if (this.isFullscreen) {
+      this.exit();
+    } else {
+      this.enter();
+    }
+  }
+  
+  enter() {
+    const elem = this.container || document.documentElement;
+    
+    if (elem.requestFullscreen) {
+      elem.requestFullscreen();
+    } else if (elem.webkitRequestFullscreen) { /* Safari */
+      elem.webkitRequestFullscreen();
+    } else if (elem.mozRequestFullScreen) { /* Firefox */
+      elem.mozRequestFullScreen();
+    } else if (elem.msRequestFullscreen) { /* IE/Edge */
+      elem.msRequestFullscreen();
+    } else {
+      // Fallback for older browsers
+      this.fallbackFullscreen(true);
+    }
+  }
+  
+  exit() {
+    if (document.exitFullscreen) {
+      document.exitFullscreen();
+    } else if (document.webkitExitFullscreen) { /* Safari */
+      document.webkitExitFullscreen();
+    } else if (document.mozCancelFullScreen) { /* Firefox */
+      document.mozCancelFullScreen();
+    } else if (document.msExitFullscreen) { /* IE/Edge */
+      document.msExitFullscreen();
+    } else {
+      // Fallback for older browsers
+      this.fallbackFullscreen(false);
+    }
+  }
+  
+  fallbackFullscreen(enter) {
+    this.isFullscreen = enter;
+    
+    if (enter) {
+      document.body.style.overflow = "hidden";
+      this.container?.classList.add("fullscreen");
+    } else {
+      document.body.style.overflow = "";
+      this.container?.classList.remove("fullscreen");
+    }
+    
+    // Dispatch custom event
+    const event = new CustomEvent('fullscreenchange', { 
+      detail: { isFullscreen: enter } 
+    });
+    this.container?.dispatchEvent(event);
+  }
+  
+  initializeListeners() {
+    const events = [
+      'fullscreenchange',
+      'webkitfullscreenchange',
+      'mozfullscreenchange',
+      'MSFullscreenChange'
+    ];
+    
+    events.forEach(event => {
+      document.addEventListener(event, () => {
+        const isInFullscreen = !!(
+          document.fullscreenElement || 
+          document.webkitFullscreenElement || 
+          document.mozFullScreenElement ||
+          document.msFullscreenElement
+        );
+        
+        if (isInFullscreen !== this.isFullscreen) {
+          this.isFullscreen = isInFullscreen;
+          this.fallbackFullscreen(isInFullscreen);
+        }
+      });
+    });
+  }
+  
+  get isActive() {
+    return this.isFullscreen;
+  }
+}
