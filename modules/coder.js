@@ -1,22 +1,31 @@
 
 
+
+
+
 class FullscreenManager {
   constructor(containerSelector = ".editorContainer") {
     this.isFullscreen = false;
     this.container = document.querySelector(containerSelector);
+    this.editorCard = this.container?.querySelector('.editorCard');
+    
+    if (!this.editorCard) {
+      console.error("FullscreenManager: EditorCard not found");
+    }
+    
     this.initializeListeners();
   }
   
-  toggle() {
-    if (this.isFullscreen) {
-      this.exit();
-    } else {
-      this.enter();
-    }
-  }
-  
   enter() {
-    const elem = this.container;
+    const elem = this.editorCard;
+    
+    if (!elem) {
+      console.error("FullscreenManager: No editorCard to make fullscreen");
+      this.fallbackFullscreen(true);
+      return;
+    }
+    
+    this.container?.setAttribute('data-fullscreen', 'true');
     
     if (elem.requestFullscreen) {
       elem.requestFullscreen();
@@ -30,8 +39,9 @@ class FullscreenManager {
       this.fallbackFullscreen(true);
     }
   }
-  
   exit() {
+    this.container?.setAttribute('data-fullscreen', 'false');
+    
     if (document.exitFullscreen) {
       document.exitFullscreen();
     } else if (document.webkitExitFullscreen) {
@@ -47,6 +57,8 @@ class FullscreenManager {
   
   fallbackFullscreen(enter) {
     this.isFullscreen = enter;
+    const value = enter ? 'true' : 'false';
+    this.container?.setAttribute('data-fullscreen', value);
     
     if (enter) {
       document.body.style.overflow = "hidden";
@@ -81,6 +93,8 @@ class FullscreenManager {
         
         if (isInFullscreen !== this.isFullscreen) {
           this.isFullscreen = isInFullscreen;
+          const value = isInFullscreen ? 'true' : 'false';
+          this.container?.setAttribute('data-fullscreen', value);
           this.fallbackFullscreen(isInFullscreen);
         }
       });
@@ -91,6 +105,8 @@ class FullscreenManager {
     return this.isFullscreen;
   }
 }
+
+
 
 class coderViewEdit {
   constructor() {
