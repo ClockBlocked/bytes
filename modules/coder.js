@@ -1079,9 +1079,9 @@ class FullscreenManager {
 }
 
 
-/**
- *  Languages  &  Modes
- */
+
+////  D E P E N D E N C I E S   ////
+////////////////////////////////////
 const SUPPORTED_LANGUAGES = [
   { value: "javascript", label: "JavaScript", ext: ["js", "jsx"] },
   { value: "typescript", label: "TypeScript", ext: ["ts", "tsx"] },
@@ -1127,6 +1127,8 @@ const CODEMIRROR_MODES = {
 
 
 class CodeViewEditor {
+///////////  S E T U P  ////////////
+////////////////////////////////////
   constructor() {
     this.currentFile = null;
     this.fileData = null;
@@ -1166,10 +1168,6 @@ class CodeViewEditor {
     this.setupGlobalEventListeners();
   }
   
-  /* ====================== */
-  /* Initialization Methods */
-  /* ====================== */
-  
   init = function() {
     if (this.isInitialized) return;
     
@@ -1193,12 +1191,6 @@ class CodeViewEditor {
     this.setupAutoSave();
     this.isInitialized = true;
   }.bind(this);
-  
-  injectPopover = function() {
-    document.body.insertAdjacentHTML('beforeend', AppAssets.templates.commitDropdown());
-    this.elements.commitDropdown = document.getElementById("commitDropdown");
-  }.bind(this);
-  
   cacheElements = function() {
     const elementIds = {
       filePage: '.pages[data-page="file"]',
@@ -1268,33 +1260,6 @@ class CodeViewEditor {
     
     this.populateLanguageDropdown();
   }.bind(this);
-  
-  /* ===================== */
-  /* Event Handler Methods */
-  /* ===================== */
-  
-  setupGlobalEventListeners = function() {
-    document.addEventListener("keydown", (e) => {
-      const ctrl = e.ctrlKey || e.metaKey;
-      
-      if (ctrl && e.key === "s" && this.isEditing) {
-        e.preventDefault();
-        this.showCommitPopup();
-      }
-      
-      if (e.key === "Escape") {
-        if (this.searchActive) this.closeSearch();
-        else if (this.fullscreenManager.isActive) this.toggleFullscreen();
-        else this.hideCommitPopup();
-      }
-      
-      if (ctrl && e.key === "f") {
-        e.preventDefault();
-        this.openSearch();
-      }
-    });
-  }.bind(this);
-  
   bindElementEvents = function() {
     // Editor mode controls
     this.bindEvent(this.elements.editModeBtn, "click", () => this.enterEditMode());
@@ -1401,10 +1366,6 @@ class CodeViewEditor {
     });
   }.bind(this);
   
-  /* ================= */
-  /* Editor UI Methods */
-  /* ================= */
-  
   setupCodeMirror = function() {
     if (!this.fullscreenManager) {
       this.fullscreenManager = new FullscreenManager(".editorContainer");
@@ -1465,35 +1426,81 @@ class CodeViewEditor {
     
     this.codeMirror.on("cursorActivity", () => this.updateCursorPosition());
   }.bind(this);
-  
-  populateLanguageDropdown = function() {
-    if (!this.elements.languageList) return;
-    
-    this.elements.languageList.innerHTML = "";
-    this.languages.forEach((lang) => {
-      const btn = document.createElement("button");
-      btn.className = "dropdownItem";
-      btn.textContent = lang.label;
-      btn.dataset.value = lang.value;
-      btn.addEventListener("click", () => this.setLanguage(lang.value));
-      this.elements.languageList.appendChild(btn);
+  setCodeMirrorMode = function(langValue) {
+    if (!this.codeMirror) return;
+    this.codeMirror.setOption("mode", CODEMIRROR_MODES[langValue] || "text");
+  }.bind(this);
+  setupGlobalEventListeners = function() {
+    document.addEventListener("keydown", (e) => {
+      const ctrl = e.ctrlKey || e.metaKey;
+      
+      if (ctrl && e.key === "s" && this.isEditing) {
+        e.preventDefault();
+        this.showCommitPopup();
+      }
+      
+      if (e.key === "Escape") {
+        if (this.searchActive) this.closeSearch();
+        else if (this.fullscreenManager.isActive) this.toggleFullscreen();
+        else this.hideCommitPopup();
+      }
+      
+      if (ctrl && e.key === "f") {
+        e.preventDefault();
+        this.openSearch();
+      }
     });
   }.bind(this);
-  
-  calculateDropdownPosition = function() {
-    if (!this.elements.editSaveButton || !this.elements.commitDropdown) return;
+  setupAutoSave = function() {
+    if (this.state.autoSave) {
+      this.state.autoSaveInterval = setInterval(() => {
+        if (this.isEditing && this.codeMirror && 
+            this.codeMirror.getValue() !== this.originalContent) {
+          this.autoSave();
+        }
+      }, 30000);
+    }
+  }.bind(this);
+  setLanguage = function(langValue) {
+    const lang = this.languages.find((l) => l.value === langValue);
+    if (!lang) return;
     
-    const buttonRect = this.elements.editSaveButton.getBoundingClientRect();
-    const dropdown = this.elements.commitDropdown;
-    const top = buttonRect.bottom + window.scrollY + 8;
-    let left = buttonRect.right - dropdown.offsetWidth + window.scrollX;
+    this.currentLanguage = langValue;
     
-    if (left < 10) left = 10;
+    if (this.elements.languageLabel) {
+      this.elements.languageLabel.textContent = lang.label;
+    }
     
-    dropdown.style.top = `${top}px`;
-    dropdown.style.left = `${left}px`;
+    if (this.elements.languageBadge) {
+      this.elements.languageBadge.innerHTML = AppAssets.icons.code(lang.label);
+    }
+    
+    this.elements.languageDropdown?.classList.add("hide");
+    this.setCodeMirrorMode(langValue);
+  }.bind(this);
+
+  loadUserPreferences = function() {
+    const wrap = localStorage.getItem("editor_wrapLines");
+    if (wrap !== null) {
+      this.state.wrapLines = wrap === "true";
+      this.codeMirror?.setOption("lineWrapping", this.state.wrapLines);
+      this.elements.wrapBtn?.classList.toggle("active", this.state.wrapLines);
+    }
+  }.bind(this);
+  detectLanguageFromExtension = function(filename) {
+    const ext = filename.split(".").pop().toLowerCase();
+    
+    for (const lang of this.languages) {
+      if (lang.ext.includes(ext)) return lang.value;
+    }
+    
+    return "javascript";
   }.bind(this);
   
+
+
+////////  O V E R L A Y S  /////////
+////////////////////////////////////
   showCommitPopup = function(e) {
     if (!this.elements.commitDropdown) return;
     
@@ -1512,7 +1519,6 @@ class CodeViewEditor {
       this.elements.commitMessage.value = `Update ${this.currentFile}`;
     }
   }.bind(this);
-  
   hideCommitPopup = function() {
     if (!this.elements.commitDropdown) return;
     
@@ -1521,68 +1527,50 @@ class CodeViewEditor {
       this.elements.commitMessage.value = "";
     }
   }.bind(this);
-  
-  /* =================== */
-  /* Editor State Methods */
-  /* =================== */
-  
-  loadUserPreferences = function() {
-    const wrap = localStorage.getItem("editor_wrapLines");
-    if (wrap !== null) {
-      this.state.wrapLines = wrap === "true";
-      this.codeMirror?.setOption("lineWrapping", this.state.wrapLines);
-      this.elements.wrapBtn?.classList.toggle("active", this.state.wrapLines);
-    }
+
+  injectPopover = function() {
+    document.body.insertAdjacentHTML('beforeend', AppAssets.templates.commitDropdown());
+    this.elements.commitDropdown = document.getElementById("commitDropdown");
   }.bind(this);
-  
-  setupAutoSave = function() {
-    if (this.state.autoSave) {
-      this.state.autoSaveInterval = setInterval(() => {
-        if (this.isEditing && this.codeMirror && 
-            this.codeMirror.getValue() !== this.originalContent) {
-          this.autoSave();
-        }
-      }, 30000);
-    }
+
+  populateLanguageDropdown = function() {
+    if (!this.elements.languageList) return;
+    
+    this.elements.languageList.innerHTML = "";
+    this.languages.forEach((lang) => {
+      const btn = document.createElement("button");
+      btn.className = "dropdownItem";
+      btn.textContent = lang.label;
+      btn.dataset.value = lang.value;
+      btn.addEventListener("click", () => this.setLanguage(lang.value));
+      this.elements.languageList.appendChild(btn);
+    });
   }.bind(this);
-  
-  setLanguage = function(langValue) {
-    const lang = this.languages.find((l) => l.value === langValue);
-    if (!lang) return;
+  calculateDropdownPosition = function() {
+    if (!this.elements.editSaveButton || !this.elements.commitDropdown) return;
     
-    this.currentLanguage = langValue;
+    const buttonRect = this.elements.editSaveButton.getBoundingClientRect();
+    const dropdown = this.elements.commitDropdown;
+    const top = buttonRect.bottom + window.scrollY + 8;
+    let left = buttonRect.right - dropdown.offsetWidth + window.scrollX;
     
-    if (this.elements.languageLabel) {
-      this.elements.languageLabel.textContent = lang.label;
-    }
+    if (left < 10) left = 10;
     
-    if (this.elements.languageBadge) {
-      this.elements.languageBadge.innerHTML = AppAssets.icons.code(lang.label);
-    }
-    
-    this.elements.languageDropdown?.classList.add("hide");
-    this.setCodeMirrorMode(langValue);
+    dropdown.style.top = `${top}px`;
+    dropdown.style.left = `${left}px`;
   }.bind(this);
-  
-  setCodeMirrorMode = function(langValue) {
-    if (!this.codeMirror) return;
-    this.codeMirror.setOption("mode", CODEMIRROR_MODES[langValue] || "text");
+
+  showLoadingSpinner = function() {
+    this.elements.loadingSpinner?.setAttribute("data-active", "true");
   }.bind(this);
-  
-  detectLanguageFromExtension = function(filename) {
-    const ext = filename.split(".").pop().toLowerCase();
-    
-    for (const lang of this.languages) {
-      if (lang.ext.includes(ext)) return lang.value;
-    }
-    
-    return "javascript";
+  hideLoadingSpinner = function() {
+    this.elements.loadingSpinner?.setAttribute("data-active", "false");
   }.bind(this);
-  
-  /* ================== */
-  /* File Operations */
-  /* ================== */
-  
+
+
+
+//////  B A C K G R O U N D  ///////
+////////////////////////////////////
   displayFile = function(filename, fileData) {
     if (!this.isInitialized) this.init();
     
@@ -1659,7 +1647,6 @@ class CodeViewEditor {
       }
     }, 300);
   }.bind(this);
-  
   saveChanges = function(withCommit = false) {
     if (!this.currentFile || !this.fileData) return;
     
@@ -1702,15 +1689,14 @@ class CodeViewEditor {
     reader.readAsText(file);
   }.bind(this);
   
-  /* ================== */
-  /* View Control Methods */
-  /* ================== */
-  
+ 
+
+//////  A P P E A R E N C E  ///////
+////////////////////////////////////  
   show = function() {
     this.elements.filePage?.classList.remove("hide");
     setTimeout(() => this.codeMirror?.refresh(), 50);
   }.bind(this);
-  
   hide = function() {
     this.elements.filePage?.classList.add("hide");
   }.bind(this);
@@ -1731,7 +1717,6 @@ class CodeViewEditor {
       this.codeMirror.focus();
     }
   }.bind(this);
-  
   exitEditMode = function() {
     this.isEditing = false;
     this.elements.editModeBtn?.classList.remove("active");
@@ -1758,10 +1743,10 @@ class CodeViewEditor {
     }, 100);
   }.bind(this);
   
-  /* ================== */
-  /* Editor Content Methods */
-  /* ================== */
-  
+
+
+//////  F O R M A T T I N G  ///////
+////////////////////////////////////
   copyCode = function() {
     if (!this.codeMirror) return;
     
@@ -1815,7 +1800,6 @@ class CodeViewEditor {
       }
     });
   }.bind(this);
-  
   unfoldAll = function() {
     if (!this.codeMirror) return;
     
@@ -1832,15 +1816,14 @@ class CodeViewEditor {
   undo = function() {
     this.codeMirror?.undo();
   }.bind(this);
-  
   redo = function() {
     this.codeMirror?.redo();
   }.bind(this);
-  
-  /* ================== */
-  /* Search Methods */
-  /* ================== */
-  
+
+
+
+//////////  S E A R C H E S  ///////
+////////////////////////////////////  
   openSearch = function() {
     if (!this.codeMirror) return;
     
@@ -1852,13 +1835,11 @@ class CodeViewEditor {
       this.elements.searchInput?.select();
     }, 50);
   }.bind(this);
-  
   closeSearch = function() {
     this.searchActive = false;
     this.elements.searchPanel?.classList.add("hide");
     this.clearSearch();
   }.bind(this);
-  
   clearSearch = function() {
     if (this.elements.searchInput) {
       this.elements.searchInput.value = "";
@@ -1900,14 +1881,12 @@ class CodeViewEditor {
       this.searchMatches.length;
     this.highlightMatch(this.currentSearchIndex);
   }.bind(this);
-  
   findNext = function() {
     if (this.searchMatches.length === 0) return;
     
     this.currentSearchIndex = (this.currentSearchIndex + 1) % this.searchMatches.length;
     this.highlightMatch(this.currentSearchIndex);
   }.bind(this);
-  
   highlightMatch = function(index) {
     if (!this.codeMirror || index < 0 || index >= this.searchMatches.length) return;
     
@@ -1925,11 +1904,11 @@ class CodeViewEditor {
       ch: match.ch
     }, 200);
   }.bind(this);
-  
-  /* ================== */
-  /* Editor Settings Methods */
-  /* ================== */
-  
+
+
+
+//////////  S E T T I N G S  ///////
+////////////////////////////////////
   setCodeMirrorFontSize = function(size) {
     if (!this.codeMirror) return;
     
@@ -1943,7 +1922,6 @@ class CodeViewEditor {
     localStorage.setItem("editor_fontsize", size);
     this.codeMirror.refresh();
   }.bind(this);
-  
   adjustFontSize = function(change) {
     const newSize = Math.max(10, Math.min(24, this.state.fontSize + change));
     if (newSize !== this.state.fontSize) {
@@ -1958,7 +1936,6 @@ class CodeViewEditor {
       AppAssets.icons.moon() : 
       AppAssets.icons.sun();
   }.bind(this);
-  
   toggleTheme = function() {
     const html = document.documentElement;
     const isDark = html.getAttribute("data-theme") === "dark";
@@ -1976,16 +1953,15 @@ class CodeViewEditor {
     this.codeMirror.setOption("lineWrapping", this.state.wrapLines);
     this.elements.wrapBtn?.classList.toggle("active", this.state.wrapLines);
   }.bind(this);
-  
   toggleInvisibles = function() {
     this.state.showInvisibles = !this.state.showInvisibles;
     this.elements.showInvisiblesBtn?.classList.toggle("active", this.state.showInvisibles);
   }.bind(this);
-  
-  /* ================== */
-  /* Status Update Methods */
-  /* ================== */
-  
+
+
+
+////////////  U P D A T E S  ///////
+////////////////////////////////////
   updateStats = function() {
     if (!this.codeMirror) return;
     
@@ -2009,7 +1985,6 @@ class CodeViewEditor {
       this.elements.fileSize.textContent = sizeStr;
     }
   }.bind(this);
-  
   updateCursorPosition = function() {
     if (!this.codeMirror) return;
     
@@ -2023,14 +1998,12 @@ class CodeViewEditor {
       this.elements.cursorCol.textContent = cursor.ch + 1;
     }
   }.bind(this);
-  
   updateModifiedBadge = function() {
     if (!this.codeMirror) return;
     
     this.elements.modifiedBadge?.classList.toggle("hide", 
       this.codeMirror.getValue() === this.originalContent);
   }.bind(this);
-  
   updateLastSaved = function(saved) {
     if (!this.elements.lastSaved) return;
     
@@ -2044,24 +2017,17 @@ class CodeViewEditor {
       this.elements.lastSaved.textContent = "Never";
     }
   }.bind(this);
-  
-  /* ================== */
-  /* Utility Methods */
-  /* ================== */
-  
+
+
+
+
+//////////  H E L P E R S  ///////
+//////////////////////////////////// 
   bindEvent = function(element, event, handler) {
     if (!element) return;
     element.addEventListener(event, handler);
   }.bind(this);
-  
-  showLoadingSpinner = function() {
-    this.elements.loadingSpinner?.setAttribute("data-active", "true");
-  }.bind(this);
-  
-  hideLoadingSpinner = function() {
-    this.elements.loadingSpinner?.setAttribute("data-active", "false");
-  }.bind(this);
-  
+
   destroy = function() {
     if (this.state.autoSaveInterval) {
       clearInterval(this.state.autoSaveInterval);
@@ -2075,6 +2041,8 @@ class CodeViewEditor {
     this.elements.commitDropdown?.remove();
   }.bind(this);
 }
+
+
 
 window.CodeViewEditor = CodeViewEditor;
 window.coderViewEdit = new CodeViewEditor();
