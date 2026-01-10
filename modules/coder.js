@@ -246,40 +246,6 @@ class coderViewEdit {
     this.setupEventListeners();    
   }
 
-  setupEventListeners() {
-    // 1. Keydown listener
-    document.addEventListener("keydown", (e) => {
-      const ctrl = e.ctrlKey || e.metaKey;
-      if (ctrl && e.key === "s" && this.isEditing) {
-        e.preventDefault();
-        this.showCommitPopup();
-      }
-      if (e.key === "Escape") {
-        if (this.searchActive) this.closeSearch();
-        // Check fullscreen state using the manager
-        else if (this.fullscreenManager.isActive) this.toggleFullscreen();
-        else this.hideCommitPopup();
-      }
-      if (ctrl && e.key === "f") {
-        e.preventDefault();
-        this.openSearch();
-      }
-    });
-
-    // 2. Fullscreen button listener
-    this.elements.fullscreenBtn?.addEventListener("click", () => this.toggleFullscreen());
-  }
-  
-  toggleFullscreen() {
-    this.fullscreenManager.toggle();
-    
-    // Refresh CodeMirror after fullscreen change
-    setTimeout(() => {
-      if (this.codeMirror && typeof this.codeMirror.refresh === 'function') {
-        this.codeMirror.refresh();
-      }
-    }, 100);
-  }
 
 
 
@@ -365,6 +331,43 @@ class coderViewEdit {
     this.populateLanguageDropdown();
   }
 
+
+  setupEventListeners() {
+    // 1. Keydown listener
+    document.addEventListener("keydown", (e) => {
+      const ctrl = e.ctrlKey || e.metaKey;
+      if (ctrl && e.key === "s" && this.isEditing) {
+        e.preventDefault();
+        this.showCommitPopup();
+      }
+      if (e.key === "Escape") {
+        if (this.searchActive) this.closeSearch();
+        // Check fullscreen state using the manager
+        else if (this.fullscreenManager.isActive) this.toggleFullscreen();
+        else this.hideCommitPopup();
+      }
+      if (ctrl && e.key === "f") {
+        e.preventDefault();
+        this.openSearch();
+      }
+    });
+
+    // 2. Fullscreen button listener
+    this.elements.fullscreenBtn?.addEventListener("click", () => this.toggleFullscreen());
+  }
+  
+  toggleFullscreen() {
+    this.fullscreenManager.toggle();
+    
+    // Refresh CodeMirror after fullscreen change
+    setTimeout(() => {
+      if (this.codeMirror && typeof this.codeMirror.refresh === 'function') {
+        this.codeMirror.refresh();
+      }
+    }, 100);
+  }
+
+
   populateLanguageDropdown() {
     if (!this.elements.languageList) return;
     this.elements.languageList.innerHTML = "";
@@ -392,7 +395,7 @@ class coderViewEdit {
     this.elements.themeBtn?.addEventListener("click", () => this.toggleTheme());
     this.elements.fontDecreaseBtn?.addEventListener("click", () => this.adjustFontSize(-2));
     this.elements.fontIncreaseBtn?.addEventListener("click", () => this.adjustFontSize(2));
-//    this.elements.fullscreenBtn?.addEventListener("click", () => this.toggleFullscreen());
+    this.elements.fullscreenBtn?.addEventListener("click", () => this.toggleFullscreen());
     this.elements.formatBtn?.addEventListener("click", () => this.formatCode());
     this.elements.foldAllBtn?.addEventListener("click", () => this.foldAll());
     this.elements.unfoldAllBtn?.addEventListener("click", () => this.unfoldAll());
@@ -952,8 +955,9 @@ class coderViewEdit {
 
 
 
-
+window.fullscreenManager = new fullscreenManager();
 window.coderViewEdit = new coderViewEdit();
+
 document.addEventListener("DOMContentLoaded", () => {
   if (document.querySelector('.pages[data-page="file"]')) window.coderViewEdit.init();
 });
