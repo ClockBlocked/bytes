@@ -216,7 +216,7 @@ class coderViewEdit {
     ];
     this.currentLanguage = "javascript";
     
-    this.fullscreenManager = new FullscreenManager(".editorContainer");
+    this.fullscreenManager = null;
     
     this.setupEventListeners();    
   }
