@@ -54,7 +54,15 @@ class FullscreenManager {
       this.fallbackFullscreen(false);
     }
   }
-  
+  toggle() {
+    if (this.isFullscreen) {
+      this.exit();
+    } else {
+      this.enter();
+    }
+  }
+
+
   fallbackFullscreen(enter) {
     this.isFullscreen = enter;
     const value = enter ? 'true' : 'false';
@@ -73,7 +81,6 @@ class FullscreenManager {
     });
     this.container?.dispatchEvent(event);
   }
-  
   initializeListeners() {
     const events = [
       'fullscreenchange',
