@@ -2020,7 +2020,6 @@ class CodeViewEditor {
 
 
 
-
 //////////  H E L P E R S  ///////
 //////////////////////////////////// 
   bindEvent = function(element, event, handler) {
