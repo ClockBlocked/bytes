@@ -2522,10 +2522,11 @@ aside:hover .sidebar-title {
 .pages[data-page="file"] {
   display: flex;
   flex-direction: column;
-  max-width: 80rem;
+  width: 100%;
   margin: 0 auto;
   overflow: hidden;
 }
+
 
 
 
