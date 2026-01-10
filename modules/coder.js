@@ -930,7 +930,6 @@ class coderViewEdit {
 
 
 
-window.FullscreenManager = new fullscreenManager();
 window.coderViewEdit = new coderViewEdit();
 
 document.addEventListener("DOMContentLoaded", () => {
