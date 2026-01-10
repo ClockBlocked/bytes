@@ -16,7 +16,7 @@ class FullscreenManager {
   }
   
   enter() {
-    const elem = this.container || document.documentElement;
+    const elem = this.container;
     
     if (elem.requestFullscreen) {
       elem.requestFullscreen();
@@ -229,6 +229,11 @@ class coderViewEdit {
     this.injectPopover();
     this.cacheElements();
     this.bindEvents();
+    
+    
+    this.fullscreenManager = new FullscreenManager(".editorContainer");
+
+    
     if (typeof CodeMirror !== "undefined") this.setupCodeMirror();
     else setTimeout(() => this.setupCodeMirror(), 100);
     this.loadUserPreferences();
@@ -473,6 +478,11 @@ class coderViewEdit {
   }
 
   setupCodeMirror() {
+ if (!this.fullscreenManager) {
+      this.fullscreenManager = new FullscreenManager(".editorContainer");
+    }
+    
+    
     if (typeof CodeMirror === "undefined") {
       setTimeout(() => this.setupCodeMirror(), 100);
       return;
