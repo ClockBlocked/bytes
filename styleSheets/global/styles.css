@@ -1672,6 +1672,8 @@ aside:hover .sidebar-title {
 }
 
 .editorHeader {
+  position: sticky;
+  
   align-items: center;
   justify-content: space-around;
   padding: 0.5rem 1rem;
@@ -1688,7 +1690,7 @@ aside:hover .sidebar-title {
   display: none;
 }
 .editorHeader .hGroup {
-  margin-left: 2rem;
+  margin-left: 0.5rem;
   margin-right: 2rem;
 }
 
@@ -4249,17 +4251,28 @@ aside:hover .sidebar-title {
 
 
 .editorContainer[data-fullscreen="false"] {
+  position: relative;
   display: flex;
   flex-direction: column;
-  gap: 0.75rem;
-  padding: 0.5rem;
+  
   width: 100%;
-  box-sizing: border-box;
+  height: calc(100vh - 3.5rem);
+  
+  background: var(--editorBg);
+  border: 1px solid var(--editorBorder);
+  border-radius: var(--radiusLg);
+  
+  overflow: hidden;
 }
 
 .editorContainer[data-fullscreen="false"] .editorCard {
   display: flex;
   flex-direction: column;
+  flex: 1;
+  
+  height: 90vh;
+  width: 95%;
+  
   background: var(--editorCardBg);
   border: 0.0625rem solid var(--neutralSubtle);
   border-radius: var(--radiusMd);
