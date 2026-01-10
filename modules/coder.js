@@ -1,3 +1,100 @@
+
+class FullscreenManager {
+  constructor(containerSelector = ".editorContainer") {
+    this.isFullscreen = false;
+    this.container = document.querySelector(containerSelector);
+    this.initializeListeners();
+  }
+  
+  toggle() {
+    if (this.isFullscreen) {
+      this.exit();
+    } else {
+      this.enter();
+    }
+  }
+  
+  enter() {
+    const elem = this.container || document.documentElement;
+    
+    if (elem.requestFullscreen) {
+      elem.requestFullscreen();
+    } else if (elem.webkitRequestFullscreen) { /* Safari */
+      elem.webkitRequestFullscreen();
+    } else if (elem.mozRequestFullScreen) { /* Firefox */
+      elem.mozRequestFullScreen();
+    } else if (elem.msRequestFullscreen) { /* IE/Edge */
+      elem.msRequestFullscreen();
+    } else {
+      // Fallback for older browsers
+      this.fallbackFullscreen(true);
+    }
+  }
+  
+  exit() {
+    if (document.exitFullscreen) {
+      document.exitFullscreen();
+    } else if (document.webkitExitFullscreen) { /* Safari */
+      document.webkitExitFullscreen();
+    } else if (document.mozCancelFullScreen) { /* Firefox */
+      document.mozCancelFullScreen();
+    } else if (document.msExitFullscreen) { /* IE/Edge */
+      document.msExitFullscreen();
+    } else {
+      // Fallback for older browsers
+      this.fallbackFullscreen(false);
+    }
+  }
+  
+  fallbackFullscreen(enter) {
+    this.isFullscreen = enter;
+    
+    if (enter) {
+      document.body.style.overflow = "hidden";
+      this.container?.classList.add("fullscreen");
+    } else {
+      document.body.style.overflow = "";
+      this.container?.classList.remove("fullscreen");
+    }
+    
+    // Dispatch custom event
+    const event = new CustomEvent('fullscreenchange', { 
+      detail: { isFullscreen: enter } 
+    });
+    this.container?.dispatchEvent(event);
+  }
+  
+  initializeListeners() {
+    const events = [
+      'fullscreenchange',
+      'webkitfullscreenchange',
+      'mozfullscreenchange',
+      'MSFullscreenChange'
+    ];
+    
+    events.forEach(event => {
+      document.addEventListener(event, () => {
+        const isInFullscreen = !!(
+          document.fullscreenElement || 
+          document.webkitFullscreenElement || 
+          document.mozFullScreenElement ||
+          document.msFullscreenElement
+        );
+        
+        if (isInFullscreen !== this.isFullscreen) {
+          this.isFullscreen = isInFullscreen;
+          this.fallbackFullscreen(isInFullscreen);
+        }
+      });
+    });
+  }
+  
+  get isActive() {
+    return this.isFullscreen;
+  }
+}
+
+
 class coderViewEdit {
   constructor() {
     this.currentFile = null;
@@ -860,104 +957,3 @@ window.coderViewEdit = new coderViewEdit();
 document.addEventListener("DOMContentLoaded", () => {
   if (document.querySelector('.pages[data-page="file"]')) window.coderViewEdit.init();
 });
-
-
-
-
-
-
-
-class FullscreenManager {
-  constructor(containerSelector = ".editorContainer") {
-    this.isFullscreen = false;
-    this.container = document.querySelector(containerSelector);
-    this.initializeListeners();
-  }
-  
-  toggle() {
-    if (this.isFullscreen) {
-      this.exit();
-    } else {
-      this.enter();
-    }
-  }
-  
-  enter() {
-    const elem = this.container || document.documentElement;
-    
-    if (elem.requestFullscreen) {
-      elem.requestFullscreen();
-    } else if (elem.webkitRequestFullscreen) { /* Safari */
-      elem.webkitRequestFullscreen();
-    } else if (elem.mozRequestFullScreen) { /* Firefox */
-      elem.mozRequestFullScreen();
-    } else if (elem.msRequestFullscreen) { /* IE/Edge */
-      elem.msRequestFullscreen();
-    } else {
-      // Fallback for older browsers
-      this.fallbackFullscreen(true);
-    }
-  }
-  
-  exit() {
-    if (document.exitFullscreen) {
-      document.exitFullscreen();
-    } else if (document.webkitExitFullscreen) { /* Safari */
-      document.webkitExitFullscreen();
-    } else if (document.mozCancelFullScreen) { /* Firefox */
-      document.mozCancelFullScreen();
-    } else if (document.msExitFullscreen) { /* IE/Edge */
-      document.msExitFullscreen();
-    } else {
-      // Fallback for older browsers
-      this.fallbackFullscreen(false);
-    }
-  }
-  
-  fallbackFullscreen(enter) {
-    this.isFullscreen = enter;
-    
-    if (enter) {
-      document.body.style.overflow = "hidden";
-      this.container?.classList.add("fullscreen");
-    } else {
-      document.body.style.overflow = "";
-      this.container?.classList.remove("fullscreen");
-    }
-    
-    // Dispatch custom event
-    const event = new CustomEvent('fullscreenchange', { 
-      detail: { isFullscreen: enter } 
-    });
-    this.container?.dispatchEvent(event);
-  }
-  
-  initializeListeners() {
-    const events = [
-      'fullscreenchange',
-      'webkitfullscreenchange',
-      'mozfullscreenchange',
-      'MSFullscreenChange'
-    ];
-    
-    events.forEach(event => {
-      document.addEventListener(event, () => {
-        const isInFullscreen = !!(
-          document.fullscreenElement || 
-          document.webkitFullscreenElement || 
-          document.mozFullScreenElement ||
-          document.msFullscreenElement
-        );
-        
-        if (isInFullscreen !== this.isFullscreen) {
-          this.isFullscreen = isInFullscreen;
-          this.fallbackFullscreen(isInFullscreen);
-        }
-      });
-    });
-  }
-  
-  get isActive() {
-    return this.isFullscreen;
-  }
-}
