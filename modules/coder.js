@@ -238,9 +238,12 @@ class coderViewEdit {
     
     this.fullscreenManager = null;
     
-    this.setupEventListeners();    
   }
   
+  // ===================================================================================================================
+  // INITIALIZATION & SETUP
+  // ===================================================================================================================
+
   init() {
     if (this.isInitialized) return;
     const filePage = document.querySelector('.pages[data-page="file"]');
@@ -249,7 +252,7 @@ class coderViewEdit {
     this.injectPopover();
     this.cacheElements();
     this.bindEvents();
-    
+    this.setupEventListeners();
     
     this.fullscreenManager = new FullscreenManager(".editorContainer");
 
@@ -325,50 +328,6 @@ class coderViewEdit {
       commitSaveBtn: document.getElementById("commitSaveBtn"),
     };
     this.populateLanguageDropdown();
-  }
-  
-  setupEventListeners() {
-    document.addEventListener("keydown", (e) => {
-      const ctrl = e.ctrlKey || e.metaKey;
-      if (ctrl && e.key === "s" && this.isEditing) {
-        e.preventDefault();
-        this.showCommitPopup();
-      }
-      if (e.key === "Escape") {
-        if (this.searchActive) this.closeSearch();
-        else if (this.fullscreenManager.isActive) this.toggleFullscreen();
-        else this.hideCommitPopup();
-      }
-      if (ctrl && e.key === "f") {
-        e.preventDefault();
-        this.openSearch();
-      }
-    });
-
-    this.elements.fullscreenBtn?.addEventListener("click", () => this.toggleFullscreen());
-  }
-  
-  toggleFullscreen() {
-    this.fullscreenManager.toggle();
-    
-    setTimeout(() => {
-      if (this.codeMirror && typeof this.codeMirror.refresh === 'function') {
-        this.codeMirror.refresh();
-      }
-    }, 100);
-  }
-  
-  populateLanguageDropdown() {
-    if (!this.elements.languageList) return;
-    this.elements.languageList.innerHTML = "";
-    this.languages.forEach((lang) => {
-      const btn = document.createElement("button");
-      btn.className = "dropdownItem";
-      btn.textContent = lang.label;
-      btn.dataset.value = lang.value;
-      btn.addEventListener("click", () => this.setLanguage(lang.value));
-      this.elements.languageList.appendChild(btn);
-    });
   }
 
   bindEvents() {
@@ -464,41 +423,29 @@ class coderViewEdit {
     });
   }
 
+  setupEventListeners() {
+    document.addEventListener("keydown", (e) => {
+      const ctrl = e.ctrlKey || e.metaKey;
+      if (ctrl && e.key === "s" && this.isEditing) {
+        e.preventDefault();
+        this.showCommitPopup();
+      }
+      if (e.key === "Escape") {
+        if (this.searchActive) this.closeSearch();
+        else if (this.fullscreenManager.isActive) this.toggleFullscreen();
+        else this.hideCommitPopup();
+      }
+      if (ctrl && e.key === "f") {
+        e.preventDefault();
+        this.openSearch();
+      }
+    });
 
-
-
-
-
-  showCommitPopup(e) {
-    if (!this.elements.commitDropdown) return;
-    this.elements.commitDropdown.classList.remove("hide");
-    this.calculateDropdownPosition();
-    if (this.elements.popoverTitle) this.elements.popoverTitle.textContent = "Add Commit & Save";
-    if (this.elements.popoverSubtitle) this.elements.popoverSubtitle.textContent = "Enter a commit message before saving";
-    if (this.elements.commitMessage) {
-      this.elements.commitMessage.value = `Update ${this.currentFile}`;
-    }
-  }
-
-  hideCommitPopup() {
-    if (!this.elements.commitDropdown) return;
-    this.elements.commitDropdown.classList.add("hide");
-    if (this.elements.commitMessage) this.elements.commitMessage.value = "";
-  }
-
-  calculateDropdownPosition() {
-    if (!this.elements.editSaveButton || !this.elements.commitDropdown) return;
-    const buttonRect = this.elements.editSaveButton.getBoundingClientRect();
-    const dropdown = this.elements.commitDropdown;
-    const top = buttonRect.bottom + window.scrollY + 8;
-    let left = buttonRect.right - dropdown.offsetWidth + window.scrollX;
-    if (left < 10) left = 10;
-    dropdown.style.top = `${top}px`;
-    dropdown.style.left = `${left}px`;
+    this.elements.fullscreenBtn?.addEventListener("click", () => this.toggleFullscreen());
   }
 
   setupCodeMirror() {
- if (!this.fullscreenManager) {
+    if (!this.fullscreenManager) {
       this.fullscreenManager = new FullscreenManager(".editorContainer");
     }
     
@@ -573,6 +520,86 @@ class coderViewEdit {
     }
   }
 
+  // ===================================================================================================================
+  // UI & DISPLAY
+  // ===================================================================================================================
+
+  show() {
+    this.elements.filePage?.classList.remove("hide");
+    setTimeout(() => this.codeMirror?.refresh(), 50);
+  }
+
+  hide() {
+    this.elements.filePage?.classList.add("hide");
+  }
+
+  toggleFullscreen() {
+    this.fullscreenManager.toggle();
+
+    setTimeout(() => {
+      if (this.codeMirror && typeof this.codeMirror.refresh === 'function') {
+        this.codeMirror.refresh();
+      }
+    }, 100);
+  }
+
+  populateLanguageDropdown() {
+    if (!this.elements.languageList) return;
+    this.elements.languageList.innerHTML = "";
+    this.languages.forEach((lang) => {
+      const btn = document.createElement("button");
+      btn.className = "dropdownItem";
+      btn.textContent = lang.label;
+      btn.dataset.value = lang.value;
+      btn.addEventListener("click", () => this.setLanguage(lang.value));
+      this.elements.languageList.appendChild(btn);
+    });
+  }
+
+  updateThemeIcon(isDark) {
+    if (!this.elements.themeIcon) return;
+    this.elements.themeIcon.innerHTML = isDark ? AppAssets.icons.moon() : AppAssets.icons.sun();
+  }
+
+  showCommitPopup(e) {
+    if (!this.elements.commitDropdown) return;
+    this.elements.commitDropdown.classList.remove("hide");
+    this.calculateDropdownPosition();
+    if (this.elements.popoverTitle) this.elements.popoverTitle.textContent = "Add Commit & Save";
+    if (this.elements.popoverSubtitle) this.elements.popoverSubtitle.textContent = "Enter a commit message before saving";
+    if (this.elements.commitMessage) {
+      this.elements.commitMessage.value = `Update ${this.currentFile}`;
+    }
+  }
+
+  hideCommitPopup() {
+    if (!this.elements.commitDropdown) return;
+    this.elements.commitDropdown.classList.add("hide");
+    if (this.elements.commitMessage) this.elements.commitMessage.value = "";
+  }
+
+  calculateDropdownPosition() {
+    if (!this.elements.editSaveButton || !this.elements.commitDropdown) return;
+    const buttonRect = this.elements.editSaveButton.getBoundingClientRect();
+    const dropdown = this.elements.commitDropdown;
+    const top = buttonRect.bottom + window.scrollY + 8;
+    let left = buttonRect.right - dropdown.offsetWidth + window.scrollX;
+    if (left < 10) left = 10;
+    dropdown.style.top = `${top}px`;
+    dropdown.style.left = `${left}px`;
+  }
+
+  showLoadingSpinner() {
+    this.elements.loadingSpinner?.setAttribute("data-active", "true");
+  }
+  hideLoadingSpinner() {
+    this.elements.loadingSpinner?.setAttribute("data-active", "false");
+  }
+
+  // ===================================================================================================================
+  // STATE & DATA MANAGEMENT
+  // ===================================================================================================================
+
   setLanguage(langValue) {
     const lang = this.languages.find((l) => l.value === langValue);
     if (!lang) return;
@@ -617,15 +644,46 @@ class coderViewEdit {
     return "javascript";
   }
 
-  show() {
-    this.elements.filePage?.classList.remove("hide");
-    setTimeout(() => this.codeMirror?.refresh(), 50);
+  updateStats() {
+    if (!this.codeMirror) return;
+    const content = this.codeMirror.getValue();
+    const lines = content.split("\n").length;
+    const bytes = new Blob([content]).size;
+    let sizeStr = bytes < 1024 ? `${bytes} B` : bytes < 1024 * 1024 ? `${(bytes / 1024).toFixed(1)} KB` : `${(bytes / (1024 * 1024)).toFixed(2)} MB`;
+    this.elements.lineCount && (this.elements.lineCount.textContent = lines);
+    this.elements.charCount && (this.elements.charCount.textContent = content.length.toLocaleString());
+    this.elements.fileSize && (this.elements.fileSize.textContent = sizeStr);
   }
 
-  hide() {
-    this.elements.filePage?.classList.add("hide");
+  updateCursorPosition() {
+    if (!this.codeMirror) return;
+    const cursor = this.codeMirror.getCursor();
+    this.elements.cursorLine && (this.elements.cursorLine.textContent = cursor.line + 1);
+    this.elements.cursorCol && (this.elements.cursorCol.textContent = cursor.ch + 1);
   }
 
+  updateModifiedBadge() {
+    if (!this.codeMirror) return;
+    this.elements.modifiedBadge?.classList.toggle("hide", this.codeMirror.getValue() === this.originalContent);
+  }
+
+  updateLastSaved(saved) {
+    if (!this.elements.lastSaved) return;
+    if (saved) {
+      const now = new Date();
+      this.elements.lastSaved.textContent = now.toLocaleTimeString([], {
+        hour: "2-digit",
+        minute: "2-digit"
+      });
+    }
+    else {
+      this.elements.lastSaved.textContent = "Never";
+    }
+  }
+
+  // ===================================================================================================================
+  // USER ACTIONS & EVENT HANDLERS
+  // ===================================================================================================================
 
   enterEditMode() {
     if (!this.currentFile) return;
@@ -778,106 +836,6 @@ class coderViewEdit {
     if (newSize !== this.state.fontSize) this.setCodeMirrorFontSize(newSize);
   }
 
-  updateThemeIcon(isDark) {
-    if (!this.elements.themeIcon) return;
-    this.elements.themeIcon.innerHTML = isDark ? AppAssets.icons.moon() : AppAssets.icons.sun();
-  }
-
-  updateStats() {
-    if (!this.codeMirror) return;
-    const content = this.codeMirror.getValue();
-    const lines = content.split("\n").length;
-    const bytes = new Blob([content]).size;
-    let sizeStr = bytes < 1024 ? `${bytes} B` : bytes < 1024 * 1024 ? `${(bytes / 1024).toFixed(1)} KB` : `${(bytes / (1024 * 1024)).toFixed(2)} MB`;
-    this.elements.lineCount && (this.elements.lineCount.textContent = lines);
-    this.elements.charCount && (this.elements.charCount.textContent = content.length.toLocaleString());
-    this.elements.fileSize && (this.elements.fileSize.textContent = sizeStr);
-  }
-
-  updateCursorPosition() {
-    if (!this.codeMirror) return;
-    const cursor = this.codeMirror.getCursor();
-    this.elements.cursorLine && (this.elements.cursorLine.textContent = cursor.line + 1);
-    this.elements.cursorCol && (this.elements.cursorCol.textContent = cursor.ch + 1);
-  }
-
-  updateModifiedBadge() {
-    if (!this.codeMirror) return;
-    this.elements.modifiedBadge?.classList.toggle("hide", this.codeMirror.getValue() === this.originalContent);
-  }
-
-  updateLastSaved(saved) {
-    if (!this.elements.lastSaved) return;
-    if (saved) {
-      const now = new Date();
-      this.elements.lastSaved.textContent = now.toLocaleTimeString([], {
-        hour: "2-digit",
-        minute: "2-digit"
-      });
-    }
-    else {
-      this.elements.lastSaved.textContent = "Never";
-    }
-  }
-
-  openSearch() {
-    if (!this.codeMirror) return;
-    this.searchActive = true;
-    this.elements.searchPanel?.classList.remove("hide");
-    setTimeout(() => {
-      this.elements.searchInput?.focus();
-      this.elements.searchInput?.select();
-    }, 50);
-  }
-
-  closeSearch() {
-    this.searchActive = false;
-    this.elements.searchPanel?.classList.add("hide");
-    this.clearSearch();
-  }
-
-  clearSearch() {
-    if (this.elements.searchInput) this.elements.searchInput.value = "";
-    this.searchMatches = [];
-  }
-
-  performSearch(query) {
-    if (!this.codeMirror || !query) return;
-    const content = this.codeMirror.getValue();
-    const lines = content.split("\n");
-    this.searchMatches = [];
-    lines.forEach((line, idx) => {
-      let pos = 0;
-      const lowerLine = line.toLowerCase();
-      const lowerQuery = query.toLowerCase();
-      while ((pos = lowerLine.indexOf(lowerQuery, pos)) !== -1) {
-        this.searchMatches.push({
-          line: idx,
-          ch: pos,
-          length: query.length
-        });
-        pos += 1;
-      }
-    });
-    if (this.searchMatches.length > 0) this.highlightMatch(0);
-  }
-
-  highlightMatch(index) {
-    if (!this.codeMirror || index < 0 || index >= this.searchMatches.length) return;
-    const match = this.searchMatches[index];
-    this.codeMirror.setSelection({
-      line: match.line,
-      ch: match.ch
-    }, {
-      line: match.line,
-      ch: match.ch + match.length
-    });
-    this.codeMirror.scrollIntoView({
-      line: match.line,
-      ch: match.ch
-    }, 200);
-  }
-
   toggleWrapLines() {
     if (!this.codeMirror) return;
     this.state.wrapLines = !this.state.wrapLines;
@@ -937,12 +895,83 @@ class coderViewEdit {
     this.codeMirror?.redo();
   }
 
-  showLoadingSpinner() {
-    this.elements.loadingSpinner?.setAttribute("data-active", "true");
+  // ===================================================================================================================
+  // SEARCH
+  // ===================================================================================================================
+
+  openSearch() {
+    if (!this.codeMirror) return;
+    this.searchActive = true;
+    this.elements.searchPanel?.classList.remove("hide");
+    setTimeout(() => {
+      this.elements.searchInput?.focus();
+      this.elements.searchInput?.select();
+    }, 50);
   }
-  hideLoadingSpinner() {
-    this.elements.loadingSpinner?.setAttribute("data-active", "false");
+
+  closeSearch() {
+    this.searchActive = false;
+    this.elements.searchPanel?.classList.add("hide");
+    this.clearSearch();
   }
+
+  clearSearch() {
+    if (this.elements.searchInput) this.elements.searchInput.value = "";
+    this.searchMatches = [];
+  }
+
+  performSearch(query) {
+    if (!this.codeMirror || !query) return;
+    const content = this.codeMirror.getValue();
+    const lines = content.split("\n");
+    this.searchMatches = [];
+    lines.forEach((line, idx) => {
+      let pos = 0;
+      const lowerLine = line.toLowerCase();
+      const lowerQuery = query.toLowerCase();
+      while ((pos = lowerLine.indexOf(lowerQuery, pos)) !== -1) {
+        this.searchMatches.push({
+          line: idx,
+          ch: pos,
+          length: query.length
+        });
+        pos += 1;
+      }
+    });
+    if (this.searchMatches.length > 0) this.highlightMatch(0);
+  }
+
+  highlightMatch(index) {
+    if (!this.codeMirror || index < 0 || index >= this.searchMatches.length) return;
+    const match = this.searchMatches[index];
+    this.codeMirror.setSelection({
+      line: match.line,
+      ch: match.ch
+    }, {
+      line: match.line,
+      ch: match.ch + match.length
+    });
+    this.codeMirror.scrollIntoView({
+      line: match.line,
+      ch: match.ch
+    }, 200);
+  }
+
+  findNext() {
+    if (!this.searchMatches.length) return;
+    this.currentSearchIndex = (this.currentSearchIndex + 1) % this.searchMatches.length;
+    this.highlightMatch(this.currentSearchIndex);
+  }
+
+  findPrevious() {
+    if (!this.searchMatches.length) return;
+    this.currentSearchIndex = (this.currentSearchIndex - 1 + this.searchMatches.length) % this.searchMatches.length;
+    this.highlightMatch(this.currentSearchIndex);
+  }
+
+  // ===================================================================================================================
+  // LIFECYCLE
+  // ===================================================================================================================
 
   destroy() {
     if (this.state.autoSaveInterval) clearInterval(this.state.autoSaveInterval);
