@@ -1,4 +1,5 @@
 
+
 class FullscreenManager {
   constructor(containerSelector = ".editorContainer") {
     this.isFullscreen = false;
@@ -19,14 +20,13 @@ class FullscreenManager {
     
     if (elem.requestFullscreen) {
       elem.requestFullscreen();
-    } else if (elem.webkitRequestFullscreen) { /* Safari */
+    } else if (elem.webkitRequestFullscreen) {
       elem.webkitRequestFullscreen();
-    } else if (elem.mozRequestFullScreen) { /* Firefox */
+    } else if (elem.mozRequestFullScreen) {
       elem.mozRequestFullScreen();
-    } else if (elem.msRequestFullscreen) { /* IE/Edge */
+    } else if (elem.msRequestFullscreen) {
       elem.msRequestFullscreen();
     } else {
-      // Fallback for older browsers
       this.fallbackFullscreen(true);
     }
   }
@@ -34,14 +34,13 @@ class FullscreenManager {
   exit() {
     if (document.exitFullscreen) {
       document.exitFullscreen();
-    } else if (document.webkitExitFullscreen) { /* Safari */
+    } else if (document.webkitExitFullscreen) {
       document.webkitExitFullscreen();
-    } else if (document.mozCancelFullScreen) { /* Firefox */
+    } else if (document.mozCancelFullScreen) {
       document.mozCancelFullScreen();
-    } else if (document.msExitFullscreen) { /* IE/Edge */
+    } else if (document.msExitFullscreen) {
       document.msExitFullscreen();
     } else {
-      // Fallback for older browsers
       this.fallbackFullscreen(false);
     }
   }
@@ -57,7 +56,6 @@ class FullscreenManager {
       this.container?.classList.remove("fullscreen");
     }
     
-    // Dispatch custom event
     const event = new CustomEvent('fullscreenchange', { 
       detail: { isFullscreen: enter } 
     });
@@ -94,7 +92,6 @@ class FullscreenManager {
   }
 }
 
-
 class coderViewEdit {
   constructor() {
     this.currentFile = null;
@@ -104,7 +101,6 @@ class coderViewEdit {
     this.isLoading = false;
     this.originalContent = "";
     this.isInitialized = false;
-    this.isFullscreen = false;
     this.elements = {};
     this.boundEventHandlers = {};
     this.currentSearchIndex = 0;
@@ -125,16 +121,12 @@ class coderViewEdit {
     this.languages = [{
         value: "javascript",
         label: "JavaScript",
-        ext: ["js",
-          "jsx"
-        ]
+        ext: ["js", "jsx"]
       },
       {
         value: "typescript",
         label: "TypeScript",
-        ext: ["ts",
-          "tsx"
-        ]
+        ext: ["ts", "tsx"]
       },
       {
         value: "python",
@@ -144,17 +136,12 @@ class coderViewEdit {
       {
         value: "html",
         label: "HTML",
-        ext: ["html",
-          "htm"
-        ]
+        ext: ["html", "htm"]
       },
       {
         value: "css",
         label: "CSS",
-        ext: ["css",
-          "scss",
-          "less"
-        ]
+        ext: ["css", "scss", "less"]
       },
       {
         value: "json",
@@ -164,16 +151,12 @@ class coderViewEdit {
       {
         value: "markdown",
         label: "Markdown",
-        ext: ["md",
-          "markdown"
-        ]
+        ext: ["md", "markdown"]
       },
       {
         value: "yaml",
         label: "YAML",
-        ext: ["yml",
-          "yaml"
-        ]
+        ext: ["yml", "yaml"]
       },
       {
         value: "xml",
@@ -188,9 +171,7 @@ class coderViewEdit {
       {
         value: "shell",
         label: "Shell",
-        ext: ["sh",
-          "bash"
-        ]
+        ext: ["sh", "bash"]
       },
       {
         value: "ruby",
@@ -215,10 +196,7 @@ class coderViewEdit {
       {
         value: "cpp",
         label: "C++",
-        ext: ["cpp",
-          "c",
-          "h"
-        ]
+        ext: ["cpp", "c", "h"]
       },
       {
         value: "csharp",
@@ -238,18 +216,11 @@ class coderViewEdit {
     ];
     this.currentLanguage = "javascript";
     
-    
-    
     this.fullscreenManager = new FullscreenManager(".editorContainer");
-    
     
     this.setupEventListeners();    
   }
-
-
-
-
-
+  
   init() {
     if (this.isInitialized) return;
     const filePage = document.querySelector('.pages[data-page="file"]');
@@ -330,10 +301,8 @@ class coderViewEdit {
     };
     this.populateLanguageDropdown();
   }
-
-
+  
   setupEventListeners() {
-    // 1. Keydown listener
     document.addEventListener("keydown", (e) => {
       const ctrl = e.ctrlKey || e.metaKey;
       if (ctrl && e.key === "s" && this.isEditing) {
@@ -342,7 +311,6 @@ class coderViewEdit {
       }
       if (e.key === "Escape") {
         if (this.searchActive) this.closeSearch();
-        // Check fullscreen state using the manager
         else if (this.fullscreenManager.isActive) this.toggleFullscreen();
         else this.hideCommitPopup();
       }
@@ -352,22 +320,19 @@ class coderViewEdit {
       }
     });
 
-    // 2. Fullscreen button listener
     this.elements.fullscreenBtn?.addEventListener("click", () => this.toggleFullscreen());
   }
   
   toggleFullscreen() {
     this.fullscreenManager.toggle();
     
-    // Refresh CodeMirror after fullscreen change
     setTimeout(() => {
       if (this.codeMirror && typeof this.codeMirror.refresh === 'function') {
         this.codeMirror.refresh();
       }
     }, 100);
   }
-
-
+  
   populateLanguageDropdown() {
     if (!this.elements.languageList) return;
     this.elements.languageList.innerHTML = "";
@@ -460,7 +425,6 @@ class coderViewEdit {
       }
       if (e.key === "Escape") {
         if (this.searchActive) this.closeSearch();
-//        else if (this.isFullscreen) this.toggleFullscreen();
         else this.hideCommitPopup();
       }
       if (ctrl && e.key === "f") {
@@ -474,6 +438,11 @@ class coderViewEdit {
       }
     });
   }
+
+
+
+
+
 
   showCommitPopup(e) {
     if (!this.elements.commitDropdown) return;
@@ -952,6 +921,12 @@ class coderViewEdit {
     this.elements.commitDropdown?.remove();
   }
 }
+
+
+
+
+
+
 
 
 
