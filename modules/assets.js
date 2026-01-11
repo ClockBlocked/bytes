@@ -335,19 +335,13 @@ icons: {
 ///////////////////////////////////////////////////
 templates: {
 
-        editor: () => `
-<div class="editorContainer">
+  editor: () => `
 
   <div class="editorHeader">
-
     <div class="hGroup">
-      <button id="editModeBtn" class="headerButton active" title="Edit Mode">
-        ${AppAssets.icons.edit()}
-      </button>
+      <button id="editModeBtn" class="headerButton active" title="Edit Mode">${AppAssets.icons.edit()}</button>
 
-      <button id="viewModeBtn" class="headerButton" title="View Mode">
-        ${AppAssets.icons.view()}
-      </button>
+      <button id="viewModeBtn" class="headerButton" title="View Mode">${AppAssets.icons.view()}</button>
 
       <button id="themeBtn" class="headerButton" title="Toggle Theme">
         <svg id="themeIcon" class="buttonIcon" viewBox="0 0 16 16" fill="currentColor" width="14" height="14">
@@ -356,29 +350,27 @@ templates: {
       </button>
     </div>
 
-    <div class="headerSeparator"></div>
+
+<div class="headerSeparator"></div>
+
 
     <div class="hGroup">
-      <button id="undoBtn" class="headerButton" title="Undo (Ctrl+Z)">
-        ${AppAssets.icons.undo()}
-      </button>
-      <button id="redoBtn" class="headerButton" title="Redo (Ctrl+Y)">
-        ${AppAssets.icons.redo()}
-      </button>
+      <button id="undoBtn" class="headerButton" title="Undo (Ctrl+Z)">${AppAssets.icons.undo()}</button>
+      <button id="redoBtn" class="headerButton" title="Redo (Ctrl+Y)">${AppAssets.icons.redo()}</button>
     </div>
 
-    <div class="headerSeparator"></div>
+
+<div class="headerSeparator"></div>
+
 
     <div class="hGroup">
       <button id="searchBtn" class="headerButton" title="Search (Ctrl+F)">
-        ${AppAssets.icons.search()}  Search Code
+        ${AppAssets.icons.search()} Search Code
       </button>
     </div>
 
     <div class="hGroup">
-      <button id="wrapBtn" class="headerButton" title="Toggle Word Wrap">
-        ${AppAssets.icons.wrap()}
-      </button>
+      <button id="wrapBtn" class="headerButton" title="Toggle Word Wrap">${AppAssets.icons.wrap()}</button>
 
       <button id="fullscreenBtn" class="headerButton" title="Toggle Fullscreen">
         <svg id="fullscreenIcon" class="buttonIcon" viewBox="0 0 16 16" fill="currentColor" width="14" height="14">
@@ -387,55 +379,57 @@ templates: {
       </button>
     </div>
 
-    <div class="headerSeparator"></div>
+
+<div class="headerSeparator"></div>
+
 
     <div class="hGroup">
-      <button id="copyBtn" class="headerButton" title="Copy Code">
-        ${AppAssets.icons.copy()}
-      </button>
+      <button id="copyBtn" class="headerButton" title="Copy Code">${AppAssets.icons.copy()}</button>
 
-      <button id="downloadBtn" class="headerButton" title="Download File">
-        ${AppAssets.icons.download()}
-      </button>
+      <button id="downloadBtn" class="headerButton" title="Download File">${AppAssets.icons.download()}</button>
 
-      <button id="uploadBtn" class="headerButton" title="Upload File">
-        ${AppAssets.icons.upload()}
-      </button>
+      <button id="uploadBtn" class="headerButton" title="Upload File">${AppAssets.icons.upload()}</button>
     </div>
 
     <div class="hGroup">
       <div class="fontSizeControl">
-        <button id="fontDecreaseBtn" class="fontBtn" title="Decrease Font Size">
-          ${AppAssets.icons.minus()}
-        </button>
+        <button id="fontDecreaseBtn" class="fontBtn" title="Decrease Font Size">${AppAssets.icons.minus()}</button>
 
         <span id="fontSizeLabel" class="fontSizeLabel">14px</span>
 
-        <button id="fontIncreaseBtn" class="fontBtn" title="Increase Font Size">
-          ${AppAssets.icons.plus()}
-        </button>
+        <button id="fontIncreaseBtn" class="fontBtn" title="Increase Font Size">${AppAssets.icons.plus()}</button>
       </div>
     </div>
 
     <div class="hGroup">
-      <button id="moreOptionsBtn" class="headerButton" title="More Options">
-        ${AppAssets.icons.more()}
-      </button>
+      <button id="moreOptionsBtn" class="headerButton" title="More Options">${AppAssets.icons.more()}</button>
     </div>
-
   </div>
+  
+  
+
+
+
+
+<div class="editorContainer">
 
   <div class="editorCard">
     <div class="editorToolbar">
       <div class="toolbarLeft">
         <div class="toolbarItem">
           <svg class="toolbarIcon" viewBox="0 0 16 16" fill="currentColor" width="16" height="16">
-            <path d="M4 1.75C4 .784 4.784 0 5.75 0h5.586c.464 0 .909.184 1.237.513l2.914 2.914c.329.328.513.773.513 1.237v8.586A1.75 1.75 0 0 1 14.25 15h-9a.75.75 0 0 1 0-1.5h9a.25.25 0 0 0 .25-.25V6h-2.75A1.75 1.75 0 0 1 10 4.25V1.5H5.75a.25.25 0 0 0-.25.25v2.5a.75.75 0 0 1-1.5 0v-2.5Zm7.5-.188V4.25c0 .138.112.25.25.25h2.688l-2.938-2.938ZM5.72 6.72a.75.75 0 0 0 0 1.06l1.47 1.47-1.47 1.47a.75.75 0 1 0 1.06 1.06l2-2a.75.75 0 0 0 0-1.06l-2-2a.75.75 0 0 0-1.06 0ZM3.28 7.78a.75.75 0 0 0-1.06-1.06l-2 2a.75.75 0 0 0 0 1.06l2 2a.75.75 0 0 0 1.06-1.06L1.81 9.25l1.47-1.47Z"/>
+            <path
+              d="M4 1.75C4 .784 4.784 0 5.75 0h5.586c.464 0 .909.184 1.237.513l2.914 2.914c.329.328.513.773.513 1.237v8.586A1.75 1.75 0 0 1 14.25 15h-9a.75.75 0 0 1 0-1.5h9a.25.25 0 0 0 .25-.25V6h-2.75A1.75 1.75 0 0 1 10 4.25V1.5H5.75a.25.25 0 0 0-.25.25v2.5a.75.75 0 0 1-1.5 0v-2.5Zm7.5-.188V4.25c0 .138.112.25.25.25h2.688l-2.938-2.938ZM5.72 6.72a.75.75 0 0 0 0 1.06l1.47 1.47-1.47 1.47a.75.75 0 1 0 1.06 1.06l2-2a.75.75 0 0 0 0-1.06l-2-2a.75.75 0 0 0-1.06 0ZM3.28 7.78a.75.75 0 0 0-1.06-1.06l-2 2a.75.75 0 0 0 0 1.06l2 2a.75.75 0 0 0 1.06-1.06L1.81 9.25l1.47-1.47Z"
+            />
           </svg>
           <span id="fileNameDisplay" class="fileName">untitled.js</span>
           <span id="modifiedBadge" class="badge badgeSecondary hide">Modified</span>
         </div>
-        <div class="toolbarSeparator"></div>
+        
+        
+<div class="toolbarSeparator"></div>
+        
+        
         <div class="languageSelector">
           <button id="languageBtn" class="toolbarButton languageBtn">
             ${AppAssets.icons.code("")}
@@ -452,43 +446,23 @@ templates: {
           <button id="editSaveButton" class="trigger-button" aria-haspopup="true" aria-expanded="false">
             <span id="editSaveLabel">Edit</span>
             <span class="btn-divider">|</span>
-            <span class="more-btn">
-              ${AppAssets.icons.chevronDown()}
-            </span>
+            <span class="more-btn"> ${AppAssets.icons.chevronDown()} </span>
           </button>
         </div>
       </div>
     </div>
 
-    
-    
-    
     <div id="moreOptionsDropdown" class="dropdown2 hide">
-          <div class="dropdownContent">
-            <button class="dropdownItem" id="formatBtn">
-              ${AppAssets.icons.format()}
-              Format Document
-            </button>
-            <button class="dropdownItem" id="foldAllBtn">
-              ${AppAssets.icons.fold()}
-              Fold All
-            </button>
-            <button class="dropdownItem" id="unfoldAllBtn">
-              ${AppAssets.icons.unfold()}
-              Unfold All
-            </button>
-            <div class="dropdownDivider"></div>
-            <button class="dropdownItem" id="showInvisiblesBtn">
-              ${AppAssets.icons.invisibles()}
-              Show Invisibles
-            </button>
-          </div>
-        </div>
-  <!-- More Menu E N D -->
-      
-      
-    
-    
+      <div class="dropdownContent">
+        <button class="dropdownItem" id="formatBtn">${AppAssets.icons.format()} Format Document</button>
+        <button class="dropdownItem" id="foldAllBtn">${AppAssets.icons.fold()} Fold All</button>
+        <button class="dropdownItem" id="unfoldAllBtn">${AppAssets.icons.unfold()} Unfold All</button>
+        <div class="dropdownDivider"></div>
+        <button class="dropdownItem" id="showInvisiblesBtn">${AppAssets.icons.invisibles()} Show Invisibles</button>
+      </div>
+    </div>
+    <!-- More Menu E N D -->
+
     <div id="editorBody" class="editorBody">
       <div id="loadingSpinner" class="loadingSpinner" data-active="false">
         <div class="spinnerContainer">
@@ -501,18 +475,19 @@ templates: {
       <div id="codeMirrorContainer" class="codeMirrorContainer"></div>
       <div id="searchPanel" class="searchPanel hide">
         <div class="searchContainer">
-          <input type="text" id="searchInput" class="searchInput" placeholder="Search..." autocomplete="off" spellcheck="false" />
+          <input
+            type="text"
+            id="searchInput"
+            class="searchInput"
+            placeholder="Search..."
+            autocomplete="off"
+            spellcheck="false"
+          />
           <div class="searchActions">
             <span id="searchMatches" class="searchCount">0/0</span>
-            <button id="searchPrevBtn" class="searchNavBtn" title="Previous">
-              ${AppAssets.icons.searchPrev()}
-            </button>
-            <button id="searchNextBtn" class="searchNavBtn" title="Next">
-              ${AppAssets.icons.searchNext()}
-            </button>
-            <button id="closeSearchBtn" class="searchNavBtn" title="Close">
-              ${AppAssets.icons.close()}
-            </button>
+            <button id="searchPrevBtn" class="searchNavBtn" title="Previous">${AppAssets.icons.searchPrev()}</button>
+            <button id="searchNextBtn" class="searchNavBtn" title="Next">${AppAssets.icons.searchNext()}</button>
+            <button id="closeSearchBtn" class="searchNavBtn" title="Close">${AppAssets.icons.close()}</button>
           </div>
         </div>
       </div>
@@ -554,13 +529,21 @@ templates: {
         <div class="footerDivider"></div>
         <span class="footerBadge">UTF-8</span>
         <span class="footerBadge">LF</span>
-        <span class="footerBadge">Spaces:  2</span>
+        <span class="footerBadge">Spaces: 2</span>
         <span id="languageBadge" class="footerBadge footerBadgeAccent"></span>
       </div>
     </div>
   </div>
-  <input type="file" id="fileUploadInput" class="hide" accept=".js,.jsx,.ts,.tsx,.py,.html,.css,.json,.md,.txt,.yml,.yaml,.xml,.sql,.sh,.rb,.go,.rs,.java,.cpp,.c,.h,.cs,.php,.swift" />
-</div>`,
+  <input
+    type="file"
+    id="fileUploadInput"
+    class="hide"
+    accept=".js,.jsx,.ts,.tsx,.py,.html,.css,.json,.md,.txt,.yml,.yaml,.xml,.sql,.sh,.rb,.go,.rs,.java,.cpp,.c,.h,.cs,.php,.swift"
+  />
+</div>
+
+
+`,
 
 
 
