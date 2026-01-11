@@ -553,7 +553,7 @@ button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-
   margin-right: var(--sidebarWidth);
   transition: margin 0.3s ease;
   position: relative;
-  min-height: calc(100vh - 3.75rem);
+ /** min-height: calc(100vh - 3.75rem);**/
 }
 
 @media (max-width: 75rem) {
