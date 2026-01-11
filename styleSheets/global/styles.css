@@ -4245,7 +4245,7 @@ aside:hover .sidebar-title {
 
 
 
-
+/****
 
 .editorContainer[data-fullscreen="false"] {
   position: relative;
@@ -4259,7 +4259,7 @@ aside:hover .sidebar-title {
   border: 1px solid var(--editorBorder);
   border-radius: var(--radiusLg);
   
-  overflow: hidden;
+  overflow: hidden; 
 }
 
 .editorContainer[data-fullscreen="false"] .editorCard {
@@ -4273,7 +4273,7 @@ aside:hover .sidebar-title {
   background: var(--editorCardBg);
   border: 0.0625rem solid var(--neutralSubtle);
   border-radius: var(--radiusMd);
-  overflow: hidden;
+  overflow: hidden; 
   box-shadow: 0 0.25rem 0.375rem -0.0625rem rgba(0, 0, 0, 0.1), 
               0 0.125rem 0.25rem -0.125rem rgba(0, 0, 0, 0.1);
 }
@@ -4311,7 +4311,6 @@ aside:hover .sidebar-title {
   height: calc(100vh - 3.5rem);
 }
 
-/* Make the header stick to top like native app */
 .editorContainer[data-fullscreen="true"] .editorHeader {
   position: sticky;
   top: 0;
@@ -4321,7 +4320,6 @@ aside:hover .sidebar-title {
   padding-top: env(safe-area-inset-top, 0);
 }
 
-/* Optional: Add safe area handling for mobile devices */
 @supports (padding: max(0px)) {
   .editorContainer[data-fullscreen="true"] {
     padding-top: max(0.5rem, env(safe-area-inset-top));
@@ -4331,7 +4329,6 @@ aside:hover .sidebar-title {
   }
 }
 
-/* Fullscreen API specific selectors */
 .editorContainer[data-fullscreen="true"]:fullscreen .editorCard {
   background: var(--editorCardBg);
 }
@@ -4344,7 +4341,7 @@ aside:hover .sidebar-title {
   background: var(--editorCardBg);
 }
 
-
+****/
 
 
 
