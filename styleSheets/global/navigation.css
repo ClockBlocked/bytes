@@ -1,0 +1,181 @@
+/**
+ * Navigation Styles
+ * Sticky navigation bar and breadcrumb bar styles
+ */
+
+/* ===================================
+   Main Navbar
+   =================================== */
+.navbar {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  height: 60px;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ===================================
+   Breadcrumbs Wrapper
+   =================================== */
+.breadCrumbsWrapper {
+  position: sticky;
+  top: 3.75rem;
+  z-index: 90;
+  width: 100%;
+  
+  /* Background & Backdrop */
+  background-color: rgba(var(--overlay-rgb, 45 51 59), 0.85);
+  backdrop-filter: blur(8px) saturate(180%);
+  -webkit-backdrop-filter: blur(8px) saturate(180%);
+  
+  /* Border & Shadow */
+  border-bottom: 1px solid var(--borderDefault);
+  border-radius: 0;
+  border-bottom-left-radius: 0.75rem;
+  border-bottom-right-radius: 0.75rem;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 
+              0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  
+  /* Spacing */
+  padding: 0.75rem 1rem;
+  
+  /* Animation */
+  transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1),
+              opacity 0.2s ease;
+}
+
+.breadCrumbsWrapper.hidden {
+  transform: translateY(-100%);
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* ===================================
+   Breadcrumb Container & Items
+   =================================== */
+.breadCrumbContainer {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.breadCrumb {
+  display: inline-flex;
+  align-items: center;
+  color: var(--fgMuted, #94a3b8);
+  font-size: 0.875rem;
+  font-weight: 500;
+  line-height: 1.5;
+  text-decoration: none;
+  transition: color 0.2s ease;
+  white-space: nowrap;
+  padding: 0.25rem 0.5rem;
+  border-radius: 0.375rem;
+}
+
+.breadCrumb:hover {
+  color: var(--fgDefault, #e2e8f0);
+  background-color: var(--canvasSubtle, rgba(255, 255, 255, 0.05));
+}
+
+.breadCrumb:focus-visible {
+  outline: 2px solid var(--accentFg);
+  outline-offset: 2px;
+}
+
+.breadCrumb.current {
+  color: var(--fgDefault);
+  font-weight: 600;
+  pointer-events: none;
+  background-color: var(--accentSubtle, rgba(83, 155, 245, 0.15));
+}
+
+/* ===================================
+   Breadcrumb Divider
+   =================================== */
+.navDivider {
+  display: inline-flex;
+  align-items: center;
+  color: var(--borderSubtle, #475569);
+  margin: 0;
+  opacity: 0.6;
+}
+
+.navDivider svg {
+  width: 1rem;
+  height: 1rem;
+  fill: currentColor;
+  flex-shrink: 0;
+}
+
+/* ===================================
+   Pre-Editor Context Spacer
+   =================================== */
+.pre-editor-context {
+  position: relative;
+  height: 3.75rem;
+  background-color: transparent;
+  transition: height 0.2s ease;
+}
+
+/* ===================================
+   Responsive Adjustments
+   =================================== */
+@media (max-width: 768px) {
+  .navbar {
+    height: 56px;
+  }
+  
+  .breadCrumbsWrapper {
+    top: 3.5rem;
+    padding: 0.5rem 0.75rem;
+    border-bottom-left-radius: 0.5rem;
+    border-bottom-right-radius: 0.5rem;
+  }
+  
+  .breadCrumb {
+    font-size: 0.8125rem;
+    padding: 0.2rem 0.4rem;
+  }
+  
+  .pre-editor-context {
+    height: 3.5rem;
+  }
+}
+
+/* ===================================
+   Accessibility
+   =================================== */
+@media (prefers-reduced-motion: reduce) {
+  .navbar,
+  .breadCrumbsWrapper,
+  .breadCrumb,
+  .pre-editor-context {
+    transition: none;
+  }
+}
+
+/* ===================================
+   Dark/Light Theme Support
+   =================================== */
+[data-theme="light"] .breadCrumbsWrapper {
+  background-color: rgba(255, 255, 255, 0.85);
+  border-color: var(--borderDefault, #d0d7de);
+}
+
+[data-theme="light"] .breadCrumb {
+  color: var(--fgMuted, #656d76);
+}
+
+[data-theme="light"] .breadCrumb:hover {
+  color: var(--fgDefault, #1f2328);
+  background-color: var(--canvasSubtle, rgba(0, 0, 0, 0.05));
+}
+
+[data-theme="light"] .breadCrumb.current {
+  background-color: var(--accentSubtle, rgba(9, 105, 218, 0.15));
+}
