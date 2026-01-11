@@ -622,6 +622,15 @@ class CodeViewEditor {
   hideLoadingSpinner = function() {
     this.elements.loadingSpinner?.setAttribute("data-active", "false");
   }.bind(this);
+  coderLoading = function(timer = 1500) {
+    this.showLoadingSpinner();
+  
+    setTimeout(() => {
+      this.hideLoadingSpinner();
+   }, timer);
+}.bind(this);
+
+
 
 
 
@@ -679,7 +688,7 @@ class CodeViewEditor {
   }.bind(this);
   
   performSave = function(commitMessage) {
-    this.showLoadingSpinner();
+    this.coderLoading(timer = 1500);
     
     setTimeout(() => {
       try {
@@ -709,9 +718,9 @@ class CodeViewEditor {
         this.updateLastSaved(true);
         this.updateModifiedBadge();
         this.exitEditMode();
-        this.hideLoadingSpinner();
+ //       this.hideLoadingSpinner();
       } catch (error) {
-        this.hideLoadingSpinner();
+ //       this.hideLoadingSpinner();
         if (typeof showErrorMessage === "function") {
           showErrorMessage(`Save failed: ${error.message}`);
         }
@@ -720,6 +729,8 @@ class CodeViewEditor {
   }.bind(this);
   saveChanges = function(withCommit = false) {
     if (!this.currentFile || !this.fileData) return;
+    
+    this.coderLoading(timer = 1500);
     
     if (withCommit) {
       const commitMessage = this.elements.commitMessage?.value.trim();
@@ -733,6 +744,7 @@ class CodeViewEditor {
       this.performSave(commitMessage);
     } else {
       this.performSave("Saved changes");
+      
     }
   }.bind(this);
   
@@ -742,6 +754,9 @@ class CodeViewEditor {
     
     const reader = new FileReader();
     reader.onload = (event) => {
+      
+      this.coderLoading(timer = 3500);
+      
       const content = event.target?.result;
       if (this.codeMirror) {
         this.codeMirror.setValue(content);
@@ -787,6 +802,8 @@ class CodeViewEditor {
   enterEditMode = function() {
     if (!this.currentFile) return;
     
+    this.coderLoading(timer = 1500);
+    
     this.isEditing = true;
     this.elements.editModeBtn?.classList.add("active");
     this.elements.viewModeBtn?.classList.remove("active");
@@ -801,6 +818,9 @@ class CodeViewEditor {
     }
   }.bind(this);
   exitEditMode = function() {
+    
+    this.coderLoading(timer = 1500);
+    
     this.isEditing = false;
     this.elements.editModeBtn?.classList.remove("active");
     this.elements.viewModeBtn?.classList.add("active");
