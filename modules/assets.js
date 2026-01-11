@@ -12,7 +12,7 @@ icons: {
         height="32">
         
   <path fill="currentColor"
-        d="M64 48l112 0 0 88c0 39.8 32.2 72 72 72l88 0 0 240c0 8.8-7.2 16-16 16L64 464c-8.8 0-16-7.2-16-16L48 64c0-8.8 7.2-16 16-16zM224 67.9l92.1 92.1-68.1 0c-13.3 0-24-10.7-24-24l0-68.1zM64 0C28.7 0[...]
+        d="M64 48l112 0 0 88c0 39.8 32.2 72 72 72l88 0 0 240c0 8.8-7.2 16-16 16L64 464c-8.8 0-16-7.2-16-16L48 64c0-8.8 7.2-16 16-16zM224 67.9l92.1 92.1-68.1 0c-13.3 0-24-10.7-24-24l0-68.1zM64 0C28.7 0 0 28.7 0 64L0 448c0 35.3 28.7 64 64 64l256 0c35.3 0 64-28.7 64-64l0-261.5c0-17-6.7-33.3-18.7-45.3L242.7 18.7C230.7 6.7 214.5 0 197.5 0L64 0zm56 256c-13.3 0-24 10.7-24 24s10.7 24 24 24l144 0c13.3 0 24-10.7 24-24s-10.7-24-24-24l-144 0zm0 96c-13.3 0-24 10.7-24 24s10.7 24 24 24l144 0c13.3 0 24-10.7 24-24s-10.7-24-24-24l-144 0z"/>
 
   </svg>
 `,
@@ -23,7 +23,7 @@ icons: {
         width="14"
         height="14">
         
-  <path d="M11.013 1.427a1.75 1.75 0 0 1 2.474 0l1.086 1.086a1.75 1.75 0 0 1 0 2.474l-8.61 8.61c-.21.21-.47.364-.756.445l-3.251.93a.75.75 0 0 1-.927-.928l.929-3.25c.081-.286.235-.547.445-.758l8.61-8.6[...]
+  <path d="M11.013 1.427a1.75 1.75 0 0 1 2.474 0l1.086 1.086a1.75 1.75 0 0 1 0 2.474l-8.61 8.61c-.21.21-.47.364-.756.445l-3.251.93a.75.75 0 0 1-.927-.928l.929-3.25c.081-.286.235-.547.445-.758l8.61-8.61Zm.176 4.823L9.75 4.81l-6.286 6.287a.253.253 0 0 0-.064.108l-.558 1.953 1.953-.558a.253.253 0 0 0 .108-.064Zm1.238-3.763a.25.25 0 0 0-.354 0L10.811 3.75l1.439 1.44 1.263-1.263a.25.25 0 0 0 0-.354Z"/>
         
   </svg>
 `,
@@ -34,7 +34,7 @@ icons: {
         width="14"
         height="14">
         
-  <path d="M8 2c1.981 0 3.671.992 4.933 2.078 1.27 1.091 2.187 2.345 2.637 3.023a1.62 1.62 0 0 1 0 1.798c-.45.678-1.367 1.932-2.637 3.023C11.67 13.008 9.981 14 8 14c-1.981 0-3.671-.992-4.933-2.078C1.7[...]
+  <path d="M8 2c1.981 0 3.671.992 4.933 2.078 1.27 1.091 2.187 2.345 2.637 3.023a1.62 1.62 0 0 1 0 1.798c-.45.678-1.367 1.932-2.637 3.023C11.67 13.008 9.981 14 8 14c-1.981 0-3.671-.992-4.933-2.078C1.797 10.831.88 9.577.43 8.899a1.62 1.62 0 0 1 0-1.798c.45-.678-1.367-1.932-2.637-3.023C4.33 2.992 6.019 2 8 2ZM1.679 7.932a.12.12 0 0 0 0 .136c.411.622 1.241 1.75 2.366 2.717C5.176 11.758 6.527 12.5 8 12.5c1.473 0 2.825-.742 3.955-1.715 1.124-.967 1.954-2.096 2.366-2.717a.12.12 0 0 0 0-.136c-.412-.621-1.242-1.75-2.366-2.717C10.824 4.242 9.473 3.5 8 3.5c-1.473 0-2.824.742-3.955 1.715-1.124.967-1.954 2.096-2.366 2.717ZM8 10a2 2 0 1 1-.001-3.999A2 2 0 0 1 8 10Z"/>
         
   </svg>
 `,
@@ -78,7 +78,7 @@ icons: {
         width="14"
         height="14">
         
-  <path d="M2.75 3.5a.25.25 0 0 0-.25.25v8.5c0 .138.112.25.25.25h10.5a.25.25 0 0 0 .25-.25v-8.5a.25.25 0 0 0-.25-.25Zm10.5-1.5a1.75 1.75 0 0 1 1.75 1.75v8.5A1.75 1.75 0 0 1 13.25 14H2.75A1.75 1.75 0 0[...]
+  <path d="M2.75 3.5a.25.25 0 0 0-.25.25v8.5c0 .138.112.25.25.25h10.5a.25.25 0 0 0 .25-.25v-8.5a.25.25 0 0 0-.25-.25Zm10.5-1.5a1.75 1.75 0 0 1 1.75 1.75v8.5A1.75 1.75 0 0 1 13.25 14H2.75A1.75 1.75 0 0 1 1 12.25v-8.5A1.75 1.75 0 0 1 2.75 2Zm-9.5 5h3.75a.75.75 0 0 1 0 1.5H3.75a.75.75 0 0 1 0-1.5ZM3 9.75a.75.75 0 0 1 .75-.75h6.5a.75.75 0 0 1 0 1.5h-6.5a.75.75 0 0 1-.75-.75Z"/>
         
   </svg>
 `,
@@ -89,7 +89,7 @@ icons: {
         width="14"
         height="14">
         
-  <path d="M0 6.75C0 5.784.784 5 1.75 5h1.5a.75.75 0 0 1 0 1.5h-1.5a.25.25 0 0 0-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 0 0 .25-.25v-1.5a.75.75 0 0 1 1.5 0v1.5A1.75 1.75 0 0 1 9.25 16h-7.5A1.75 1[...]
+  <path d="M0 6.75C0 5.784.784 5 1.75 5h1.5a.75.75 0 0 1 0 1.5h-1.5a.25.25 0 0 0-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 0 0 .25-.25v-1.5a.75.75 0 0 1 1.5 0v1.5A1.75 1.75 0 0 1 9.25 16h-7.5A1.75 1.75 0 0 1 0 14.25ZM5 1.75C5 .784 5.784 0 6.75 0h7.5C15.216 0 16 .784 16 1.75v7.5A1.75 1.75 0 0 1 14.25 11h-7.5A1.75 1.75 0 0 1 5 9.25Zm1.75-.25a.25.25 0 0 0-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 0 0 .25-.25v-7.5a.25.25 0 0 0-.25-.25Z"/>
         
   </svg>
 `,
@@ -100,7 +100,7 @@ icons: {
         width="14"
         height="14">
         
-  <path d="M2.75 14A1.75 1.75 0 0 1 1 12.25v-2.5a.75.75 0 0 1 1.5 0v2.5c0 .138.112.25.25.25h10.5a.25.25 0 0 0 .25-.25v-2.5a.75.75 0 0 1 1.5 0v2.5A1.75 1.75 0 0 1 13.25 14Zm-1-6a.75.75 0 0 1 .75-.75h2.[...]
+  <path d="M2.75 14A1.75 1.75 0 0 1 1 12.25v-2.5a.75.75 0 0 1 1.5 0v2.5c0 .138.112.25.25.25h10.5a.25.25 0 0 0 .25-.25v-2.5a.75.75 0 0 1 1.5 0v2.5A1.75 1.75 0 0 1 13.25 14Zm-1-6a.75.75 0 0 1 .75-.75h2.5a.75.75 0 0 1 0 1.5h-2.5A.75.75 0 0 1 1.75 8Z"/>
   <path d="M8 .75a.75.75 0 0 1 .75.75v6.19l1.72-1.72a.75.75 0 1 1 1.06 1.06l-3 3a.75.75 0 0 1-1.06 0l-3-3a.75.75 0 0 1 1.06-1.06l1.72 1.72V1.5A.75.75 0 0 1 8 .75Z"/>
         
   </svg>
@@ -135,7 +135,7 @@ icons: {
         width="14"
         height="14">
         
-  <path d="M8 12a4 4 0 1 1 0-8 4 4 0 0 1 0 8Zm0-1.5a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5Zm5.657-8.157a.75.75 0 0 1 0 1.061l-1.061 1.06a.749.749 0 0 1-1.275-.326.749.749 0 0 1 .215-.734l1.06-1.06a.75.75[...]
+  <path d="M8 12a4 4 0 1 1 0-8 4 4 0 0 1 0 8Zm0-1.5a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5Zm5.657-8.157a.75.75 0 0 1 0 1.061l-1.061 1.06a.749.749 0 0 1-1.275-.326.749.749 0 0 1 .215-.734l1.06-1.06a.75.75 0 0 1 1.06 0Zm-9.193 9.193a.75.75 0 0 1 0 1.06l-1.06 1.061a.75.75 0 1 1-1.061-1.06l1.06-1.061a.75.75 0 0 1 1.061 0ZM8 0a.75.75 0 0 1 .75.75v1.5a.75.75 0 0 1-1.5 0V.75A.75.75 0 0 1 8 0ZM3 8a.75.75 0 0 1-.75.75H.75a.75.75 0 0 1 0-1.5h1.5A.75.75 0 0 1 3 8Zm13 0a.75.75 0 0 1-.75.75h-1.5a.75.75 0 0 1 0-1.5h1.5A.75.75 0 0 1 16 8Zm-8 5a.75.75 0 0 1 .75.75v1.5a.75.75 0 0 1-1.5 0v-1.5A.75.75 0 0 1 8 13Zm3.536-1.464a.75.75 0 0 1 1.06 0l1.061 1.06a.75.75 0 0 1-1.06 1.061l-1.061-1.06a.75.75 0 0 1 0-1.061Zm-9.193-9.193a.75.75 0 0 1 1.06 0l1.061 1.06a.75.75 0 0 1-1.06 1.061l-1.061-1.06a.75.75 0 0 1 0-1.061Z"/>
         
   </svg>
 `,
@@ -146,7 +146,7 @@ icons: {
         width="14"
         height="14">
         
-  <path d="M1.75 10a.75.75 0 0 1 .75.75v2.5c0 .138.112.25.25.25h2.5a.75.75 0 0 1 0 1.5h-2.5A1.75 1.75 0 0 1 1 13.25v-2.5a.75.75 0 0 1 .75-.75Zm12.5 0a.75.75 0 0 1 .75.75v2.5A1.75 1.75 0 0 1 13.25 15h-[...]
+  <path d="M1.75 10a.75.75 0 0 1 .75.75v2.5c0 .138.112.25.25.25h2.5a.75.75 0 0 1 0 1.5h-2.5A1.75 1.75 0 0 1 1 13.25v-2.5a.75.75 0 0 1 .75-.75Zm12.5 0a.75.75 0 0 1 .75.75v2.5A1.75 1.75 0 0 1 13.25 15h-2.5a.75.75 0 0 1 0-1.5h2.5a.25.25 0 0 0 .25-.25v-2.5a.75.75 0 0 1 .75-.75ZM2.75 1a1.75 1.75 0 0 0-1.75 1.75v2.5a.75.75 0 0 0 1.5 0v-2.5a.25.25 0 0 1 .25-.25h2.5a.75.75 0 0 0 0-1.5Zm8 0a.75.75 0 0 0 0 1.5h2.5a.25.25 0 0 1 .25.25v2.5a.75.75 0 0 0 1.5 0v-2.5A1.75 1.75 0 0 0 13.25 1Z"/>
         
   </svg>
 `,
@@ -168,7 +168,7 @@ icons: {
         width="12"
         height="12">
         
-  <path d="m11.28 3.22 4.25 4.25a.75.75 0 0 1 0 1.06l-4.25 4.25a.749.749 0 0 1-1.275-.326.749.749 0 0 1 .215-.734L13.94 8l-3.72-3.72a.749.749 0 0 1 .326-1.275.749.749 0 0 1 .734.215Zm-6.56 0a.751.751 [...]
+  <path d="m11.28 3.22 4.25 4.25a.75.75 0 0 1 0 1.06l-4.25 4.25a.749.749 0 0 1-1.275-.326.749.749 0 0 1 .215-.734L13.94 8l-3.72-3.72a.749.749 0 0 1 .326-1.275.749.749 0 0 1 .734.215Zm-6.56 0a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042L2.06 8l3.72 3.72a.749.749 0 0 1-.326 1.275.749.749 0 0 1-.734-.215L.47 8.53a.75.75 0 0 1 0-1.06Z"/>
         
   </svg>${label}
 `,
@@ -183,14 +183,15 @@ icons: {
         
   </svg>
 `,
-    chevronLeft: () => `
-  <svg class="chevron" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512" width="14" height="14" fill="currentColor">
-  <path d="M9.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l192 192c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L54.7 256 246.6 64c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-192 192z"/>
-  </svg>
-`,
-    chevronRight: () => `
-  <svg class="chevron" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512" width="14" height="14" fill="currentColor">
-  <path d="M310.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-192 192c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L265.3 256 73.4 64c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l192 192z"/>
+    chevron: () => `
+  <svg class="chevronIcon"
+        viewBox="0 0 16 16"
+        fill="currentColor"
+        width="12"
+        height="12">
+        
+  <path d="M4.427 7.427l3.396 3.396a.25.25 0 0 0 .354 0l3.396-3.396A.25.25 0 0 0 10.896 2H4.604a.25.25 0 0 0-.177.427Z"/>
+        
   </svg>
 `,
     format: () => `
@@ -200,7 +201,7 @@ icons: {
         width="14"
         height="14">
         
-  <path d="m11.28 3.22 4.25 4.25a.75.75 0 0 1 0 1.06l-4.25 4.25a.749.749 0 0 1-1.275-.326.749.749 0 0 1 .215-.734L13.94 8l-3.72-3.72a.749.749 0 0 1 .326-1.275.749.749 0 0 1 .734.215Zm-6.56 0a.751.751 [...]
+  <path d="m11.28 3.22 4.25 4.25a.75.75 0 0 1 0 1.06l-4.25 4.25a.749.749 0 0 1-1.275-.326.749.749 0 0 1 .215-.734L13.94 8l-3.72-3.72a.749.749 0 0 1 .326-1.275.749.749 0 0 1 .734.215Zm-6.56 0a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042L2.06 8l3.72 3.72a.749.749 0 0 1-.326 1.275.749.749 0 0 1-.734-.215L.47 8.53a.75.75 0 0 1 0-1.06Z"/>
         
   </svg>
 `,
@@ -211,7 +212,7 @@ icons: {
         width="14"
         height="14">
         
-  <path d="M10.896 2H8.75V.75a.75.75 0 0 0-1.5 0V2H5.104a.25.25 0 0 0-.177.427l2.896 2.896a.25.25 0 0 0 .354 0l2.896-2.896A.25.25 0 0 0 10.896 2ZM8.75 15.25a.75.75 0 0 1-1.5 0V14H5.104a.25.25 0 0 1-.1[...]
+  <path d="M10.896 2H8.75V.75a.75.75 0 0 0-1.5 0V2H5.104a.25.25 0 0 0-.177.427l2.896 2.896a.25.25 0 0 0 .354 0l2.896-2.896A.25.25 0 0 0 10.896 2ZM8.75 15.25a.75.75 0 0 1-1.5 0V14H5.104a.25.25 0 0 1-.177-.427l2.896-2.896a.25.25 0 0 1 .354 0l2.896 2.896a.25.25 0 0 1-.177.427H8.75ZM9.78 7.22a.75.75 0 0 1 0 1.06l-2.25 2.25a.75.75 0 0 1-1.06-1.06L8.19 7.75 6.47 6.03a.75.75 0 0 1 1.06-1.06l2.25 2.25Z"/>
         
   </svg>
 `,
@@ -222,7 +223,7 @@ icons: {
         width="14"
         height="14">
         
-  <path d="M5.427 2.573a.25.25 0 0 1 .354 0l2.896 2.896a.25.25 0 0 1-.177.427H6.354v2.208a.75.75 0 0 1-1.5 0V5.896H2.75a.25.25 0 0 1-.177-.427l2.854-2.896Zm5.146 10.854a.25.25 0 0 1-.354 0l-2.896-2.89[...]
+  <path d="M5.427 2.573a.25.25 0 0 1 .354 0l2.896 2.896a.25.25 0 0 1-.177.427H6.354v2.208a.75.75 0 0 1-1.5 0V5.896H2.75a.25.25 0 0 1-.177-.427l2.854-2.896Zm5.146 10.854a.25.25 0 0 1-.354 0l-2.896-2.896a.25.25 0 0 1 .177-.427h2.146V7.896a.75.75 0 0 1 1.5 0v2.208h2.104a.25.25 0 0 1 .177.427Z"/>
         
   </svg>
 `,
@@ -233,7 +234,7 @@ icons: {
         width="14"
         height="14">
         
-  <path d="M2.75 3.5a.25.25 0 0 0-.25.25v8.5c0 .138.112.25.25.25h10.5a.25.25 0 0 0 .25-.25v-8.5a.25.25 0 0 0-.25-.25Zm10.5-1.5a1.75 1.75 0 0 1 1.75 1.75v8.5A1.75 1.75 0 0 1 13.25 13H2.75A1.75 1.75 0 0[...]
+  <path d="M2.75 3.5a.25.25 0 0 0-.25.25v8.5c0 .138.112.25.25.25h10.5a.25.25 0 0 0 .25-.25v-8.5a.25.25 0 0 0-.25-.25Zm10.5-1.5a1.75 1.75 0 0 1 1.75 1.75v8.5A1.75 1.75 0 0 1 13.25 13H2.75A1.75 1.75 0 0 1 1 12.25v-8.5A1.75 1.75 0 0 1 2.75 2Zm-9.5 5h3.75a.75.75 0 0 1 0 1.5H3.75a.75.75 0 0 1 0-1.5ZM3 9.75a.75.75 0 0 1 .75-.75h6.5a.75.75 0 0 1 0 1.5h-6.5a.75.75 0 0 1-.75-.75Z"/>
         
   </svg>
 `,
@@ -288,7 +289,7 @@ icons: {
         width="12"
         height="12">
         
-  <path d="M3.72 3.72a.75.75 0 0 1 1.06 0L8 6.94l3.22-3.22a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042L9.06 8l3.22 3.22a.749.749 0 0 1-.326 1.275.749.749 0 0 1-.734-.215L8 9.06l-3.22 3.22a.751.7[...]
+  <path d="M3.72 3.72a.75.75 0 0 1 1.06 0L8 6.94l3.22-3.22a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042L9.06 8l3.22 3.22a.749.749 0 0 1-.326 1.275.749.749 0 0 1-.734-.215L8 9.06l-3.22 3.22a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042L6.94 8 3.72 4.78a.75.75 0 0 1 0-1.06Z"/>
         
   </svg>
 `,
@@ -337,28 +338,28 @@ templates: {
         editor: () => `
 <div class="editorContainer">
 
+
   <div class="editorToolbar">
     <div class="toolbarLeft">
-      <div class="fileNameInputWrapper">
-        <div class="fileIconWrapper">
-          <svg class="fileIcon" viewBox="0 0 16 16" fill="currentColor" width="16" height="16">
-            <path d="M4 1.75C4 .784 4.784 0 5.75 0h5.586c.464 0 .909.184 1.237.513l2.914 2.914c.329.328.513.773.513 1.237v8.586A1.75 1.75 0 0 1 14.25 15h-9a.75.75 0 0 1 0-1.5h9a.25.25 0 0 0 .25-.25V6h-2[...]
-          </svg>
-        </div>
-        <input type="text" id="fileNameInput" class="fileNameInput" placeholder="filename" spellcheck="false" autocomplete="off" />
-        <button id="fileExtensionBtn" class="fileNameExtension extension">
-          <span id="fileExtensionLabel">.js</span>
-        </button>
+      <div class="toolbarItem">
+        <svg class="toolbarIcon" viewBox="0 0 16 16" fill="currentColor" width="16" height="16">
+          <path d="M4 1.75C4 .784 4.784 0 5.75 0h5.586c.464 0 .909.184 1.237.513l2.914 2.914c.329.328.513.773.513 1.237v8.586A1.75 1.75 0 0 1 14.25 15h-9a.75.75 0 0 1 0-1.5h9a.25.25 0 0 0 .25-.25V6h-2.75A1.75 1.75 0 0 1 10 4.25V1.5H5.75a.25.25 0 0 0-.25.25v2.5a.75.75 0 0 1-1.5 0v-2.5Zm7.5-.188V4.25c0 .138.112.25.25.25h2.688l-2.938-2.938ZM5.72 6.72a.75.75 0 0 0 0 1.06l1.47 1.47-1.47 1.47a.75.75 0 1 0 1.06 1.06l2-2a.75.75 0 0 0 0-1.06l-2-2a.75.75 0 0 0-1.06 0ZM3.28 7.78a.75.75 0 0 0-1.06-1.06l-2 2a.75.75 0 0 0 0 1.06l2 2a.75.75 0 0 0 1.06-1.06L1.81 9.25l1.47-1.47Z"/>
+        </svg>
+        <span id="fileNameDisplay" class="fileName">untitled.js</span>
+        <span id="modifiedBadge" class="badge badgeSecondary hide">Modified</span>
       </div>
-      
-      <div id="modifiedIndicator" class="modifiedDot hide"></div>
-      
-      <!-- Hidden dropdown moved from old location, triggered by extension button -->
-      <div id="languageDropdown" class="dropdown hide">
-        <div class="dropdownContent" id="languageList"></div>
+      <div class="toolbarSeparator"></div>
+      <div class="languageSelector">
+        <button id="languageBtn" class="toolbarButton languageBtn">
+          ${AppAssets.icons.code("")}
+          <span id="languageLabel">JavaScript</span>
+          ${AppAssets.icons.chevron()}
+        </button>
+        <div id="languageDropdown" class="dropdown hide">
+          <div class="dropdownContent" id="languageList"></div>
+        </div>
       </div>
     </div>
-
     <div class="toolbarRight">
       <div class="dropdown-trigger">
         <button id="editSaveButton" class="trigger-button" aria-haspopup="true" aria-expanded="false">
@@ -374,120 +375,113 @@ templates: {
   
   <div class="editorCard">
   
-    <div class="editorHeader" id="stickyHeader">
+    <div class="editorHeader">
+    
+    
+     <div class="hGroup">
+        <button id="editModeBtn" class="headerButton active" title="Edit Mode">
+          ${AppAssets.icons.edit()}
+        </button>
+        <button id="viewModeBtn" class="headerButton" title="View Mode">
+          ${AppAssets.icons.view()}
+        </button>
+        <button id="themeBtn" class="headerButton" title="Toggle Theme">
+          <svg id="themeIcon" class="buttonIcon" viewBox="0 0 16 16" fill="currentColor" width="14" height="14">
+            ${AppAssets.icons.sun()}
+          </svg>
+        </button>
+     </div>
+     
+<div class="headerSeparator"></div>
+        
+     <div class="hGroup">
+        <button id="undoBtn" class="headerButton" title="Undo (Ctrl+Z)">
+          ${AppAssets.icons.undo()}
+        </button>
+        <button id="redoBtn" class="headerButton" title="Redo (Ctrl+Y)">
+          ${AppAssets.icons.redo()}
+        </button>
+     </div>
+        
+<div class="headerSeparator"></div>
+       
+       <div class="hGroup">
+        <button id="searchBtn" class="headerButton" title="Search (Ctrl+F)">
+          ${AppAssets.icons.search()}  Search Code
+        </button>
+       </div>
+        
+        
+        <div class="hGroup">
+        <button id="wrapBtn" class="headerButton" title="Toggle Word Wrap">
+          ${AppAssets.icons.wrap()}
+        </button>
+        
+        <button id="fullscreenBtn" class="headerButton" title="Toggle Fullscreen">
+          <svg id="fullscreenIcon" class="buttonIcon" viewBox="0 0 16 16" fill="currentColor" width="14" height="14">
+            ${AppAssets.icons.fullscreen()}
+          </svg>
+        </button>
+        </div>
+        
+<div class="headerSeparator"></div>
+        
+        <div class="hGroup">
+        <button id="copyBtn" class="headerButton" title="Copy Code">
+          ${AppAssets.icons.copy()}
+        </button>
+        <button id="downloadBtn" class="headerButton" title="Download File">
+          ${AppAssets.icons.download()}
+        </button>
+        <button id="uploadBtn" class="headerButton" title="Upload File">
+          ${AppAssets.icons.upload()}
+        </button>
+        </div>
+
+        
+        
+      <div class="hGroup">
+        <div class="fontSizeControl">
+          <button id="fontDecreaseBtn" class="fontBtn" title="Decrease Font Size">
+            ${AppAssets.icons.minus()}
+          </button>
+          <span id="fontSizeLabel" class="fontSizeLabel">14px</span>
+          <button id="fontIncreaseBtn" class="fontBtn" title="Increase Font Size">
+            ${AppAssets.icons.plus()}
+          </button>
+        </div>
+      </div>
       
-      <div class="headerScrollWrapper">
-        <button class="headerScrollBtn left disabled" id="headerScrollLeft">
-          ${AppAssets.icons.chevronLeft()}
-        </button>
         
-        <div class="headerScrollContainer" id="headerScrollContainer">
-          <div class="hGroup">
-            <button id="editModeBtn" class="headerButton active" title="Edit Mode">
-              ${AppAssets.icons.edit()}
-            </button>
-            <button id="viewModeBtn" class="headerButton" title="View Mode">
-              ${AppAssets.icons.view()}
-            </button>
-            <button id="themeBtn" class="headerButton" title="Toggle Theme">
-              <svg id="themeIcon" class="buttonIcon" viewBox="0 0 16 16" fill="currentColor" width="14" height="14">
-                ${AppAssets.icons.sun()}
-              </svg>
-            </button>
-          </div>
-          
-          <div class="headerSeparator"></div>
-            
-          <div class="hGroup">
-            <button id="undoBtn" class="headerButton" title="Undo (Ctrl+Z)">
-              ${AppAssets.icons.undo()}
-            </button>
-            <button id="redoBtn" class="headerButton" title="Redo (Ctrl+Y)">
-              ${AppAssets.icons.redo()}
-            </button>
-          </div>
-            
-          <div class="headerSeparator"></div>
-          
-          <div class="hGroup">
-            <button id="searchBtn" class="headerButton" title="Search (Ctrl+F)">
-              ${AppAssets.icons.search()}
-            </button>
-          </div>
-            
-          <div class="hGroup">
-            <button id="wrapBtn" class="headerButton" title="Toggle Word Wrap">
-              ${AppAssets.icons.wrap()}
-            </button>
-            
-            <button id="fullscreenBtn" class="headerButton" title="Toggle Fullscreen">
-              <svg id="fullscreenIcon" class="buttonIcon" viewBox="0 0 16 16" fill="currentColor" width="14" height="14">
-                ${AppAssets.icons.fullscreen()}
-              </svg>
-            </button>
-          </div>
-            
-          <div class="headerSeparator"></div>
-            
-          <div class="hGroup">
-            <button id="copyBtn" class="headerButton" title="Copy Code">
-              ${AppAssets.icons.copy()}
-            </button>
-            <button id="downloadBtn" class="headerButton" title="Download File">
-              ${AppAssets.icons.download()}
-            </button>
-            <button id="uploadBtn" class="headerButton" title="Upload File">
-              ${AppAssets.icons.upload()}
-            </button>
-          </div>
-
-          <div class="hGroup">
-            <div class="fontSizeControl">
-              <button id="fontDecreaseBtn" class="fontBtn" title="Decrease Font Size">
-                ${AppAssets.icons.minus()}
-              </button>
-              <span id="fontSizeLabel" class="fontSizeLabel">14px</span>
-              <button id="fontIncreaseBtn" class="fontBtn" title="Increase Font Size">
-                ${AppAssets.icons.plus()}
-              </button>
-            </div>
-          </div>
-          
-          <!-- More Menu -->
-          <div class="hGroup">
-            <button id="moreOptionsBtn" class="headerButton" title="More Options">
-              ${AppAssets.icons.more()}
-            </button>
-          </div>     
-        </div>
-        
-        <button class="headerScrollBtn right" id="headerScrollRight">
-          ${AppAssets.icons.chevronRight()}
+  <!-- More Menu -->
+  <div class="hGroup">
+        <button id="moreOptionsBtn" class="headerButton" title="More Options">
+          ${AppAssets.icons.more()}
         </button>
-      </div>
-
-      <div id="moreOptionsDropdown" class="dropdown2 hide">
-        <div class="dropdownContent">
-          <button class="dropdownItem" id="formatBtn">
-            ${AppAssets.icons.format()}
-            Format Document
-          </button>
-          <button class="dropdownItem" id="foldAllBtn">
-            ${AppAssets.icons.fold()}
-            Fold All
-          </button>
-          <button class="dropdownItem" id="unfoldAllBtn">
-            ${AppAssets.icons.unfold()}
-            Unfold All
-          </button>
-          <div class="dropdownDivider"></div>
-          <button class="dropdownItem" id="showInvisiblesBtn">
-            ${AppAssets.icons.invisibles()}
-            Show Invisibles
-          </button>
+   </div>     
+        <div id="moreOptionsDropdown" class="dropdown2 hide">
+          <div class="dropdownContent">
+            <button class="dropdownItem" id="formatBtn">
+              ${AppAssets.icons.format()}
+              Format Document
+            </button>
+            <button class="dropdownItem" id="foldAllBtn">
+              ${AppAssets.icons.fold()}
+              Fold All
+            </button>
+            <button class="dropdownItem" id="unfoldAllBtn">
+              ${AppAssets.icons.unfold()}
+              Unfold All
+            </button>
+            <div class="dropdownDivider"></div>
+            <button class="dropdownItem" id="showInvisiblesBtn">
+              ${AppAssets.icons.invisibles()}
+              Show Invisibles
+            </button>
+          </div>
         </div>
-      </div>
-      <!-- More Menu E N D -->
+  <!-- More Menu E N D -->
+      
       
     </div><!-- editorHeader END -->
     
