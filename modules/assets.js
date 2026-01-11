@@ -337,6 +337,7 @@ templates: {
 
   editor: () => `
 
+<div class="headerWrapper">
   <div class="editorHeader">
     <div class="hGroup">
       <button id="editModeBtn" class="headerButton active" title="Edit Mode">${AppAssets.icons.edit()}</button>
@@ -405,7 +406,7 @@ templates: {
       <button id="moreOptionsBtn" class="headerButton" title="More Options">${AppAssets.icons.more()}</button>
     </div>
   </div>
-  
+</div><!-- Wrapper -->  
   
 
 
