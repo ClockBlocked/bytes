@@ -167,6 +167,7 @@ class CodeViewEditor {
     this.isInitialized = false;
     this.searchActive = false;
     this.marks = []; // Store search marks
+    this.timer = null;
     
     this.originalContent = "";
     this.languages = SUPPORTED_LANGUAGES;
