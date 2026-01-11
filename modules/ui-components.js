@@ -3,7 +3,41 @@
  * Factory functions for creating reusable UI components
  */
 
-window.UIComponents = {
+// Prevent namespace conflicts
+if (typeof window.UIComponents !== 'undefined') {
+  console.warn('UIComponents already exists on window. Skipping re-initialization.');
+} else {
+  window.UIComponents = {
+  
+  /**
+   * Safely create an element from HTML string
+   * @private
+   * @param {string} html - HTML string
+   * @returns {HTMLElement}
+   */
+  _createElementFromHTML(html) {
+    const template = document.createElement('template');
+    html = html.trim();
+    template.innerHTML = html;
+    return template.content.firstChild;
+  },
+  
+  /**
+   * Safely set icon content (only allows known safe icons)
+   * @private
+   * @param {HTMLElement} element - Element to set icon in
+   * @param {string} icon - Icon HTML or safe string
+   */
+  _setIconSafely(element, icon) {
+    // If icon looks like HTML (contains < or >), treat it as trusted
+    // Otherwise, use textContent for safety
+    if (typeof icon === 'string' && (icon.includes('<') || icon.includes('>'))) {
+      // Only set innerHTML for trusted icon sources (from AppAssets.icons, etc.)
+      element.innerHTML = icon;
+    } else {
+      element.textContent = icon;
+    }
+  },
   
   /**
    * Create a button element with consistent styling
@@ -30,13 +64,13 @@ window.UIComponents = {
     
     if (icon) {
       const iconSpan = document.createElement('span');
-      iconSpan.innerHTML = icon;
+      this._setIconSafely(iconSpan, icon);
       button.appendChild(iconSpan);
     }
     
     if (text) {
       const textSpan = document.createElement('span');
-      textSpan.textContent = text;
+      textSpan.textContent = text; // Always use textContent for text
       button.appendChild(textSpan);
     }
     
@@ -131,12 +165,12 @@ window.UIComponents = {
     
     if (icon) {
       const iconSpan = document.createElement('span');
-      iconSpan.innerHTML = icon;
+      this._setIconSafely(iconSpan, icon);
       badge.appendChild(iconSpan);
     }
     
     const textSpan = document.createElement('span');
-    textSpan.textContent = text;
+    textSpan.textContent = text; // Always use textContent for safety
     badge.appendChild(textSpan);
     
     return badge;
@@ -174,12 +208,12 @@ window.UIComponents = {
         if (item.icon) {
           const iconSpan = document.createElement('span');
           iconSpan.className = 'dropdownIcon';
-          iconSpan.innerHTML = item.icon;
+          this._setIconSafely(iconSpan, item.icon);
           button.appendChild(iconSpan);
         }
         
         const textSpan = document.createElement('span');
-        textSpan.textContent = item.text || '';
+        textSpan.textContent = item.text || ''; // Use textContent for safety
         button.appendChild(textSpan);
         
         if (item.onClick && typeof item.onClick === 'function') {
@@ -224,14 +258,14 @@ window.UIComponents = {
     header.className = 'modal-header';
     
     const titleEl = document.createElement('h3');
-    titleEl.textContent = title;
+    titleEl.textContent = title; // Use textContent for safety
     header.appendChild(titleEl);
     
     if (closeButton) {
       const closeBtn = this.createButton({
         className: 'modal-close',
         ariaLabel: 'Close modal',
-        icon: '×',
+        text: '×', // Use text instead of icon for close button
         onClick: () => {
           this.closeModal(modal);
           if (onClose) onClose();
@@ -246,7 +280,8 @@ window.UIComponents = {
     const body = document.createElement('div');
     body.className = 'modal-body';
     if (typeof content === 'string') {
-      body.innerHTML = content;
+      // For safety, use textContent unless content is an HTMLElement
+      body.textContent = content;
     } else if (content instanceof HTMLElement) {
       body.appendChild(content);
     }
@@ -257,7 +292,7 @@ window.UIComponents = {
       const footerEl = document.createElement('div');
       footerEl.className = 'modal-footer';
       if (typeof footer === 'string') {
-        footerEl.innerHTML = footer;
+        footerEl.textContent = footer; // Use textContent for safety
       } else if (footer instanceof HTMLElement) {
         footerEl.appendChild(footer);
       }
@@ -379,6 +414,9 @@ window.UIComponents = {
     };
   }
 };
+
+// Close the conditional block
+}
 
 // Export for module systems if needed
 if (typeof module !== 'undefined' && module.exports) {

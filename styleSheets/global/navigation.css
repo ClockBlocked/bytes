@@ -5,8 +5,11 @@
 
 /* CSS Custom Properties */
 :root {
-  --navbar-height: 3.75rem; /* 60px */
-  --navbar-height-mobile: 3.5rem; /* 56px */
+  /* Note: These rem values assume root font-size of 16px (browser default)
+     3.75rem = 60px, 3.5rem = 56px
+     If root font-size changes, these values will scale proportionally */
+  --navbar-height: 3.75rem; /* 60px at 16px base */
+  --navbar-height-mobile: 3.5rem; /* 56px at 16px base */
   --breadcrumb-offset: 3.75rem;
   --breadcrumb-offset-mobile: 3.5rem;
 }
