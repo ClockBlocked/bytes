@@ -488,7 +488,6 @@ templates: {
   <!-- More Menu E N D -->
       
       
-    </div><!-- editorHeader END -->
     
     
     <div id="editorBody" class="editorBody">
