@@ -1172,10 +1172,10 @@ class CodeViewEditor {
      // Detect scroll on main window
      window.addEventListener('scroll', () => {
          const rect = stickyHeader.getBoundingClientRect();
-         // Navbar height is usually around 60-64px, breadcrumbs just below
+         // Navbar height is 60px (3.75rem), breadcrumbs just below
          // When sticky header hits the top area (where breadcrumbs are)
          
-         const triggerPoint = 70; // approx navbar height + padding
+         const triggerPoint = 60; // navbar height in px (matches CSS --navbar-height)
          
          if (rect.top <= triggerPoint) {
              // We are in sticky mode

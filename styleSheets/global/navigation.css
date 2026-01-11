@@ -3,6 +3,14 @@
  * Sticky navigation bar and breadcrumb bar styles
  */
 
+/* CSS Custom Properties */
+:root {
+  --navbar-height: 3.75rem; /* 60px */
+  --navbar-height-mobile: 3.5rem; /* 56px */
+  --breadcrumb-offset: 3.75rem;
+  --breadcrumb-offset-mobile: 3.5rem;
+}
+
 /* ===================================
    Main Navbar
    =================================== */
@@ -10,7 +18,7 @@
   position: sticky;
   top: 0;
   z-index: 100;
-  height: 60px;
+  height: var(--navbar-height);
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
   box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
@@ -22,12 +30,12 @@
    =================================== */
 .breadCrumbsWrapper {
   position: sticky;
-  top: 3.75rem;
+  top: var(--breadcrumb-offset);
   z-index: 90;
   width: 100%;
   
   /* Background & Backdrop */
-  background-color: rgba(var(--overlay-rgb, 45 51 59), 0.85);
+  background-color: rgba(45, 51, 59, 0.85);
   backdrop-filter: blur(8px) saturate(180%);
   -webkit-backdrop-filter: blur(8px) saturate(180%);
   
@@ -117,7 +125,7 @@
    =================================== */
 .pre-editor-context {
   position: relative;
-  height: 3.75rem;
+  height: var(--navbar-height);
   background-color: transparent;
   transition: height 0.2s ease;
 }
@@ -127,11 +135,11 @@
    =================================== */
 @media (max-width: 768px) {
   .navbar {
-    height: 56px;
+    height: var(--navbar-height-mobile);
   }
   
   .breadCrumbsWrapper {
-    top: 3.5rem;
+    top: var(--breadcrumb-offset-mobile);
     padding: 0.5rem 0.75rem;
     border-bottom-left-radius: 0.5rem;
     border-bottom-right-radius: 0.5rem;
@@ -143,7 +151,7 @@
   }
   
   .pre-editor-context {
-    height: 3.5rem;
+    height: var(--navbar-height-mobile);
   }
 }
 

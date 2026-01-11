@@ -337,7 +337,7 @@ templates: {
 
   editor: () => `
 
-<div class="headerWrapper">
+<div class="headerWrapper" id="stickyHeader">
   <div class="editorHeader">
     <div class="hGroup">
       <button id="editModeBtn" class="headerButton active" title="Edit Mode">${AppAssets.icons.edit()}</button>
