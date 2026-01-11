@@ -4347,3 +4347,192 @@ aside:hover .sidebar-title {
 .editorContainer[data-fullscreen="true"]:-moz-full-screen .editorCard {
   background: var(--editorCardBg);
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* Existing font-face and root variables remain unchanged */
+
+/* ... (previous styles) ... */
+
+/* New styles for Filename Input Redesign */
+
+.fileNameInputWrapper {
+  display: flex;
+  align-items: center;
+  position: relative;
+  background-color: var(--canvasSubtle);
+  border: 0.0625rem solid var(--borderDefault);
+  border-radius: var(--radiusMd);
+  padding: 0.125rem;
+  transition: border-color 0.2s ease, background-color 0.2s ease;
+  min-width: 250px;
+}
+
+.fileNameInputWrapper:focus-within {
+  border-color: var(--accentFg);
+  background-color: var(--canvasDefault);
+}
+
+.fileIconWrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding-left: 0.5rem;
+  padding-right: 0.25rem;
+  color: var(--fgDefault);
+  opacity: 0.3; /* Subtle look as requested */
+}
+
+.fileNameInput {
+  flex: 1;
+  background: transparent;
+  border: none;
+  color: var(--fgDefault);
+  font-family: var(--fontMono);
+  font-size: var(--textSm);
+  padding: 0.25rem 0.5rem;
+  opacity: 1;
+  outline: none;
+  width: 100%;
+}
+
+.fileNameExtension {
+  background: transparent;
+  border: 1px dashed var(--borderSubtle); /* Dotted/Dashed border */
+  border-radius: var(--radiusSm);
+  color: var(--fgMuted);
+  font-family: var(--fontMono);
+  font-size: var(--textSm);
+  padding: 0.125rem 0.5rem;
+  margin-right: 0.25rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.fileNameExtension:hover {
+  background-color: var(--btnSecondaryHover);
+  color: var(--fgDefault);
+  border-color: var(--accentFg);
+}
+
+/* Modified Dot Indicator */
+.modifiedDot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: #00e5ff; /* Neon blue */
+  box-shadow: 0 0 5px rgba(0, 229, 255, 0.6);
+  margin-left: 0.75rem;
+  flex-shrink: 0;
+}
+
+.modifiedDot.hide {
+  display: none;
+}
+
+/* Header Scroll Styles */
+.editorHeader {
+  position: sticky;
+  top: 64px; /* Sticks below navbar */
+  z-index: 45; /* Above editor content, below modal */
+  transition: box-shadow 0.2s ease;
+  background-color: var(--editorHeaderBg);
+}
+
+.headerScrollWrapper {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  position: relative;
+}
+
+.headerScrollContainer {
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+  padding: 0 0.5rem;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scrollbar-width: none; /* Hide scrollbar Firefox */
+  -ms-overflow-style: none; /* Hide scrollbar IE/Edge */
+  white-space: nowrap;
+  flex: 1;
+  scroll-behavior: smooth;
+}
+
+.headerScrollContainer::-webkit-scrollbar {
+  display: none; /* Hide scrollbar Chrome/Safari */
+}
+
+.headerScrollBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 32px;
+  background-color: var(--editorHeaderBg);
+  color: var(--fgDefault);
+  border: none;
+  cursor: pointer;
+  z-index: 2;
+  flex-shrink: 0;
+  transition: opacity 0.2s ease, color 0.2s ease;
+}
+
+.headerScrollBtn:hover {
+  color: var(--accentFg);
+}
+
+.headerScrollBtn.disabled {
+  opacity: 0.3;
+  pointer-events: none;
+}
+
+.headerScrollBtn.left {
+  box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+}
+
+.headerScrollBtn.right {
+  box-shadow: -2px 0 5px rgba(0,0,0,0.1);
+}
+
+/* Search Highlighting */
+.search-highlight {
+  background-color: rgba(255, 255, 0, 0.4); /* Yellow transparency */
+}
+
+/* Fix sticky header when breadcrumbs hide */
+.editorHeader {
+  /* Ensure it has a background when sticky to cover content */
+  background-color: var(--editorHeaderBg); 
+  border-bottom: 1px solid var(--borderDefault);
+}
+
+/* Update Header Separator to act as visual divider */
+.headerSeparator {
+  width: 1px;
+  height: 20px;
+  background-color: var(--borderMuted);
+  margin: 0 4px;
+  flex-shrink: 0;
+}
