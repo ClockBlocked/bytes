@@ -179,7 +179,7 @@ class CodeViewEditor {
     
     // State management
     this.state = {
-      fontSize: 14,
+      fontSize: 10,
       wrapLines: false,
       showInvisibles: false,
       highlightActiveLine: true,
