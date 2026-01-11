@@ -1,5 +1,5 @@
 /**
- * GitHubStorageManager - Uses GitHub API to store files directly in a GitHub repository
+ * IndexedDBStorageManager - Uses IndexedDB for local file storage
  * 
  * CREATED BY
  * William Hanson
@@ -7,523 +7,516 @@
  * m.me/Chevrolay
  */
 
-const GITHUB_API_BASE = 'https://api.github.com';
-
-// GitHub API configuration - set these to your repository details
-const GITHUB_CONFIG = {
-  owner: 'ClockBlocked',      // GitHub username or organization
-  repo: 'bytes',              // Repository name
-  branch: 'main',             // Branch to commit to
-  storagePath: 'user-files'   // Folder in repo where files are stored
-};
-
-// Cache for repositories and files
-const storageCache = {
-  repositories: [],
-  repositoryFiles: {},
-  repositoryData: {},
-  initialized: false,
-  token: null
-};
-
-// Get stored GitHub token
-function getStoredToken() {
-  try {
-    return localStorage.getItem('github_clone_token');
-  } catch (e) {
-    console.warn('Failed to read token from localStorage:', e);
-    return null;
-  }
-}
-
-// Store GitHub token
-function storeToken(token) {
-  try {
-    localStorage.setItem('github_clone_token', token);
-  } catch (e) {
-    console.warn('Failed to store token in localStorage:', e);
-  }
-}
-
-// Clear stored token
-function clearToken() {
-  storageCache.token = null;
-  try {
-    localStorage.removeItem('github_clone_token');
-  } catch (e) {
-    console.warn('Failed to clear token from localStorage:', e);
-  }
-}
-
-// Show token prompt modal
-async function showTokenPromptModal() {
-  return new Promise((resolve) => {
-    const modal = document.createElement('div');
-    modal.id = 'github-token-modal';
-    modal.style.cssText = `
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0,0,0,0.7);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      z-index: 10000;
-    `;
-
-    modal.innerHTML = `
-      <div style="
-        background: #22272e;
-        padding: 30px;
-        border-radius: 10px;
-        width: 90%;
-        max-width: 500px;
-        box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-        border: 1px solid #444c56;
-        color: #adbac7;
-      ">
-        <h2 style="margin-top: 0; color: #adbac7;">GitHub Authentication Required</h2>
-        <p style="color: #768390; margin-bottom: 20px;">
-          This application needs a GitHub Personal Access Token to save files to your repository.
-        </p>
-        <div style="background: #2d333b; padding: 15px; border-radius: 5px; margin-bottom: 20px; border: 1px solid #444c56;">
-          <h4 style="margin-top: 0; color: #adbac7;">How to get a token:</h4>
-          <ol style="margin: 10px 0; padding-left: 20px; color: #768390;">
-            <li>Go to <a href="https://github.com/settings/tokens" target="_blank" style="color: #539bf5;">GitHub Token Settings</a></li>
-            <li>Click "Generate new token (classic)"</li>
-            <li>Select these scopes: <code style="background: #1c2128; padding: 2px 6px; border-radius: 3px;">repo</code></li>
-            <li>Click "Generate token" and copy it</li>
-          </ol>
-        </div>
-        <div style="margin-bottom: 20px;">
-          <label style="display: block; margin-bottom: 8px; font-weight: bold; color: #adbac7;">
-            Your GitHub Token:
-          </label>
-          <input type="password"
-                 id="github-token-input"
-                 placeholder="ghp_xxxxxxxxxxxxxxxxxxxx"
-                 style="
-                   width: 100%;
-                   padding: 10px;
-                   border: 2px solid #444c56;
-                   border-radius: 5px;
-                   font-family: monospace;
-                   box-sizing: border-box;
-                   background: #1c2128;
-                   color: #adbac7;
-                 ">
-          <div style="font-size: 12px; color: #636e7b; margin-top: 5px;">
-            Your token is stored locally in your browser.
-          </div>
-        </div>
-        <div style="display: flex; justify-content: flex-end; gap: 10px;">
-          <button id="token-cancel-btn" style="
-            padding: 10px 20px;
-            background: #373e47;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            color: #adbac7;
-          ">Cancel</button>
-          <button id="token-submit-btn" style="
-            padding: 10px 20px;
-            background: #347d39;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-weight: bold;
-          ">Save Token</button>
-        </div>
-      </div>
-    `;
-
-    document.body.appendChild(modal);
-
-    const input = modal.querySelector('#github-token-input');
-    const cancelBtn = modal.querySelector('#token-cancel-btn');
-    const submitBtn = modal.querySelector('#token-submit-btn');
-
-    input.focus();
-
-    const cleanup = () => {
-      if (modal.parentNode) {
-        document.body.removeChild(modal);
-      }
-    };
-
-    const submit = () => {
-      const token = input.value.trim();
-      if (token) {
-        resolve(token);
-        cleanup();
-      } else {
-        input.style.borderColor = '#c93c37';
-        input.focus();
-      }
-    };
-
-    cancelBtn.onclick = () => {
-      resolve(null);
-      cleanup();
-    };
-
-    submitBtn.onclick = submit;
-
-    input.onkeydown = (e) => {
-      if (e.key === 'Enter') {
-        submit();
-      } else if (e.key === 'Escape') {
-        resolve(null);
-        cleanup();
-      }
-    };
-  });
-}
-
-// Prompt for token if not available
-async function promptForToken() {
-  const storedToken = getStoredToken();
-  if (storedToken) {
-    storageCache.token = storedToken;
-    return storedToken;
-  }
-
-  const token = await showTokenPromptModal();
-  if (token) {
-    storageCache.token = token;
-    storeToken(token);
-    return token;
-  }
-  return null;
-}
-
-// Make GitHub API request
-async function githubRequest(endpoint, options = {}) {
-  if (!storageCache.token) {
-    await promptForToken();
-  }
-  
-  if (!storageCache.token) {
-    throw new Error('GitHub token is required');
-  }
-
-  const url = `${GITHUB_API_BASE}${endpoint}`;
-  const config = {
-    method: options.method || 'GET',
-    headers: {
-      'Authorization': `Bearer ${storageCache.token}`,
-      'Accept': 'application/vnd.github+json',
-      'Content-Type': 'application/json',
-      ...options.headers
-    }
-  };
-
-  if (options.body && config.method !== 'GET') {
-    config.body = JSON.stringify(options.body);
-  }
-
-  try {
-    const response = await fetch(url, config);
+const IndexedDBStorageManager = {
+    DB_NAME: 'code-editor-storage',
+    DB_VERSION: 1,
+    STORE_REPOSITORIES: 'repositories',
+    STORE_FILES: 'files',
+    STORE_FILE_CONTENTS: 'file_contents',
     
-    if (response.status === 401) {
-      clearToken();
-      throw new Error('Invalid GitHub token. Please try again.');
-    }
+    db: null,
     
-    const contentType = response.headers.get('content-type');
-    let data;
-    
-    if (contentType && contentType.includes('application/json')) {
-      data = await response.json();
-    } else {
-      data = await response.text();
-    }
-    
-    if (!response.ok) {
-      throw new Error(data.message || 'GitHub API request failed');
-    }
-    
-    return data;
-  } catch (error) {
-    console.error('GitHub API request failed:', error);
-    throw error;
-  }
-}
-
-// Initialize storage
-async function initializeStorage() {
-  if (storageCache.initialized) return;
-  
-  // Load token from storage
-  storageCache.token = getStoredToken();
-  
-  // Create a default local repository entry
-  storageCache.repositories = [{
-    id: 'github-repo',
-    name: GITHUB_CONFIG.repo,
-    description: 'Files stored in GitHub repository',
-    visibility: 'public',
-    created: Date.now(),
-    lastModified: Date.now(),
-    defaultBranch: GITHUB_CONFIG.branch,
-    branches: [GITHUB_CONFIG.branch]
-  }];
-  
-  storageCache.initialized = true;
-}
-
-// Initialize storage and store the promise for awaiting
-let initPromise = null;
-
-// Ensure initialization is complete before using storage
-async function ensureInitialized() {
-  if (storageCache.initialized) return;
-  if (!initPromise) {
-    initPromise = initializeStorage();
-  }
-  await initPromise;
-}
-
-// Call initialize on load
-initPromise = initializeStorage();
-
-const LocalStorageManager = {
-  // Get all repositories from cache
-  getRepositories: function() {
-    return storageCache.repositories;
-  },
-
-  // Save repositories (updates cache)
-  saveRepositories: function(repositories) {
-    storageCache.repositories = repositories;
-  },
-
-  // Get a single repository by name
-  getRepository: function(repoName) {
-    const repos = this.getRepositories();
-    return repos.find(r => r.name === repoName);
-  },
-
-  // Save/update a repository (not used for GitHub - repos managed externally)
-  saveRepository: async function(repo) {
-    // For GitHub integration, we just update the local cache
-    const existingIndex = storageCache.repositories.findIndex(r => r.name === repo.name);
-    if (existingIndex !== -1) {
-      storageCache.repositories[existingIndex] = { ...storageCache.repositories[existingIndex], ...repo };
-    } else {
-      storageCache.repositories.push(repo);
-    }
-  },
-
-  // Delete a repository (not supported for GitHub - repos managed externally)
-  deleteRepository: async function(repoName) {
-    storageCache.repositories = storageCache.repositories.filter(r => r.name !== repoName);
-    delete storageCache.repositoryFiles[repoName];
-    delete storageCache.repositoryData[repoName];
-  },
-
-  // Get repository files from cache
-  getRepositoryFiles: function(repoName) {
-    return storageCache.repositoryFiles[repoName] || {};
-  },
-
-  // Save repository files to cache
-  saveRepositoryFiles: function(repoName, files) {
-    storageCache.repositoryFiles[repoName] = files;
-  },
-
-  // Get a specific file from cache
-  getFile: function(repoName, filePath) {
-    const repoData = this.getRepositoryFiles(repoName);
-    return repoData[filePath] || null;
-  },
-
-  // Save a file to GitHub repository
-  saveFile: async function(repoName, filePath, fileData) {
-    try {
-      const fullPath = `${GITHUB_CONFIG.storagePath}/${filePath}`;
-      // Use TextEncoder for proper Unicode handling
-      const encoder = new TextEncoder();
-      const uint8Array = encoder.encode(fileData.content || '');
-      const content = btoa(String.fromCharCode.apply(null, uint8Array));
-      
-      // Check if file exists to get SHA for update
-      let sha = null;
-      try {
-        const existingFile = await githubRequest(
-          `/repos/${GITHUB_CONFIG.owner}/${GITHUB_CONFIG.repo}/contents/${fullPath}?ref=${GITHUB_CONFIG.branch}`
-        );
-        sha = existingFile.sha;
-      } catch (e) {
-        // File doesn't exist, will create new
-      }
-      
-      const body = {
-        message: fileData.lastCommit || `Create/Update ${filePath}`,
-        content: content,
-        branch: GITHUB_CONFIG.branch
-      };
-      
-      if (sha) {
-        body.sha = sha;
-      }
-      
-      await githubRequest(
-        `/repos/${GITHUB_CONFIG.owner}/${GITHUB_CONFIG.repo}/contents/${fullPath}`,
-        {
-          method: 'PUT',
-          body: body
-        }
-      );
-      
-      // Update local cache
-      const repoData = this.getRepositoryFiles(repoName);
-      repoData[filePath] = fileData;
-      this.saveRepositoryFiles(repoName, repoData);
-      
-    } catch (error) {
-      console.error('Failed to save file to GitHub:', error);
-      throw error;
-    }
-  },
-
-  // Delete a file from GitHub repository
-  deleteFile: async function(repoName, filePath) {
-    try {
-      const fullPath = `${GITHUB_CONFIG.storagePath}/${filePath}`;
-      
-      // Get file SHA (required for deletion)
-      const existingFile = await githubRequest(
-        `/repos/${GITHUB_CONFIG.owner}/${GITHUB_CONFIG.repo}/contents/${fullPath}?ref=${GITHUB_CONFIG.branch}`
-      );
-      
-      await githubRequest(
-        `/repos/${GITHUB_CONFIG.owner}/${GITHUB_CONFIG.repo}/contents/${fullPath}`,
-        {
-          method: 'DELETE',
-          body: {
-            message: `Delete ${filePath}`,
-            sha: existingFile.sha,
-            branch: GITHUB_CONFIG.branch
-          }
-        }
-      );
-      
-      // Remove from local cache
-      const repoData = this.getRepositoryFiles(repoName);
-      delete repoData[filePath];
-      this.saveRepositoryFiles(repoName, repoData);
-      
-    } catch (error) {
-      console.error('Failed to delete file from GitHub:', error);
-      throw error;
-    }
-  },
-
-  // List files from GitHub repository
-  listFiles: async function(repoName, pathPrefix = '') {
-    try {
-      const fullPath = pathPrefix 
-        ? `${GITHUB_CONFIG.storagePath}/${pathPrefix}`
-        : GITHUB_CONFIG.storagePath;
-      
-      let contents = [];
-      try {
-        contents = await githubRequest(
-          `/repos/${GITHUB_CONFIG.owner}/${GITHUB_CONFIG.repo}/contents/${fullPath}?ref=${GITHUB_CONFIG.branch}`
-        );
-      } catch (e) {
-        // Directory doesn't exist yet
-        return [];
-      }
-      
-      if (!Array.isArray(contents)) {
-        contents = [contents];
-      }
-      
-      const files = [];
-      
-      for (const item of contents) {
-        if (item.type === 'file') {
-          // Get relative path by removing storage path prefix
-          const relativePath = item.path.replace(`${GITHUB_CONFIG.storagePath}/`, '');
-          
-          files.push({
-            name: item.name,
-            type: 'file',
-            path: relativePath,
-            sha: item.sha,
-            size: item.size || 0,
-            lastModified: Date.now(),
-            lastCommit: 'GitHub file'
-          });
-          
-          // Fetch and cache file content
-          try {
-            const fileContent = await githubRequest(
-              `/repos/${GITHUB_CONFIG.owner}/${GITHUB_CONFIG.repo}/contents/${item.path}?ref=${GITHUB_CONFIG.branch}`
-            );
-            
-            let content = '';
-            if (fileContent.content) {
-              // Use TextDecoder for proper Unicode handling
-              const binaryString = atob(fileContent.content.replace(/\n/g, ''));
-              const bytes = new Uint8Array(binaryString.length);
-              for (let i = 0; i < binaryString.length; i++) {
-                bytes[i] = binaryString.charCodeAt(i);
-              }
-              const decoder = new TextDecoder();
-              content = decoder.decode(bytes);
+    // Initialize the database
+    async initialize() {
+        return new Promise((resolve, reject) => {
+            if (this.db) {
+                resolve(this.db);
+                return;
             }
             
-            const repoData = this.getRepositoryFiles(repoName);
-            repoData[relativePath] = {
-              content: content,
-              size: item.size || 0,
-              lastModified: Date.now(),
-              lastCommit: 'GitHub file',
-              category: 'General',
-              tags: []
+            const request = indexedDB.open(this.DB_NAME, this.DB_VERSION);
+            
+            request.onerror = (event) => {
+                console.error('IndexedDB initialization failed:', event.target.error);
+                reject(event.target.error);
             };
-            this.saveRepositoryFiles(repoName, repoData);
-          } catch (e) {
-            console.warn('Failed to fetch file content:', e);
-          }
-          
-        } else if (item.type === 'dir') {
-          files.push({
-            name: item.name,
-            type: 'folder',
-            path: item.path.replace(`${GITHUB_CONFIG.storagePath}/`, '') + '/',
-            lastModified: Date.now(),
-            lastCommit: 'Folder'
-          });
+            
+            request.onsuccess = (event) => {
+                this.db = event.target.result;
+                console.log('IndexedDB initialized successfully');
+                resolve(this.db);
+            };
+            
+            request.onupgradeneeded = (event) => {
+                const db = event.target.result;
+                
+                // Create repositories store
+                if (!db.objectStoreNames.contains(this.STORE_REPOSITORIES)) {
+                    const repoStore = db.createObjectStore(this.STORE_REPOSITORIES, { keyPath: 'id' });
+                    repoStore.createIndex('name', 'name', { unique: true });
+                    repoStore.createIndex('created', 'created');
+                }
+                
+                // Create files metadata store
+                if (!db.objectStoreNames.contains(this.STORE_FILES)) {
+                    const fileStore = db.createObjectStore(this.STORE_FILES, { keyPath: ['repoId', 'path'] });
+                    fileStore.createIndex('repoId', 'repoId');
+                    fileStore.createIndex('path', 'path');
+                    fileStore.createIndex('lastModified', 'lastModified');
+                    fileStore.createIndex('category', 'category');
+                }
+                
+                // Create file contents store (blob storage)
+                if (!db.objectStoreNames.contains(this.STORE_FILE_CONTENTS)) {
+                    const contentStore = db.createObjectStore(this.STORE_FILE_CONTENTS, { keyPath: ['repoId', 'path'] });
+                    contentStore.createIndex('repoId', 'repoId');
+                }
+                
+                console.log('IndexedDB schema created/updated');
+            };
+        });
+    },
+    
+    // Helper to ensure DB is initialized
+    async ensureInitialized() {
+        if (!this.db) {
+            await this.initialize();
         }
-      }
-      
-      return files.sort((a, b) => {
-        if (a.type !== b.type) {
-          return a.type === 'folder' ? -1 : 1;
+    },
+    
+    // Helper method for transactions
+    async transaction(storeNames, mode) {
+        await this.ensureInitialized();
+        const transaction = this.db.transaction(storeNames, mode);
+        return {
+            getStore: (storeName) => transaction.objectStore(storeName),
+            complete: new Promise((resolve, reject) => {
+                transaction.oncomplete = () => resolve();
+                transaction.onerror = (event) => reject(event.target.error);
+            })
+        };
+    },
+    
+    // ========== REPOSITORY METHODS ==========
+    
+    // Get all repositories
+    async getRepositories() {
+        const tx = await this.transaction([this.STORE_REPOSITORIES], 'readonly');
+        const store = tx.getStore(this.STORE_REPOSITORIES);
+        
+        return new Promise((resolve, reject) => {
+            const request = store.getAll();
+            request.onsuccess = (event) => resolve(event.target.result || []);
+            request.onerror = (event) => reject(event.target.error);
+        }).then(repos => repos.sort((a, b) => b.created - a.created));
+    },
+    
+    // Get a single repository by ID or name
+    async getRepository(idOrName) {
+        const tx = await this.transaction([this.STORE_REPOSITORIES], 'readonly');
+        const store = tx.getStore(this.STORE_REPOSITORIES);
+        
+        return new Promise((resolve, reject) => {
+            // Try by ID first
+            const request = store.get(idOrName);
+            request.onsuccess = (event) => {
+                if (event.target.result) {
+                    resolve(event.target.result);
+                } else {
+                    // Try by name
+                    const index = store.index('name');
+                    const nameRequest = index.get(idOrName);
+                    nameRequest.onsuccess = (e) => resolve(e.target.result || null);
+                    nameRequest.onerror = (e) => reject(e.target.error);
+                }
+            };
+            request.onerror = (event) => reject(event.target.error);
+        });
+    },
+    
+    // Save/update a repository
+    async saveRepository(repo) {
+        if (!repo.id) {
+            repo.id = `repo_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
         }
-        return a.name.localeCompare(b.name);
-      });
-      
-    } catch (error) {
-      console.error('Failed to list files from GitHub:', error);
-      return [];
+        if (!repo.created) {
+            repo.created = Date.now();
+        }
+        repo.lastModified = Date.now();
+        
+        const tx = await this.transaction([this.STORE_REPOSITORIES], 'readwrite');
+        const store = tx.getStore(this.STORE_REPOSITORIES);
+        
+        return new Promise((resolve, reject) => {
+            const request = store.put(repo);
+            request.onsuccess = (event) => {
+                console.log('Repository saved:', repo.name);
+                resolve(repo);
+            };
+            request.onerror = (event) => reject(event.target.error);
+        });
+    },
+    
+    // Delete a repository and all its files
+    async deleteRepository(repoId) {
+        const tx = await this.transaction([
+            this.STORE_REPOSITORIES,
+            this.STORE_FILES,
+            this.STORE_FILE_CONTENTS
+        ], 'readwrite');
+        
+        const repoStore = tx.getStore(this.STORE_REPOSITORIES);
+        const fileStore = tx.getStore(this.STORE_FILES);
+        const contentStore = tx.getStore(this.STORE_FILE_CONTENTS);
+        
+        // Delete repository
+        repoStore.delete(repoId);
+        
+        // Delete all files metadata
+        const fileIndex = fileStore.index('repoId');
+        const fileRequest = fileIndex.openCursor(IDBKeyRange.only(repoId));
+        
+        fileRequest.onsuccess = (event) => {
+            const cursor = event.target.result;
+            if (cursor) {
+                cursor.delete();
+                cursor.continue();
+            }
+        };
+        
+        // Delete all file contents
+        const contentIndex = contentStore.index('repoId');
+        const contentRequest = contentIndex.openCursor(IDBKeyRange.only(repoId));
+        
+        contentRequest.onsuccess = (event) => {
+            const cursor = event.target.result;
+            if (cursor) {
+                cursor.delete();
+                cursor.continue();
+            }
+        };
+        
+        await tx.complete;
+        console.log('Repository deleted:', repoId);
+    },
+    
+    // ========== FILE METHODS ==========
+    
+    // Get file metadata
+    async getFile(repoId, filePath) {
+        const tx = await this.transaction([this.STORE_FILES], 'readonly');
+        const store = tx.getStore(this.STORE_FILES);
+        
+        return new Promise((resolve, reject) => {
+            const request = store.get([repoId, filePath]);
+            request.onsuccess = (event) => resolve(event.target.result || null);
+            request.onerror = (event) => reject(event.target.error);
+        });
+    },
+    
+    // Get file content
+    async getFileContent(repoId, filePath) {
+        const tx = await this.transaction([this.STORE_FILE_CONTENTS], 'readonly');
+        const store = tx.getStore(this.STORE_FILE_CONTENTS);
+        
+        return new Promise((resolve, reject) => {
+            const request = store.get([repoId, filePath]);
+            request.onsuccess = (event) => {
+                const result = event.target.result;
+                if (result && result.content) {
+                    // Handle both Blob and string content
+                    if (result.content instanceof Blob) {
+                        const reader = new FileReader();
+                        reader.onload = (e) => resolve(e.target.result);
+                        reader.onerror = (e) => reject(e.target.error);
+                        reader.readAsText(result.content);
+                    } else {
+                        resolve(result.content);
+                    }
+                } else {
+                    resolve('');
+                }
+            };
+            request.onerror = (event) => reject(event.target.error);
+        });
+    },
+    
+    // Save file with metadata and content
+    async saveFile(repoId, filePath, fileData) {
+        const now = Date.now();
+        const fileMeta = {
+            repoId,
+            path: filePath,
+            name: filePath.split('/').pop(),
+            size: fileData.content ? fileData.content.length : 0,
+            type: 'file',
+            category: fileData.category || 'General',
+            tags: fileData.tags || [],
+            lastModified: now,
+            created: fileData.created || now
+        };
+        
+        const fileContent = {
+            repoId,
+            path: filePath,
+            content: fileData.content || ''
+        };
+        
+        const tx = await this.transaction([
+            this.STORE_FILES,
+            this.STORE_FILE_CONTENTS
+        ], 'readwrite');
+        
+        const fileStore = tx.getStore(this.STORE_FILES);
+        const contentStore = tx.getStore(this.STORE_FILE_CONTENTS);
+        
+        // Save metadata
+        fileStore.put(fileMeta);
+        
+        // Save content
+        contentStore.put(fileContent);
+        
+        await tx.complete;
+        console.log('File saved:', filePath);
+        
+        return fileMeta;
+    },
+    
+    // Delete a file
+    async deleteFile(repoId, filePath) {
+        const tx = await this.transaction([
+            this.STORE_FILES,
+            this.STORE_FILE_CONTENTS
+        ], 'readwrite');
+        
+        const fileStore = tx.getStore(this.STORE_FILES);
+        const contentStore = tx.getStore(this.STORE_FILE_CONTENTS);
+        
+        fileStore.delete([repoId, filePath]);
+        contentStore.delete([repoId, filePath]);
+        
+        await tx.complete;
+        console.log('File deleted:', filePath);
+    },
+    
+    // List files in a repository (with optional path prefix)
+    async listFiles(repoId, pathPrefix = '') {
+        const tx = await this.transaction([this.STORE_FILES], 'readonly');
+        const store = tx.getStore(this.STORE_FILES);
+        
+        return new Promise((resolve, reject) => {
+            const results = [];
+            const index = store.index('repoId');
+            const request = index.openCursor(IDBKeyRange.only(repoId));
+            
+            request.onsuccess = (event) => {
+                const cursor = event.target.result;
+                if (cursor) {
+                    const file = cursor.value;
+                    
+                    // Check if it matches the path prefix
+                    if (!pathPrefix || file.path.startsWith(pathPrefix)) {
+                        // Check if it's a direct child (not in subdirectory unless pathPrefix specifies it)
+                        const relativePath = pathPrefix ? 
+                            file.path.substring(pathPrefix.length) : file.path;
+                        
+                        if (!pathPrefix || 
+                            (relativePath.indexOf('/') === -1) || 
+                            (relativePath.startsWith('/') && relativePath.substring(1).indexOf('/') === -1)) {
+                            
+                            results.push({
+                                ...file,
+                                type: 'file'
+                            });
+                        }
+                    }
+                    cursor.continue();
+                } else {
+                    // Sort: folders first, then by name
+                    results.sort((a, b) => {
+                        if (a.type !== b.type) {
+                            return a.type === 'folder' ? -1 : 1;
+                        }
+                        return a.name.localeCompare(b.name);
+                    });
+                    resolve(results);
+                }
+            };
+            
+            request.onerror = (event) => reject(event.target.error);
+        });
+    },
+    
+    // Search files by content or metadata
+    async searchFiles(repoId, query) {
+        const allFiles = await this.listFiles(repoId);
+        const results = [];
+        
+        for (const file of allFiles) {
+            let matches = false;
+            
+            // Search in file name
+            if (file.name.toLowerCase().includes(query.toLowerCase())) {
+                matches = true;
+            }
+            
+            // Search in content if needed
+            if (!matches && file.content) {
+                const content = await this.getFileContent(repoId, file.path);
+                if (content.toLowerCase().includes(query.toLowerCase())) {
+                    matches = true;
+                }
+            }
+            
+            if (matches) {
+                results.push(file);
+            }
+        }
+        
+        return results;
+    },
+    
+    // Get repository statistics
+    async getRepositoryStats(repoId) {
+        const [files, repo] = await Promise.all([
+            this.listFiles(repoId),
+            this.getRepository(repoId)
+        ]);
+        
+        let totalSize = 0;
+        let fileCount = 0;
+        let folderCount = 0;
+        
+        files.forEach(file => {
+            if (file.type === 'file') {
+                totalSize += file.size || 0;
+                fileCount++;
+            } else {
+                folderCount++;
+            }
+        });
+        
+        return {
+            repoName: repo ? repo.name : 'Unknown',
+            fileCount,
+            folderCount,
+            totalSize,
+            totalItems: fileCount + folderCount,
+            lastModified: repo ? repo.lastModified : null
+        };
+    },
+    
+    // Export repository data for backup
+    async exportRepository(repoId) {
+        const [repo, files] = await Promise.all([
+            this.getRepository(repoId),
+            this.listFiles(repoId)
+        ]);
+        
+        const exportData = {
+            repository: repo,
+            files: [],
+            exportDate: new Date().toISOString(),
+            version: 1
+        };
+        
+        // Get content for each file
+        for (const file of files) {
+            if (file.type === 'file') {
+                const content = await this.getFileContent(repoId, file.path);
+                exportData.files.push({
+                    metadata: file,
+                    content: content
+                });
+            }
+        }
+        
+        return exportData;
+    },
+    
+    // Import repository from backup
+    async importRepository(exportData) {
+        const repo = exportData.repository;
+        repo.id = `repo_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+        repo.created = Date.now();
+        repo.lastModified = Date.now();
+        
+        // Save repository
+        await this.saveRepository(repo);
+        
+        // Save files
+        for (const fileData of exportData.files) {
+            await this.saveFile(repo.id, fileData.metadata.path, {
+                content: fileData.content,
+                category: fileData.metadata.category,
+                tags: fileData.metadata.tags,
+                created: fileData.metadata.created
+            });
+        }
+        
+        return repo;
+    },
+    
+    // Clear all data (use with caution!)
+    async clearAllData() {
+        const tx = await this.transaction([
+            this.STORE_REPOSITORIES,
+            this.STORE_FILES,
+            this.STORE_FILE_CONTENTS
+        ], 'readwrite');
+        
+        tx.getStore(this.STORE_REPOSITORIES).clear();
+        tx.getStore(this.STORE_FILES).clear();
+        tx.getStore(this.STORE_FILE_CONTENTS).clear();
+        
+        await tx.complete;
+        console.log('All data cleared from IndexedDB');
+    },
+    
+    // Check storage usage
+    async getStorageUsage() {
+        if (!navigator.storage || !navigator.storage.estimate) {
+            return null;
+        }
+        
+        try {
+            const estimate = await navigator.storage.estimate();
+            return {
+                usage: estimate.usage,
+                quota: estimate.quota,
+                percentage: estimate.quota ? (estimate.usage / estimate.quota) * 100 : 0
+            };
+        } catch (error) {
+            console.warn('Could not estimate storage:', error);
+            return null;
+        }
+    },
+    
+    // Migration function to create default repository if none exists
+    async ensureDefaultRepository() {
+        const repos = await this.getRepositories();
+        if (repos.length === 0) {
+            const defaultRepo = {
+                id: 'default_repo',
+                name: 'My Files',
+                description: 'Default repository for your files',
+                visibility: 'private',
+                created: Date.now(),
+                lastModified: Date.now(),
+                defaultBranch: 'main',
+                branches: ['main']
+            };
+            
+            await this.saveRepository(defaultRepo);
+            console.log('Created default repository');
+            return defaultRepo;
+        }
+        return repos[0];
+    },
+    
+    // Refresh/Reinitialize
+    async refresh() {
+        await this.ensureInitialized();
+        return this.getRepositories();
     }
-  },
-  
-  // Refresh data
-  refresh: async function() {
-    storageCache.initialized = false;
-    await initializeStorage();
-    return storageCache.repositories;
-  }
 };
+
+// Auto-initialize on load
+IndexedDBStorageManager.initialize().catch(console.error);
+
+// For backward compatibility with your existing code
+const LocalStorageManager = IndexedDBStorageManager;
+
 /**
  * 
  *  C R E A T E D  B Y
