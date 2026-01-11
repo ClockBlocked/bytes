@@ -297,7 +297,7 @@ class CodeViewEditor {
     });
     
     // Cache the editor header separately (it's a class selector)
-    this.elements.editorHeader = document.querySelector('.editorHeader');
+    this.elements.coderHeader = document.querySelector('.coderHeader');
     
     this.populateLanguageDropdown();
   }.bind(this);
@@ -1185,7 +1185,7 @@ class CodeViewEditor {
      const stickyHeader = document.getElementById('stickyHeader');
      const breadcrumbs = document.getElementById('pathBreadcrumb');
      const navbar = document.querySelector('.navbar');
-     const editorHeader = this.elements.editorHeader || document.querySelector('.editorHeader');
+     const coderHeader = this.elements.coderHeader || document.querySelector('.coderHeader');
      
      if (!stickyHeader || !breadcrumbs) return;
      
@@ -1219,8 +1219,8 @@ class CodeViewEditor {
      });
      
      // Setup editor header scroll shadow indicators
-     if (editorHeader) {
-         editorHeader.addEventListener('scroll', () => {
+     if (coderHeader) {
+         coderHeader.addEventListener('scroll', () => {
              this.updateHeaderScrollShadows();
          });
          // Initial check
@@ -1230,27 +1230,27 @@ class CodeViewEditor {
   
   // Update header scroll shadows
   updateHeaderScrollShadows = function() {
-     const editorHeader = this.elements.editorHeader || document.querySelector('.editorHeader');
-     if (!editorHeader) return;
+     const coderHeader = this.elements.coderHeader || document.querySelector('.coderHeader');
+     if (!coderHeader) return;
      
-     const scrollLeft = editorHeader.scrollLeft;
-     const scrollWidth = editorHeader.scrollWidth;
-     const clientWidth = editorHeader.clientWidth;
+     const scrollLeft = coderHeader.scrollLeft;
+     const scrollWidth = coderHeader.scrollWidth;
+     const clientWidth = coderHeader.clientWidth;
      const maxScroll = scrollWidth - clientWidth;
      
      // Remove all shadow classes
-     editorHeader.classList.remove('has-scroll-left', 'has-scroll-right', 'has-scroll-both');
+     coderHeader.classList.remove('has-scroll-left', 'has-scroll-right', 'has-scroll-both');
      
      // Add appropriate shadow classes
      const hasScrollLeft = scrollLeft > 5;
      const hasScrollRight = scrollLeft < (maxScroll - 5);
      
      if (hasScrollLeft && hasScrollRight) {
-         editorHeader.classList.add('has-scroll-both');
+         coderHeader.classList.add('has-scroll-both');
      } else if (hasScrollLeft) {
-         editorHeader.classList.add('has-scroll-left');
+         coderHeader.classList.add('has-scroll-left');
      } else if (hasScrollRight) {
-         editorHeader.classList.add('has-scroll-right');
+         coderHeader.classList.add('has-scroll-right');
      }
   }.bind(this);
 
