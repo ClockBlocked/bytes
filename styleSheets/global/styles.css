@@ -1673,6 +1673,7 @@ aside:hover .sidebar-title {
 
 .editorHeader {
   position: sticky;
+  z-index: 30;
   
   align-items: center;
   justify-content: space-around;
