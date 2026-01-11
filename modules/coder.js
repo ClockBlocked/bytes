@@ -167,7 +167,6 @@ class CodeViewEditor {
     this.isInitialized = false;
     this.searchActive = false;
     this.marks = []; // Store search marks
-    this.timer = null;
     
     this.originalContent = "";
     this.languages = SUPPORTED_LANGUAGES;
@@ -689,7 +688,7 @@ class CodeViewEditor {
   }.bind(this);
   
   performSave = function(commitMessage) {
-    this.coderLoading(timer = 1500);
+    this.coderLoading(1500);
     
     setTimeout(() => {
       try {
@@ -731,7 +730,7 @@ class CodeViewEditor {
   saveChanges = function(withCommit = false) {
     if (!this.currentFile || !this.fileData) return;
     
-    this.coderLoading(timer = 1500);
+    this.coderLoading(1500);
     
     if (withCommit) {
       const commitMessage = this.elements.commitMessage?.value.trim();
@@ -756,7 +755,7 @@ class CodeViewEditor {
     const reader = new FileReader();
     reader.onload = (event) => {
       
-      this.coderLoading(timer = 3500);
+      this.coderLoading(3500);
       
       const content = event.target?.result;
       if (this.codeMirror) {
@@ -803,7 +802,7 @@ class CodeViewEditor {
   enterEditMode = function() {
     if (!this.currentFile) return;
     
-    this.coderLoading(timer = 1500);
+    this.coderLoading(1500);
     
     this.isEditing = true;
     this.elements.editModeBtn?.classList.add("active");
@@ -820,7 +819,7 @@ class CodeViewEditor {
   }.bind(this);
   exitEditMode = function() {
     
-    this.coderLoading(timer = 1500);
+    this.coderLoading(1500);
     
     this.isEditing = false;
     this.elements.editModeBtn?.classList.remove("active");
