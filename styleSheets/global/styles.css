@@ -479,7 +479,7 @@ body {
   font-size: var(--textMd);
   font-weight: var(--weightNormal);
   scroll-behavior: smooth;
-  overflow-x: hidden;
+  overflow: visible;
   height: 100%;
   scrollbar-width: none;
   -ms-overflow-style: none;
@@ -548,7 +548,7 @@ button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-
 #mainArea {
   flex: 1;
   padding: 0.35rem;
-  overflow-x: hidden;
+  overflow: visible;
   margin-left: var(--sidebarWidth);
   margin-right: var(--sidebarWidth);
   transition: margin 0.3s ease;
