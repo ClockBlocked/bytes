@@ -142,10 +142,6 @@
   background-color: var(--overlay);
   border-bottom: 1px solid var(--border);
   padding: 12px 12px;
-  margin-bottom: 20px;
-  position: sticky;
-  top: 0;
-  z-index: 20;
   transition: transform 0.3s ease-in-out;
   backdrop-filter: blur(8px);
   background-color: rgba(var(--overlay-rgb, 15 23 42), 0.8);
@@ -210,7 +206,7 @@
 .breadCrumbsWrapper {
   position: sticky;
   top: 64px; /* Height of your main navbar + any padding */
-  z-index: 40;
+  z-index: 20;
   transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   will-change: transform;
 }
