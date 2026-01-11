@@ -7,14 +7,15 @@
         { id: "router", url: "https://clockblocked.github.io/bytes/modules/router.js", category: "Primary", priority: 5, critical: true },
         { id: "pageUpdates", url: "https://clockblocked.github.io/bytes/modules/pageUpdates.js", category: "UI", priority: 6, critical: false },
         { id: "overlays", url: "https://clockblocked.github.io/bytes/modules/overlays.js", category: "UI", priority: 7, critical: false },
-        { id: "core", url: "https://clockblocked.github.io/bytes/modules/core.js", category: "Primary", priority: 8, critical: true },
-        { id: "listeners", url: "https://clockblocked.github.io/bytes/modules/listeners.js", category: "Helper", priority: 9, critical: false },
-        { id: "search", url: "https://clockblocked.github.io/bytes/modules/search.js", category: "Feature", priority: 10, critical: false },
-        { id: "fileUpload", url: "https://clockblocked.github.io/bytes/modules/fileUpload.js", category: "Feature", priority: 11, critical: false },
-        { id: "importExport", url: "https://clockblocked.github.io/bytes/modules/importExport.js", category: "Feature", priority: 12, critical: false },
-        { id: "fileMenu", url: "https://clockblocked.github.io/bytes/modules/fileMenu.js", category: "UI", priority: 13, critical: false },
-        { id: "assets", url: "https://clockblocked.github.io/bytes/modules/assets.js", category: "UI", priority: 14, critical: false },
-        { id: "coder", url: "https://clockblocked.github.io/bytes/modules/coder.js", category: "Feature", priority: 15, critical: false }
+        { id: "ui-components", url: "https://clockblocked.github.io/bytes/modules/ui-components.js", category: "Helper", priority: 8, critical: false },
+        { id: "core", url: "https://clockblocked.github.io/bytes/modules/core.js", category: "Primary", priority: 9, critical: true },
+        { id: "listeners", url: "https://clockblocked.github.io/bytes/modules/listeners.js", category: "Helper", priority: 10, critical: false },
+        { id: "search", url: "https://clockblocked.github.io/bytes/modules/search.js", category: "Feature", priority: 11, critical: false },
+        { id: "fileUpload", url: "https://clockblocked.github.io/bytes/modules/fileUpload.js", category: "Feature", priority: 12, critical: false },
+        { id: "importExport", url: "https://clockblocked.github.io/bytes/modules/importExport.js", category: "Feature", priority: 13, critical: false },
+        { id: "fileMenu", url: "https://clockblocked.github.io/bytes/modules/fileMenu.js", category: "UI", priority: 14, critical: false },
+        { id: "assets", url: "https://clockblocked.github.io/bytes/modules/assets.js", category: "UI", priority: 15, critical: false },
+        { id: "coder", url: "https://clockblocked.github.io/bytes/modules/coder.js", category: "Feature", priority: 16, critical: false }
     ];
     const LOAD_ORDER = [];
     const EXPORT_MAP = new Map([
@@ -25,6 +26,7 @@
         ["router", ["Router", "navigate", "getCurrentRoute"]],
         ["pageUpdates", ["PageUpdater", "refreshContent"]],
         ["overlays", ["OverlayManager", "Modal", "Toast", "Notification"]],
+        ["ui-components", ["UIComponents"]],
         ["core", ["App", "initializeApp", "SidebarManager"]],
         ["listeners", ["EventListenersManager", "eventListeners", "setupEventListeners"]],
         ["search", ["SearchManager", "performSearch"]],

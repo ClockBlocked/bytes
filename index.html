@@ -12,6 +12,8 @@
 
   <!-- Global CSS -->
   <link rel="stylesheet" href="https://clockblocked.github.io/bytes/styleSheets/global/styles.css" />
+  <link rel="stylesheet" href="styleSheets/global/navigation.css" />
+  <link rel="stylesheet" href="styleSheets/global/editor-enhancements.css" />
 
   <!-- TailwindCSS -->
   <script src="https://cdn.tailwindcss.com"></script>
@@ -134,152 +136,14 @@
   </script>
 
 <style>
+/* Layout and Component-Specific Overrides */
 
-.breadCrumbsWrapper {
-  background-color: var(--overlay);
-  border-bottom: 1px solid var(--border);
-  padding: 12px 12px;
-  transition: transform 0.3s ease-in-out;
-  backdrop-filter: blur(8px);
-  background-color: rgba(var(--overlay-rgb, 15 23 42), 0.8);
-}
-
-.breadCrumbsWrapper.hidden {
-  transform: translateY(-100%);
-}
-
-.breadCrumbContainer {
-  display: flex;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 8px;
-}
-
-.breadCrumb {
-  display: inline-flex;
-  align-items: center;
-  color: #94a3b8;
-  font-size: 14px;
-  font-weight: 500;
-  line-height: 1.5;
-  text-decoration: none;
-  transition: color 0.2s ease;
-  white-space: nowrap;
-}
-
-.breadCrumb:hover {
-  color: #e2e8f0;
-}
-
-.breadCrumb.current {
-  color: var(--text);
-  font-weight: 500;
-  pointer-events: none;
-}
-
-.navDivider {
-  display: inline-flex;
-  align-items: center;
-  color: #475569;
-  margin: 0;
-}
-
-.navDivider svg {
-  width: 16px;
-  height: 16px;
-  fill: currentColor;
-  flex-shrink: 0;
-}
-
-
-
-
-
-/* Add to your existing CSS */
-.breadCrumbsWrapper {
-  /* ...existing styles ...*/
-  backdrop-filter: blur(8px) saturate(180%);
-  -webkit-backdrop-filter: blur(8px) saturate(180%);
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 
-              0 2px 4px -1px rgba(0, 0, 0, 0.06);
-  transition: transform 0.15s ease-out;
-}
-
-/* Ensure main navbar stays above */
-.navbar {
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
-}
-
-
-
-
-
-/* to-do */
-/* needs to be somewhere where base logic is */
+/* Global utility class for hiding elements */
 .hide {
   opacity: 0;
   visibility: hidden;
   transform: translateY(-10px);
   transition: all 0.3s ease-in-out;
-}
-
-
-
-#fileName {
-  position: absolute;
-  right: 1rem;
-}
-
-
-
-
-
-
-
-
-.navbar {
-  position: sticky;
-  top: 0;
-  z-index: 100;
-  height: 60px;
-}
-.breadCrumbsWrapper {
-  position: sticky;
-  top: 5rem;
-  z-index: 90;
-  width: 100%;
-
- 
-/** OVERRIDES **/
-  border-radius: 0;
-  border-bottom-left-radius: 0.833rem;
-  border-bottom-right-radius: 0.833rem;
-}
-
-
-.editorCard {
-  overflow: visible;
-}
-.editorHeader {
-  position: sticky;
-  top: 0;
-  z-index: 95;
-}
-
-
-
-
-.pre-editor-context {
-  position: relative; 
-  height: 5rem;
-  background-color: transparent;
-}
-.headerWrapper {
-  position: relative;
-  height: 5rem;
-  background: transparent;
 }
 </style>
 
