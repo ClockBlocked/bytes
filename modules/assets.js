@@ -338,7 +338,7 @@ templates: {
   editor: () => `
 <div class="coderToolBarWrapper">
   <div class="coderToolBar">
-    <div class="hGroup">
+    <div class="grouped">
       <button id="editModeBtn" class="headerButton active" title="Edit Mode">${AppAssets.icons.edit()}</button>
 
       <button id="viewModeBtn" class="headerButton" title="View Mode">${AppAssets.icons.view()}</button>
@@ -351,7 +351,7 @@ templates: {
     </div>
 
 
-<div class="headerSeparator"></div>
+<div class="separator"></div>
 
 
     <div class="hGroup">
@@ -360,16 +360,16 @@ templates: {
     </div>
 
 
-<div class="headerSeparator"></div>
+<div class="separator"></div>
 
 
-    <div class="hGroup">
+    <div class="grouped">
       <button id="searchBtn" class="headerButton" title="Search (Ctrl+F)">
         ${AppAssets.icons.search()} Search Code
       </button>
     </div>
 
-    <div class="hGroup">
+    <div class="grouped">
       <button id="wrapBtn" class="headerButton" title="Toggle Word Wrap">${AppAssets.icons.wrap()}</button>
 
       <button id="fullscreenBtn" class="headerButton" title="Toggle Fullscreen">
@@ -380,7 +380,7 @@ templates: {
     </div>
 
 
-<div class="headerSeparator"></div>
+<div class="separator"></div>
 
 
     <div class="hGroup">
@@ -391,7 +391,7 @@ templates: {
       <button id="uploadBtn" class="headerButton" title="Upload File">${AppAssets.icons.upload()}</button>
     </div>
 
-    <div class="hGroup">
+    <div class="grouped">
       <div class="fontSizeControl">
         <button id="fontDecreaseBtn" class="fontBtn" title="Decrease Font Size">${AppAssets.icons.minus()}</button>
 
@@ -401,7 +401,7 @@ templates: {
       </div>
     </div>
 
-    <div class="hGroup">
+    <div class="grouped">
       <button id="moreOptionsBtn" class="headerButton" title="More Options">${AppAssets.icons.more()}</button>
     </div>
   </div>
