@@ -336,9 +336,8 @@ icons: {
 templates: {
 
   editor: () => `
-
-<div class="headerWrapper" id="stickyHeader">
-  <div class="editorHeader">
+<div class="coderToolBarWrapper">
+  <div class="coderToolBar">
     <div class="hGroup">
       <button id="editModeBtn" class="headerButton active" title="Edit Mode">${AppAssets.icons.edit()}</button>
 
@@ -415,8 +414,10 @@ templates: {
 <div class="editorContainer">
 
   <div class="editorCard">
-    <div class="editorToolbar">
-      <div class="toolbarLeft">
+    <div class="coderHeaderWrapper" id="stickyHeader">
+    <div class="coderHeader">
+    
+      <div class="leftSide">
         <div class="toolbarItem">
           <svg class="toolbarIcon" viewBox="0 0 16 16" fill="currentColor" width="16" height="16">
             <path
@@ -442,7 +443,7 @@ templates: {
           </div>
         </div>
       </div>
-      <div class="toolbarRight">
+      <div class="rightSide">
         <div class="dropdown-trigger">
           <button id="editSaveButton" class="trigger-button" aria-haspopup="true" aria-expanded="false">
             <span id="editSaveLabel">Edit</span>
