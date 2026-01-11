@@ -4369,170 +4369,376 @@ aside:hover .sidebar-title {
 
 
 
+/* ... existing styles ... */
 
-/* Existing font-face and root variables remain unchanged */
+/* --------------------------------------------------------
+   1. Refactored Editor Toolbar (Input + Extension + Indicator)
+   -------------------------------------------------------- */
 
-/* ... (previous styles) ... */
+.editorToolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.5rem 1rem;
+  background-color: var(--canvasSubtle);
+  border-bottom: 1px solid var(--borderDefault);
+  gap: 1rem;
+}
 
-/* New styles for Filename Input Redesign */
+.toolbarLeft {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  min-width: 0; /* allows flex child to shrink below content size */
+}
 
+.toolbarRight {
+  flex-shrink: 0;
+}
+
+/* Wrapper for the filename input and icons */
 .fileNameInputWrapper {
   display: flex;
   align-items: center;
-  position: relative;
-  background-color: var(--canvasSubtle);
-  border: 0.0625rem solid var(--borderDefault);
+  background-color: var(--canvasInset);
+  border: 1px solid var(--borderDefault);
   border-radius: var(--radiusMd);
-  padding: 0.125rem;
-  transition: border-color 0.2s ease, background-color 0.2s ease;
-  min-width: 250px;
+  padding: 0.25rem 0.5rem;
+  width: 100%;
+  max-width: 400px;
+  position: relative;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
 .fileNameInputWrapper:focus-within {
   border-color: var(--accentFg);
-  background-color: var(--canvasDefault);
+  box-shadow: 0 0 0 2px var(--accentSubtle);
 }
 
-.fileIconWrapper {
+/* File Icon inside input (faded) */
+.fileIconGhost {
+  color: var(--fgMuted);
+  opacity: 0.4;
+  margin-right: 0.5rem;
   display: flex;
   align-items: center;
-  justify-content: center;
-  padding-left: 0.5rem;
-  padding-right: 0.25rem;
-  color: var(--fgDefault);
-  opacity: 0.3; /* Subtle look as requested */
+  pointer-events: none;
 }
 
+/* The actual input field */
 .fileNameInput {
-  flex: 1;
   background: transparent;
   border: none;
   color: var(--fgDefault);
   font-family: var(--fontMono);
   font-size: var(--textSm);
-  padding: 0.25rem 0.5rem;
-  opacity: 1;
+  flex: 1;
+  min-width: 0;
   outline: none;
-  width: 100%;
+  padding: 0;
+  height: 1.5rem;
 }
 
-.fileNameExtension {
-  background: transparent;
+/* The Extension / Language Selector Pill */
+.fileName .extension {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.125rem 0.375rem;
+  margin-left: 0.5rem;
+  
+  /* Visuals */
+  background-color: var(--canvasDefault);
   border: 1px dashed var(--borderSubtle); /* Dotted/Dashed border */
-  border-radius: var(--radiusSm);
+  border-radius: 10px; /* Rounded pill shape */
+  
+  /* Text */
   color: var(--fgMuted);
   font-family: var(--fontMono);
-  font-size: var(--textSm);
-  padding: 0.125rem 0.5rem;
-  margin-right: 0.25rem;
+  font-size: var(--textXs);
+  font-weight: 500;
+  
   cursor: pointer;
+  user-select: none;
   transition: all 0.2s ease;
 }
 
-.fileNameExtension:hover {
-  background-color: var(--btnSecondaryHover);
-  color: var(--fgDefault);
+.fileName .extension:hover {
+  background-color: var(--accentSubtle);
   border-color: var(--accentFg);
+  color: var(--accentFg);
 }
 
-/* Modified Dot Indicator */
+/* The Neon Blue Modified Dot */
 .modifiedDot {
   width: 8px;
   height: 8px;
   border-radius: 50%;
   background-color: #00e5ff; /* Neon blue */
-  box-shadow: 0 0 5px rgba(0, 229, 255, 0.6);
+  box-shadow: 0 0 4px #00e5ff;
   margin-left: 0.75rem;
   flex-shrink: 0;
+  opacity: 0;
+  transform: scale(0);
+  transition: opacity 0.2s ease, transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
-.modifiedDot.hide {
-  display: none;
+.modifiedDot.visible {
+  opacity: 1;
+  transform: scale(1);
 }
 
-/* Header Scroll Styles */
-.editorHeader {
-  position: sticky;
-  top: 64px; /* Sticks below navbar */
-  z-index: 45; /* Above editor content, below modal */
-  transition: box-shadow 0.2s ease;
-  background-color: var(--editorHeaderBg);
-}
+/* --------------------------------------------------------
+   2. Scrolling Header with Indicators
+   -------------------------------------------------------- */
 
-.headerScrollWrapper {
-  display: flex;
-  align-items: center;
-  width: 100%;
+.editorHeaderWrapper {
   position: relative;
-}
-
-.headerScrollContainer {
+  background-color: var(--editorHeaderBg);
+  border-bottom: 1px solid var(--borderDefault);
   display: flex;
   align-items: center;
-  gap: 0.375rem;
-  padding: 0 0.5rem;
-  overflow-x: auto;
-  overflow-y: hidden;
-  scrollbar-width: none; /* Hide scrollbar Firefox */
-  -ms-overflow-style: none; /* Hide scrollbar IE/Edge */
-  white-space: nowrap;
-  flex: 1;
-  scroll-behavior: smooth;
+  height: 44px; /* Fixed height for consistency */
 }
 
-.headerScrollContainer::-webkit-scrollbar {
-  display: none; /* Hide scrollbar Chrome/Safari */
-}
-
-.headerScrollBtn {
+/* Scroll Indicators (Arrows/Fades) */
+.scrollIndicator {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 30px;
+  z-index: 10;
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 24px;
-  height: 32px;
-  background-color: var(--editorHeaderBg);
-  color: var(--fgDefault);
-  border: none;
+  background: var(--editorHeaderBg); /* Fallback */
+  color: var(--fgMuted);
+  pointer-events: none; /* Let clicks pass through if just visual, or use button if clickable */
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.scrollIndicator.left {
+  left: 0;
+  background: linear-gradient(to right, var(--editorHeaderBg) 40%, transparent);
+  border-right: 1px solid transparent;
+}
+
+.scrollIndicator.right {
+  right: 0;
+  background: linear-gradient(to left, var(--editorHeaderBg) 40%, transparent);
+  border-left: 1px solid transparent;
+}
+
+/* Classes to show indicators based on JS scroll detection */
+.editorHeaderWrapper.can-scroll-left .scrollIndicator.left {
+  opacity: 1;
+  pointer-events: auto;
   cursor: pointer;
-  z-index: 2;
-  flex-shrink: 0;
-  transition: opacity 0.2s ease, color 0.2s ease;
 }
 
-.headerScrollBtn:hover {
-  color: var(--accentFg);
+.editorHeaderWrapper.can-scroll-right .scrollIndicator.right {
+  opacity: 1;
+  pointer-events: auto;
+  cursor: pointer;
 }
 
-.headerScrollBtn.disabled {
-  opacity: 0.3;
-  pointer-events: none;
-}
-
-.headerScrollBtn.left {
-  box-shadow: 2px 0 5px rgba(0,0,0,0.1);
-}
-
-.headerScrollBtn.right {
-  box-shadow: -2px 0 5px rgba(0,0,0,0.1);
-}
-
-/* Search Highlighting */
-.search-highlight {
-  background-color: rgba(255, 255, 0, 0.4); /* Yellow transparency */
-}
-
-/* Fix sticky header when breadcrumbs hide */
+/* The Scrollable Container */
 .editorHeader {
-  /* Ensure it has a background when sticky to cover content */
-  background-color: var(--editorHeaderBg); 
-  border-bottom: 1px solid var(--borderDefault);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0 1rem;
+  overflow-x: auto;
+  overflow-y: hidden;
+  height: 100%;
+  width: 100%;
+  
+  /* Hide Scrollbars */
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE/Edge */
+  
+  scroll-behavior: smooth;
 }
 
-/* Update Header Separator to act as visual divider */
+.editorHeader::-webkit-scrollbar {
+  display: none; /* Chrome/Safari */
+}
+
+/* Grouping inside header */
+.hGroup {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  flex-shrink: 0; /* Prevent buttons from squishing */
+}
+
 .headerSeparator {
   width: 1px;
   height: 20px;
-  background-color: var(--borderMuted);
-  margin: 0 4px;
+  background-color: var(--borderDefault);
+  margin: 0 0.5rem;
   flex-shrink: 0;
+}
+
+/* Header Buttons styling tweak */
+.headerButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  height: 28px;
+  padding: 0 8px;
+  border-radius: var(--radiusSm);
+  background: transparent;
+  color: var(--fgMuted);
+  border: 1px solid transparent;
+  font-size: var(--textXs);
+  white-space: nowrap;
+}
+
+.headerButton:hover {
+  background-color: var(--btnSecondaryHover);
+  color: var(--fgDefault);
+}
+
+.headerButton.active {
+  background-color: var(--btnSecondaryActive);
+  color: var(--accentFg);
+  border-color: var(--borderSubtle);
+}
+
+/* --------------------------------------------------------
+   3. Sticky Header Behavior
+   -------------------------------------------------------- */
+
+/* 
+   We apply this class via JS when the user scrolls past the breadcrumbs/toolbar.
+   Logic: When window.scrollY > threshold, add .sticky-mode to the editor container 
+   or specific elements.
+*/
+
+.stickyHeader {
+  position: sticky;
+  top: 0; /* Or navbar height if main navbar is also sticky: top: 60px; */
+  z-index: 50;
+  background-color: var(--editorHeaderBg);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  
+  /* Animation for smooth stickiness */
+  animation: slideDownFade 0.3s ease forwards;
+}
+
+@keyframes slideDownFade {
+  from {
+    transform: translateY(-100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+/* 
+   Hide Breadcrumbs when Sticky Header is active (handled via JS toggling a class usually,
+   but here is the CSS state)
+*/
+body.header-is-sticky .breadCrumbsWrapper {
+  transform: translateY(-200%); /* Move out of view */
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* --------------------------------------------------------
+   4. Search Panel Fixes
+   -------------------------------------------------------- */
+
+.searchPanel {
+  position: absolute;
+  top: 45px; /* Right below header */
+  right: 20px;
+  z-index: 40;
+  background-color: var(--canvasOverlay);
+  border: 1px solid var(--borderDefault);
+  border-radius: var(--radiusMd);
+  box-shadow: var(--shadowLg);
+  width: 300px;
+  padding: 8px;
+  
+  /* Transition for show/hide */
+  opacity: 1;
+  transform: translateY(0);
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.searchPanel.hide {
+  opacity: 0;
+  transform: translateY(-10px);
+  pointer-events: none;
+  visibility: hidden;
+}
+
+.searchContainer {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.searchInput {
+  flex: 1;
+  background: var(--inputBg);
+  border: 1px solid var(--borderDefault);
+  border-radius: var(--radiusSm);
+  padding: 4px 8px;
+  color: var(--fgDefault);
+  font-size: var(--textSm);
+  height: 28px;
+}
+
+.searchInput:focus {
+  border-color: var(--accentFg);
+  box-shadow: 0 0 0 1px var(--accentFg);
+}
+
+.searchActions {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+
+.searchCount {
+  font-size: var(--textXs);
+  color: var(--fgMuted);
+  margin-right: 4px;
+  min-width: 40px;
+  text-align: center;
+}
+
+.searchNavBtn {
+  background: transparent;
+  border: none;
+  border-radius: var(--radiusSm);
+  color: var(--fgDefault);
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.searchNavBtn:hover {
+  background-color: var(--btnSecondaryHover);
+}
+
+/* Highlight style for search matches in CodeMirror (needs specific CM targeting) */
+.cm-search-match {
+  background-color: rgba(255, 255, 0, 0.4);
+  outline: 1px solid rgba(255, 255, 0, 0.6);
+}
+
+.cm-search-match-selected {
+  background-color: rgba(255, 150, 0, 0.6);
+  outline: 1px solid rgba(255, 150, 0, 0.8);
 }
