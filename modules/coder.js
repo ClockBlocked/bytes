@@ -296,6 +296,9 @@ class CodeViewEditor {
       }
     });
     
+    // Cache the editor header separately (it's a class selector)
+    this.elements.editorHeader = document.querySelector('.editorHeader');
+    
     this.populateLanguageDropdown();
   }.bind(this);
   bindElementEvents = function() {
@@ -1162,24 +1165,73 @@ class CodeViewEditor {
      const stickyHeader = document.getElementById('stickyHeader');
      const breadcrumbs = document.getElementById('pathBreadcrumb');
      const navbar = document.querySelector('.navbar');
+     const editorHeader = this.elements.editorHeader || document.querySelector('.editorHeader');
      
      if (!stickyHeader || !breadcrumbs) return;
+     
+     // Get navbar height from CSS custom property
+     const getNavbarHeight = () => {
+       try {
+         const rootStyles = getComputedStyle(document.documentElement);
+         const navbarHeight = rootStyles.getPropertyValue('--navbar-height') || '3.75rem';
+         // Convert rem to px (assuming 1rem = 16px)
+         const remValue = parseFloat(navbarHeight);
+         return remValue * 16; // Convert rem to px
+       } catch (e) {
+         return 60; // Fallback to default
+       }
+     };
+     
+     const triggerPoint = getNavbarHeight();
      
      // Detect scroll on main window
      window.addEventListener('scroll', () => {
          const rect = stickyHeader.getBoundingClientRect();
-         // Navbar height is usually around 64px, breadcrumbs just below
-         // When sticky header hits the top area (where breadcrumbs are)
-         
-         const triggerPoint = 70; // approx navbar height + padding
          
          if (rect.top <= triggerPoint) {
              // We are in sticky mode
              breadcrumbs.classList.add('hidden');
+             document.body.classList.add('header-is-sticky');
          } else {
              breadcrumbs.classList.remove('hidden');
+             document.body.classList.remove('header-is-sticky');
          }
      });
+     
+     // Setup editor header scroll shadow indicators
+     if (editorHeader) {
+         editorHeader.addEventListener('scroll', () => {
+             this.updateHeaderScrollShadows();
+         });
+         // Initial check
+         this.updateHeaderScrollShadows();
+     }
+  }.bind(this);
+  
+  // Update header scroll shadows
+  updateHeaderScrollShadows = function() {
+     const editorHeader = this.elements.editorHeader || document.querySelector('.editorHeader');
+     if (!editorHeader) return;
+     
+     const scrollLeft = editorHeader.scrollLeft;
+     const scrollWidth = editorHeader.scrollWidth;
+     const clientWidth = editorHeader.clientWidth;
+     const maxScroll = scrollWidth - clientWidth;
+     
+     // Remove all shadow classes
+     editorHeader.classList.remove('has-scroll-left', 'has-scroll-right', 'has-scroll-both');
+     
+     // Add appropriate shadow classes
+     const hasScrollLeft = scrollLeft > 5;
+     const hasScrollRight = scrollLeft < (maxScroll - 5);
+     
+     if (hasScrollLeft && hasScrollRight) {
+         editorHeader.classList.add('has-scroll-both');
+     } else if (hasScrollLeft) {
+         editorHeader.classList.add('has-scroll-left');
+     } else if (hasScrollRight) {
+         editorHeader.classList.add('has-scroll-right');
+     }
   }.bind(this);
 
 
