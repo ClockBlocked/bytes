@@ -1,0 +1,620 @@
+/**
+ * Editor Enhancements
+ * Improved editor header, toolbar, and interaction styles
+ */
+
+/* ===================================
+   Editor Container Layout
+   =================================== */
+.editorContainer {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  min-height: calc(100vh - 10rem);
+  background: var(--editorBg);
+  border: 1px solid var(--editorBorder);
+  border-radius: var(--radiusLg, 0.75rem);
+  overflow: hidden;
+}
+
+/* Fullscreen Mode */
+.editorContainer[data-fullscreen="true"] {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  margin: 0;
+  border-radius: 0;
+  z-index: 9999;
+  min-height: 100vh;
+}
+
+.editorContainer[data-fullscreen="true"] .editorCard {
+  height: 100vh;
+  border-radius: 0;
+}
+
+/* ===================================
+   Editor Card
+   =================================== */
+.editorCard {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+  overflow: visible;
+  background: var(--editorCardBg);
+  border: 1px solid var(--neutralSubtle);
+  border-radius: var(--radiusMd, 0.5rem);
+  box-shadow: 0 0.25rem 0.375rem -0.0625rem rgba(0, 0, 0, 0.1),
+              0 0.125rem 0.25rem -0.125rem rgba(0, 0, 0, 0.1);
+}
+
+/* ===================================
+   Editor Header Wrapper (for scroll indicators)
+   =================================== */
+.headerWrapper {
+  position: relative;
+  height: auto;
+  background: transparent;
+}
+
+.editorHeader {
+  position: sticky;
+  top: 0;
+  z-index: 95;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  
+  background: var(--editorHeaderBg);
+  border-bottom: 1px solid var(--neutralSubtle);
+  
+  overflow-x: auto;
+  overflow-y: hidden;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  
+  scroll-behavior: smooth;
+  transition: box-shadow 0.2s ease;
+}
+
+.editorHeader::-webkit-scrollbar {
+  display: none;
+}
+
+/* Scroll Shadow Indicators */
+.editorHeader.has-scroll-left {
+  box-shadow: inset 10px 0 8px -8px rgba(0, 0, 0, 0.3);
+}
+
+.editorHeader.has-scroll-right {
+  box-shadow: inset -10px 0 8px -8px rgba(0, 0, 0, 0.3);
+}
+
+.editorHeader.has-scroll-both {
+  box-shadow: inset 10px 0 8px -8px rgba(0, 0, 0, 0.3),
+              inset -10px 0 8px -8px rgba(0, 0, 0, 0.3);
+}
+
+/* ===================================
+   Header Groups & Separators
+   =================================== */
+.hGroup {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  flex-shrink: 0;
+}
+
+.headerSeparator {
+  width: 1px;
+  height: 1.25rem;
+  background: var(--borderDefault);
+  margin: 0 0.5rem;
+  flex-shrink: 0;
+}
+
+/* ===================================
+   Header Buttons
+   =================================== */
+.headerButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.375rem;
+  padding: 0.375rem 0.625rem;
+  
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: var(--radiusSm, 0.25rem);
+  
+  color: var(--fgMuted);
+  font-size: var(--textSm, 0.875rem);
+  white-space: nowrap;
+  
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.headerButton:hover {
+  background: var(--editorBtnBg);
+  color: var(--fgDefault);
+}
+
+.headerButton.active {
+  background: var(--editorBtnHover);
+  color: var(--editorAccent);
+  border-color: var(--editorAccent);
+}
+
+.headerButton:focus-visible {
+  outline: 2px solid var(--accentFg);
+  outline-offset: 2px;
+}
+
+/* ===================================
+   Toolbar (below header, for file info)
+   =================================== */
+.editorToolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.75rem 1rem;
+  gap: 1rem;
+  
+  background: var(--canvasSubtle);
+  border-bottom: 1px solid var(--borderDefault);
+  
+  flex-wrap: wrap;
+}
+
+.toolbarLeft,
+.toolbarRight {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.toolbarLeft {
+  flex: 1;
+  min-width: 0;
+}
+
+.toolbarRight {
+  flex-shrink: 0;
+}
+
+/* ===================================
+   File Name Input with Extension Pill
+   =================================== */
+.fileNameInputWrapper {
+  display: flex;
+  align-items: center;
+  background-color: var(--inputBg);
+  border: 1px solid var(--inputBorder);
+  border-radius: var(--radiusMd, 0.5rem);
+  padding: 0.375rem 0.75rem;
+  width: 100%;
+  max-width: 400px;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.fileNameInputWrapper:focus-within {
+  border-color: var(--accentFg);
+  box-shadow: 0 0 0 2px var(--accentSubtle);
+}
+
+.fileIconGhost {
+  color: var(--fgMuted);
+  opacity: 0.4;
+  margin-right: 0.5rem;
+  display: flex;
+  align-items: center;
+  pointer-events: none;
+}
+
+.fileNameInput {
+  background: transparent;
+  border: none;
+  color: var(--fgDefault);
+  font-family: var(--fontMono, 'JetBrains Mono', monospace);
+  font-size: var(--textSm, 0.875rem);
+  flex: 1;
+  min-width: 0;
+  outline: none;
+  padding: 0;
+  height: 1.5rem;
+}
+
+/* Extension/Language Pill */
+.fileExtension {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.2rem 0.5rem;
+  margin-left: 0.5rem;
+  
+  background-color: var(--canvasDefault);
+  border: 1px dashed var(--borderSubtle);
+  border-radius: 12px;
+  
+  color: var(--fgMuted);
+  font-family: var(--fontMono, monospace);
+  font-size: var(--textXs, 0.75rem);
+  font-weight: 500;
+  
+  cursor: pointer;
+  user-select: none;
+  transition: all 0.2s ease;
+}
+
+.fileExtension:hover {
+  background-color: var(--accentSubtle);
+  border-color: var(--accentFg);
+  color: var(--accentFg);
+}
+
+/* Modified Indicator Dot */
+.modifiedDot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: #00e5ff;
+  box-shadow: 0 0 4px #00e5ff, 0 0 8px rgba(0, 229, 255, 0.5);
+  margin-left: 0.75rem;
+  flex-shrink: 0;
+  opacity: 0;
+  transform: scale(0);
+  transition: opacity 0.2s ease, transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.modifiedDot.visible {
+  opacity: 1;
+  transform: scale(1);
+}
+
+/* ===================================
+   Editor Body
+   =================================== */
+.editorBody {
+  flex: 1;
+  min-height: 0;
+  position: relative;
+  overflow: hidden;
+}
+
+.codeMirrorContainer {
+  height: 100%;
+  overflow: hidden;
+}
+
+.codeMirrorContainer .CodeMirror {
+  height: 100%;
+  font-family: var(--fontMono, 'JetBrains Mono', monospace);
+  background: var(--editorBg);
+}
+
+/* ===================================
+   Search Panel
+   =================================== */
+.searchPanel {
+  position: absolute;
+  top: 10px;
+  right: 20px;
+  z-index: 100;
+  
+  background-color: var(--canvasOverlay);
+  border: 1px solid var(--borderDefault);
+  border-radius: var(--radiusMd, 0.5rem);
+  box-shadow: var(--shadowLg);
+  
+  width: 300px;
+  padding: 0.5rem;
+  
+  opacity: 1;
+  transform: translateY(0);
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.searchPanel.hide {
+  opacity: 0;
+  transform: translateY(-10px);
+  pointer-events: none;
+  visibility: hidden;
+}
+
+/* Search highlight styles for CodeMirror */
+.CodeMirror .search-highlight {
+  background-color: rgba(255, 255, 0, 0.3);
+  border-bottom: 2px solid rgba(255, 200, 0, 0.6);
+}
+
+.CodeMirror .search-highlight-selected {
+  background-color: rgba(255, 150, 0, 0.5);
+  border-bottom: 2px solid rgba(255, 100, 0, 0.8);
+}
+
+/* ===================================
+   Responsive Adjustments
+   =================================== */
+@media (max-width: 768px) {
+  .editorHeader {
+    padding: 0.375rem 0.5rem;
+    gap: 0.25rem;
+  }
+  
+  .hGroup {
+    gap: 0.125rem;
+  }
+  
+  .headerSeparator {
+    margin: 0 0.25rem;
+  }
+  
+  .headerButton {
+    padding: 0.25rem 0.375rem;
+    font-size: 0.8125rem;
+  }
+  
+  .editorToolbar {
+    padding: 0.5rem 0.75rem;
+    gap: 0.5rem;
+  }
+  
+  .fileNameInputWrapper {
+    max-width: 100%;
+  }
+  
+  .searchPanel {
+    left: 10px;
+    right: 10px;
+    width: auto;
+  }
+}
+
+/* ===================================
+   Accessibility
+   =================================== */
+@media (prefers-reduced-motion: reduce) {
+  .editorHeader,
+  .headerButton,
+  .fileExtension,
+  .modifiedDot,
+  .searchPanel {
+    transition: none;
+  }
+  
+  .editorHeader {
+    scroll-behavior: auto;
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/**
+ * Navigation Styles
+ * Sticky navigation bar and breadcrumb bar styles
+ */
+
+/* CSS Custom Properties */
+:root {
+  /* Note: These rem values assume root font-size of 16px (browser default)
+     3.75rem = 60px, 3.5rem = 56px
+     If root font-size changes, these values will scale proportionally */
+  --navbar-height: 3.75rem; /* 60px at 16px base */
+  --navbar-height-mobile: 3.5rem; /* 56px at 16px base */
+  --breadcrumb-offset: 3.75rem;
+  --breadcrumb-offset-mobile: 3.5rem;
+}
+
+/* ===================================
+   Main Navbar
+   =================================== */
+.navbar {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  height: var(--navbar-height);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ===================================
+   Breadcrumbs Wrapper
+   =================================== */
+.breadCrumbsWrapper {
+  position: sticky;
+  top: var(--breadcrumb-offset);
+  z-index: 90;
+  width: 100%;
+  
+  /* Background & Backdrop */
+  background-color: rgba(45, 51, 59, 0.85);
+  backdrop-filter: blur(8px) saturate(180%);
+  -webkit-backdrop-filter: blur(8px) saturate(180%);
+  
+  /* Border & Shadow */
+  border-bottom: 1px solid var(--borderDefault);
+  border-radius: 0;
+  border-bottom-left-radius: 0.75rem;
+  border-bottom-right-radius: 0.75rem;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 
+              0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  
+  /* Spacing */
+  padding: 0.75rem 1rem;
+  
+  /* Animation */
+  transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1),
+              opacity 0.2s ease;
+}
+
+.breadCrumbsWrapper.hidden {
+  transform: translateY(-100%);
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* ===================================
+   Breadcrumb Container & Items
+   =================================== */
+.breadCrumbContainer {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.breadCrumb {
+  display: inline-flex;
+  align-items: center;
+  color: var(--fgMuted, #94a3b8);
+  font-size: 0.875rem;
+  font-weight: 500;
+  line-height: 1.5;
+  text-decoration: none;
+  transition: color 0.2s ease;
+  white-space: nowrap;
+  padding: 0.25rem 0.5rem;
+  border-radius: 0.375rem;
+}
+
+.breadCrumb:hover {
+  color: var(--fgDefault, #e2e8f0);
+  background-color: var(--canvasSubtle, rgba(255, 255, 255, 0.05));
+}
+
+.breadCrumb:focus-visible {
+  outline: 2px solid var(--accentFg);
+  outline-offset: 2px;
+}
+
+.breadCrumb.current {
+  color: var(--fgDefault);
+  font-weight: 600;
+  pointer-events: none;
+  background-color: var(--accentSubtle, rgba(83, 155, 245, 0.15));
+}
+
+/* ===================================
+   Breadcrumb Divider
+   =================================== */
+.navDivider {
+  display: inline-flex;
+  align-items: center;
+  color: var(--borderSubtle, #475569);
+  margin: 0;
+  opacity: 0.6;
+}
+
+.navDivider svg {
+  width: 1rem;
+  height: 1rem;
+  fill: currentColor;
+  flex-shrink: 0;
+}
+
+/* ===================================
+   Pre-Editor Context Spacer
+   =================================== */
+.pre-editor-context {
+  position: relative;
+  height: var(--navbar-height);
+  background-color: transparent;
+  transition: height 0.2s ease;
+}
+
+/* ===================================
+   Responsive Adjustments
+   =================================== */
+@media (max-width: 768px) {
+  .navbar {
+    height: var(--navbar-height-mobile);
+  }
+  
+  .breadCrumbsWrapper {
+    top: var(--breadcrumb-offset-mobile);
+    padding: 0.5rem 0.75rem;
+    border-bottom-left-radius: 0.5rem;
+    border-bottom-right-radius: 0.5rem;
+  }
+  
+  .breadCrumb {
+    font-size: 0.8125rem;
+    padding: 0.2rem 0.4rem;
+  }
+  
+  .pre-editor-context {
+    height: var(--navbar-height-mobile);
+  }
+}
+
+/* ===================================
+   Accessibility
+   =================================== */
+@media (prefers-reduced-motion: reduce) {
+  .navbar,
+  .breadCrumbsWrapper,
+  .breadCrumb,
+  .pre-editor-context {
+    transition: none;
+  }
+}
+
+/* ===================================
+   Dark/Light Theme Support
+   =================================== */
+[data-theme="light"] .breadCrumbsWrapper {
+  background-color: rgba(255, 255, 255, 0.85);
+  border-color: var(--borderDefault, #d0d7de);
+}
+
+[data-theme="light"] .breadCrumb {
+  color: var(--fgMuted, #656d76);
+}
+
+[data-theme="light"] .breadCrumb:hover {
+  color: var(--fgDefault, #1f2328);
+  background-color: var(--canvasSubtle, rgba(0, 0, 0, 0.05));
+}
+
+[data-theme="light"] .breadCrumb.current {
+  background-color: var(--accentSubtle, rgba(9, 105, 218, 0.15));
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
