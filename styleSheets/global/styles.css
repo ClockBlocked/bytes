@@ -4124,12 +4124,10 @@ aside:hover .sidebar-title {
   position: relative;
   display: flex;
   flex-direction: column;
-  height: calc(100vh - 3.5rem);
-  min-height: 32rem;
+  height: calc(100vh - 5rem);
   background: var(--editorBg);
   border: 1px solid var(--editorBorder);
   border-radius: var(--radiusLg);
-  overflow: hidden;
 }
 
 .editorContainer.fullscreen {
