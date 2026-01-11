@@ -134,10 +134,7 @@
   </script>
 
 <style>
-.stickyFirst,
-.stickySecond {
-  position: relative;
-}
+
 .breadCrumbsWrapper {
   background-color: var(--overlay);
   border-bottom: 1px solid var(--border);
@@ -196,26 +193,6 @@
 
 
 
-/* Add to your existing CSS */
-.navbar {
-  position: sticky;
-  top: 0;
-  z-index: 50; /* Higher than breadcrumbs */
-}
-
-.breadCrumbsWrapper {
-  position: sticky;
-  top: 64px; /* Height of your main navbar + any padding */
-  z-index: 20;
-  transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-  will-change: transform;
-}
-
-.breadCrumbsWrapper.hidden {
-  transform: translateY(-100%);
-  transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
 
 
 /* Add to your existing CSS */
@@ -254,6 +231,57 @@
   position: absolute;
   right: 1rem;
 }
+
+
+
+
+
+
+
+
+/* 1. TOP NAV (Highest Priority) */
+.navbar {
+  position: sticky;
+  top: 0;
+  z-index: 100; /* Must be highest */
+  height: 60px; /* Explicit height helps calculation */
+}
+
+/* 2. THE WRAPPER (The Track) */
+/* This holds the breadcrumbs. When this element scrolls off screen, 
+   it drags the breadcrumbs with it. */
+.pre-editor-context {
+  position: relative; 
+  /* "min-height" determines how long the breadcrumbs stick 
+     before the editor arrives to push them out. 
+     Adjust 200px to whatever gap you want. */
+  min-height: 200px; 
+  background-color: transparent;
+}
+
+/* 3. BREADCRUMBS (The Victim) */
+.breadCrumbsWrapper {
+  position: sticky;
+  top: 60px; /* Sits directly under Main Nav */
+  z-index: 90; /* Lowest priority of the sticky items */
+  width: 100%;
+}
+
+/* 4. EDITOR TOOLBAR (The Bully) */
+/* This targets the injected toolbar */
+.editorToolbar {
+  position: sticky;
+  top: 60px; /* Same position as breadcrumbs */
+  z-index: 95; /* Higher than Breadcrumbs, Lower than Main Nav */
+  background-color: var(--bg-color, #fff); /* Ensure it has a background to cover breadcrumbs */
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); /* Optional: Adds separation */
+}
+
+/* OPTIONAL: Ensure the editor container doesn't clip the sticky toolbar */
+.editorContainer {
+  overflow: visible; /* Critical: If this is hidden/auto, sticky breaks */
+}
+
 </style>
 
 <style id="overRide">
