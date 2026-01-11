@@ -265,20 +265,24 @@
   top: 60px; /* Sits directly under Main Nav */
   z-index: 90; /* Lowest priority of the sticky items */
   width: 100%;
+  
+/**  OVERRIDES **/
+  border-radius: 0;
+  border-bottom-left-radius: 0.833rem;
+  border-bottom-right-radius: 0.833rem;
 }
 
 /* 4. EDITOR TOOLBAR (The Bully) */
 /* This targets the injected toolbar */
-.editorToolbar {
+.editorHeader {
   position: sticky;
   top: 60px; /* Same position as breadcrumbs */
   z-index: 95; /* Higher than Breadcrumbs, Lower than Main Nav */
-  background-color: var(--bg-color, #fff); /* Ensure it has a background to cover breadcrumbs */
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); /* Optional: Adds separation */
 }
 
 /* OPTIONAL: Ensure the editor container doesn't clip the sticky toolbar */
-.editorContainer {
+.editorCard {
   overflow: visible; /* Critical: If this is hidden/auto, sticky breaks */
 }
 
