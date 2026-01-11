@@ -239,53 +239,44 @@
 
 
 
-/* 1. TOP NAV (Highest Priority) */
 .navbar {
   position: sticky;
   top: 0;
-  z-index: 100; /* Must be highest */
-  height: 60px; /* Explicit height helps calculation */
+  z-index: 100;
+  height: 60px;
 }
-
-/* 2. THE WRAPPER (The Track) */
-/* This holds the breadcrumbs. When this element scrolls off screen, 
-   it drags the breadcrumbs with it. */
-.pre-editor-context {
-  position: relative; 
-  /* "min-height" determines how long the breadcrumbs stick 
-     before the editor arrives to push them out. 
-     Adjust 200px to whatever gap you want. */
-  min-height: 5rem;
-  background-color: transparent;
-}
-
-/* 3. BREADCRUMBS (The Victim) */
 .breadCrumbsWrapper {
   position: sticky;
-  top: 60px; /* Sits directly under Main Nav */
-  z-index: 90; /* Lowest priority of the sticky items */
+  top: 5rem;
+  z-index: 90;
   width: 100%;
-  
-/**  OVERRIDES **/
+
+ 
+/** OVERRIDES **/
   border-radius: 0;
   border-bottom-left-radius: 0.833rem;
   border-bottom-right-radius: 0.833rem;
 }
 
-/* 4. EDITOR TOOLBAR (The Bully) */
-/* This targets the injected toolbar */
+
+.editorCard {
+  overflow: visible;
+}
 .editorHeader {
   position: sticky;
-  top: 60px; /* Same position as breadcrumbs */
-  z-index: 95; /* Higher than Breadcrumbs, Lower than Main Nav */
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); /* Optional: Adds separation */
+  top: 5rem;
+  z-index: 95;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
 }
 
-/* OPTIONAL: Ensure the editor container doesn't clip the sticky toolbar */
-.editorCard {
-  overflow: visible; /* Critical: If this is hidden/auto, sticky breaks */
-}
 
+
+
+.pre-editor-context {
+  position: relative; 
+  min-height: 5rem;
+  background-color: transparent;
+}
 </style>
 
 <style id="overRide">
