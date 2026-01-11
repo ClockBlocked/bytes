@@ -1169,13 +1169,24 @@ class CodeViewEditor {
      
      if (!stickyHeader || !breadcrumbs) return;
      
+     // Get navbar height from CSS custom property
+     const getNavbarHeight = () => {
+       try {
+         const rootStyles = getComputedStyle(document.documentElement);
+         const navbarHeight = rootStyles.getPropertyValue('--navbar-height') || '3.75rem';
+         // Convert rem to px (assuming 1rem = 16px)
+         const remValue = parseFloat(navbarHeight);
+         return remValue * 16; // Convert rem to px
+       } catch (e) {
+         return 60; // Fallback to default
+       }
+     };
+     
+     const triggerPoint = getNavbarHeight();
+     
      // Detect scroll on main window
      window.addEventListener('scroll', () => {
          const rect = stickyHeader.getBoundingClientRect();
-         // Navbar height is 60px (3.75rem), breadcrumbs just below
-         // When sticky header hits the top area (where breadcrumbs are)
-         
-         const triggerPoint = 60; // navbar height in px (matches CSS --navbar-height)
          
          if (rect.top <= triggerPoint) {
              // We are in sticky mode

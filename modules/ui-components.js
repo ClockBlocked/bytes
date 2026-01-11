@@ -10,12 +10,59 @@ if (typeof window.UIComponents !== 'undefined') {
   window.UIComponents = {
   
   /**
-   * Safely create an element from HTML string
+   * Whitelist of allowed SVG tags for icons
    * @private
-   * @param {string} html - HTML string
-   * @returns {HTMLElement}
+   */
+  _allowedSVGTags: ['svg', 'path', 'circle', 'rect', 'line', 'polyline', 'polygon', 'g', 'defs', 'use'],
+  
+  /**
+   * Check if content is a trusted icon (SVG or known safe HTML)
+   * @private
+   * @param {string} content - Content to check
+   * @returns {boolean}
+   */
+  _isTrustedIcon(content) {
+    if (typeof content !== 'string') return false;
+    
+    // Check if it's an SVG (safest for icons)
+    if (content.trim().startsWith('<svg')) {
+      // Verify it only contains allowed SVG tags
+      const parser = new DOMParser();
+      const doc = parser.parseFromString(content, 'image/svg+xml');
+      const parserError = doc.querySelector('parsererror');
+      if (parserError) return false;
+      
+      // Check all elements are in whitelist
+      const allElements = doc.getElementsByTagName('*');
+      for (let elem of allElements) {
+        if (!this._allowedSVGTags.includes(elem.tagName.toLowerCase())) {
+          return false;
+        }
+      }
+      return true;
+    }
+    
+    // Check if it's a simple, safe HTML entity or character
+    if (/^[&][a-zA-Z0-9#]+[;]$/.test(content.trim()) || 
+        /^[^<>]+$/.test(content.trim())) {
+      return true;
+    }
+    
+    return false;
+  },
+  
+  /**
+   * Safely create an element from trusted HTML string
+   * @private
+   * @param {string} html - HTML string (must be trusted)
+   * @returns {HTMLElement|null}
    */
   _createElementFromHTML(html) {
+    if (!this._isTrustedIcon(html)) {
+      console.error('UIComponents: Attempted to create element from untrusted HTML');
+      return null;
+    }
+    
     const template = document.createElement('template');
     html = html.trim();
     template.innerHTML = html;
@@ -23,18 +70,34 @@ if (typeof window.UIComponents !== 'undefined') {
   },
   
   /**
-   * Safely set icon content (only allows known safe icons)
+   * Safely set icon content (only allows trusted SVG or safe text)
    * @private
    * @param {HTMLElement} element - Element to set icon in
-   * @param {string} icon - Icon HTML or safe string
+   * @param {string} icon - Icon content (SVG or text)
    */
   _setIconSafely(element, icon) {
-    // If icon looks like HTML (contains < or >), treat it as trusted
-    // Otherwise, use textContent for safety
-    if (typeof icon === 'string' && (icon.includes('<') || icon.includes('>'))) {
-      // Only set innerHTML for trusted icon sources (from AppAssets.icons, etc.)
-      element.innerHTML = icon;
+    if (!icon || typeof icon !== 'string') return;
+    
+    // Check if it's trusted SVG or safe HTML
+    if (this._isTrustedIcon(icon)) {
+      try {
+        if (icon.trim().startsWith('<svg')) {
+          const svgElement = this._createElementFromHTML(icon);
+          if (svgElement) {
+            element.appendChild(svgElement);
+          } else {
+            // Fallback to text if SVG parsing failed
+            element.textContent = '⚠️';
+          }
+        } else {
+          element.innerHTML = icon; // Safe for HTML entities
+        }
+      } catch (e) {
+        console.error('UIComponents: Failed to set icon safely', e);
+        element.textContent = '⚠️';
+      }
     } else {
+      // Not trusted - use as text only
       element.textContent = icon;
     }
   },
