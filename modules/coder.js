@@ -34,6 +34,7 @@ class FullscreenManager {
       this.fallbackFullscreen(true);
     }
   }.bind(this);
+  
   exit = function() {
     this.container?.setAttribute('data-fullscreen', 'false');
     
@@ -49,6 +50,7 @@ class FullscreenManager {
       this.fallbackFullscreen(false);
     }
   }.bind(this);
+  
   toggle = function() {
     if (this.isFullscreen) {
       this.exit();
@@ -75,6 +77,7 @@ class FullscreenManager {
     });
     this.container?.dispatchEvent(event);
   }.bind(this);
+  
   initializeListeners = function() {
     const events = [
       'fullscreenchange',
@@ -106,9 +109,10 @@ class FullscreenManager {
     return this.isFullscreen;
   }
 }
+
 class StickyHeaderManager {
   constructor() {
-    this.navbarHeight = 60; // Default navbar height in pixels
+    this.navbarHeight = 60;
     this.stickyHeader = document.getElementById('stickyHeader');
     this.breadcrumbs = document.getElementById('pathBreadcrumb');
     this.toolbar = document.getElementById('coderToolBarWrapper');
@@ -122,16 +126,13 @@ class StickyHeaderManager {
   }
   
   init() {
-    // Calculate navbar height
     const navbar = document.querySelector('.navbar');
     if (navbar) {
       this.navbarHeight = navbar.offsetHeight;
     }
     
-    // Set initial positions
     this.updatePositions();
     
-    // Add scroll listener
     window.addEventListener('scroll', () => this.handleScroll());
     window.addEventListener('resize', () => this.updatePositions());
   }
@@ -142,10 +143,8 @@ class StickyHeaderManager {
     const headerRect = this.stickyHeader.getBoundingClientRect();
     const toolbarRect = this.toolbar.getBoundingClientRect();
     
-    // Position toolbar right below the header
     this.toolbar.style.top = `${headerRect.height}px`;
     
-    // Update CSS custom properties
     document.documentElement.style.setProperty('--navbar-height', `${this.navbarHeight}px`);
     document.documentElement.style.setProperty('--header-height', `${headerRect.height}px`);
     document.documentElement.style.setProperty('--toolbar-height', `${toolbarRect.height}px`);
@@ -155,22 +154,18 @@ class StickyHeaderManager {
     const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
     const scrollDelta = scrollTop - this.lastScrollTop;
     
-    // Get elements
     const breadcrumbs = document.getElementById('breadCrumbsContainer');
     const header = document.getElementById('stickyHeader');
     const toolbar = document.getElementById('coderToolBarWrapper');
     
     if (!breadcrumbs || !header || !toolbar) return;
     
-    // Calculate when breadcrumbs should start hiding
     const breadcrumbsBottom = breadcrumbs.offsetTop + breadcrumbs.offsetHeight;
     
     if (scrollTop > breadcrumbsBottom - this.navbarHeight) {
-      // Breadcrumbs should hide
       breadcrumbs.classList.add('hidden');
       document.body.classList.add('header-is-sticky');
       
-      // Make header and toolbar sticky
       header.style.position = 'fixed';
       header.style.top = '0';
       header.style.left = '0';
@@ -185,7 +180,6 @@ class StickyHeaderManager {
       
       this.isSticky = true;
     } else {
-      // Reset to normal
       breadcrumbs.classList.remove('hidden');
       document.body.classList.remove('header-is-sticky');
       
@@ -196,16 +190,13 @@ class StickyHeaderManager {
       this.isSticky = false;
     }
     
-    // Handle scroll direction for hiding/showing
     if (Math.abs(scrollDelta) > 5) {
       if (scrollDelta > 0 && scrollTop > this.scrollThreshold) {
-        // Scrolling down
         if (this.isSticky) {
           header.style.transform = 'translateY(-100%)';
           toolbar.style.transform = 'translateY(-100%)';
         }
       } else {
-        // Scrolling up
         header.style.transform = 'translateY(0)';
         toolbar.style.transform = 'translateY(0)';
       }
@@ -213,22 +204,8 @@ class StickyHeaderManager {
     
     this.lastScrollTop = scrollTop;
   }
-  
-  updateStickyState(forceSticky = false) {
-    if (forceSticky || window.scrollY > this.navbarHeight) {
-      this.isSticky = true;
-      document.body.classList.add('header-is-sticky');
-    } else {
-      this.isSticky = false;
-      document.body.classList.remove('header-is-sticky');
-    }
-  }
 }
 
-
-
-////  D E P E N D E N C I E S   ////
-////////////////////////////////////
 const SUPPORTED_LANGUAGES = [
   { value: "javascript", label: "JavaScript", ext: ["js", "jsx"] },
   { value: "typescript", label: "TypeScript", ext: ["ts", "tsx"] },
@@ -250,6 +227,7 @@ const SUPPORTED_LANGUAGES = [
   { value: "php", label: "PHP", ext: ["php"] },
   { value: "swift", label: "Swift", ext: ["swift"] },
 ];
+
 const CODEMIRROR_MODES = {
   javascript: "javascript",
   typescript: "javascript",
@@ -272,22 +250,16 @@ const CODEMIRROR_MODES = {
   swift: "swift",
 };
 
-
 class CodeViewEditor {
-///////////  S E T U P  ////////////
-////////////////////////////////////
   constructor() {
     this.currentFile = null;
     this.fileData = null;
     this.codeMirror = null;
-
-    this.stickyHeaderManager = null;
-    
     this.isEditing = false;
     this.isLoading = false;
     this.isInitialized = false;
     this.searchActive = false;
-    this.marks = []; // Store search marks
+    this.marks = [];
     
     this.originalContent = "";
     this.languages = SUPPORTED_LANGUAGES;
@@ -296,8 +268,8 @@ class CodeViewEditor {
     this.searchMatches = [];
     this.elements = {};
     this.fullscreenManager = null;
+    this.stickyHeaderManager = null;
     
-    // State management
     this.state = {
       fontSize: 10,
       wrapLines: false,
@@ -307,7 +279,6 @@ class CodeViewEditor {
       autoSaveInterval: null,
     };
     
-    // History management
     this.undoHistory = [];
     this.redoHistory = [];
     this.lastCursorPosition = null;
@@ -315,10 +286,7 @@ class CodeViewEditor {
     
     this.boundEventHandlers = {};
     
-    // Initialize global event listeners
     this.setupGlobalEventListeners();
-    
-    // Header Scroll Observer
     this.headerIntersectionObserver = null;
   }
   
@@ -330,14 +298,12 @@ class CodeViewEditor {
     
     filePage.innerHTML = AppAssets.templates.editor();
     this.injectPopover();
-
     this.injectNewFileDropdown();
-    
     this.cacheElements();
     this.bindElementEvents();
+    this.setupNewFileButton();
     
     this.fullscreenManager = new FullscreenManager(".editorContainer");
-
     this.stickyHeaderManager = new StickyHeaderManager();
     
     if (typeof CodeMirror !== "undefined") {
@@ -348,9 +314,9 @@ class CodeViewEditor {
     
     this.loadUserPreferences();
     this.setupAutoSave();
-    this.setupStickyHeader();
     this.isInitialized = true;
   }.bind(this);
+  
   cacheElements = function() {
     const elementIds = {
       filePage: '.pages[data-page="file"]',
@@ -399,6 +365,7 @@ class CodeViewEditor {
       statusIndicator: "statusIndicator",
       lastSaved: "lastSaved",
       languageBadge: "languageBadge",
+      languageBadgeSmall: "languageBadgeSmall",
       fileUploadInput: "fileUploadInput",
       editSaveButton: "editSaveButton",
       editSaveLabel: "editSaveLabel",
@@ -411,23 +378,15 @@ class CodeViewEditor {
       headerScrollLeft: "headerScrollLeft",
       headerScrollRight: "headerScrollRight",
       stickyHeader: "stickyHeader",
-      
-      
+      breadCrumbsWrapper: "breadCrumbsWrapper",
+      breadCrumbsContainer: "breadCrumbsContainer",
+      coderToolBarWrapper: "coderToolBarWrapper",
+      coderToolBar: "coderToolBar",
       newFileDropdown: "newFileDropdown",
       newFileWithRepo: "newFileWithRepo",
       newFileWithoutRepo: "newFileWithoutRepo",
-      breadCrumbsWrapper: "breadCrumbsWrapper",
-      breadCrumbsContainer: "breadCrumbsContainer",
-      headerScrollContainer: "headerScrollContainer",
-      headerScrollLeft: "headerScrollLeft",
-      headerScrollRight: "headerScrollRight",
-      stickyHeader: "stickyHeader",
-      coderToolBarWrapper: "coderToolBarWrapper",
-      coderToolBar: "coderToolBar",
     };
-
-/**    
-    // Cache all elements
+    
     Object.entries(elementIds).forEach(([key, id]) => {
       if (key === "filePage") {
         this.elements[key] = document.querySelector(id);
@@ -435,36 +394,19 @@ class CodeViewEditor {
         this.elements[key] = document.getElementById(id);
       }
     });
-**/
-
+    
     this.elements.pathBreadcrumb = document.getElementById('pathBreadcrumb');
-
-
-    // Cache the editor header separately (it's a class selector)
-    this.elements.coderHeader = document.querySelector('.coderHeader');
-
-    // Cache all elements
-    Object.entries(elementIds).forEach(([key, id]) => {
-      this.elements[key] = document.getElementById(id);
-    });
-
-
-   
     this.populateLanguageDropdown();
   }.bind(this);
+  
   bindElementEvents = function() {
-    // Editor mode controls
     this.bindEvent(this.elements.editModeBtn, "click", () => this.enterEditMode());
     this.bindEvent(this.elements.viewModeBtn, "click", () => this.exitEditMode());
-    
-    // Editing controls
     this.bindEvent(this.elements.undoBtn, "click", () => this.undo());
     this.bindEvent(this.elements.redoBtn, "click", () => this.redo());
     this.bindEvent(this.elements.formatBtn, "click", () => this.formatCode());
     this.bindEvent(this.elements.foldAllBtn, "click", () => this.foldAll());
     this.bindEvent(this.elements.unfoldAllBtn, "click", () => this.unfoldAll());
-    
-    // View controls
     this.bindEvent(this.elements.searchBtn, "click", () => this.openSearch());
     this.bindEvent(this.elements.wrapBtn, "click", () => this.toggleWrapLines());
     this.bindEvent(this.elements.copyBtn, "click", () => this.copyCode());
@@ -472,28 +414,29 @@ class CodeViewEditor {
     this.bindEvent(this.elements.uploadBtn, "click", () => this.elements.fileUploadInput?.click());
     this.bindEvent(this.elements.themeBtn, "click", () => this.toggleTheme());
     this.bindEvent(this.elements.showInvisiblesBtn, "click", () => this.toggleInvisibles());
-    
-    // Font size controls
     this.bindEvent(this.elements.fontDecreaseBtn, "click", () => this.adjustFontSize(-2));
     this.bindEvent(this.elements.fontIncreaseBtn, "click", () => this.adjustFontSize(2));
-    
-    // Fullscreen
     this.bindEvent(this.elements.fullscreenBtn, "click", () => this.toggleFullscreen());
-    
-    // File upload
     this.bindEvent(this.elements.fileUploadInput, "change", (e) => this.handleFileUpload(e));
-    
-    // Search controls
     this.bindEvent(this.elements.searchPrevBtn, "click", () => this.findPrevious());
     this.bindEvent(this.elements.searchNextBtn, "click", () => this.findNext());
     this.bindEvent(this.elements.closeSearchBtn, "click", () => this.closeSearch());
+    this.bindEvent(this.elements.headerScrollLeft, "click", () => this.scrollHeader('left'));
+    this.bindEvent(this.elements.headerScrollRight, "click", () => this.scrollHeader('right'));
+    this.bindEvent(this.elements.headerScrollContainer, "scroll", () => this.updateHeaderScrollButtons());
     
-    // Language dropdown (triggered by extension button)
+    if (this.elements.newFileWithRepo) {
+      this.bindEvent(this.elements.newFileWithRepo, "click", () => this.handleNewFileWithRepo());
+    }
+    
+    if (this.elements.newFileWithoutRepo) {
+      this.bindEvent(this.elements.newFileWithoutRepo, "click", () => this.handleNewFileWithoutRepo());
+    }
+    
     this.bindEvent(this.elements.fileExtensionBtn, "click", (e) => {
       e.stopPropagation();
       this.elements.languageDropdown?.classList.toggle("hide");
       
-      // Position logic
       if (!this.elements.languageDropdown.classList.contains("hide")) {
          const rect = this.elements.fileExtensionBtn.getBoundingClientRect();
          this.elements.languageDropdown.style.top = `${rect.bottom + 5}px`;
@@ -501,12 +444,6 @@ class CodeViewEditor {
       }
     });
     
-    // Header Scroll controls
-    this.bindEvent(this.elements.headerScrollLeft, "click", () => this.scrollHeader('left'));
-    this.bindEvent(this.elements.headerScrollRight, "click", () => this.scrollHeader('right'));
-    this.bindEvent(this.elements.headerScrollContainer, "scroll", () => this.updateHeaderScrollButtons());
-    
-    // More options dropdown
     this.bindEvent(this.elements.moreOptionsBtn, "click", (e) => {
       e.stopPropagation();
       const dropdown = this.elements.moreOptionsDropdown;
@@ -520,7 +457,6 @@ class CodeViewEditor {
       dropdown.classList.toggle("hide");
     });
     
-    // Commit/save controls
     this.bindEvent(this.elements.editSaveButton, "click", (e) => {
       e.stopPropagation();
       if (!this.isEditing) {
@@ -533,53 +469,35 @@ class CodeViewEditor {
     this.bindEvent(this.elements.commitCancelBtn, "click", () => this.hideCommitPopup());
     this.bindEvent(this.elements.commitSaveBtn, "click", () => this.saveChanges(true));
     
-    // Search input events
-    this.bindEvent(this.elements.searchInput, "input", 
-      () => this.performSearch(this.elements.searchInput.value));
-    
+    this.bindEvent(this.elements.searchInput, "input", () => this.performSearch(this.elements.searchInput.value));
     this.bindEvent(this.elements.searchInput, "keydown", (e) => {
       if (e.key === "Escape") this.closeSearch();
       else if (e.key === "Enter" && e.shiftKey) this.findPrevious();
       else if (e.key === "Enter") this.findNext();
     });
     
-    // Commit message input
     this.bindEvent(this.elements.commitMessage, "keydown", (e) => {
       if (e.key === "Enter" && (e.ctrlKey || e.metaKey)) {
         e.preventDefault();
         this.saveChanges(true);
       }
     });
-
-
-
-
-    this.bindEvent(this.elements.newFileWithRepo, 'click', () => this.handleNewFileWithRepo());
-    this.bindEvent(this.elements.newFileWithoutRepo, 'click', () => this.handleNewFileWithoutRepo());
-
-
-
- 
-    // Global click handlers
+    
     document.addEventListener("click", (e) => {
-      if (this.elements.commitDropdown &&
-        !this.elements.commitDropdown.contains(e.target) &&
-        !this.elements.editSaveButton.contains(e.target)) {
+      const newFileButton = document.querySelector('[data-action="new-file"], #newFileButton');
+      const dropdown = this.elements.newFileDropdown;
+      
+      if (dropdown && !dropdown.contains(e.target) && newFileButton && !newFileButton.contains(e.target)) {
+        dropdown.classList.add("hide");
+      }
+      
+      if (this.elements.commitDropdown && !this.elements.commitDropdown.contains(e.target) && !this.elements.editSaveButton.contains(e.target)) {
         this.hideCommitPopup();
       }
       this.elements.languageDropdown?.classList.add("hide");
       this.elements.moreOptionsDropdown?.classList.add("hide");
-      
-      if (this.elements.newFileDropdown && 
-          !this.elements.newFileDropdown.contains(e.target) &&
-          !e.target.closest('[data-action="new-file"]')) {
-        this.elements.newFileDropdown?.classList.add('hide');
-      }
-      
-      
     });
     
-    // Window resize handler
     window.addEventListener("resize", () => {
       if (this.elements.commitDropdown && !this.elements.commitDropdown.classList.contains("hide")) {
         this.calculateDropdownPosition();
@@ -587,83 +505,126 @@ class CodeViewEditor {
       this.updateHeaderScrollButtons();
     });
   }.bind(this);
-
   
-  
-  // Update the setupStickyHeader method
-  setupStickyHeader = function() {
-    // This is now handled by StickyHeaderManager
-    // Just ensure the manager is initialized
-    if (!this.stickyHeaderManager) {
-      this.stickyHeaderManager = new StickyHeaderManager();
+  setupNewFileButton = function() {
+    const newFileButton = document.querySelector('[data-action="new-file"], #newFileButton');
+    
+    if (newFileButton) {
+      const newButton = newFileButton.cloneNode(true);
+      newFileButton.parentNode.replaceChild(newButton, newFileButton);
+      
+      newButton.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        this.showNewFileDropdown(e);
+      });
     }
   }.bind(this);
-
   
-  // Add this method to inject the new file dropdown
   injectNewFileDropdown = function() {
     const existing = document.getElementById('newFileDropdown');
     if (existing) existing.remove();
     
     document.body.insertAdjacentHTML('beforeend', AppAssets.templates.newFileDropdown());
+    
+    this.elements.newFileDropdown = document.getElementById('newFileDropdown');
+    this.elements.newFileWithRepo = document.getElementById('newFileWithRepo');
+    this.elements.newFileWithoutRepo = document.getElementById('newFileWithoutRepo');
   }.bind(this);
   
-  // Add method to update breadcrumbs
-  updateBreadcrumbs = function(repoName = null, path = '') {
-    const breadcrumb = this.elements.pathBreadcrumb;
-    if (!breadcrumb) return;
-    
-    let html = '';
-    
-    if (repoName) {
-      html += `
-        <a href="#" class="breadCrumb" data-action="show-repo-selector">Repositories</a>
-        <span class="navDivider">/</span>
-        <a href="#" class="breadCrumb" data-action="show-explorer">${repoName}</a>
-      `;
-      
-      if (path) {
-        const parts = path.split('/').filter(p => p);
-        let currentPath = '';
-        
-        parts.forEach((part, index) => {
-          currentPath += (currentPath ? '/' : '') + part;
-          html += `
-            <span class="navDivider">/</span>
-            <a href="#" class="breadCrumb" data-path="${currentPath}">${part}</a>
-          `;
-        });
-      }
-      
-      html += `<span class="navDivider">/</span>`;
+  showNewFileDropdown = function(e) {
+    if (!this.elements.newFileDropdown) {
+      this.injectNewFileDropdown();
     }
     
-    html += `<span class="breadCrumb current">${this.currentFile || 'untitled.js'}</span>`;
+    const dropdown = this.elements.newFileDropdown;
+    if (!dropdown) return;
     
-    breadcrumb.innerHTML = html;
+    const isHidden = dropdown.classList.contains('hide');
+    dropdown.classList.toggle('hide', !isHidden);
     
-    // Add event listeners to breadcrumbs
-    breadcrumb.querySelectorAll('[data-action], [data-path]').forEach(el => {
-      el.addEventListener('click', (e) => {
-        e.preventDefault();
-        const action = el.getAttribute('data-action');
-        const path = el.getAttribute('data-path');
+    if (isHidden) {
+      let button;
+      
+      if (e && e.currentTarget) {
+        button = e.currentTarget;
+      } else {
+        button = document.querySelector('[data-action="new-file"], #newFileButton');
+      }
+      
+      if (button) {
+        const rect = button.getBoundingClientRect();
+        const dropdownRect = dropdown.getBoundingClientRect();
         
-        if (action === 'show-repo-selector') {
-          if (typeof window.showRepoSelector === 'function') window.showRepoSelector();
-        } else if (action === 'show-explorer') {
-          if (typeof window.showExplorer === 'function') window.showExplorer();
-        } else if (path) {
-          // Handle path navigation
-          if (typeof window.navigateToPath === 'function') window.navigateToPath(path);
+        let top = rect.bottom + window.scrollY + 5;
+        let left = rect.left + window.scrollX;
+        
+        if (left + dropdownRect.width > window.innerWidth) {
+          left = window.innerWidth - dropdownRect.width - 10;
         }
-      });
-    });
+        
+        if (top + dropdownRect.height > window.innerHeight) {
+          top = rect.top + window.scrollY - dropdownRect.height - 5;
+        }
+        
+        dropdown.style.position = 'fixed';
+        dropdown.style.top = `${top}px`;
+        dropdown.style.left = `${left}px`;
+        dropdown.style.zIndex = '9999';
+      }
+    }
   }.bind(this);
   
-
-
-
+  handleNewFileWithRepo = function() {
+    if (typeof window.showCreateFileModal === 'function') {
+      window.showCreateFileModal();
+    }
+    this.hideNewFileDropdown();
+  }.bind(this);
+  
+  handleNewFileWithoutRepo = function() {
+    this.createNewStandaloneFile();
+    this.hideNewFileDropdown();
+  }.bind(this);
+  
+  createNewStandaloneFile = function() {
+    this.currentFile = 'untitled.js';
+    this.fileData = {
+      content: '// New file\n// Created on ' + new Date().toLocaleDateString() + '\n\n',
+      category: 'General',
+      tags: [],
+      lastModified: Date.now(),
+      lastCommit: 'Initial commit',
+      size: 0
+    };
+    this.originalContent = this.fileData.content;
+    
+    if (this.elements.fileNameInput) {
+      this.elements.fileNameInput.value = 'untitled';
+    }
+    if (this.elements.fileExtensionLabel) {
+      this.elements.fileExtensionLabel.textContent = '.js';
+    }
+    
+    if (this.codeMirror) {
+      this.codeMirror.setValue(this.fileData.content);
+      this.codeMirror.refresh();
+    } else {
+      this.setupCodeMirror();
+    }
+    
+    this.setLanguage('javascript');
+    this.updateStats();
+    this.updateModifiedBadge();
+    this.enterEditMode();
+    this.show();
+  }.bind(this);
+  
+  hideNewFileDropdown = function() {
+    if (this.elements.newFileDropdown) {
+      this.elements.newFileDropdown.classList.add('hide');
+    }
+  }.bind(this);
   
   setupCodeMirror = function() {
     if (!this.fullscreenManager) {
@@ -679,8 +640,7 @@ class CodeViewEditor {
     
     const fontSize = parseInt(localStorage.getItem("editor_fontsize")) || 14;
     const savedTheme = localStorage.getItem("editor_theme");
-    const isDark = savedTheme === "dark" || (!savedTheme && 
-      document.documentElement.getAttribute("data-theme") === "dark");
+    const isDark = savedTheme === "dark" || (!savedTheme && document.documentElement.getAttribute("data-theme") === "dark");
     
     this.codeMirror = CodeMirror(this.elements.codeMirrorContainer, {
       value: "",
@@ -717,7 +677,6 @@ class CodeViewEditor {
     this.updateThemeIcon(isDark);
     this.setCodeMirrorFontSize(fontSize);
     
-    // CodeMirror event handlers
     this.codeMirror.on("change", () => {
       this.updateStats();
       this.updateModifiedBadge();
@@ -725,10 +684,12 @@ class CodeViewEditor {
     
     this.codeMirror.on("cursorActivity", () => this.updateCursorPosition());
   }.bind(this);
+  
   setCodeMirrorMode = function(langValue) {
     if (!this.codeMirror) return;
     this.codeMirror.setOption("mode", CODEMIRROR_MODES[langValue] || "text");
   }.bind(this);
+  
   setupGlobalEventListeners = function() {
     document.addEventListener("keydown", (e) => {
       const ctrl = e.ctrlKey || e.metaKey;
@@ -750,23 +711,23 @@ class CodeViewEditor {
       }
     });
   }.bind(this);
+  
   setupAutoSave = function() {
     if (this.state.autoSave) {
       this.state.autoSaveInterval = setInterval(() => {
-        if (this.isEditing && this.codeMirror && 
-            this.codeMirror.getValue() !== this.originalContent) {
+        if (this.isEditing && this.codeMirror && this.codeMirror.getValue() !== this.originalContent) {
           this.autoSave();
         }
       }, 30000);
     }
   }.bind(this);
+  
   setLanguage = function(langValue) {
     const lang = this.languages.find((l) => l.value === langValue);
     if (!lang) return;
     
     this.currentLanguage = langValue;
     
-    // Update the extension label on the button
     const ext = lang.ext[0];
     if (this.elements.fileExtensionLabel) {
         this.elements.fileExtensionLabel.textContent = `.${ext}`;
@@ -776,10 +737,14 @@ class CodeViewEditor {
       this.elements.languageBadge.innerHTML = AppAssets.icons.code(lang.label);
     }
     
+    if (this.elements.languageBadgeSmall) {
+      this.elements.languageBadgeSmall.textContent = lang.label;
+    }
+    
     this.elements.languageDropdown?.classList.add("hide");
     this.setCodeMirrorMode(langValue);
   }.bind(this);
-
+  
   loadUserPreferences = function() {
     const wrap = localStorage.getItem("editor_wrapLines");
     if (wrap !== null) {
@@ -788,6 +753,7 @@ class CodeViewEditor {
       this.elements.wrapBtn?.classList.toggle("active", this.state.wrapLines);
     }
   }.bind(this);
+  
   detectLanguageFromExtension = function(filename) {
     const ext = filename.split(".").pop().toLowerCase();
     
@@ -798,10 +764,6 @@ class CodeViewEditor {
     return "javascript";
   }.bind(this);
   
-
-
-////////  O V E R L A Y S  /////////
-////////////////////////////////////
   showCommitPopup = function(e) {
     if (!this.elements.commitDropdown) return;
     
@@ -820,6 +782,7 @@ class CodeViewEditor {
       this.elements.commitMessage.value = `Update ${this.currentFile}`;
     }
   }.bind(this);
+  
   hideCommitPopup = function() {
     if (!this.elements.commitDropdown) return;
     
@@ -828,12 +791,12 @@ class CodeViewEditor {
       this.elements.commitMessage.value = "";
     }
   }.bind(this);
-
+  
   injectPopover = function() {
     document.body.insertAdjacentHTML('beforeend', AppAssets.templates.commitDropdown());
     this.elements.commitDropdown = document.getElementById("commitDropdown");
   }.bind(this);
-
+  
   populateLanguageDropdown = function() {
     if (!this.elements.languageList) return;
     
@@ -847,6 +810,7 @@ class CodeViewEditor {
       this.elements.languageList.appendChild(btn);
     });
   }.bind(this);
+  
   calculateDropdownPosition = function() {
     if (!this.elements.editSaveButton || !this.elements.commitDropdown) return;
     
@@ -860,42 +824,37 @@ class CodeViewEditor {
     dropdown.style.top = `${top}px`;
     dropdown.style.left = `${left}px`;
   }.bind(this);
-
+  
   showLoadingSpinner = function() {
     this.elements.loadingSpinner?.setAttribute("data-active", "true");
   }.bind(this);
+  
   hideLoadingSpinner = function() {
     this.elements.loadingSpinner?.setAttribute("data-active", "false");
   }.bind(this);
+  
   coderLoading = function(timer = 1500) {
     this.showLoadingSpinner();
   
     setTimeout(() => {
       this.hideLoadingSpinner();
    }, timer);
-}.bind(this);
-
-
-
-
-
-//////  B A C K G R O U N D  ///////
-////////////////////////////////////
-  displayFile = function(filename, fileData) {
+  }.bind(this);
+  
+  displayFile = function(filename, fileData, repoName = null, path = '') {
     if (!this.isInitialized) this.init();
     
     this.currentFile = filename;
     this.fileData = fileData;
     this.originalContent = fileData.content || "";
     
-    // Split filename into name and extension
     const lastDotIndex = filename.lastIndexOf('.');
     let name = filename;
     let ext = "";
     
     if (lastDotIndex !== -1) {
         name = filename.substring(0, lastDotIndex);
-        ext = filename.substring(lastDotIndex); // includes dot
+        ext = filename.substring(lastDotIndex);
     }
 
     if (this.elements.fileNameInput) {
@@ -908,6 +867,8 @@ class CodeViewEditor {
     
     const detectedLang = this.detectLanguageFromExtension(filename);
     this.setLanguage(detectedLang);
+    
+    this.updateBreadcrumbs(repoName, path);
     
     if (!this.codeMirror) {
       this.setupCodeMirror();
@@ -929,13 +890,58 @@ class CodeViewEditor {
     this.exitEditMode();
     this.updateModifiedBadge();
     this.show();
-    
-    this.updateBreadcrumbs(repoName, path);
-    
     this.updateHeaderScrollButtons();
   }.bind(this);
-
-
+  
+  updateBreadcrumbs = function(repoName = null, path = '') {
+    const breadcrumb = this.elements.pathBreadcrumb;
+    if (!breadcrumb) return;
+    
+    let html = '';
+    
+    if (repoName) {
+      html += `
+        <a href="#" class="breadCrumb" data-action="show-repo-selector">Repositories</a>
+        <span class="navDivider">/</span>
+        <a href="#" class="breadCrumb" data-action="show-explorer">${repoName}</a>
+      `;
+      
+      if (path) {
+        const parts = path.split('/').filter(p => p);
+        let currentPath = '';
+        
+        parts.forEach((part, index) => {
+          currentPath += (currentPath ? '/' : '') + part;
+          html += `
+            <span class="navDivider">/</span>
+            <a href="#" class="breadCrumb" data-path="${currentPath}">${part}</a>
+          `;
+        });
+      }
+      
+      html += `<span class="navDivider">/</span>`;
+    }
+    
+    html += `<span class="breadCrumb current">${this.currentFile || 'untitled.js'}</span>`;
+    
+    breadcrumb.innerHTML = html;
+    
+    breadcrumb.querySelectorAll('[data-action], [data-path]').forEach(el => {
+      el.addEventListener('click', (e) => {
+        e.preventDefault();
+        const action = el.getAttribute('data-action');
+        const path = el.getAttribute('data-path');
+        
+        if (action === 'show-repo-selector') {
+          if (typeof window.showRepoSelector === 'function') window.showRepoSelector();
+        } else if (action === 'show-explorer') {
+          if (typeof window.showExplorer === 'function') window.showExplorer();
+        } else if (path) {
+          if (typeof window.navigateToPath === 'function') window.navigateToPath(path);
+        }
+      });
+    });
+  }.bind(this);
   
   performSave = function(commitMessage) {
     this.coderLoading(1500);
@@ -948,8 +954,7 @@ class CodeViewEditor {
         this.fileData.lastCommit = commitMessage;
         this.fileData.size = new Blob([newContent]).size;
         
-        const filePath = (window.currentState?.path ? 
-          window.currentState.path + "/" : "") + this.currentFile;
+        const filePath = (window.currentState?.path ? window.currentState.path + "/" : "") + this.currentFile;
         
         if (typeof LocalStorageManager !== "undefined") {
           LocalStorageManager.saveFile(
@@ -968,15 +973,14 @@ class CodeViewEditor {
         this.updateLastSaved(true);
         this.updateModifiedBadge();
         this.exitEditMode();
- //       this.hideLoadingSpinner();
       } catch (error) {
- //       this.hideLoadingSpinner();
         if (typeof showErrorMessage === "function") {
           showErrorMessage(`Save failed: ${error.message}`);
         }
       }
     }, 300);
   }.bind(this);
+  
   saveChanges = function(withCommit = false) {
     if (!this.currentFile || !this.fileData) return;
     
@@ -994,7 +998,6 @@ class CodeViewEditor {
       this.performSave(commitMessage);
     } else {
       this.performSave("Saved changes");
-      
     }
   }.bind(this);
   
@@ -1004,7 +1007,6 @@ class CodeViewEditor {
     
     const reader = new FileReader();
     reader.onload = (event) => {
-      
       this.coderLoading(3500);
       
       const content = event.target?.result;
@@ -1012,7 +1014,6 @@ class CodeViewEditor {
         this.codeMirror.setValue(content);
         this.currentFile = file.name;
         
-        // Update input fields
         const lastDotIndex = file.name.lastIndexOf('.');
         let name = file.name;
         let ext = "";
@@ -1037,14 +1038,11 @@ class CodeViewEditor {
     reader.readAsText(file);
   }.bind(this);
   
- 
-
-//////  A P P E A R E N C E  ///////
-////////////////////////////////////  
   show = function() {
     this.elements.filePage?.classList.remove("hide");
     setTimeout(() => this.codeMirror?.refresh(), 50);
   }.bind(this);
+  
   hide = function() {
     this.elements.filePage?.classList.add("hide");
   }.bind(this);
@@ -1067,8 +1065,8 @@ class CodeViewEditor {
       this.codeMirror.focus();
     }
   }.bind(this);
+  
   exitEditMode = function() {
-    
     this.coderLoading(1500);
     
     this.isEditing = false;
@@ -1096,10 +1094,6 @@ class CodeViewEditor {
     }, 100);
   }.bind(this);
   
-
-
-//////  F O R M A T T I N G  ///////
-////////////////////////////////////
   copyCode = function() {
     if (!this.codeMirror) return;
     
@@ -1137,7 +1131,6 @@ class CodeViewEditor {
       const formatted = JSON.stringify(JSON.parse(content), null, 2);
       this.codeMirror.setValue(formatted);
     } catch (e) {
-      // Not JSON, could add other formatters here
     }
   }.bind(this);
   
@@ -1153,6 +1146,7 @@ class CodeViewEditor {
       }
     });
   }.bind(this);
+  
   unfoldAll = function() {
     if (!this.codeMirror) return;
     
@@ -1169,14 +1163,11 @@ class CodeViewEditor {
   undo = function() {
     this.codeMirror?.undo();
   }.bind(this);
+  
   redo = function() {
     this.codeMirror?.redo();
   }.bind(this);
-
-
-
-//////////  S E A R C H E S  ///////
-////////////////////////////////////  
+  
   openSearch = function() {
     if (!this.codeMirror) return;
     
@@ -1188,11 +1179,13 @@ class CodeViewEditor {
       this.elements.searchInput?.select();
     }, 50);
   }.bind(this);
+  
   closeSearch = function() {
     this.searchActive = false;
     this.elements.searchPanel?.classList.add("hide");
     this.clearSearch();
   }.bind(this);
+  
   clearSearch = function() {
     if (this.elements.searchInput) {
       this.elements.searchInput.value = "";
@@ -1206,7 +1199,7 @@ class CodeViewEditor {
      this.marks.forEach(mark => mark.clear());
      this.marks = [];
   }.bind(this);
-
+  
   performSearch = function(query) {
     if (!this.codeMirror || !query) return;
     
@@ -1218,7 +1211,6 @@ class CodeViewEditor {
         const from = cursor.from();
         const to = cursor.to();
         
-        // Push match for navigation
         this.searchMatches.push({
             from: from,
             to: to,
@@ -1226,7 +1218,6 @@ class CodeViewEditor {
             ch: from.ch
         });
         
-        // Highlight matches in yellow (marker)
         this.marks.push(this.codeMirror.markText(from, to, {
             className: "search-highlight"
         }));
@@ -1249,14 +1240,14 @@ class CodeViewEditor {
   findPrevious = function() {
     if (this.searchMatches.length === 0) return;
     
-    this.currentSearchIndex = (this.currentSearchIndex - 1 + this.searchMatches.length) % 
-      this.searchMatches.length;
+    this.currentSearchIndex = (this.currentSearchIndex - 1 + this.searchMatches.length) % this.searchMatches.length;
     this.highlightMatch(this.currentSearchIndex);
     
      if (this.elements.searchMatches) {
          this.elements.searchMatches.textContent = `${this.currentSearchIndex + 1}/${this.searchMatches.length}`;
       }
   }.bind(this);
+  
   findNext = function() {
     if (this.searchMatches.length === 0) return;
     
@@ -1267,12 +1258,12 @@ class CodeViewEditor {
          this.elements.searchMatches.textContent = `${this.currentSearchIndex + 1}/${this.searchMatches.length}`;
       }
   }.bind(this);
+  
   highlightMatch = function(index) {
     if (!this.codeMirror || index < 0 || index >= this.searchMatches.length) return;
     
     const match = this.searchMatches[index];
     
-    // Select the current match (blue background)
     this.codeMirror.setSelection(match.from, match.to);
     
     this.codeMirror.scrollIntoView({
@@ -1280,11 +1271,7 @@ class CodeViewEditor {
       ch: match.ch
     }, 200);
   }.bind(this);
-
-
-
-//////////  S E T T I N G S  ///////
-////////////////////////////////////
+  
   setCodeMirrorFontSize = function(size) {
     if (!this.codeMirror) return;
     
@@ -1298,6 +1285,7 @@ class CodeViewEditor {
     localStorage.setItem("editor_fontsize", size);
     this.codeMirror.refresh();
   }.bind(this);
+  
   adjustFontSize = function(change) {
     const newSize = Math.max(10, Math.min(24, this.state.fontSize + change));
     if (newSize !== this.state.fontSize) {
@@ -1308,10 +1296,9 @@ class CodeViewEditor {
   updateThemeIcon = function(isDark) {
     if (!this.elements.themeIcon) return;
     
-    this.elements.themeIcon.innerHTML = isDark ? 
-      AppAssets.icons.moon() : 
-      AppAssets.icons.sun();
+    this.elements.themeIcon.innerHTML = isDark ? AppAssets.icons.moon() : AppAssets.icons.sun();
   }.bind(this);
+  
   toggleTheme = function() {
     const html = document.documentElement;
     const isDark = html.getAttribute("data-theme") === "dark";
@@ -1329,15 +1316,12 @@ class CodeViewEditor {
     this.codeMirror.setOption("lineWrapping", this.state.wrapLines);
     this.elements.wrapBtn?.classList.toggle("active", this.state.wrapLines);
   }.bind(this);
+  
   toggleInvisibles = function() {
     this.state.showInvisibles = !this.state.showInvisibles;
     this.elements.showInvisiblesBtn?.classList.toggle("active", this.state.showInvisibles);
   }.bind(this);
-
-
-
-////////////  U P D A T E S  ///////
-////////////////////////////////////
+  
   updateStats = function() {
     if (!this.codeMirror) return;
     
@@ -1361,6 +1345,7 @@ class CodeViewEditor {
       this.elements.fileSize.textContent = sizeStr;
     }
   }.bind(this);
+  
   updateCursorPosition = function() {
     if (!this.codeMirror) return;
     
@@ -1374,12 +1359,14 @@ class CodeViewEditor {
       this.elements.cursorCol.textContent = cursor.ch + 1;
     }
   }.bind(this);
+  
   updateModifiedBadge = function() {
     if (!this.codeMirror) return;
     
     const isModified = this.codeMirror.getValue() !== this.originalContent;
     this.elements.modifiedIndicator?.classList.toggle("hide", !isModified);
   }.bind(this);
+  
   updateLastSaved = function(saved) {
     if (!this.elements.lastSaved) return;
     
@@ -1393,8 +1380,7 @@ class CodeViewEditor {
       this.elements.lastSaved.textContent = "Never";
     }
   }.bind(this);
-
-  // Header Scroll Logic
+  
   scrollHeader = function(direction) {
     const container = this.elements.headerScrollContainer;
     if (!container) return;
@@ -1406,7 +1392,7 @@ class CodeViewEditor {
         container.scrollBy({ left: scrollAmount, behavior: 'smooth' });
     }
   }.bind(this);
-
+  
   updateHeaderScrollButtons = function() {
     const container = this.elements.headerScrollContainer;
     const leftBtn = this.elements.headerScrollLeft;
@@ -1414,140 +1400,24 @@ class CodeViewEditor {
     
     if (!container || !leftBtn || !rightBtn) return;
     
-    // Disable left button if at start
     if (container.scrollLeft <= 0) {
         leftBtn.classList.add('disabled');
     } else {
         leftBtn.classList.remove('disabled');
     }
     
-    // Disable right button if at end
-    // Use 1px buffer for subpixel scrolling issues
     if (container.scrollLeft + container.clientWidth >= container.scrollWidth - 1) {
         rightBtn.classList.add('disabled');
     } else {
         rightBtn.classList.remove('disabled');
     }
   }.bind(this);
-
   
-  // Update header scroll shadows
-  updateHeaderScrollShadows = function() {
-     const coderHeader = this.elements.coderHeader || document.querySelector('.coderHeader');
-     if (!coderHeader) return;
-     
-     const scrollLeft = coderHeader.scrollLeft;
-     const scrollWidth = coderHeader.scrollWidth;
-     const clientWidth = coderHeader.clientWidth;
-     const maxScroll = scrollWidth - clientWidth;
-     
-     // Remove all shadow classes
-     coderHeader.classList.remove('has-scroll-left', 'has-scroll-right', 'has-scroll-both');
-     
-     // Add appropriate shadow classes
-     const hasScrollLeft = scrollLeft > 5;
-     const hasScrollRight = scrollLeft < (maxScroll - 5);
-     
-     if (hasScrollLeft && hasScrollRight) {
-         coderHeader.classList.add('has-scroll-both');
-     } else if (hasScrollLeft) {
-         coderHeader.classList.add('has-scroll-left');
-     } else if (hasScrollRight) {
-         coderHeader.classList.add('has-scroll-right');
-     }
-  }.bind(this);
-
-
-
-
-  // Add these new methods for file creation
-  handleNewFileWithRepo = function() {
-    // Show the existing create file modal
-    if (typeof window.showCreateFileModal === 'function') {
-      window.showCreateFileModal();
-    }
-    this.hideNewFileDropdown();
-  }.bind(this);
-  
-  handleNewFileWithoutRepo = function() {
-    // Create a new standalone file
-    this.createNewStandaloneFile();
-    this.hideNewFileDropdown();
-  }.bind(this);
-  
-  createNewStandaloneFile = function() {
-    // Reset to new file state
-    this.currentFile = 'untitled.js';
-    this.fileData = {
-      content: '// New file\n// Created on ' + new Date().toLocaleDateString() + '\n\n',
-      category: 'General',
-      tags: [],
-      lastModified: Date.now(),
-      lastCommit: 'Initial commit',
-      size: 0
-    };
-    this.originalContent = this.fileData.content;
-    
-    // Update UI
-    if (this.elements.fileNameInput) {
-      this.elements.fileNameInput.value = 'untitled';
-    }
-    if (this.elements.fileExtensionLabel) {
-      this.elements.fileExtensionLabel.textContent = '.js';
-    }
-    
-    // Set up editor
-    if (this.codeMirror) {
-      this.codeMirror.setValue(this.fileData.content);
-      this.codeMirror.refresh();
-    } else {
-      this.setupCodeMirror();
-    }
-    
-    this.setLanguage('javascript');
-    this.updateStats();
-    this.updateModifiedBadge();
-    this.enterEditMode();
-    this.show();
-  }.bind(this);
-  
-  showNewFileDropdown = function(e) {
-    if (!this.elements.newFileDropdown) return;
-    
-    const button = e.currentTarget || document.querySelector('[data-action="new-file"]');
-    if (!button) return;
-    
-    this.elements.newFileDropdown.classList.remove('hide');
-    
-    // Position dropdown
-    const rect = button.getBoundingClientRect();
-    const dropdown = this.elements.newFileDropdown;
-    dropdown.style.top = `${rect.bottom + window.scrollY + 5}px`;
-    dropdown.style.left = `${rect.left + window.scrollX}px`;
-  }.bind(this);
-  
-  hideNewFileDropdown = function() {
-    if (this.elements.newFileDropdown) {
-      this.elements.newFileDropdown.classList.add('hide');
-    }
-  }.bind(this);
-
-
-
-
-
-
-
-
-
-
-//////////  H E L P E R S  ///////
-//////////////////////////////////// 
   bindEvent = function(element, event, handler) {
     if (!element) return;
     element.addEventListener(event, handler);
   }.bind(this);
-
+  
   destroy = function() {
     if (this.state.autoSaveInterval) {
       clearInterval(this.state.autoSaveInterval);
@@ -1559,10 +1429,9 @@ class CodeViewEditor {
     
     this.isInitialized = false;
     this.elements.commitDropdown?.remove();
+    this.elements.newFileDropdown?.remove();
   }.bind(this);
 }
-
-
 
 window.CodeViewEditor = CodeViewEditor;
 window.coderViewEdit = new CodeViewEditor();
@@ -1572,14 +1441,3 @@ document.addEventListener("DOMContentLoaded", () => {
     window.coderViewEdit.init();
   }
 });
-/**
- * 
- *  C R E A T E D  B Y
- * 
- *  William Hanson 
- * 
- *  Chevrolay@Outlook.com
- * 
- *  m.me/Chevrolay
- * 
- */
