@@ -110,101 +110,209 @@ class FullscreenManager {
   }
 }
 
+
+
 class StickyHeaderManager {
   constructor() {
-    this.navbarHeight = 60;
-    this.stickyHeader = document.getElementById('stickyHeader');
-    this.breadcrumbs = document.getElementById('pathBreadcrumb');
+    this.navbar = document.querySelector('.navbar');
+    this.navbarHeight = this.navbar ? this.navbar.offsetHeight : 60;
+    this.breadcrumbs = document.getElementById('breadCrumbsWrapper');
+    this.header = document.getElementById('stickyHeader');
     this.toolbar = document.getElementById('coderToolBarWrapper');
-    this.lastScrollTop = 0;
-    this.scrollThreshold = 100;
-    this.isSticky = false;
     
-    if (this.stickyHeader && this.breadcrumbs) {
+    this.lastScrollTop = 0;
+    this.scrollThreshold = 10;
+    this.headerHeight = 44;
+    this.toolbarHeight = 40;
+    this.breadcrumbHeight = 44;
+    
+    this.states = {
+      normal: 0,
+      headerSticky: 1,
+      headerOnly: 2
+    };
+    this.currentState = this.states.normal;
+    
+    if (this.header && this.toolbar) {
       this.init();
     }
   }
   
   init() {
-    const navbar = document.querySelector('.navbar');
-    if (navbar) {
-      this.navbarHeight = navbar.offsetHeight;
-    }
-    
-    this.updatePositions();
+    this.calculateHeights();
+    this.setupInitialStyles();
     
     window.addEventListener('scroll', () => this.handleScroll());
-    window.addEventListener('resize', () => this.updatePositions());
+    window.addEventListener('resize', () => this.calculateHeights());
+    
+    this.updateStickyState();
   }
   
-  updatePositions() {
-    if (!this.stickyHeader || !this.toolbar) return;
+  calculateHeights() {
+    if (this.navbar) {
+      this.navbarHeight = this.navbar.offsetHeight;
+    }
     
-    const headerRect = this.stickyHeader.getBoundingClientRect();
-    const toolbarRect = this.toolbar.getBoundingClientRect();
+    if (this.header) {
+      this.headerHeight = this.header.offsetHeight;
+    }
     
-    this.toolbar.style.top = `${headerRect.height}px`;
+    if (this.toolbar) {
+      this.toolbarHeight = this.toolbar.offsetHeight;
+    }
+    
+    if (this.breadcrumbs) {
+      this.breadcrumbHeight = this.breadcrumbs.offsetHeight;
+    }
     
     document.documentElement.style.setProperty('--navbar-height', `${this.navbarHeight}px`);
-    document.documentElement.style.setProperty('--header-height', `${headerRect.height}px`);
-    document.documentElement.style.setProperty('--toolbar-height', `${toolbarRect.height}px`);
+    document.documentElement.style.setProperty('--header-height', `${this.headerHeight}px`);
+    document.documentElement.style.setProperty('--toolbar-height', `${this.toolbarHeight}px`);
+    document.documentElement.style.setProperty('--breadcrumb-height', `${this.breadcrumbHeight}px`);
+    document.documentElement.style.setProperty('--total-sticky-height', `${this.headerHeight + this.toolbarHeight}px`);
+  }
+  
+  setupInitialStyles() {
+    if (this.header) {
+      this.header.style.transition = 'transform 0.3s ease, top 0.3s ease';
+    }
+    
+    if (this.toolbar) {
+      this.toolbar.style.transition = 'transform 0.3s ease, top 0.3s ease';
+    }
+    
+    if (this.breadcrumbs) {
+      this.breadcrumbs.style.transition = 'transform 0.3s ease';
+    }
   }
   
   handleScroll() {
     const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
     const scrollDelta = scrollTop - this.lastScrollTop;
     
-    const breadcrumbs = document.getElementById('breadCrumbsContainer');
-    const header = document.getElementById('stickyHeader');
-    const toolbar = document.getElementById('coderToolBarWrapper');
-    
-    if (!breadcrumbs || !header || !toolbar) return;
-    
-    const breadcrumbsBottom = breadcrumbs.offsetTop + breadcrumbs.offsetHeight;
-    
-    if (scrollTop > breadcrumbsBottom - this.navbarHeight) {
-      breadcrumbs.classList.add('hidden');
-      document.body.classList.add('header-is-sticky');
-      
-      header.style.position = 'fixed';
-      header.style.top = '0';
-      header.style.left = '0';
-      header.style.right = '0';
-      header.style.zIndex = '100';
-      
-      toolbar.style.position = 'fixed';
-      toolbar.style.top = `${header.offsetHeight}px`;
-      toolbar.style.left = '0';
-      toolbar.style.right = '0';
-      toolbar.style.zIndex = '99';
-      
-      this.isSticky = true;
-    } else {
-      breadcrumbs.classList.remove('hidden');
-      document.body.classList.remove('header-is-sticky');
-      
-      header.style.position = 'relative';
-      toolbar.style.position = 'relative';
-      toolbar.style.top = '0';
-      
-      this.isSticky = false;
-    }
-    
-    if (Math.abs(scrollDelta) > 5) {
-      if (scrollDelta > 0 && scrollTop > this.scrollThreshold) {
-        if (this.isSticky) {
-          header.style.transform = 'translateY(-100%)';
-          toolbar.style.transform = 'translateY(-100%)';
-        }
-      } else {
-        header.style.transform = 'translateY(0)';
-        toolbar.style.transform = 'translateY(0)';
-      }
-    }
+    this.updateStickyState();
     
     this.lastScrollTop = scrollTop;
   }
+  
+  updateStickyState() {
+    const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+    
+    const breadcrumbsRect = this.breadcrumbs ? this.breadcrumbs.getBoundingClientRect() : { top: 0, height: 0 };
+    const headerRect = this.header ? this.header.getBoundingClientRect() : { top: 0 };
+    const toolbarRect = this.toolbar ? this.toolbar.getBoundingClientRect() : { top: 0 };
+    
+    const breadcrumbsBottom = breadcrumbsRect.top + breadcrumbsRect.height;
+    const breadcrumbsScrolledPast = scrollTop > this.breadcrumbHeight;
+    
+    const headerTop = headerRect.top;
+    const headerScrolledPast = scrollTop > this.navbarHeight + this.breadcrumbHeight;
+    
+    if (headerScrolledPast && breadcrumbsScrolledPast) {
+      this.setState(this.states.headerOnly);
+    } else if (breadcrumbsScrolledPast) {
+      this.setState(this.states.headerSticky);
+    } else {
+      this.setState(this.states.normal);
+    }
+  }
+  
+  setState(state) {
+    if (this.currentState === state) return;
+    
+    switch(state) {
+      case this.states.normal:
+        this.applyNormalState();
+        break;
+      case this.states.headerSticky:
+        this.applyHeaderStickyState();
+        break;
+      case this.states.headerOnly:
+        this.applyHeaderOnlyState();
+        break;
+    }
+    
+    this.currentState = state;
+  }
+  
+  applyNormalState() {
+    if (this.breadcrumbs) {
+      this.breadcrumbs.style.position = 'sticky';
+      this.breadcrumbs.style.top = `${this.navbarHeight}px`;
+      this.breadcrumbs.style.transform = 'translateY(0)';
+      this.breadcrumbs.classList.remove('hidden');
+    }
+    
+    if (this.header) {
+      this.header.style.position = 'relative';
+      this.header.style.top = '0';
+      this.header.style.transform = 'translateY(0)';
+      this.header.classList.remove('hidden');
+    }
+    
+    if (this.toolbar) {
+      this.toolbar.style.position = 'relative';
+      this.toolbar.style.top = '0';
+      this.toolbar.style.transform = 'translateY(0)';
+    }
+    
+    document.body.classList.remove('header-sticky', 'header-only');
+  }
+  
+  applyHeaderStickyState() {
+    if (this.breadcrumbs) {
+      this.breadcrumbs.style.position = 'fixed';
+      this.breadcrumbs.style.top = '0';
+      this.breadcrumbs.style.transform = 'translateY(-100%)';
+      setTimeout(() => {
+        this.breadcrumbs.classList.add('hidden');
+      }, 300);
+    }
+    
+    if (this.header) {
+      this.header.style.position = 'fixed';
+      this.header.style.top = '0';
+      this.header.style.transform = 'translateY(0)';
+      this.header.classList.remove('hidden');
+    }
+    
+    if (this.toolbar) {
+      this.toolbar.style.position = 'fixed';
+      this.toolbar.style.top = `${this.headerHeight}px`;
+      this.toolbar.style.transform = 'translateY(0)';
+    }
+    
+    document.body.classList.add('header-sticky');
+    document.body.classList.remove('header-only');
+  }
+  
+  applyHeaderOnlyState() {
+    if (this.breadcrumbs) {
+      this.breadcrumbs.classList.add('hidden');
+    }
+    
+    if (this.navbar) {
+      this.navbar.style.transform = 'translateY(-100%)';
+    }
+    
+    if (this.header) {
+      this.header.style.position = 'fixed';
+      this.header.style.top = '0';
+      this.header.style.transform = 'translateY(0)';
+      this.header.classList.remove('hidden');
+    }
+    
+    if (this.toolbar) {
+      this.toolbar.style.position = 'fixed';
+      this.toolbar.style.top = `${this.headerHeight}px`;
+      this.toolbar.style.transform = 'translateY(0)';
+    }
+    
+    document.body.classList.add('header-sticky', 'header-only');
+  }
 }
+
+
 
 const SUPPORTED_LANGUAGES = [
   { value: "javascript", label: "JavaScript", ext: ["js", "jsx"] },
