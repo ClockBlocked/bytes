@@ -42,10 +42,7 @@ class EventListenersManager {
             "toggle-theme": () => this.handleToggleTheme(),
             "add-tag": () => this.handleAddTag(),
             "confirm-delete-file": () => this.handleConfirmDeleteFile(),
-            "hide-delete-file-modal":  () => this.handleHideDeleteFileModal(),
-            
-            "new-file": () => this.handleNewFile()
-
+            "hide-delete-file-modal":  () => this.handleHideDeleteFileModal()
         };
 
         Object.keys(actionHandlers).forEach(action => {
@@ -138,7 +135,6 @@ class EventListenersManager {
         }
     }
 
-    // Navigation actions - now using PageRouter
     handleShowRepoSelector() {
         if (window.PageRouter) {
             PageRouter.navigateTo('repo');
@@ -154,7 +150,7 @@ class EventListenersManager {
     }
 
     handleShowExplorer() {
-        if (! this.currentState.repository) {
+        if (!this.currentState.repository) {
             console.warn('No repository selected');
             return;
         }
@@ -174,7 +170,6 @@ class EventListenersManager {
         }
     }
 
-    // Misc actions
     handleStarRepo() {
         if (this.currentState.repository) {
             this.showNotification(`Starred ${this.currentState.repository}`);
@@ -219,7 +214,6 @@ class EventListenersManager {
 
     setupKeyboardShortcuts() {
         document.addEventListener("keydown", e => {
-            // Escape key - close all modals and menus
             if (e.key === "Escape") {
                 this.handleHideCreateRepoModal();
                 this.handleHideCreateFileModal();
@@ -229,19 +223,16 @@ class EventListenersManager {
                 }
             }
 
-            // Ctrl/Cmd + N - New file
             if ((e.ctrlKey || e.metaKey) && e.key === "n" && !e.shiftKey) {
                 e.preventDefault();
                 this.handleShowCreateFile();
             }
 
-            // Ctrl/Cmd + Shift + N - New repository
             if ((e.ctrlKey || e.metaKey) && e.shiftKey && e.key.toLowerCase() === "n") {
                 e.preventDefault();
                 this.handleShowCreateRepo();
             }
 
-            // Ctrl/Cmd + S - Save file
             if ((e.ctrlKey || e.metaKey) && e.key === "s") {
                 e.preventDefault();
                 if (typeof window.saveFile === "function") {
@@ -249,7 +240,6 @@ class EventListenersManager {
                 }
             }
 
-            // Ctrl/Cmd + K - Search (if you have search functionality)
             if ((e.ctrlKey || e.metaKey) && e.key === "k") {
                 e.preventDefault();
                 if (typeof window.showSearchModal === "function") {
@@ -282,7 +272,6 @@ class EventListenersManager {
     }
 
     setupModalInteractions() {
-        // Close modals when clicking outside content
         const modals = [
             { id: "createRepoModal", handler: () => this.handleHideCreateRepoModal() },
             { id: "createFileModal", handler: () => this.handleHideCreateFileModal() },
@@ -302,7 +291,6 @@ class EventListenersManager {
     }
 
     setupAdditionalListeners() {
-        // Branch selector dropdown
         const branchSelector = document.getElementById("branchSelector");
         const branchDropdown = document.getElementById("branchDropdown");
 
@@ -315,7 +303,6 @@ class EventListenersManager {
             });
         }
 
-        // Close dropdowns when clicking outside
         document.addEventListener("click", e => {
             if (branchDropdown && !branchDropdown.contains(e.target) && e.target !== branchSelector) {
                 branchDropdown.classList.remove("show");
@@ -323,7 +310,6 @@ class EventListenersManager {
             }
         });
 
-        // Sidebar triggers
         const leftSidebarTrigger = document.getElementById("leftSidebarTrigger");
         if (leftSidebarTrigger) {
             leftSidebarTrigger.addEventListener("click", e => {
@@ -344,11 +330,10 @@ class EventListenersManager {
             });
         }
 
-        // Overlay click closes sidebars
         const overlay = document.getElementById("overlay");
         if (overlay) {
             overlay.addEventListener("click", () => {
-                if (! this.sidebarManager) return;
+                if (!this.sidebarManager) return;
                 if (typeof this.sidebarManager.closeLeftSidebar === "function") {
                     this.sidebarManager.closeLeftSidebar();
                 }
@@ -359,8 +344,111 @@ class EventListenersManager {
         }
     }
 
-    
-  showNotification(message, type = "success") {
+    setupGlobalEventDelegation() {
+        document.addEventListener("click", e => {
+            const repoCard = e.target.closest(".bg-github-canvas-overlay.border");
+            if (repoCard && repoCard.querySelector("h3.text-github-accent-fg")) {
+                const repoName = repoCard.querySelector("h3").textContent;
+                if (repoName && typeof window.openRepository === "function") {
+                    e.preventDefault();
+                    window.openRepository(repoName);
+                }
+                return;
+            }
+
+            const repoItem = e.target.closest(".repo-item");
+            if (repoItem) {
+                const repoName = repoItem.querySelector("span: not(.text-github-fg-muted)")?.textContent;
+                if (repoName && typeof window.openRepository === "function") {
+                    e.preventDefault();
+                    window.openRepository(repoName);
+                }
+                return;
+            }
+
+            const recentFileItem = e.target.closest(".recent-file-item");
+            if (recentFileItem) {
+                const fileName = recentFileItem.querySelector(".text-github-fg-default")?.textContent;
+                const repoName = recentFileItem.querySelector(".text-github-fg-muted")?.textContent;
+                if (fileName && repoName && typeof window.openRecentFile === "function") {
+                    e.preventDefault();
+                    window.openRecentFile(repoName, "", fileName);
+                }
+                return;
+            }
+
+            const fileRow = e.target.closest("tbody tr");
+            if (fileRow && fileRow.parentElement && fileRow.parentElement.id === "fileListBody") {
+                if (e.target.closest(".file-more-menu-btn")) return;
+                
+                const fileName = fileRow.querySelector("td:first-child span")?.textContent;
+                if (fileName && typeof window.viewFile === "function") {
+                    e.preventDefault();
+                    window.viewFile(fileName);
+                }
+                return;
+            }
+
+            const breadcrumbLink = e.target.closest("#pathBreadcrumb a");
+            if (breadcrumbLink) {
+                e.preventDefault();
+                const text = breadcrumbLink.textContent.trim();
+                
+                const navigateTo = breadcrumbLink.getAttribute("data-navigate");
+                if (navigateTo && window.PageRouter) {
+                    PageRouter.navigateTo(navigateTo);
+                    return;
+                }
+                
+                if (text === "Repositories") {
+                    this.handleShowRepoSelector();
+                } else if (text === this.currentState.repository) {
+                    this.handleNavigateRoot();
+                } else {
+                    const pathSegment = breadcrumbLink.getAttribute("data-path");
+                    if (pathSegment && typeof window.navigateToPath === "function") {
+                        window.navigateToPath(pathSegment);
+                    }
+                }
+                return;
+            }
+
+            const editBtn = e.target.closest("#editToggleBtn, .edit-btn");
+            if (editBtn) {
+                e.preventDefault();
+                if (window.coderViewEdit && typeof window.coderViewEdit.enterEditMode === "function") {
+                    window.coderViewEdit.enterEditMode();
+                }
+                return;
+            }
+
+            const saveBtn = e.target.closest("#saveChangesBtn, .commit-btn");
+            if (saveBtn) {
+                e.preventDefault();
+                if (window.coderViewEdit && typeof window.coderViewEdit.saveChanges === "function") {
+                    window.coderViewEdit.saveChanges();
+                }
+                return;
+            }
+
+            const cancelBtn = e.target.closest("#cancelEditBtn, .cancel-btn");
+            if (cancelBtn) {
+                e.preventDefault();
+                if (window.coderViewEdit && typeof window.coderViewEdit.cancelEdit === "function") {
+                    window.coderViewEdit.cancelEdit();
+                }
+                return;
+            }
+        });
+
+        document.addEventListener("click", () => {
+            if (typeof window.hideContextMenu === "function") {
+                window.hideContextMenu();
+            }
+        });
+    }
+
+    showNotification(message, type = "success") {
         const notification = document.createElement("div");
         notification.className = "fixed top-4 right-4 bg-github-canvas-overlay border border-github-border-default rounded-lg p-4 shadow-lg z-50";
         
@@ -383,20 +471,17 @@ class EventListenersManager {
             </div>
         `;
 
-        // Add entrance animation
         notification.style.opacity = "0";
         notification.style.transform = "translateY(-10px)";
         notification.style.transition = "opacity 0.3s ease, transform 0.3s ease";
         
         document.body.appendChild(notification);
 
-        // Trigger entrance animation
         requestAnimationFrame(() => {
             notification.style.opacity = "1";
             notification.style.transform = "translateY(0)";
         });
 
-        // Remove after delay
         setTimeout(() => {
             notification.style.opacity = "0";
             notification.style.transform = "translateY(-10px)";
@@ -408,109 +493,8 @@ class EventListenersManager {
             }, 300);
         }, 3000);
     }
-
-
-
-
-
-    setupGlobalEventDelegation() {
-        document.addEventListener("click", e => {
-            const target = e.target;
-
-            // 1. Repository card click
-            const repoCard = target.closest(".bg-github-canvas-overlay.border");
-            if (repoCard?.querySelector("h3.text-github-accent-fg")) {
-                const repoName = repoCard.querySelector("h3").textContent;
-                if (repoName && typeof window.openRepository === "function") {
-                    e.preventDefault();
-                    window.openRepository(repoName);
-                }
-                return;
-            }
-
-            // 2. Sidebar repository item click (Fixed spacing in :not)
-            const repoItem = target.closest(".repo-item");
-            if (repoItem) {
-                const repoName = repoItem.querySelector("span:not(.text-github-fg-muted)")?.textContent;
-                if (repoName && typeof window.openRepository === "function") {
-                    e.preventDefault();
-                    window.openRepository(repoName);
-                }
-                return;
-            }
-
-            // 3. File row click (Specific to the File Explorer body)
-            const fileRow = target.closest("#fileListBody tr");
-            if (fileRow && !target.closest(".file-more-menu-btn")) {
-                const fileName = fileRow.querySelector("td:first-child span")?.textContent;
-                if (fileName && typeof window.viewFile === "function") {
-                    e.preventDefault();
-                    window.viewFile(fileName);
-                }
-                return;
-            }
-
-            // 4. Breadcrumb navigation
-            const breadcrumbLink = target.closest("#pathBreadcrumb a");
-            if (breadcrumbLink) {
-                e.preventDefault();
-                this.handleBreadcrumbClick(breadcrumbLink);
-                return;
-            }
-
-            // 5. New File Action (Fixed syntax and merged into main delegation)
-            const newFileBtn = target.closest('[data-action="new-file"]');
-            if (newFileBtn) {
-                e.preventDefault();
-                this.handleNewFile();
-                return;
-            }
-            
-            // Close context menu if clicking anywhere else
-            if (typeof window.hideContextMenu === "function") {
-                window.hideContextMenu();
-            }
-        });
-    }
-
-    handleBreadcrumbClick(link) {
-        const text = link.textContent.trim();
-        const navigateTo = link.getAttribute("data-navigate");
-        
-        if (navigateTo && window.PageRouter) {
-            window.PageRouter.navigateTo(navigateTo);
-        } else if (text === "Repositories") {
-            this.handleShowRepoSelector();
-        } else if (text === this.currentState.repository) {
-            this.handleNavigateRoot();
-        } else {
-            const pathSegment = link.getAttribute("data-path");
-            if (pathSegment && typeof window.navigateToPath === "function") {
-                window.navigateToPath(pathSegment);
-            }
-        }
-    }
-
-    handleNewFile() {
-        if (window.coderViewEdit?.showNewFileDropdown) {
-            const button = document.querySelector('[data-action="new-file"]');
-            window.coderViewEdit.showNewFileDropdown({ currentTarget: button });
-        }
-    }
 }
-
 
 window.EventListenersManager = EventListenersManager;
 window.eventListeners = new EventListenersManager();
 window.setupEventListeners = sidebarManager => window.eventListeners.init(sidebarManager);
-/**
- * 
- *  C R E A T E D  B Y
- * 
- *  William Hanson 
- * 
- *  Chevrolay@Outlook.com
- * 
- *  m.me/Chevrolay
- * 
- */
