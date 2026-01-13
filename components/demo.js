@@ -2,12 +2,12 @@
 window.demoModal = function() {
   const modal = window.builder.create('modal', {
     title: 'Welcome to Component System',
-    content: 'This is a reusable modal component created with vanilla JavaScript!',
+    content:  'This is a reusable modal component created with vanilla JavaScript! ',
     actions: [
       { id: 'close', label: 'Close', style: 'secondary' },
       {
         id: 'confirm',
-        label: 'Confirm',
+        label:  'Confirm',
         style: 'primary',
         callback: () => window.showToast('Confirmed!', 'success')
       }
@@ -24,7 +24,7 @@ window.demoDropdown = function() {
     items: [
       { label: 'Edit', callback: () => window.showToast('Edit clicked') },
       { label: 'Delete', callback: () => window.showToast('Delete clicked', 'error') },
-      { label: 'Share', callback: () => window.showToast('Share clicked', 'info') }
+      { label:  'Share', callback: () => window.showToast('Share clicked', 'info') }
     ]
   });
 
@@ -35,7 +35,7 @@ window.demoDropdown = function() {
 window.demoTooltip = function() {
   const tooltip = window.builder.create('tooltip', {
     trigger: 'Hover over me →',
-    content: 'This is a helpful tooltip!',
+    content:  'This is a helpful tooltip!',
     position: 'top'
   });
 
@@ -48,7 +48,7 @@ window.showToast = function(message, type = 'info') {
     message,
     type,
     icon: type === 'success' ? '✓' : type === 'error' ? '✕' : 'ℹ',
-    duration: 3000
+    duration:  3000
   });
 
   document.body.appendChild(toast.element);
@@ -64,28 +64,81 @@ window.demoCodeViewer = function() {
 // Example usage
 console.log(fibonacci(10)); // Output: 55`;
 
-  const viewer = window.builder.create('codeViewer', {
+  const container = document.getElementById('code-viewer-container');
+  
+  // Clear any existing content
+  container.innerHTML = '';
+
+  // Use the unified CodeBlock component in 'viewer' mode
+  const viewer = window.builder.create('codeBlock', {
     filename: 'fibonacci.js',
     language: 'javascript',
-    code
+    code,
+    mode: 'viewer'
   });
 
-  document.getElementById('code-viewer-container').appendChild(viewer.element);
+  container.appendChild(viewer.element);
   viewer.mount();
 };
 
 window.demoCodeEditor = function() {
-  const editor = window.builder.create('codeEditor', {
+  const container = document.getElementById('code-editor-container');
+  
+  // Clear any existing content
+  container.innerHTML = '';
+
+  // Use the unified CodeBlock component in 'editor' mode
+  const editor = window.builder.create('codeBlock', {
     filename: 'my-script.js',
     language: 'javascript',
     code: '// Start typing your code here...',
-    onSave: (code) => {
-      window.showToast('Code saved! Length: ' + code.length + ' chars', 'success');
+    mode: 'editor',
+    onSave: (code, meta) => {
+      window.showToast(`Code saved! ${meta.filename} (${code.length} chars)`, 'success');
     }
   });
 
-  document.getElementById('code-editor-container').appendChild(editor.element);
+  container.appendChild(editor.element);
   editor.mount();
+};
+
+// New demo function to showcase mode switching
+window.demoCodeBlock = function() {
+  const code = `// Welcome to the unified CodeBlock component! 
+// Click the "Edit" button in the header to switch to editor mode.
+// Click "View" to switch back to viewer mode.
+
+const greeting = (name) => {
+  return \`Hello, \${name}!  Welcome to the demo.\`;
+};
+
+console.log(greeting('Developer'));`;
+
+  const container = document.getElementById('code-block-container') || 
+                    document.getElementById('code-viewer-container');
+  
+  if (!container) {
+    console.error('No container found for CodeBlock demo');
+    return;
+  }
+  
+  // Clear any existing content
+  container.innerHTML = '';
+
+  const codeBlock = window.builder.create('codeBlock', {
+    filename: 'demo.js',
+    language: 'javascript',
+    code,
+    mode:  'viewer', // Start in viewer mode
+    onSave: (code, meta) => {
+      window.showToast(`Saved ${meta.filename} (${code.length} chars)`, 'success');
+    }
+  });
+
+  container.appendChild(codeBlock.element);
+  codeBlock.mount();
+  
+  window.showToast('CodeBlock loaded!  Try switching between View and Edit modes.', 'info');
 };
 
 window.demoBadges = function() {
@@ -104,7 +157,7 @@ window.demoBadges = function() {
 
   const badge3 = window.builder.create('badge', {
     count: 199,
-    variant: 'primary'
+    variant:  'primary'
   });
 
   container.appendChild(badge1.element);
@@ -159,8 +212,8 @@ window.createCustomComponent = function() {
 
   window.builder.register(CustomCard);
   return window.builder.create('customCard', {
-    title: 'My Custom Card',
-    content: '<p>This is a custom component!</p>'
+    title:  'My Custom Card',
+    content:  '<p>This is a custom component!</p>'
   });
 };
 
@@ -175,6 +228,11 @@ window.addEventListener('DOMContentLoaded', () => {
   }
   
   console.log('Builder is available:', typeof window.builder);
+  
+  // Log available components for debugging
+  if (window.builder.list) {
+    console.log('Registered components:', window.builder.list());
+  }
 });
 /**
  * 
