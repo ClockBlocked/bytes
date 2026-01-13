@@ -1,5 +1,6 @@
-function demoModal() {
-  const modal = builder.create('modal', {
+// Demo functions that will be available globally
+window.demoModal = function() {
+  const modal = window.builder.create('modal', {
     title: 'Welcome to Component System',
     content: 'This is a reusable modal component created with vanilla JavaScript!',
     actions: [
@@ -8,31 +9,31 @@ function demoModal() {
         id: 'confirm',
         label: 'Confirm',
         style: 'primary',
-        callback: () => showToast('Confirmed!', 'success')
+        callback: () => window.showToast('Confirmed!', 'success')
       }
     ]
   });
 
   document.body.appendChild(modal.element);
   modal.mount();
-}
+};
 
-function demoDropdown() {
-  const dropdown = builder.create('dropdown', {
+window.demoDropdown = function() {
+  const dropdown = window.builder.create('dropdown', {
     label: 'Actions',
     items: [
-      { label: 'Edit', callback: () => showToast('Edit clicked') },
-      { label: 'Delete', callback: () => showToast('Delete clicked', 'error') },
-      { label: 'Share', callback: () => showToast('Share clicked', 'info') }
+      { label: 'Edit', callback: () => window.showToast('Edit clicked') },
+      { label: 'Delete', callback: () => window.showToast('Delete clicked', 'error') },
+      { label: 'Share', callback: () => window.showToast('Share clicked', 'info') }
     ]
   });
 
   document.getElementById('dropdown-container').appendChild(dropdown.element);
   dropdown.mount();
-}
+};
 
-function demoTooltip() {
-  const tooltip = builder.create('tooltip', {
+window.demoTooltip = function() {
+  const tooltip = window.builder.create('tooltip', {
     trigger: 'Hover over me →',
     content: 'This is a helpful tooltip!',
     position: 'top'
@@ -40,10 +41,10 @@ function demoTooltip() {
 
   document.getElementById('tooltip-container').appendChild(tooltip.element);
   tooltip.mount();
-}
+};
 
-function showToast(message, type = 'info') {
-  const toast = builder.create('toast', {
+window.showToast = function(message, type = 'info') {
+  const toast = window.builder.create('toast', {
     message,
     type,
     icon: type === 'success' ? '✓' : type === 'error' ? '✕' : 'ℹ',
@@ -52,9 +53,9 @@ function showToast(message, type = 'info') {
 
   document.body.appendChild(toast.element);
   toast.mount();
-}
+};
 
-function demoCodeViewer() {
+window.demoCodeViewer = function() {
   const code = `function fibonacci(n) {
   if (n <= 1) return n;
   return fibonacci(n - 1) + fibonacci(n - 2);
@@ -63,7 +64,7 @@ function demoCodeViewer() {
 // Example usage
 console.log(fibonacci(10)); // Output: 55`;
 
-  const viewer = builder.create('codeViewer', {
+  const viewer = window.builder.create('codeViewer', {
     filename: 'fibonacci.js',
     language: 'javascript',
     code
@@ -71,36 +72,37 @@ console.log(fibonacci(10)); // Output: 55`;
 
   document.getElementById('code-viewer-container').appendChild(viewer.element);
   viewer.mount();
-}
+};
 
-function demoCodeEditor() {
-  const editor = builder.create('codeEditor', {
+window.demoCodeEditor = function() {
+  const editor = window.builder.create('codeEditor', {
     filename: 'my-script.js',
     language: 'javascript',
     code: '// Start typing your code here...',
     onSave: (code) => {
-      showToast('Code saved! Length: ' + code.length + ' chars', 'success');
+      window.showToast('Code saved! Length: ' + code.length + ' chars', 'success');
     }
   });
 
   document.getElementById('code-editor-container').appendChild(editor.element);
   editor.mount();
-}
+};
 
-function demoBadges() {
+window.demoBadges = function() {
   const container = document.getElementById('badge-container');
+  container.innerHTML = ''; // Clear previous badges
 
-  const badge1 = builder.create('badge', {
+  const badge1 = window.builder.create('badge', {
     label: 'v1.0.0',
     variant: 'primary'
   });
 
-  const badge2 = builder.create('badge', {
+  const badge2 = window.builder.create('badge', {
     count: 5,
     variant: 'success'
   });
 
-  const badge3 = builder.create('badge', {
+  const badge3 = window.builder.create('badge', {
     count: 199,
     variant: 'primary'
   });
@@ -108,53 +110,25 @@ function demoBadges() {
   container.appendChild(badge1.element);
   container.appendChild(badge2.element);
   container.appendChild(badge3.element);
-}
+  
+  // Mount all badges
+  badge1.mount();
+  badge2.mount();
+  badge3.mount();
+};
 
-function demoDialog() {
-  const dialog = builder.create('dialog', {
+window.demoDialog = function() {
+  const dialog = window.builder.create('dialog', {
     title: 'Confirm Action',
     content: 'Are you sure you want to continue?',
-    onConfirm: () => showToast('Action confirmed!', 'success')
+    onConfirm: () => window.showToast('Action confirmed!', 'success')
   });
 
   document.body.appendChild(dialog.element);
   dialog.mount();
-}
+};
 
-
-document.addEventListener('DOMContentLoaded', () => {
-  const demoBtn = document.getElementById('demo-modal-btn');
-  const dropdownBtn = document.getElementById('demo-dropdown-btn');
-  const tooltipBtn = document.getElementById('demo-tooltip-btn');
-  const viewerBtn = document.getElementById('demo-viewer-btn');
-  const editorBtn = document.getElementById('demo-editor-btn');
-  const badgeBtn = document.getElementById('demo-badge-btn');
-  const dialogBtn = document.getElementById('demo-dialog-btn');
-
-  demoBtn?.addEventListener('click', demoModal);
-  dropdownBtn?.addEventListener('click', demoDropdown);
-  tooltipBtn?.addEventListener('click', demoTooltip);
-  viewerBtn?.addEventListener('click', demoCodeViewer);
-  editorBtn?.addEventListener('click', demoCodeEditor);
-  badgeBtn?.addEventListener('click', demoBadges);
-  dialogBtn?.addEventListener('click', demoDialog);
-
-  document.getElementById('demo-success-toast')?.addEventListener('click', () =>
-    showToast('Success! Operation completed.', 'success')
-  );
-  document.getElementById('demo-error-toast')?.addEventListener('click', () =>
-    showToast('Error! Something went wrong.', 'error')
-  );
-  document.getElementById('demo-info-toast')?.addEventListener('click', () =>
-    showToast('Info: This is an information message.', 'info')
-  );
-
-  setTimeout(() => {
-    showToast('👋 Component System Ready! Click buttons to demo.', 'success');
-  }, 500);
-});
-
-function createCustomComponent() {
+window.createCustomComponent = function() {
   const CustomCard = {
     name: 'customCard',
     version: '1.0.0',
@@ -183,25 +157,25 @@ function createCustomComponent() {
     }
   };
 
-  builder.register(CustomCard);
-  return builder.create('customCard', {
+  window.builder.register(CustomCard);
+  return window.builder.create('customCard', {
     title: 'My Custom Card',
     content: '<p>This is a custom component!</p>'
   });
-}
+};
 
-
-const builder = window.builder;
-
-window.demoModal = demoModal;
-window.demoDropdown = demoDropdown;
-window.demoTooltip = demoTooltip;
-window.showToast = showToast;
-window.demoCodeViewer = demoCodeViewer;
-window.demoCodeEditor = demoCodeEditor;
-window.demoBadges = demoBadges;
-window.demoDialog = demoDialog;
-window.createCustomComponent = createCustomComponent;
+// Initialize on page load
+window.addEventListener('DOMContentLoaded', () => {
+  console.log('Demo functions loaded successfully!');
+  
+  // Test that builder exists
+  if (!window.builder) {
+    console.error('Builder not found! Check script loading order.');
+    return;
+  }
+  
+  console.log('Builder is available:', typeof window.builder);
+});
 /**
  * 
  *  C R E A T E D  B Y
