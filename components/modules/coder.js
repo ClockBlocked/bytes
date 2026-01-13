@@ -1,18 +1,18 @@
-// ============= CODE BLOCK COMPONENT (BOTH VIEWER AND EDITOR) =============
 window.CodeBlock = {
   name: 'codeBlock',
   version: '2.0.0',
 
-  // Default configuration
+
+/////////////////////  C O D E  Window  ///////////
+///////////////////////////////////////////////////
   defaults: {
-    mode: 'viewer', // 'viewer' or 'editor'
+    mode: 'viewer',
     language: 'javascript',
     filename: 'code.js',
     code: '',
     theme: 'dark',
     transitionDuration: 2000
   },
-
   template: (props) => {
     const config = { ...window.CodeBlock.defaults, ... props };
     
@@ -21,7 +21,6 @@ window.CodeBlock = {
     container.setAttribute('data-language', config.language);
     container.setAttribute('data-mode', config.mode);
 
-    // Loading Overlay with GitHub-style Spinner
     const loadingOverlay = document.createElement('div');
     loadingOverlay.className = 'code-block-loading-overlay';
     loadingOverlay.innerHTML = `
@@ -50,24 +49,20 @@ window.CodeBlock = {
       </div>
     `;
 
-    // Header (shared between modes)
     const header = document.createElement('div');
     header.className = 'code-block-header sticky-header';
     header.innerHTML = window.CodeBlock.renderHeader(config);
 
-    // Toolbar (shared between modes, buttons vary by mode)
     const toolbar = document.createElement('div');
     toolbar.className = 'code-block-toolbar sticky-toolbar';
     toolbar.innerHTML = window.CodeBlock.renderToolbar(config);
 
-    // Content Area (switches between viewer and editor)
     const content = document.createElement('div');
     content.className = 'code-block-content';
     content.innerHTML = config.mode === 'viewer' 
       ? window.CodeBlock.renderViewerContent(config)
       : window.CodeBlock.renderEditorContent(config);
 
-    // Status Bar
     const statusBar = document.createElement('div');
     statusBar.className = 'code-block-status';
     statusBar.innerHTML = window.CodeBlock.renderStatusBar(config);
@@ -81,6 +76,14 @@ window.CodeBlock = {
     return container;
   },
 
+  renderStatusBar: (config) => {
+    return `
+      <span class="status-item status-encoding">UTF-8</span>
+      <span class="status-item status-language">${config.language}</span>
+      <span class="status-item status-mode">${config.mode === 'viewer' ? 'Read Only' : 'Editing'}</span>
+      <span class="status-item status-position">Ln 1, Col 1</span>
+    `;
+  },
   renderHeader: (config) => {
     if (config.mode === 'viewer') {
       return `
@@ -121,7 +124,6 @@ window.CodeBlock = {
       `;
     }
   },
-
   renderToolbar: (config) => {
     const lineCount = typeof config.code === 'string' ? config.code.split('\n').length : 0;
     const charCount = typeof config.code === 'string' ? config.code.length : 0;
@@ -202,7 +204,6 @@ window.CodeBlock = {
       </div>
     `;
   },
-
   renderEditorContent: (config) => {
     const sourceCode = typeof config.code === 'string' ? config.code : '';
     const lines = sourceCode.split('\n');
@@ -216,16 +217,6 @@ window.CodeBlock = {
     `;
   },
 
-  renderStatusBar: (config) => {
-    return `
-      <span class="status-item status-encoding">UTF-8</span>
-      <span class="status-item status-language">${config.language}</span>
-      <span class="status-item status-mode">${config.mode === 'viewer' ? 'Read Only' : 'Editing'}</span>
-      <span class="status-item status-position">Ln 1, Col 1</span>
-    `;
-  },
-
-  // Syntax Highlighting Helper
   highlightSyntax: (code, language) => {
     const escaped = window.CodeBlock.escapeHTML(code || '');
     
@@ -268,7 +259,6 @@ window.CodeBlock = {
       typescript: [] // Will inherit from javascript
     };
 
-    // TypeScript inherits JavaScript patterns
     patterns.typescript = patterns.javascript;
 
     let result = escaped;
@@ -284,7 +274,6 @@ window.CodeBlock = {
 
     return result;
   },
-
   escapeHTML: (str) => {
     return str
       .replace(/&/g, '&amp;')
@@ -294,18 +283,20 @@ window.CodeBlock = {
       .replace(/'/g, '&#039;');
   },
 
-  // State Management
+
+
+
+///////////////////////  H I S T O R Y  ///////////
+///////////////////////////////////////////////////
   state: {
     history: [],
     historyIndex: -1,
     maxHistory: 50
   },
-
   lifecycle: {
     onMount: (element, props) => {
       const config = { ...window.CodeBlock.defaults, ...props };
       
-      // Store initial state
       element._codeBlockState = {
         mode: config.mode,
         code: config.code,
@@ -315,26 +306,25 @@ window.CodeBlock = {
         historyIndex: 0
       };
 
-      // Initialize based on current mode
       if (config.mode === 'viewer') {
         window.CodeBlock.initViewerMode(element, config);
       } else {
         window.CodeBlock.initEditorMode(element, config);
       }
 
-      // Common initializations
       window.CodeBlock.initThemeToggle(element);
       window.CodeBlock.initModeToggle(element, props);
       window.CodeBlock.restoreTheme(element);
     }
   },
 
+
   initViewerMode: (element, config) => {
     const copyBtn = element.querySelector('.code-copy-btn');
     const downloadBtn = element.querySelector('.code-download-btn');
     const codeElement = element.querySelector('.code-element');
 
-    // Copy functionality
+
     copyBtn?.addEventListener('click', async () => {
       const code = element._codeBlockState?.code || config.code || '';
       try {
@@ -365,7 +355,6 @@ window.CodeBlock = {
       }
     });
 
-    // Download functionality
     downloadBtn?.addEventListener('click', () => {
       const code = element._codeBlockState?.code || config.code || '';
       const filename = element._codeBlockState?.filename || config.filename || 'code.txt';
@@ -381,7 +370,8 @@ window.CodeBlock = {
       URL.revokeObjectURL(url);
     });
 
-    // Cursor position tracking
+
+
     codeElement?.addEventListener('click', () => {
       const selection = window.getSelection();
       if (selection && selection.rangeCount > 0) {
@@ -397,7 +387,6 @@ window.CodeBlock = {
       }
     });
   },
-
   initEditorMode: (element, config) => {
     const textarea = element.querySelector('.editor-textarea');
     const lineNumbers = element.querySelector('.line-numbers');
@@ -416,7 +405,7 @@ window.CodeBlock = {
       if (charCount) {
         charCount.textContent = `${textarea.value.length} chars`;
       }
-      // Update state
+
       if (element._codeBlockState) {
         element._codeBlockState.code = textarea.value;
       }
@@ -586,14 +575,6 @@ window.CodeBlock = {
     updateCursorPositionFromTextarea();
   },
 
-  initThemeToggle: (element) => {
-    const themeBtn = element.querySelector('.code-theme-btn');
-    themeBtn?.addEventListener('click', () => {
-      element.classList.toggle('code-block-light');
-      const isLight = element.classList.contains('code-block-light');
-      localStorage.setItem('codeBlockTheme', isLight ? 'light' : 'dark');
-    });
-  },
 
   initModeToggle: (element, props) => {
     const modeBtn = element.querySelector('.mode-toggle-btn');
@@ -603,7 +584,6 @@ window.CodeBlock = {
       window.CodeBlock.switchMode(element, targetMode, props);
     });
   },
-
   switchMode: (element, targetMode, props) => {
     const overlay = element.querySelector('.code-block-loading-overlay');
     const state = element._codeBlockState;
@@ -678,7 +658,6 @@ window.CodeBlock = {
       overlay.classList.remove('active');
     }, 2000);
   },
-
   restoreTheme: (element) => {
     const savedTheme = localStorage.getItem('codeBlockTheme');
     if (savedTheme === 'light') {
@@ -687,7 +666,6 @@ window.CodeBlock = {
       element.classList.remove('code-block-light');
     }
   },
-
   updateCursorPosition: (element, offset) => {
     const codeElement = element.querySelector('.code-element');
     if (!codeElement) return;
@@ -702,9 +680,23 @@ window.CodeBlock = {
       statusPos.textContent = `Ln ${line}, Col ${col}`;
     }
   }
+  
+  initThemeToggle: (element) => {
+    const themeBtn = element.querySelector('.code-theme-btn');
+    themeBtn?.addEventListener('click', () => {
+      element.classList.toggle('code-block-light');
+      const isLight = element.classList.contains('code-block-light');
+      localStorage.setItem('codeBlockTheme', isLight ? 'light' : 'dark');
+    });
+  },
+
 };
 
-// ============= CODE VIEWER COMPONENT (Simplified wrapper) =============
+
+
+
+//////////////  Code Window S T A T E S ///////////
+///////////////////////////////////////////////////
 window.CodeViewer = {
   name: 'codeViewer',
   version: '1.0.0',
@@ -716,7 +708,6 @@ window.CodeViewer = {
   lifecycle: window.CodeBlock.lifecycle
 };
 
-// ============= CODE EDITOR COMPONENT (Simplified wrappier) =============
 window.CodeEditor = {
   name: 'codeEditor',
   version: '1.0.0',
