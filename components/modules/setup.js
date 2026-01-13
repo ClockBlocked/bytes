@@ -1,20 +1,9 @@
-/**
- * Component Registry System
- * Core factory and lifecycle management for vanilla JavaScript components
- */
-
 class builder {
   constructor() {
     this.registry = new Map();
     this.instances = new Map();
     this.instanceCounter = 0;
   }
-
-  /**
-   * Register a component definition
-   * @param {Object} definition - Component definition with name, template, styles, etc.
-   * @returns {builder} - For chaining
-   */
   register(definition) {
     if (!definition.name) {
       throw new Error('Component definition must have a name');
@@ -27,18 +16,14 @@ class builder {
       props: definition.props || {},
       methods: definition.methods || {},
       lifecycle: definition.lifecycle || {}
-    });
-    
+    });    
     return this;
   }
 
-  /**
-   * Create a component instance
-   * @param {string} componentName - Registered component name
-   * @param {Object} props - Properties to pass to component
-   * @returns {ComponentInstance} - Instantiated component
-   */
-  create(componentName, props = {}) {
+
+
+  
+  create(componentName, props = {}) { // Creation
     const definition = this.registry.get(componentName);
     
     if (!definition) {
@@ -57,8 +42,8 @@ class builder {
       mounted: false,
       listeners: [],
 
-      // Update component props and trigger lifecycle
-      update(newProps) {
+      // Where to display it
+      update(newProps) { // Update existing component
         this.props = { ...this.props, ...newProps };
         if (this.mounted && this.definition.lifecycle.onUpdate) {
           this.definition.lifecycle.onUpdate(this.element, this.props);
@@ -66,8 +51,7 @@ class builder {
         return this;
       },
 
-      // Mount component to DOM and trigger lifecycle
-      mount() {
+      mount() { // Attach it to an element
         if (this.mounted) return this;
         
         if (this.definition.lifecycle.onMount) {
@@ -78,13 +62,11 @@ class builder {
         return this;
       },
 
-      // Unmount and cleanup
-      destroy() {
+      destroy() { // Remove it cleanly
         if (this.definition.lifecycle.onDestroy) {
           this.definition.lifecycle.onDestroy(this.element);
         }
         
-        // Remove all event listeners
         this.listeners.forEach(({ target, event, handler }) => {
           target.removeEventListener(event, handler);
         });
@@ -92,7 +74,6 @@ class builder {
         this.listeners = [];
         this.mounted = false;
         
-        // Remove from DOM
         if (this.element.parentNode) {
           this.element.parentNode.removeChild(this.element);
         }
@@ -101,14 +82,13 @@ class builder {
         return this;
       },
 
-      // Attach event listener with automatic cleanup
-      on(element, event, handler) {
+      // What to apply to it
+      on(element, event, handler) { // Event listener
         element.addEventListener(event, handler);
         this.listeners.push({ target: element, event, handler });
         return this;
       },
 
-      // Call registered method
       call(methodName, ...args) {
         if (!this.definition.methods[methodName]) {
           throw new Error(`Method '${methodName}' not found on component '${this.name}'`);
@@ -121,24 +101,14 @@ class builder {
     return instance;
   }
 
-  /**
-   * Quickly mount a component to an existing element
-   * @param {HTMLElement} container - DOM element to mount to
-   * @param {string} componentName - Registered component name
-   * @param {Object} props - Component props
-   * @returns {ComponentInstance}
-   */
+
+  
   mount(container, componentName, props = {}) {
     const instance = this.create(componentName, props);
     container.appendChild(instance.element);
     instance.mount();
     return instance;
   }
-
-  /**
-   * Unmount a component from DOM and cleanup
-   * @param {HTMLElement} element - Component element to unmount
-   */
   unmount(element) {
     for (const [id, instance] of this.instances) {
       if (instance.element === element) {
@@ -148,53 +118,50 @@ class builder {
     }
   }
 
-  /**
-   * Get registered component definition
-   * @param {string} componentName
-   * @returns {Object} - Component definition
-   */
-  get(componentName) {
+
+ /**
+  *
+   *  Global Control & Info
+  *
+**/
+  get(componentName) { // Get type
     return this.registry.get(componentName);
   }
-
-  /**
-   * Check if component is registered
-   * @param {string} componentName
-   * @returns {boolean}
-   */
-  has(componentName) {
+  has(componentName) { // Get location
     return this.registry.has(componentName);
   }
-
-  /**
-   * Get all registered components
-   * @returns {string[]} - Array of component names
-   */
-  getAll() {
+  getAll() { // Locate all
     return Array.from(this.registry.keys());
   }
-
-  /**
-   * Destroy all instances
-   */
-  destroyAll() {
+  destroyAll() { // Cleanly remove all
     for (const [id, instance] of this.instances) {
       instance.destroy();
     }
     this.instances.clear();
   }
-
-  /**
-   * Get instance by ID
-   * @param {string} instanceId
-   * @returns {ComponentInstance}
-   */
   getInstance(instanceId) {
     return this.instances.get(instanceId);
   }
 }
 
-// Create singleton instance
-const globalRegistry = new builder();
 
-export { globalRegistry as builder, builder as builderClass };
+
+
+
+// const globalRegistry = new builder();
+// export { globalRegistry as builder, builder as builderClass };
+
+
+
+
+/**
+ * 
+ *  C R E A T E D  B Y
+ * 
+ *  William Hanson 
+ * 
+ *  Chevrolay@Outlook.com
+ * 
+ *  m.me/Chevrolay
+ * 
+ */
