@@ -1,9 +1,3 @@
-/**
- * COMPLETE USAGE EXAMPLE
- * Demonstrates all components in the registry system (globals, no modules)
- */
-
-// ============= DEMO: SHOW MODAL =============
 function demoModal() {
   const modal = builder.create('modal', {
     title: 'Welcome to Component System',
@@ -23,7 +17,6 @@ function demoModal() {
   modal.mount();
 }
 
-// ============= DEMO: SHOW DROPDOWN =============
 function demoDropdown() {
   const dropdown = builder.create('dropdown', {
     label: 'Actions',
@@ -38,7 +31,6 @@ function demoDropdown() {
   dropdown.mount();
 }
 
-// ============= DEMO: SHOW TOOLTIP =============
 function demoTooltip() {
   const tooltip = builder.create('tooltip', {
     trigger: 'Hover over me →',
@@ -50,7 +42,6 @@ function demoTooltip() {
   tooltip.mount();
 }
 
-// ============= DEMO: SHOW TOAST =============
 function showToast(message, type = 'info') {
   const toast = builder.create('toast', {
     message,
@@ -63,7 +54,6 @@ function showToast(message, type = 'info') {
   toast.mount();
 }
 
-// ============= DEMO: CODE VIEWER =============
 function demoCodeViewer() {
   const code = `function fibonacci(n) {
   if (n <= 1) return n;
@@ -83,7 +73,6 @@ console.log(fibonacci(10)); // Output: 55`;
   viewer.mount();
 }
 
-// ============= DEMO: CODE EDITOR =============
 function demoCodeEditor() {
   const editor = builder.create('codeEditor', {
     filename: 'my-script.js',
@@ -98,7 +87,6 @@ function demoCodeEditor() {
   editor.mount();
 }
 
-// ============= DEMO: BADGE =============
 function demoBadges() {
   const container = document.getElementById('badge-container');
 
@@ -122,7 +110,6 @@ function demoBadges() {
   container.appendChild(badge3.element);
 }
 
-// ============= DEMO: DIALOG =============
 function demoDialog() {
   const dialog = builder.create('dialog', {
     title: 'Confirm Action',
@@ -134,7 +121,7 @@ function demoDialog() {
   dialog.mount();
 }
 
-// ============= INITIALIZATION =============
+
 document.addEventListener('DOMContentLoaded', () => {
   const demoBtn = document.getElementById('demo-modal-btn');
   const dropdownBtn = document.getElementById('demo-dropdown-btn');
@@ -167,7 +154,6 @@ document.addEventListener('DOMContentLoaded', () => {
   }, 500);
 });
 
-// ============= ADVANCED: Create custom component =============
 function createCustomComponent() {
   const CustomCard = {
     name: 'customCard',
@@ -205,6 +191,7 @@ function createCustomComponent() {
 }
 
 
+const builder = window.builder;
 
 window.demoModal = demoModal;
 window.demoDropdown = demoDropdown;
