@@ -4005,7 +4005,7 @@ aside:hover .sidebar-title {
 /* Fullscreen adjustments */
 .editorContainer[data-fullscreen="true"] .breadCrumbsWrapper,
 .editorContainer[data-fullscreen="true"] .coderToolBarWrapper {
-  position: absolute !important !important;
+  position: absolute !important;
 }
 
 /* Responsive adjustments */
