@@ -572,27 +572,6 @@ class CodeViewEditor {
   }.bind(this);
 
   
-  // Update bindElementEvents to handle new file dropdown
-  bindElementEvents = function() {
-    // ... existing event bindings ...
-    
-    // New file dropdown events
-    this.bindEvent(this.elements.newFileWithRepo, 'click', () => this.handleNewFileWithRepo());
-    this.bindEvent(this.elements.newFileWithoutRepo, 'click', () => this.handleNewFileWithoutRepo());
-    
-    // Global click to close dropdowns
-    document.addEventListener('click', (e) => {
-      // Close new file dropdown
-      if (this.elements.newFileDropdown && 
-          !this.elements.newFileDropdown.contains(e.target) &&
-          !e.target.closest('[data-action="new-file"]')) {
-        this.elements.newFileDropdown?.classList.add('hide');
-      }
-      
-      // ... other dropdown closes ...
-    });
-  }.bind(this);
-  
   
   // Update the setupStickyHeader method
   setupStickyHeader = function() {
