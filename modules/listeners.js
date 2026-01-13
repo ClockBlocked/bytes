@@ -474,8 +474,34 @@ class EventListenersManager {
                 window.hideContextMenu();
             }
         });
+        
+        
+    document.addEventListener('click', (e) => {
+  // New file button
+  const newFileBtn = e.target.closest('[data-action="new-file"]');
+  if (newFileBtn) {
+    e.preventDefault();
+    e.stopPropagation();
+    this.handleNewFile();
+  });
+    }    
+        
+        
     }
 
+    
+    
+handleNewFile = function() {
+  // Show the new file dropdown
+  if (window.coderViewEdit && typeof window.coderViewEdit.showNewFileDropdown === 'function') {
+    const button = document.querySelector('[data-action="new-file"]');
+    if (button) {
+      window.coderViewEdit.showNewFileDropdown({ currentTarget: button });
+    }
+  }
+};
+    
+    
     showNotification(message, type = "success") {
         const notification = document.createElement("div");
         notification.className = "fixed top-4 right-4 bg-github-canvas-overlay border border-github-border-default rounded-lg p-4 shadow-lg z-50";
@@ -524,19 +550,6 @@ class EventListenersManager {
             }, 300);
         }, 3000);
     }
-    
-    
-handleNewFile = function() {
-  // Show the new file dropdown
-  if (window.coderViewEdit && typeof window.coderViewEdit.showNewFileDropdown === 'function') {
-    const button = document.querySelector('[data-action="new-file"]');
-    if (button) {
-      window.coderViewEdit.showNewFileDropdown({ currentTarget: button });
-    }
-  }
-};
-    
-    
     
 }
 
