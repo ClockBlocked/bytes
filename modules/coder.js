@@ -106,6 +106,124 @@ class FullscreenManager {
     return this.isFullscreen;
   }
 }
+class StickyHeaderManager {
+  constructor() {
+    this.navbarHeight = 60; // Default navbar height in pixels
+    this.stickyHeader = document.getElementById('stickyHeader');
+    this.breadcrumbs = document.getElementById('pathBreadcrumb');
+    this.toolbar = document.getElementById('coderToolBarWrapper');
+    this.lastScrollTop = 0;
+    this.scrollThreshold = 100;
+    this.isSticky = false;
+    
+    if (this.stickyHeader && this.breadcrumbs) {
+      this.init();
+    }
+  }
+  
+  init() {
+    // Calculate navbar height
+    const navbar = document.querySelector('.navbar');
+    if (navbar) {
+      this.navbarHeight = navbar.offsetHeight;
+    }
+    
+    // Set initial positions
+    this.updatePositions();
+    
+    // Add scroll listener
+    window.addEventListener('scroll', () => this.handleScroll());
+    window.addEventListener('resize', () => this.updatePositions());
+  }
+  
+  updatePositions() {
+    if (!this.stickyHeader || !this.toolbar) return;
+    
+    const headerRect = this.stickyHeader.getBoundingClientRect();
+    const toolbarRect = this.toolbar.getBoundingClientRect();
+    
+    // Position toolbar right below the header
+    this.toolbar.style.top = `${headerRect.height}px`;
+    
+    // Update CSS custom properties
+    document.documentElement.style.setProperty('--navbar-height', `${this.navbarHeight}px`);
+    document.documentElement.style.setProperty('--header-height', `${headerRect.height}px`);
+    document.documentElement.style.setProperty('--toolbar-height', `${toolbarRect.height}px`);
+  }
+  
+  handleScroll() {
+    const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+    const scrollDelta = scrollTop - this.lastScrollTop;
+    
+    // Get elements
+    const breadcrumbs = document.getElementById('breadCrumbsContainer');
+    const header = document.getElementById('stickyHeader');
+    const toolbar = document.getElementById('coderToolBarWrapper');
+    
+    if (!breadcrumbs || !header || !toolbar) return;
+    
+    // Calculate when breadcrumbs should start hiding
+    const breadcrumbsBottom = breadcrumbs.offsetTop + breadcrumbs.offsetHeight;
+    
+    if (scrollTop > breadcrumbsBottom - this.navbarHeight) {
+      // Breadcrumbs should hide
+      breadcrumbs.classList.add('hidden');
+      document.body.classList.add('header-is-sticky');
+      
+      // Make header and toolbar sticky
+      header.style.position = 'fixed';
+      header.style.top = '0';
+      header.style.left = '0';
+      header.style.right = '0';
+      header.style.zIndex = '100';
+      
+      toolbar.style.position = 'fixed';
+      toolbar.style.top = `${header.offsetHeight}px`;
+      toolbar.style.left = '0';
+      toolbar.style.right = '0';
+      toolbar.style.zIndex = '99';
+      
+      this.isSticky = true;
+    } else {
+      // Reset to normal
+      breadcrumbs.classList.remove('hidden');
+      document.body.classList.remove('header-is-sticky');
+      
+      header.style.position = 'relative';
+      toolbar.style.position = 'relative';
+      toolbar.style.top = '0';
+      
+      this.isSticky = false;
+    }
+    
+    // Handle scroll direction for hiding/showing
+    if (Math.abs(scrollDelta) > 5) {
+      if (scrollDelta > 0 && scrollTop > this.scrollThreshold) {
+        // Scrolling down
+        if (this.isSticky) {
+          header.style.transform = 'translateY(-100%)';
+          toolbar.style.transform = 'translateY(-100%)';
+        }
+      } else {
+        // Scrolling up
+        header.style.transform = 'translateY(0)';
+        toolbar.style.transform = 'translateY(0)';
+      }
+    }
+    
+    this.lastScrollTop = scrollTop;
+  }
+  
+  updateStickyState(forceSticky = false) {
+    if (forceSticky || window.scrollY > this.navbarHeight) {
+      this.isSticky = true;
+      document.body.classList.add('header-is-sticky');
+    } else {
+      this.isSticky = false;
+      document.body.classList.remove('header-is-sticky');
+    }
+  }
+}
 
 
 
@@ -162,6 +280,9 @@ class CodeViewEditor {
     this.currentFile = null;
     this.fileData = null;
     this.codeMirror = null;
+
+    this.stickyHeaderManager = null;
+    
     this.isEditing = false;
     this.isLoading = false;
     this.isInitialized = false;
@@ -209,10 +330,15 @@ class CodeViewEditor {
     
     filePage.innerHTML = AppAssets.templates.editor();
     this.injectPopover();
+
+    this.injectNewFileDropdown();
+    
     this.cacheElements();
     this.bindElementEvents();
     
     this.fullscreenManager = new FullscreenManager(".editorContainer");
+
+    this.stickyHeaderManager = new StickyHeaderManager();
     
     if (typeof CodeMirror !== "undefined") {
       this.setupCodeMirror();
@@ -285,8 +411,22 @@ class CodeViewEditor {
       headerScrollLeft: "headerScrollLeft",
       headerScrollRight: "headerScrollRight",
       stickyHeader: "stickyHeader",
+      
+      
+      newFileDropdown: "newFileDropdown",
+      newFileWithRepo: "newFileWithRepo",
+      newFileWithoutRepo: "newFileWithoutRepo",
+      breadCrumbsWrapper: "breadCrumbsWrapper",
+      breadCrumbsContainer: "breadCrumbsContainer",
+      headerScrollContainer: "headerScrollContainer",
+      headerScrollLeft: "headerScrollLeft",
+      headerScrollRight: "headerScrollRight",
+      stickyHeader: "stickyHeader",
+      coderToolBarWrapper: "coderToolBarWrapper",
+      coderToolBar: "coderToolBar",
     };
-    
+
+/**    
     // Cache all elements
     Object.entries(elementIds).forEach(([key, id]) => {
       if (key === "filePage") {
@@ -295,10 +435,21 @@ class CodeViewEditor {
         this.elements[key] = document.getElementById(id);
       }
     });
-    
+**/
+
+    this.elements.pathBreadcrumb = document.getElementById('pathBreadcrumb');
+
+
     // Cache the editor header separately (it's a class selector)
     this.elements.coderHeader = document.querySelector('.coderHeader');
-    
+
+    // Cache all elements
+    Object.entries(elementIds).forEach(([key, id]) => {
+      this.elements[key] = document.getElementById(id);
+    });
+
+
+   
     this.populateLanguageDropdown();
   }.bind(this);
   bindElementEvents = function() {
@@ -419,6 +570,104 @@ class CodeViewEditor {
       this.updateHeaderScrollButtons();
     });
   }.bind(this);
+
+  
+  // Update bindElementEvents to handle new file dropdown
+  bindElementEvents = function() {
+    // ... existing event bindings ...
+    
+    // New file dropdown events
+    this.bindEvent(this.elements.newFileWithRepo, 'click', () => this.handleNewFileWithRepo());
+    this.bindEvent(this.elements.newFileWithoutRepo, 'click', () => this.handleNewFileWithoutRepo());
+    
+    // Global click to close dropdowns
+    document.addEventListener('click', (e) => {
+      // Close new file dropdown
+      if (this.elements.newFileDropdown && 
+          !this.elements.newFileDropdown.contains(e.target) &&
+          !e.target.closest('[data-action="new-file"]')) {
+        this.elements.newFileDropdown?.classList.add('hide');
+      }
+      
+      // ... other dropdown closes ...
+    });
+  }.bind(this);
+  
+  
+  // Update the setupStickyHeader method
+  setupStickyHeader = function() {
+    // This is now handled by StickyHeaderManager
+    // Just ensure the manager is initialized
+    if (!this.stickyHeaderManager) {
+      this.stickyHeaderManager = new StickyHeaderManager();
+    }
+  }.bind(this);
+
+  
+  // Add this method to inject the new file dropdown
+  injectNewFileDropdown = function() {
+    const existing = document.getElementById('newFileDropdown');
+    if (existing) existing.remove();
+    
+    document.body.insertAdjacentHTML('beforeend', AppAssets.templates.newFileDropdown());
+  }.bind(this);
+  
+  // Add method to update breadcrumbs
+  updateBreadcrumbs = function(repoName = null, path = '') {
+    const breadcrumb = this.elements.pathBreadcrumb;
+    if (!breadcrumb) return;
+    
+    let html = '';
+    
+    if (repoName) {
+      html += `
+        <a href="#" class="breadCrumb" data-action="show-repo-selector">Repositories</a>
+        <span class="navDivider">/</span>
+        <a href="#" class="breadCrumb" data-action="show-explorer">${repoName}</a>
+      `;
+      
+      if (path) {
+        const parts = path.split('/').filter(p => p);
+        let currentPath = '';
+        
+        parts.forEach((part, index) => {
+          currentPath += (currentPath ? '/' : '') + part;
+          html += `
+            <span class="navDivider">/</span>
+            <a href="#" class="breadCrumb" data-path="${currentPath}">${part}</a>
+          `;
+        });
+      }
+      
+      html += `<span class="navDivider">/</span>`;
+    }
+    
+    html += `<span class="breadCrumb current">${this.currentFile || 'untitled.js'}</span>`;
+    
+    breadcrumb.innerHTML = html;
+    
+    // Add event listeners to breadcrumbs
+    breadcrumb.querySelectorAll('[data-action], [data-path]').forEach(el => {
+      el.addEventListener('click', (e) => {
+        e.preventDefault();
+        const action = el.getAttribute('data-action');
+        const path = el.getAttribute('data-path');
+        
+        if (action === 'show-repo-selector') {
+          if (typeof window.showRepoSelector === 'function') window.showRepoSelector();
+        } else if (action === 'show-explorer') {
+          if (typeof window.showExplorer === 'function') window.showExplorer();
+        } else if (path) {
+          // Handle path navigation
+          if (typeof window.navigateToPath === 'function') window.navigateToPath(path);
+        }
+      });
+    });
+  }.bind(this);
+  
+
+
+
   
   setupCodeMirror = function() {
     if (!this.fullscreenManager) {
@@ -684,8 +933,13 @@ class CodeViewEditor {
     this.exitEditMode();
     this.updateModifiedBadge();
     this.show();
+    
+    this.updateBreadcrumbs(repoName, path);
+    
     this.updateHeaderScrollButtons();
   }.bind(this);
+
+
   
   performSave = function(commitMessage) {
     this.coderLoading(1500);
@@ -1180,53 +1434,6 @@ class CodeViewEditor {
     }
   }.bind(this);
 
-  // Sticky Header Logic
-  setupStickyHeader = function() {
-     const stickyHeader = document.getElementById('stickyHeader');
-     const breadcrumbs = document.getElementById('pathBreadcrumb');
-     const navbar = document.querySelector('.navbar');
-     const coderHeader = this.elements.coderHeader || document.querySelector('.coderHeader');
-     
-     if (!stickyHeader || !breadcrumbs) return;
-     
-     // Get navbar height from CSS custom property
-     const getNavbarHeight = () => {
-       try {
-         const rootStyles = getComputedStyle(document.documentElement);
-         const navbarHeight = rootStyles.getPropertyValue('--navbar-height') || '3.75rem';
-         // Convert rem to px (assuming 1rem = 16px)
-         const remValue = parseFloat(navbarHeight);
-         return remValue * 16; // Convert rem to px
-       } catch (e) {
-         return 60; // Fallback to default
-       }
-     };
-     
-     const triggerPoint = getNavbarHeight();
-     
-     // Detect scroll on main window
-     window.addEventListener('scroll', () => {
-         const rect = stickyHeader.getBoundingClientRect();
-         
-         if (rect.top <= triggerPoint) {
-             // We are in sticky mode
-             breadcrumbs.classList.add('hidden');
-             document.body.classList.add('header-is-sticky');
-         } else {
-             breadcrumbs.classList.remove('hidden');
-             document.body.classList.remove('header-is-sticky');
-         }
-     });
-     
-     // Setup editor header scroll shadow indicators
-     if (coderHeader) {
-         coderHeader.addEventListener('scroll', () => {
-             this.updateHeaderScrollShadows();
-         });
-         // Initial check
-         this.updateHeaderScrollShadows();
-     }
-  }.bind(this);
   
   // Update header scroll shadows
   updateHeaderScrollShadows = function() {
@@ -1253,6 +1460,89 @@ class CodeViewEditor {
          coderHeader.classList.add('has-scroll-right');
      }
   }.bind(this);
+
+
+
+
+  // Add these new methods for file creation
+  handleNewFileWithRepo = function() {
+    // Show the existing create file modal
+    if (typeof window.showCreateFileModal === 'function') {
+      window.showCreateFileModal();
+    }
+    this.hideNewFileDropdown();
+  }.bind(this);
+  
+  handleNewFileWithoutRepo = function() {
+    // Create a new standalone file
+    this.createNewStandaloneFile();
+    this.hideNewFileDropdown();
+  }.bind(this);
+  
+  createNewStandaloneFile = function() {
+    // Reset to new file state
+    this.currentFile = 'untitled.js';
+    this.fileData = {
+      content: '// New file\n// Created on ' + new Date().toLocaleDateString() + '\n\n',
+      category: 'General',
+      tags: [],
+      lastModified: Date.now(),
+      lastCommit: 'Initial commit',
+      size: 0
+    };
+    this.originalContent = this.fileData.content;
+    
+    // Update UI
+    if (this.elements.fileNameInput) {
+      this.elements.fileNameInput.value = 'untitled';
+    }
+    if (this.elements.fileExtensionLabel) {
+      this.elements.fileExtensionLabel.textContent = '.js';
+    }
+    
+    // Set up editor
+    if (this.codeMirror) {
+      this.codeMirror.setValue(this.fileData.content);
+      this.codeMirror.refresh();
+    } else {
+      this.setupCodeMirror();
+    }
+    
+    this.setLanguage('javascript');
+    this.updateStats();
+    this.updateModifiedBadge();
+    this.enterEditMode();
+    this.show();
+  }.bind(this);
+  
+  showNewFileDropdown = function(e) {
+    if (!this.elements.newFileDropdown) return;
+    
+    const button = e.currentTarget || document.querySelector('[data-action="new-file"]');
+    if (!button) return;
+    
+    this.elements.newFileDropdown.classList.remove('hide');
+    
+    // Position dropdown
+    const rect = button.getBoundingClientRect();
+    const dropdown = this.elements.newFileDropdown;
+    dropdown.style.top = `${rect.bottom + window.scrollY + 5}px`;
+    dropdown.style.left = `${rect.left + window.scrollX}px`;
+  }.bind(this);
+  
+  hideNewFileDropdown = function() {
+    if (this.elements.newFileDropdown) {
+      this.elements.newFileDropdown.classList.add('hide');
+    }
+  }.bind(this);
+
+
+
+
+
+
+
+
 
 
 //////////  H E L P E R S  ///////
@@ -1286,3 +1576,14 @@ document.addEventListener("DOMContentLoaded", () => {
     window.coderViewEdit.init();
   }
 });
+/**
+ * 
+ *  C R E A T E D  B Y
+ * 
+ *  William Hanson 
+ * 
+ *  Chevrolay@Outlook.com
+ * 
+ *  m.me/Chevrolay
+ * 
+ */
