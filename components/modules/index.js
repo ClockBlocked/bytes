@@ -31,9 +31,11 @@ window.initializeComponents = function() {
   if (window.Alert) builder.register(window.Alert);
   if (window.Badge) builder.register(window.Badge);
   
+  if (window.CodeBlock) builder.register(CodeBlock);
+
   // Register code components
-  if (window.CodeViewer) builder.register(window.CodeViewer);
-  if (window.CodeEditor) builder.register(window.CodeEditor);
+//  if (window.CodeViewer) builder.register(window.CodeViewer);
+//  if (window.CodeEditor) builder.register(window.CodeEditor);
   
   console.log('Components registered successfully!');
   console.log('Available components:', builder.getAll());
