@@ -3,10 +3,10 @@
  * Demonstrates all components in the registry system
  */
 
-import { builder } from './modules/components/setup.js';
-import { Modal, Dropdown, Tooltip, Dialog, Popover } from './modules/components/overlays.js';
-import { Toast, Alert, Badge } from './modules/components/notify.js';
-import { CodeViewer, CodeEditor } from './modules/components/coder.js';
+import { builder } from './modules/setup.js';
+import { Modal, Dropdown, Tooltip, Dialog, Popover } from './modules/overlays.js';
+import { Toast, Alert, Badge } from './modules/notify.js';
+import { CodeViewer, CodeEditor } from './modules/coder.js';
 
 // ============= REGISTRATION =============
 
