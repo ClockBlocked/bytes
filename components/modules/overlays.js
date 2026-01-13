@@ -1,5 +1,5 @@
 // ============= MODAL COMPONENT =============
-const Modal = {
+window.Modal = {
   name: 'modal',
   version: '1.0.0',
 
@@ -70,7 +70,7 @@ const Modal = {
 };
 
 // ============= TOOLTIP COMPONENT =============
-const Tooltip = {
+window.Tooltip = {
   name: 'tooltip',
   version: '1.0.0',
 
@@ -110,7 +110,7 @@ const Tooltip = {
 };
 
 // ============= DROPDOWN COMPONENT =============
-const Dropdown = {
+window.Dropdown = {
   name: 'dropdown',
   version: '1.0.0',
 
@@ -173,7 +173,7 @@ const Dropdown = {
 };
 
 // ============= DIALOG COMPONENT =============
-const Dialog = {
+window.Dialog = {
   name: 'dialog',
   version: '1.0.0',
 
@@ -221,7 +221,7 @@ const Dialog = {
 };
 
 // ============= POPOVER COMPONENT =============
-const Popover = {
+window.Popover = {
   name: 'popover',
   version: '1.0.0',
 
@@ -278,21 +278,4 @@ const Popover = {
   }
 };
 
-
-
-window.Modal = Modal;
-window.Tooltip = Tooltip;
-window.Dropdown = Dropdown;
-window.Dialog = Dialog;
-window.Popover = Popover;
-/**
- * 
- *  C R E A T E D  B Y
- * 
- *  William Hanson 
- * 
- *  Chevrolay@Outlook.com
- * 
- *  m.me/Chevrolay
- * 
- */
+console.log('Overlay components loaded: Modal, Tooltip, Dropdown, Dialog, Popover');
