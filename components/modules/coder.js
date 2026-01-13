@@ -237,7 +237,7 @@ const CodeBlock = {
         { regex: /\b(true|false|null|undefined|NaN|Infinity)\b/g, class: 'literal' },
         { regex: /\b(\d+\. ?\d*)\b/g, class: 'number' },
         { regex: /\b([A-Z][a-zA-Z0-9_]*)\b/g, class: 'class-name' },
-        { regex: /(\b\w+)(? =\s*\()/g, class: 'function' }
+        { regex: /(\b\w+)(.? =\s*\()/g, class: 'function' }
       ],
       html: [
         { regex: /(&lt;! --[\s\S]*?--&gt;)/g, class: 'comment' },
@@ -246,7 +246,7 @@ const CodeBlock = {
       ],
       css: [
         { regex: /(\/\*[\s\S]*?\*\/)/g, class: 'comment' },
-        { regex: /([. #]? [\w-]+)(? =\s*\{)/g, class: 'selector' },
+        { regex: /([. #]? [\w-]+)(.? =\s*\{)/g, class: 'selector' },
         { regex: /([\w-]+)(?=\s*:)/g, class: 'property' },
         { regex: /:\s*([^;{}]+)/g, replace: ': <span class="value">$1</span>' }
       ],
