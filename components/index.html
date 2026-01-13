@@ -269,12 +269,11 @@ modules/
 <script src="./modules/overlays.js"></script>
 <script src="./modules/notify.js"></script>
 <script src="./modules/coder.js"></script>
-<script src="./modules/index.js"></script>
-<script src="./demo.js"></script>
+
 <script src="./modules/setup.js"></script>
 
 <script>
-/**
+
 function demoModal() {
   const modal = builder.create('modal', {
     title: 'Welcome to Component System',
@@ -397,7 +396,6 @@ function demoDialog() {
   document.body.appendChild(dialog.element);
   dialog.mount();
 }
-**/
 
 document.addEventListener('DOMContentLoaded', () => {
   const demoBtn = document.getElementById('demo-modal-btn');
