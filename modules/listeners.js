@@ -359,150 +359,8 @@ class EventListenersManager {
         }
     }
 
-    setupGlobalEventDelegation() {
-        document.addEventListener("click", e => {
-            // Repository card click
-            const repoCard = e.target.closest(".bg-github-canvas-overlay.border");
-            if (repoCard && repoCard.querySelector("h3.text-github-accent-fg")) {
-                const repoName = repoCard.querySelector("h3").textContent;
-                if (repoName && typeof window.openRepository === "function") {
-                    e.preventDefault();
-                    window.openRepository(repoName);
-                }
-                return;
-            }
-
-            // Sidebar repository item click
-            const repoItem = e.target.closest(".repo-item");
-            if (repoItem) {
-                const repoName = repoItem.querySelector("span: not(.text-github-fg-muted)")?.textContent;
-                if (repoName && typeof window.openRepository === "function") {
-                    e.preventDefault();
-                    window.openRepository(repoName);
-                }
-                return;
-            }
-
-            // Recent file item click
-            const recentFileItem = e.target.closest(".recent-file-item");
-            if (recentFileItem) {
-                const fileName = recentFileItem.querySelector(".text-github-fg-default")?.textContent;
-                const repoName = recentFileItem.querySelector(".text-github-fg-muted")?.textContent;
-                if (fileName && repoName && typeof window.openRecentFile === "function") {
-                    e.preventDefault();
-                    window.openRecentFile(repoName, "", fileName);
-                }
-                return;
-            }
-
-            // File row click in explorer
-            const fileRow = e.target.closest("tbody tr");
-            if (fileRow && fileRow.parentElement && fileRow.parentElement.id === "fileListBody") {
-                // Don't trigger if clicking on the menu button
-                if (e.target.closest(".file-more-menu-btn")) return;
-                
-                const fileName = fileRow.querySelector("td:first-child span")?.textContent;
-                if (fileName && typeof window.viewFile === "function") {
-                    e.preventDefault();
-                    window.viewFile(fileName);
-                }
-                return;
-            }
-
-            // Breadcrumb navigation
-            const breadcrumbLink = e.target.closest("#pathBreadcrumb a");
-            if (breadcrumbLink) {
-                e.preventDefault();
-                const text = breadcrumbLink.textContent.trim();
-                
-                // Check for data-navigate attribute first
-                const navigateTo = breadcrumbLink.getAttribute("data-navigate");
-                if (navigateTo && window.PageRouter) {
-                    PageRouter.navigateTo(navigateTo);
-                    return;
-                }
-                
-                // Fallback to text-based navigation
-                if (text === "Repositories") {
-                    this.handleShowRepoSelector();
-                } else if (text === this.currentState.repository) {
-                    this.handleNavigateRoot();
-                } else {
-                    // Navigate to specific path segment
-                    const pathSegment = breadcrumbLink.getAttribute("data-path");
-                    if (pathSegment && typeof window.navigateToPath === "function") {
-                        window.navigateToPath(pathSegment);
-                    }
-                }
-                return;
-            }
-
-            // Edit button in file viewer
-            const editBtn = e.target.closest("#editToggleBtn, .edit-btn");
-            if (editBtn) {
-                e.preventDefault();
-                if (window.coderViewEdit && typeof window.coderViewEdit.enterEditMode === "function") {
-                    window.coderViewEdit.enterEditMode();
-                }
-                return;
-            }
-
-            // Save/Commit button
-            const saveBtn = e.target.closest("#saveChangesBtn, .commit-btn");
-            if (saveBtn) {
-                e.preventDefault();
-                if (window.coderViewEdit && typeof window.coderViewEdit.saveChanges === "function") {
-                    window.coderViewEdit.saveChanges();
-                }
-                return;
-            }
-
-            // Cancel edit button
-            const cancelBtn = e.target.closest("#cancelEditBtn, .cancel-btn");
-            if (cancelBtn) {
-                e.preventDefault();
-                if (window.coderViewEdit && typeof window.coderViewEdit.cancelEdit === "function") {
-                    window.coderViewEdit.cancelEdit();
-                }
-                return;
-            }
-        });
-
-        // Close context menu on any click
-        document.addEventListener("click", () => {
-            if (typeof window.hideContextMenu === "function") {
-                window.hideContextMenu();
-            }
-        });
-        
-        
-    document.addEventListener('click', (e) => {
-  // New file button
-  const newFileBtn = e.target.closest('[data-action="new-file"]');
-  if (newFileBtn) {
-    e.preventDefault();
-    e.stopPropagation();
-    this.handleNewFile();
-  });
-    }    
-        
-        
-    }
-
     
-    
-handleNewFile = function() {
-  // Show the new file dropdown
-  if (window.coderViewEdit && typeof window.coderViewEdit.showNewFileDropdown === 'function') {
-    const button = document.querySelector('[data-action="new-file"]');
-    if (button) {
-      window.coderViewEdit.showNewFileDropdown({ currentTarget: button });
-    }
-  }
-};
-    
-    
-    showNotification(message, type = "success") {
+  showNotification(message, type = "success") {
         const notification = document.createElement("div");
         notification.className = "fixed top-4 right-4 bg-github-canvas-overlay border border-github-border-default rounded-lg p-4 shadow-lg z-50";
         
@@ -550,10 +408,98 @@ handleNewFile = function() {
             }, 300);
         }, 3000);
     }
-    
+
+
+
+
+
+    setupGlobalEventDelegation() {
+        document.addEventListener("click", e => {
+            const target = e.target;
+
+            // 1. Repository card click
+            const repoCard = target.closest(".bg-github-canvas-overlay.border");
+            if (repoCard?.querySelector("h3.text-github-accent-fg")) {
+                const repoName = repoCard.querySelector("h3").textContent;
+                if (repoName && typeof window.openRepository === "function") {
+                    e.preventDefault();
+                    window.openRepository(repoName);
+                }
+                return;
+            }
+
+            // 2. Sidebar repository item click (Fixed spacing in :not)
+            const repoItem = target.closest(".repo-item");
+            if (repoItem) {
+                const repoName = repoItem.querySelector("span:not(.text-github-fg-muted)")?.textContent;
+                if (repoName && typeof window.openRepository === "function") {
+                    e.preventDefault();
+                    window.openRepository(repoName);
+                }
+                return;
+            }
+
+            // 3. File row click (Specific to the File Explorer body)
+            const fileRow = target.closest("#fileListBody tr");
+            if (fileRow && !target.closest(".file-more-menu-btn")) {
+                const fileName = fileRow.querySelector("td:first-child span")?.textContent;
+                if (fileName && typeof window.viewFile === "function") {
+                    e.preventDefault();
+                    window.viewFile(fileName);
+                }
+                return;
+            }
+
+            // 4. Breadcrumb navigation
+            const breadcrumbLink = target.closest("#pathBreadcrumb a");
+            if (breadcrumbLink) {
+                e.preventDefault();
+                this.handleBreadcrumbClick(breadcrumbLink);
+                return;
+            }
+
+            // 5. New File Action (Fixed syntax and merged into main delegation)
+            const newFileBtn = target.closest('[data-action="new-file"]');
+            if (newFileBtn) {
+                e.preventDefault();
+                this.handleNewFile();
+                return;
+            }
+            
+            // Close context menu if clicking anywhere else
+            if (typeof window.hideContextMenu === "function") {
+                window.hideContextMenu();
+            }
+        });
+    }
+
+    handleBreadcrumbClick(link) {
+        const text = link.textContent.trim();
+        const navigateTo = link.getAttribute("data-navigate");
+        
+        if (navigateTo && window.PageRouter) {
+            window.PageRouter.navigateTo(navigateTo);
+        } else if (text === "Repositories") {
+            this.handleShowRepoSelector();
+        } else if (text === this.currentState.repository) {
+            this.handleNavigateRoot();
+        } else {
+            const pathSegment = link.getAttribute("data-path");
+            if (pathSegment && typeof window.navigateToPath === "function") {
+                window.navigateToPath(pathSegment);
+            }
+        }
+    }
+
+    handleNewFile() {
+        if (window.coderViewEdit?.showNewFileDropdown) {
+            const button = document.querySelector('[data-action="new-file"]');
+            window.coderViewEdit.showNewFileDropdown({ currentTarget: button });
+        }
+    }
 }
 
-// Create global instance and setup function
+
 window.EventListenersManager = EventListenersManager;
 window.eventListeners = new EventListenersManager();
 window.setupEventListeners = sidebarManager => window.eventListeners.init(sidebarManager);
