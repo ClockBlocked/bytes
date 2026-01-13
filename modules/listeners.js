@@ -42,7 +42,10 @@ class EventListenersManager {
             "toggle-theme": () => this.handleToggleTheme(),
             "add-tag": () => this.handleAddTag(),
             "confirm-delete-file": () => this.handleConfirmDeleteFile(),
-            "hide-delete-file-modal":  () => this.handleHideDeleteFileModal()
+            "hide-delete-file-modal":  () => this.handleHideDeleteFileModal(),
+            
+            "new-file": () => this.handleNewFile()
+
         };
 
         Object.keys(actionHandlers).forEach(action => {
@@ -521,6 +524,20 @@ class EventListenersManager {
             }, 300);
         }, 3000);
     }
+    
+    
+handleNewFile = function() {
+  // Show the new file dropdown
+  if (window.coderViewEdit && typeof window.coderViewEdit.showNewFileDropdown === 'function') {
+    const button = document.querySelector('[data-action="new-file"]');
+    if (button) {
+      window.coderViewEdit.showNewFileDropdown({ currentTarget: button });
+    }
+  }
+};
+    
+    
+    
 }
 
 // Create global instance and setup function
