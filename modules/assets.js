@@ -356,12 +356,8 @@ icons: {
             <path d="M9.78 12.78a.75.75 0 0 1-1.06 0L4.47 8.53a.75.75 0 0 1 0-1.06l4.25-4.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042L6.06 8l3.72 3.72a.75.75 0 0 1 0 1.06Z"/>
           </svg>
         </button>
-        
-        <button class="headerScrollBtn right" id="headerScrollRight" title="Scroll right">
-          <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
-            <path d="M6.22 12.78a.75.75 0 0 0 1.06 0l4.25-4.25a.75.75 0 0 0 0-1.06L7.28 3.22a.751.751 0 0 0-1.042-.018.751.751 0 0 0-.018 1.042L9.94 8l-3.72 3.72a.75.75 0 0 0 0 1.06Z"/>
-          </svg>
-        </button>
+
+
 
         <!-- Header Content Container -->
         <div class="headerScrollContainer" id="headerScrollContainer">
@@ -457,22 +453,64 @@ icons: {
         </div>
       </div>
 
-      <!-- More Options Dropdown -->
-      <div id="moreOptionsDropdown" class="dropdown2 hide">
-        <div class="dropdownContent">
-          <button class="dropdownItem" id="formatBtn">${AppAssets.icons.format()} Format Document</button>
-          <button class="dropdownItem" id="foldAllBtn">${AppAssets.icons.fold()} Fold All</button>
-          <button class="dropdownItem" id="unfoldAllBtn">${AppAssets.icons.unfold()} Unfold All</button>
-          <div class="dropdownDivider"></div>
-          <button class="dropdownItem" id="showInvisiblesBtn">${AppAssets.icons.invisibles()} Show Invisibles</button>
-          <div class="dropdownDivider"></div>
-          <button class="dropdownItem" id="wrapBtn">${AppAssets.icons.wrap()} Toggle Word Wrap</button>
-        </div>
-      </div>
+
+
+        <button class="headerScrollBtn right" id="headerScrollRight" title="Scroll right">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+            <path d="M6.22 12.78a.75.75 0 0 0 1.06 0l4.25-4.25a.75.75 0 0 0 0-1.06L7.28 3.22a.751.751 0 0 0-1.042-.018.751.751 0 0 0-.018 1.042L9.94 8l-3.72 3.72a.75.75 0 0 0 0 1.06Z"/>
+          </svg>
+        </button>
+
+
+
+
+
+
+<!-- Toolbar (moved to separate div) -->
+<div class="coderToolBarWrapper" id="coderToolBarWrapper">
+  <div class="coderToolBar" id="coderToolBar">
+    <div class="toolbarGroup">
+      <button id="undoBtn" class="headerButton" title="Undo (Ctrl+Z)">${AppAssets.icons.undo()}</button>
+      <button id="redoBtn" class="headerButton" title="Redo (Ctrl+Y)">${AppAssets.icons.redo()}</button>
     </div>
 
-    <!-- Editor Body -->
+<div class="separator"></div>
+
+    <div class="toolbarGroup">
+      <button id="searchBtn" class="headerButton" title="Search (Ctrl+F)">
+        ${AppAssets.icons.search()}
+        <span>Search</span>
+      </button>
+    </div>
+
+<div class="separator"></div>
+
+    <div class="toolbarGroup">
+      <button id="copyBtn" class="headerButton" title="Copy Code">${AppAssets.icons.copy()}</button>
+      <button id="downloadBtn" class="headerButton" title="Download File">${AppAssets.icons.download()}</button>
+      <button id="uploadBtn" class="headerButton" title="Upload File">${AppAssets.icons.upload()}</button>
+    </div>
+
+<div class="separator"></div>
+
+    <div class="toolbarGroup">
+      <div class="fontSizeControl">
+        <button id="fontDecreaseBtn" class="fontBtn" title="Decrease Font Size">${AppAssets.icons.minus()}</button>
+        <span id="fontSizeLabel" class="fontSizeLabel">14px</span>
+        <button id="fontIncreaseBtn" class="fontBtn" title="Increase Font Size">${AppAssets.icons.plus()}</button>
+      </div>
+    </div>
+    
+  </div><!-- T O O L B A R -->
+</div><!-- W R A P P E R -->
+
+
+
+<!-- Editor Body -->
     <div id="editorBody" class="editorBody">
+
+
+<!-- L O A D E R -->
       <div id="loadingSpinner" class="loadingSpinner" data-active="false">
         <div class="spinnerContainer">
           <svg class="spinnerSvg" viewBox="0 0 50 50">
@@ -481,7 +519,10 @@ icons: {
           </svg>
         </div>
       </div>
+<!---------------------->
+      
       <div id="codeMirrorContainer" class="codeMirrorContainer"></div>
+
       <div id="searchPanel" class="searchPanel hide">
         <div class="searchContainer">
           <input type="text" id="searchInput" class="searchInput" placeholder="Search..." autocomplete="off" spellcheck="false">
@@ -493,11 +534,17 @@ icons: {
           </div>
         </div>
       </div>
-    </div>
 
-    <!-- Editor Footer -->
-    <div class="editorFooter">
+    </div>
+<!-- B O D Y -- E N D -------------------------------->
+
+
+
+<!-- Editor Footer -->
+<div class="editorFooter">
+
       <div class="editorFooterLeft">
+      
         <div class="footerItem">
           <span class="footerLabel">Ln</span>
           <span id="cursorLine" class="footerValue">1</span>
@@ -505,7 +552,9 @@ icons: {
           <span class="footerLabel">Col</span>
           <span id="cursorCol" class="footerValue">1</span>
         </div>
-        <div class="footerDivider"></div>
+        
+<div class="footerDivider"></div>
+
         <div class="footerItem">
           <span id="lineCount" class="footerValue">0</span>
           <span class="footerLabel">lines</span>
@@ -513,18 +562,25 @@ icons: {
           <span id="charCount" class="footerValue">0</span>
           <span class="footerLabel">chars</span>
         </div>
-        <div class="footerDivider"></div>
+        
+<div class="footerDivider"></div>
+
         <div class="footerItem">
           ${AppAssets.icons.fileSize()}
           <span id="fileSize" class="footerValue">0 B</span>
         </div>
+
       </div>
+<!-- Left E N D -->
+      
       <div class="editorFooterCenter">
         <div id="statusIndicator" class="statusIndicator statusOk">
           ${AppAssets.icons.statusOk()}
           <span>No Issues</span>
         </div>
       </div>
+<!-- Center E N D -->
+
       <div class="editorFooterRight">
         <div class="footerItem">
           ${AppAssets.icons.clock()}
@@ -536,49 +592,20 @@ icons: {
         <span class="footerBadge">Spaces: 2</span>
         <span class="footerBadge footerBadgeAccent" id="languageBadgeSmall">JavaScript</span>
       </div>
-    </div>
-  </div>
+<!-- Right E N D ->
+
 </div>
+<!-- Footer E N D -->
+
+
+
 
 <!-- File Upload Input (hidden) -->
 <input type="file" id="fileUploadInput" class="hide" accept=".js,.jsx,.ts,.tsx,.py,.html,.css,.json,.md,.txt,.yml,.yaml,.xml,.sql,.sh,.rb,.go,.rs,.java,.cpp,.c,.h,.cs,.php,.swift">
 
-<!-- Toolbar (moved to separate div) -->
-<div class="coderToolBarWrapper" id="coderToolBarWrapper">
-  <div class="coderToolBar" id="coderToolBar">
-    <div class="toolbarGroup">
-      <button id="undoBtn" class="headerButton" title="Undo (Ctrl+Z)">${AppAssets.icons.undo()}</button>
-      <button id="redoBtn" class="headerButton" title="Redo (Ctrl+Y)">${AppAssets.icons.redo()}</button>
-    </div>
+  </div><!-- C A R D -->
+</div><!-- W R A P P E R -->
 
-    <div class="separator"></div>
-
-    <div class="toolbarGroup">
-      <button id="searchBtn" class="headerButton" title="Search (Ctrl+F)">
-        ${AppAssets.icons.search()}
-        <span>Search</span>
-      </button>
-    </div>
-
-    <div class="separator"></div>
-
-    <div class="toolbarGroup">
-      <button id="copyBtn" class="headerButton" title="Copy Code">${AppAssets.icons.copy()}</button>
-      <button id="downloadBtn" class="headerButton" title="Download File">${AppAssets.icons.download()}</button>
-      <button id="uploadBtn" class="headerButton" title="Upload File">${AppAssets.icons.upload()}</button>
-    </div>
-
-    <div class="separator"></div>
-
-    <div class="toolbarGroup">
-      <div class="fontSizeControl">
-        <button id="fontDecreaseBtn" class="fontBtn" title="Decrease Font Size">${AppAssets.icons.minus()}</button>
-        <span id="fontSizeLabel" class="fontSizeLabel">14px</span>
-        <button id="fontIncreaseBtn" class="fontBtn" title="Increase Font Size">${AppAssets.icons.plus()}</button>
-      </div>
-    </div>
-  </div>
-</div>
 `,
 
     commitDropdown: () => `
