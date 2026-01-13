@@ -550,7 +550,16 @@ class CodeViewEditor {
         this.saveChanges(true);
       }
     });
-    
+
+
+
+
+    this.bindEvent(this.elements.newFileWithRepo, 'click', () => this.handleNewFileWithRepo());
+    this.bindEvent(this.elements.newFileWithoutRepo, 'click', () => this.handleNewFileWithoutRepo());
+
+
+
+ 
     // Global click handlers
     document.addEventListener("click", (e) => {
       if (this.elements.commitDropdown &&
@@ -560,6 +569,14 @@ class CodeViewEditor {
       }
       this.elements.languageDropdown?.classList.add("hide");
       this.elements.moreOptionsDropdown?.classList.add("hide");
+      
+      if (this.elements.newFileDropdown && 
+          !this.elements.newFileDropdown.contains(e.target) &&
+          !e.target.closest('[data-action="new-file"]')) {
+        this.elements.newFileDropdown?.classList.add('hide');
+      }
+      
+      
     });
     
     // Window resize handler
