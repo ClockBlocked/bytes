@@ -1,9 +1,3 @@
-/**
- * CODEMIRROR MODULE
- * GitHub-style Code Viewer with Sticky Header and Toolbar
- * Features: Sticky header, sticky toolbar, dark dimmed theme, line numbers, syntax highlighting
- */
-
 const CodeViewer = {
   name: 'codeViewer',
   version: '1.0.0',
