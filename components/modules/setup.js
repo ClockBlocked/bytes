@@ -1,4 +1,4 @@
-class builder {
+export class builder {
   constructor() {
     this.registry = new Map();
     this.instances = new Map();
