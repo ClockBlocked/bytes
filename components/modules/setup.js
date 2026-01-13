@@ -14,7 +14,8 @@ class builder {
       throw new Error('Component definition must have a name');
     }
     if (this.registry.has(definition.name)) {
-      throw new Error(`Component '${definition.name}' is already registered`);
+      console.warn(`Component '${definition.name}' is already registered. Skipping.`);
+      return this;
     }
     if (typeof definition.template !== 'function') {
       throw new Error(`Component '${definition.name}' must provide a template function`);
@@ -28,12 +29,15 @@ class builder {
       methods: definition.methods || {},
       lifecycle: definition.lifecycle || {}
     });
+    
+    console.log(`Registered component: ${definition.name} v${definition.version || '1.0.0'}`);
     return this;
   }
+  
   create(componentName, props = {}) { // Creation of instance
     const definition = this.registry.get(componentName);
     if (!definition) {
-      throw new Error(`Component '${componentName}' not registered`);
+      throw new Error(`Component '${componentName}' not registered. Available: ${Array.from(this.registry.keys()).join(', ')}`);
     }
 
     const instanceId = `${componentName}-${++this.instanceCounter}`;
@@ -109,6 +113,7 @@ class builder {
     this.instances.set(instanceId, instance);
     return instance;
   }
+  
   mount(container, componentName, props = {}) { // Mount to DOM
     if (!container || typeof container.appendChild !== 'function') {
       throw new Error('Container must be a DOM node that supports appendChild');
@@ -152,20 +157,11 @@ class builder {
   }
 }
 
-
-
+// Create global builder instance
 const globalBuilder = new builder();
 
+// Make everything globally accessible
 window.builder = globalBuilder;
-window.builderClass = builder;
-/**
- * 
- *  C R E A T E D  B Y
- * 
- *  William Hanson 
- * 
- *  Chevrolay@Outlook.com
- * 
- *  m.me/Chevrolay
- * 
- */
+window.BuilderClass = builder; // Export the class itself
+
+console.log('Component builder initialized!');
