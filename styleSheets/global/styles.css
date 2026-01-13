@@ -3627,3 +3627,452 @@ aside:hover .sidebar-title {
   background-color: rgba(255, 150, 0, 0.6);
   outline: 1px solid rgba(255, 150, 0, 0.8);
 }
+
+
+
+
+
+
+/* Add these styles to your existing editor.css */
+
+/* Sticky Header System */
+:root {
+  --navbar-height: 3.75rem !important; /* 60px */
+  --breadcrumb-height: 2.75rem !important; /* 44px */
+  --header-height: 2.75rem !important; /* 44px */
+  --toolbar-height: 2.75rem !important; /* 44px */
+  --sticky-offset: calc(var(--navbar-height) + var(--breadcrumb-height)) !important;
+}
+
+/* Breadcrumbs Wrapper */
+.breadCrumbsWrapper {
+  position: sticky !important;
+  top: var(--navbar-height) !important;
+  z-index: 90 !important;
+  width: 100% !important;
+  background-color: var(--canvasOverlay) !important;
+  backdrop-filter: blur(8px) saturate(180%) !important;
+  -webkit-backdrop-filter: blur(8px) saturate(180%) !important;
+  border-bottom: 1px solid var(--borderDefault) !important;
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+              opacity 0.3s ease !important;
+}
+
+.breadCrumbsWrapper.hidden {
+  transform: translateY(-100%) !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
+.breadCrumbsContainer {
+  max-width: 100% !important;
+  overflow-x: auto !important;
+  padding: 0 1rem !important;
+  height: var(--breadcrumb-height) !important;
+  display: flex !important;
+  align-items: center !important;
+}
+
+.breadcrumbNav {
+  display: flex !important;
+  align-items: center !important;
+  gap: 0.25rem !important;
+  flex-wrap: nowrap !important;
+  white-space: nowrap !important;
+  font-size: 0.875rem !important;
+}
+
+.breadCrumb {
+  display: inline-flex !important;
+  align-items: center !important;
+  color: var(--fgMuted) !important;
+  text-decoration: none !important;
+  padding: 0.25rem 0.375rem !important;
+  border-radius: 0.375rem !important;
+  transition: all 0.2s ease !important;
+  font-weight: 500 !important;
+}
+
+.breadCrumb:hover {
+  color: var(--fgDefault) !important;
+  background-color: var(--canvasSubtle) !important;
+}
+
+.breadCrumb.current {
+  color: var(--fgDefault) !important;
+  font-weight: 600 !important;
+  pointer-events: none !important;
+}
+
+.navDivider {
+  color: var(--borderSubtle) !important;
+  margin: 0 0.125rem !important;
+  user-select: none !important;
+}
+
+/* Coder Header Wrapper (Sticky) */
+.coderHeaderWrapper {
+  position: sticky !important;
+  top: calc(var(--navbar-height) + var(--breadcrumb-height)) !important;
+  z-index: 80 !important;
+  background-color: var(--canvasOverlay) !important;
+  border-bottom: 1px solid var(--borderDefault) !important;
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+.header-is-sticky .coderHeaderWrapper {
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15) !important;
+  transform: translateY(0) !important;
+}
+
+/* Header Scroll Container */
+.coderHeader {
+  position: relative !important;
+  height: var(--header-height) !important;
+  overflow: hidden !important;
+}
+
+.headerScrollContainer {
+  width: 100% !important;
+  height: 100% !important;
+  overflow-x: auto !important;
+  overflow-y: hidden !important;
+  scrollbar-width: none !important;
+  -ms-overflow-style: none !important;
+  scroll-behavior: smooth !important;
+  padding: 0 2rem !important; /* Space for scroll buttons */
+}
+
+.headerScrollContainer::-webkit-scrollbar {
+  display: none !important;
+}
+
+.headerContent {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  height: 100% !important;
+  min-width: min-content !important;
+  padding: 0 0.5rem !important;
+}
+
+/* Header Scroll Buttons */
+.headerScrollBtn {
+  position: absolute !important;
+  top: 0 !important;
+  bottom: 0 !important;
+  width: 2rem !important;
+  background: var(--canvasOverlay) !important;
+  border: none !important;
+  color: var(--fgMuted) !important;
+  cursor: pointer !important;
+  z-index: 10 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  opacity: 0 !important;
+  transition: opacity 0.2s ease, background 0.2s ease !important;
+}
+
+.headerScrollBtn:hover {
+  background: var(--canvasSubtle) !important;
+  color: var(--fgDefault) !important;
+}
+
+.headerScrollBtn.left {
+  left: 0 !important;
+  background: linear-gradient(to right, var(--canvasOverlay) 70%, transparent) !important;
+}
+
+.headerScrollBtn.right {
+  right: 0 !important;
+  background: linear-gradient(to left, var(--canvasOverlay) 70%, transparent) !important;
+}
+
+.coderHeader:hover .headerScrollBtn {
+  opacity: 1 !important;
+}
+
+.headerScrollBtn.disabled {
+  opacity: 0.3 !important;
+  cursor: not-allowed !important;
+}
+
+.headerScrollBtn.disabled:hover {
+  background: var(--canvasOverlay) !important;
+  color: var(--fgMuted) !important;
+}
+
+/* Header Sections */
+.coderHeader .leftSide,
+.coderHeader .centerSide,
+.coderHeader .rightSide {
+  display: flex !important;
+  align-items: center !important;
+  gap: 0.75rem !important;
+  height: 100% !important;
+}
+
+.coderHeader .leftSide {
+  flex: 1 !important;
+  min-width: 0 !important;
+}
+
+.coderHeader .centerSide {
+  flex-shrink: 0 !important;
+}
+
+.coderHeader .rightSide {
+  flex-shrink: 0 !important;
+}
+
+/* File Info Group */
+.fileInfoGroup {
+  display: flex !important;
+  align-items: center !important;
+  gap: 0.5rem !important;
+  min-width: 200px !important;
+}
+
+.fileNameInput {
+  background: transparent !important;
+  border: 1px solid transparent !important;
+  color: var(--fgDefault) !important;
+  font-family: var(--fontMono) !important;
+  font-size: 0.875rem !important;
+  padding: 0.25rem 0.5rem !important;
+  border-radius: 0.375rem !important;
+  min-width: 100px !important;
+  max-width: 300px !important;
+  transition: all 0.2s ease !important;
+}
+
+.fileNameInput:hover {
+  background: var(--canvasSubtle) !important;
+}
+
+.fileNameInput:focus {
+  outline: none !important;
+  border-color: var(--accentFg) !important;
+  background: var(--canvasDefault) !important;
+}
+
+.fileExtensionGroup {
+  display: flex !important;
+  align-items: center !important;
+  gap: 0.5rem !important;
+}
+
+.fileExtensionBtn {
+  background: var(--canvasDefault) !important;
+  border: 1px dashed var(--borderSubtle) !important;
+  border-radius: 12px !important;
+  color: var(--fgMuted) !important;
+  font-family: var(--fontMono) !important;
+  font-size: 0.75rem !important;
+  padding: 0.2rem 0.5rem !important;
+  cursor: pointer !important;
+  transition: all 0.2s ease !important;
+}
+
+.fileExtensionBtn:hover {
+  background: var(--accentSubtle) !important;
+  border-color: var(--accentFg) !important;
+  color: var(--accentFg) !important;
+}
+
+.modifiedIndicator {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 20px !important;
+  height: 20px !important;
+}
+
+.modifiedDot {
+  width: 8px !important;
+  height: 8px !important;
+  border-radius: 50% !important;
+  background-color: #00e5ff !important;
+  box-shadow: 0 0 4px #00e5ff, 0 0 8px rgba(0, 229, 255, 0.5) !important;
+  animation: pulse 2s infinite !important;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1 !important; }
+  50% { opacity: 0.5 !important; }
+}
+
+/* Mode Buttons */
+.modeButtons {
+  display: flex !important;
+  background: var(--canvasDefault) !important;
+  border: 1px solid var(--borderDefault) !important;
+  border-radius: 0.5rem !important;
+  overflow: hidden !important;
+}
+
+.modeButton {
+  display: flex !important;
+  align-items: center !important;
+  gap: 0.375rem !important;
+  padding: 0.375rem 0.75rem !important;
+  background: transparent !important;
+  border: none !important;
+  color: var(--fgMuted) !important;
+  font-size: 0.8125rem !important;
+  cursor: pointer !important;
+  transition: all 0.2s ease !important;
+}
+
+.modeButton:hover {
+  background: var(--canvasSubtle) !important;
+  color: var(--fgDefault) !important ;
+}
+
+.modeButton.active {
+  background: var(--accentFg) !important;
+  color: white !important;
+}
+
+/* Action Buttons */
+.actionButtons {
+  display: flex !important;
+  align-items: center !important;
+  gap: 0.5rem !important;
+}
+
+/* Toolbar Wrapper (Second Sticky Layer) */
+.coderToolBarWrapper {
+  position: sticky !important;
+  top: calc(var(--navbar-height) + var(--breadcrumb-height) + var(--header-height)) !important;
+  z-index: 70 !important;
+  background-color: var(--canvasOverlay) !important;
+  border-bottom: 1px solid var(--borderDefault) !important;
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+.header-is-sticky .coderToolBarWrapper {
+  position: fixed !important;
+  top: var(--header-height) !important;
+  left: 0 !important;
+  right: 0 !important;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1) !important;
+}
+
+.coderToolBar {
+  display: flex !important;
+  align-items: center !important;
+  gap: 0.75rem !important;
+  padding: 0.5rem 1rem !important;
+  height: var(--toolbar-height) !important;
+  overflow-x: auto !important;
+  overflow-y: hidden !important;
+}
+
+.coderToolBar::-webkit-scrollbar {
+  display: none !important;
+}
+
+.toolbarGroup {
+  display: flex !important;
+  align-items: center !important;
+  gap: 0.25rem !important;
+  flex-shrink: 0 !important;
+}
+
+.separator {
+  width: 1px !important;
+  height: 1.25rem !important;
+  background: var(--borderDefault) !important;
+  flex-shrink: 0 !important;
+}
+
+/* Editor Container offset */
+.editorContainer {
+  margin-top: calc(var(--breadcrumb-height) + var(--header-height) + var(--toolbar-height)) !important;
+  transition: margin-top 0.3s ease !important;
+}
+
+.header-is-sticky .editorContainer {
+  margin-top: calc(var(--header-height) + var(--toolbar-height)) !important;
+}
+
+/* Fullscreen adjustments */
+.editorContainer[data-fullscreen="true"] .breadCrumbsWrapper,
+.editorContainer[data-fullscreen="true"] .coderToolBarWrapper {
+  position: absolute !important !important;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  :root {
+    --navbar-height: 3.5rem !important;
+    --breadcrumb-height: 2.5rem !important;
+    --header-height: 2.5rem !important;
+    --toolbar-height: 2.5rem !important;
+  }
+  
+  .coderHeader .centerSide {
+    display: none !important;
+  }
+  
+  .fileInfoGroup {
+    min-width: 150px !important;
+  }
+  
+  .fileNameInput {
+    max-width: 150px !important;
+  }
+}
+
+/* New File Dropdown */
+#newFileDropdown {
+  position: fixed !important;
+  background: var(--canvasOverlay) !important;
+  border: 1px solid var(--borderDefault) !important;
+  border-radius: 0.75rem !important;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2) !important;
+  width: 220px !important;
+  z-index: 9999 !important;
+  overflow: hidden !important;
+}
+
+#newFileDropdown .dropdown-header {
+  padding: 1rem !important;
+  border-bottom: 1px solid var(--borderDefault) !important;
+}
+
+#newFileDropdown .dropdown-content {
+  padding: 0.5rem !important;
+}
+
+#newFileDropdown .dropdown-item {
+  display: flex !important;
+  align-items: center !important;
+  gap: 0.75rem !important;
+  width: 100% !important;
+  padding: 0.75rem 1rem !important;
+  background: transparent !important;
+  border: none !important;
+  border-radius: 0.5rem !important;
+  color: var(--fgDefault) !important;
+  font-size: 0.875rem !important;
+  text-align: left !important;
+  cursor: pointer !important;
+  transition: all 0.2s ease !important;
+}
+
+#newFileDropdown .dropdown-item:hover {
+  background: var(--canvasSubtle) !important;
+}
+
+#newFileDropdown .dropdown-item svg {
+  width: 16px !important;
+  height: 16px !important;
+  flex-shrink: 0 !important;
+}
