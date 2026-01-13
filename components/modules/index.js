@@ -1,10 +1,4 @@
-import { builder } from './setup.js';
-import { Modal, Dropdown, Tooltip, Dialog, Popover } from './overlays.js';
-import { Toast, Alert, Badge } from './notify.js';
-import { CodeViewer, CodeEditor } from './coder.js';
-
-// Auto-register all components
-export function initializeComponents() {
+function initializeComponents() {
   builder
     .register(Modal)
     .register(Dropdown)
@@ -16,11 +10,16 @@ export function initializeComponents() {
     .register(Badge)
     .register(CodeViewer)
     .register(CodeEditor);
-  
+
   return builder;
 }
 
-export default builder;
+initializeComponents();
+
+
+
+window.initializeComponents = initializeComponents;
+window.ComponentBuilder = builder;
 /**
  * 
  *  C R E A T E D  B Y

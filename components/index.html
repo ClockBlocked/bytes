@@ -259,19 +259,21 @@ modules/
     </div>
 </div>
 
-<!-- Script -->
-<script type="module">
-    import { 
-        demoModal, 
-        demoDropdown, 
-        demoTooltip, 
-        showToast,
-        demoCodeViewer, 
-        demoCodeEditor, 
-        demoBadges, 
-        demoDialog,
-        builder 
-    } from './demo.js';
+
+
+
+<script src="./modules/setup.js"></script>
+<script src="./modules/overlays.js"></script>
+<script src="./modules/notify.js"></script>
+<script src="./modules/coder.js"></script>
+<script src="./modules/index.js"></script>
+<script src="./demo.js"></script>
+
+<script>
+/**
+ *  Main Script
+ * 
+ **/
 
     document.getElementById('demo-modal-btn')?.addEventListener('click', demoModal);
     document.getElementById('demo-dropdown-btn')?.addEventListener('click', demoDropdown);
@@ -281,13 +283,13 @@ modules/
     document.getElementById('demo-editor-btn')?.addEventListener('click', demoCodeEditor);
     document.getElementById('demo-badge-btn')?.addEventListener('click', demoBadges);
 
-    document.getElementById('demo-success-toast')?.addEventListener('click', () => 
+    document.getElementById('demo-success-toast')?.addEventListener('click', () =>
         showToast('Success! Operation completed.', 'success')
     );
-    document.getElementById('demo-error-toast')?.addEventListener('click', () => 
+    document.getElementById('demo-error-toast')?.addEventListener('click', () =>
         showToast('Error! Something went wrong.', 'error')
     );
-    document.getElementById('demo-info-toast')?.addEventListener('click', () => 
+    document.getElementById('demo-info-toast')?.addEventListener('click', () =>
         showToast('Info: This is an information message.', 'info')
     );
 
@@ -295,6 +297,8 @@ modules/
         showToast('👋 Component System Ready! Click buttons to demo.', 'success');
     }, 500);
 </script>
-
 </body>
+
+
+
 </html>

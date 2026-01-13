@@ -1,27 +1,7 @@
 /**
  * COMPLETE USAGE EXAMPLE
- * Demonstrates all components in the registry system
+ * Demonstrates all components in the registry system (globals, no modules)
  */
-
-import { builder } from './modules/setup.js';
-import { Modal, Dropdown, Tooltip, Dialog, Popover } from './modules/overlays.js';
-import { Toast, Alert, Badge } from './modules/notify.js';
-import { CodeViewer, CodeEditor } from './modules/coder.js';
-
-// ============= REGISTRATION =============
-
-// Register all components
-builder
-  .register(Modal)
-  .register(Dropdown)
-  .register(Tooltip)
-  .register(Dialog)
-  .register(Popover)
-  .register(Toast)
-  .register(Alert)
-  .register(Badge)
-  .register(CodeViewer)
-  .register(CodeEditor);
 
 // ============= DEMO: SHOW MODAL =============
 function demoModal() {
@@ -30,11 +10,15 @@ function demoModal() {
     content: 'This is a reusable modal component created with vanilla JavaScript!',
     actions: [
       { id: 'close', label: 'Close', style: 'secondary' },
-      { id: 'confirm', label: 'Confirm', style: 'primary', 
-        callback: () => showToast('Confirmed!', 'success') }
+      {
+        id: 'confirm',
+        label: 'Confirm',
+        style: 'primary',
+        callback: () => showToast('Confirmed!', 'success')
+      }
     ]
   });
-  
+
   document.body.appendChild(modal.element);
   modal.mount();
 }
@@ -49,7 +33,7 @@ function demoDropdown() {
       { label: 'Share', callback: () => showToast('Share clicked', 'info') }
     ]
   });
-  
+
   document.getElementById('dropdown-container').appendChild(dropdown.element);
   dropdown.mount();
 }
@@ -57,11 +41,11 @@ function demoDropdown() {
 // ============= DEMO: SHOW TOOLTIP =============
 function demoTooltip() {
   const tooltip = builder.create('tooltip', {
-    trigger: 'Hover over me â†’',
+    trigger: 'Hover over me →',
     content: 'This is a helpful tooltip!',
     position: 'top'
   });
-  
+
   document.getElementById('tooltip-container').appendChild(tooltip.element);
   tooltip.mount();
 }
@@ -71,10 +55,10 @@ function showToast(message, type = 'info') {
   const toast = builder.create('toast', {
     message,
     type,
-    icon: type === 'success' ? 'âœ“' : type === 'error' ? 'âœ•' : 'â„¹',
+    icon: type === 'success' ? '✓' : type === 'error' ? '✕' : 'ℹ',
     duration: 3000
   });
-  
+
   document.body.appendChild(toast.element);
   toast.mount();
 }
@@ -94,7 +78,7 @@ console.log(fibonacci(10)); // Output: 55`;
     language: 'javascript',
     code
   });
-  
+
   document.getElementById('code-viewer-container').appendChild(viewer.element);
   viewer.mount();
 }
@@ -109,7 +93,7 @@ function demoCodeEditor() {
       showToast('Code saved! Length: ' + code.length + ' chars', 'success');
     }
   });
-  
+
   document.getElementById('code-editor-container').appendChild(editor.element);
   editor.mount();
 }
@@ -117,22 +101,22 @@ function demoCodeEditor() {
 // ============= DEMO: BADGE =============
 function demoBadges() {
   const container = document.getElementById('badge-container');
-  
+
   const badge1 = builder.create('badge', {
     label: 'v1.0.0',
     variant: 'primary'
   });
-  
+
   const badge2 = builder.create('badge', {
     count: 5,
     variant: 'success'
   });
-  
+
   const badge3 = builder.create('badge', {
     count: 199,
     variant: 'primary'
   });
-  
+
   container.appendChild(badge1.element);
   container.appendChild(badge2.element);
   container.appendChild(badge3.element);
@@ -145,14 +129,13 @@ function demoDialog() {
     content: 'Are you sure you want to continue?',
     onConfirm: () => showToast('Action confirmed!', 'success')
   });
-  
+
   document.body.appendChild(dialog.element);
   dialog.mount();
 }
 
 // ============= INITIALIZATION =============
 document.addEventListener('DOMContentLoaded', () => {
-  // Setup event listeners for demo buttons
   const demoBtn = document.getElementById('demo-modal-btn');
   const dropdownBtn = document.getElementById('demo-dropdown-btn');
   const tooltipBtn = document.getElementById('demo-tooltip-btn');
@@ -160,7 +143,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const editorBtn = document.getElementById('demo-editor-btn');
   const badgeBtn = document.getElementById('demo-badge-btn');
   const dialogBtn = document.getElementById('demo-dialog-btn');
-  
+
   demoBtn?.addEventListener('click', demoModal);
   dropdownBtn?.addEventListener('click', demoDropdown);
   tooltipBtn?.addEventListener('click', demoTooltip);
@@ -168,11 +151,20 @@ document.addEventListener('DOMContentLoaded', () => {
   editorBtn?.addEventListener('click', demoCodeEditor);
   badgeBtn?.addEventListener('click', demoBadges);
   dialogBtn?.addEventListener('click', demoDialog);
-  
-  // Show welcome toast
+
+  document.getElementById('demo-success-toast')?.addEventListener('click', () =>
+    showToast('Success! Operation completed.', 'success')
+  );
+  document.getElementById('demo-error-toast')?.addEventListener('click', () =>
+    showToast('Error! Something went wrong.', 'error')
+  );
+  document.getElementById('demo-info-toast')?.addEventListener('click', () =>
+    showToast('Info: This is an information message.', 'info')
+  );
+
   setTimeout(() => {
-    showToast('Component System Ready! ðŸš€', 'success');
-  }, 300);
+    showToast('👋 Component System Ready! Click buttons to demo.', 'success');
+  }, 500);
 });
 
 // ============= ADVANCED: Create custom component =============
@@ -180,7 +172,7 @@ function createCustomComponent() {
   const CustomCard = {
     name: 'customCard',
     version: '1.0.0',
-    
+
     template: (props) => {
       const card = document.createElement('div');
       card.className = 'custom-card';
@@ -197,14 +189,14 @@ function createCustomComponent() {
       `;
       return card;
     },
-    
+
     lifecycle: {
       onMount: (element, props) => {
         console.log('Custom card mounted:', props.title);
       }
     }
   };
-  
+
   builder.register(CustomCard);
   return builder.create('customCard', {
     title: 'My Custom Card',
@@ -212,16 +204,25 @@ function createCustomComponent() {
   });
 }
 
-// Export for use in other modules
-export {
-  demoModal,
-  demoDropdown,
-  demoTooltip,
-  showToast,
-  demoCodeViewer,
-  demoCodeEditor,
-  demoBadges,
-  demoDialog,
-  createCustomComponent,
-  builder
-};
+
+
+window.demoModal = demoModal;
+window.demoDropdown = demoDropdown;
+window.demoTooltip = demoTooltip;
+window.showToast = showToast;
+window.demoCodeViewer = demoCodeViewer;
+window.demoCodeEditor = demoCodeEditor;
+window.demoBadges = demoBadges;
+window.demoDialog = demoDialog;
+window.createCustomComponent = createCustomComponent;
+/**
+ * 
+ *  C R E A T E D  B Y
+ * 
+ *  William Hanson 
+ * 
+ *  Chevrolay@Outlook.com
+ * 
+ *  m.me/Chevrolay
+ * 
+ */

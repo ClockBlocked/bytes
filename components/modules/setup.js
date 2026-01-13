@@ -1,14 +1,25 @@
-export class builder {
+class builder {
   constructor() {
     this.registry = new Map();
     this.instances = new Map();
     this.instanceCounter = 0;
   }
+
+  //  Handling the components setups
   register(definition) {
+    if (!definition || typeof definition !== 'object') {
+      throw new Error('Component definition must be an object');
+    }
     if (!definition.name) {
       throw new Error('Component definition must have a name');
     }
-    
+    if (this.registry.has(definition.name)) {
+      throw new Error(`Component '${definition.name}' is already registered`);
+    }
+    if (typeof definition.template !== 'function') {
+      throw new Error(`Component '${definition.name}' must provide a template function`);
+    }
+
     this.registry.set(definition.name, {
       ...definition,
       version: definition.version || '1.0.0',
@@ -16,23 +27,25 @@ export class builder {
       props: definition.props || {},
       methods: definition.methods || {},
       lifecycle: definition.lifecycle || {}
-    });    
+    });
     return this;
   }
-
-
-
-  
-  create(componentName, props = {}) { // Creation
+  create(componentName, props = {}) { // Creation of instance
     const definition = this.registry.get(componentName);
-    
     if (!definition) {
       throw new Error(`Component '${componentName}' not registered`);
     }
 
     const instanceId = `${componentName}-${++this.instanceCounter}`;
     const element = definition.template(props);
-    
+    if (!(element instanceof Element)) {
+      throw new Error(
+        `Component '${componentName}' template must return a DOM Element; got '${typeof element}'`
+      );
+    }
+
+    const builderRef = this;
+
     const instance = {
       id: instanceId,
       name: componentName,
@@ -42,8 +55,7 @@ export class builder {
       mounted: false,
       listeners: [],
 
-      // Where to display it
-      update(newProps) { // Update existing component
+      update(newProps) {
         this.props = { ...this.props, ...newProps };
         if (this.mounted && this.definition.lifecycle.onUpdate) {
           this.definition.lifecycle.onUpdate(this.element, this.props);
@@ -51,44 +63,41 @@ export class builder {
         return this;
       },
 
-      mount() { // Attach it to an element
+      mount() {
         if (this.mounted) return this;
-        
         if (this.definition.lifecycle.onMount) {
           this.definition.lifecycle.onMount(this.element, this.props);
         }
-        
         this.mounted = true;
         return this;
       },
 
-      destroy() { // Remove it cleanly
+      destroy() {
         if (this.definition.lifecycle.onDestroy) {
           this.definition.lifecycle.onDestroy(this.element);
         }
-        
+
         this.listeners.forEach(({ target, event, handler }) => {
           target.removeEventListener(event, handler);
         });
-        
+
         this.listeners = [];
         this.mounted = false;
-        
+
         if (this.element.parentNode) {
           this.element.parentNode.removeChild(this.element);
         }
-        
-        this.instances.delete(this.id);
+
+        builderRef.instances.delete(this.id);
         return this;
       },
 
-      // What to apply to it
-      on(element, event, handler) { // Event listener
+      on(element, event, handler) {
         element.addEventListener(event, handler);
         this.listeners.push({ target: element, event, handler });
         return this;
       },
-explorer
+
       call(methodName, ...args) {
         if (!this.definition.methods[methodName]) {
           throw new Error(`Method '${methodName}' not found on component '${this.name}'`);
@@ -100,17 +109,18 @@ explorer
     this.instances.set(instanceId, instance);
     return instance;
   }
-
-
-  
-  mount(container, componentName, props = {}) {
+  mount(container, componentName, props = {}) { // Mount to DOM
+    if (!container || typeof container.appendChild !== 'function') {
+      throw new Error('Container must be a DOM node that supports appendChild');
+    }
     const instance = this.create(componentName, props);
     container.appendChild(instance.element);
     instance.mount();
     return instance;
   }
-  unmount(element) {
-    for (const [id, instance] of this.instances) {
+
+  unmount(element) { // Unmount from DOM
+    for (const [, instance] of this.instances) {
       if (instance.element === element) {
         instance.destroy();
         break;
@@ -118,42 +128,36 @@ explorer
     }
   }
 
-
- /**
-  *
-   *  Global Control & Info
-  *
-**/
-  get(componentName) { // Get type
+  get(componentName) { // Get component definition
     return this.registry.get(componentName);
   }
-  has(componentName) { // Get location
+
+  has(componentName) { // Check if component is registered
     return this.registry.has(componentName);
   }
-  getAll() { // Locate all
+
+  getAll() { // Get all registered component names
     return Array.from(this.registry.keys());
   }
-  destroyAll() { // Cleanly remove all
-    for (const [id, instance] of this.instances) {
+
+  destroyAll() { // Destroy all instances
+    for (const [, instance] of this.instances) {
       instance.destroy();
     }
     this.instances.clear();
   }
-  getInstance(instanceId) {
+
+  getInstance(instanceId) { // Get instance by ID
     return this.instances.get(instanceId);
   }
 }
 
 
 
+const globalBuilder = new builder();
 
-
-// const globalRegistry = new builder();
-// export { globalRegistry as builder, builder as builderClass };
-
-
-
-
+window.builder = globalBuilder;
+window.builderClass = builder;
 /**
  * 
  *  C R E A T E D  B Y

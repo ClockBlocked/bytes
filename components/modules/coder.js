@@ -4,8 +4,7 @@
  * Features: Sticky header, sticky toolbar, dark dimmed theme, line numbers, syntax highlighting
  */
 
-// ============= GITHUB DARK DIMMED CODE VIEWER =============
-export const CodeViewer = {
+const CodeViewer = {
   name: 'codeViewer',
   version: '1.0.0',
 
@@ -13,7 +12,7 @@ export const CodeViewer = {
     const container = document.createElement('div');
     container.className = 'code-viewer-container';
     container.setAttribute('data-language', props.language || 'javascript');
-    
+
     // Sticky Header
     const header = document.createElement('div');
     header.className = 'code-viewer-header sticky-header';
@@ -27,10 +26,11 @@ export const CodeViewer = {
         <span class="code-language">${props.language || 'JavaScript'}</span>
       </div>
     `;
-    
+
     // Sticky Toolbar
     const toolbar = document.createElement('div');
     toolbar.className = 'code-viewer-toolbar sticky-toolbar';
+    const lineCount = (typeof props.code === 'string' ? props.code.split('\n').length : 0);
     toolbar.innerHTML = `
       <div class="toolbar-left">
         <button class="toolbar-btn code-copy-btn" title="Copy code">
@@ -52,41 +52,38 @@ export const CodeViewer = {
             <path fill="currentColor" d="M20.354 15.354A9 9 0 1 1 8.646 3.646 9 9 0 0 1 20.354 15.354z"/>
           </svg>
         </button>
-        <span class="code-line-count">${props.code?.split('\\n').length || 0} lines</span>
+        <span class="code-line-count">${lineCount} lines</span>
       </div>
     `;
-    
+
     // Code Content
     const content = document.createElement('div');
     content.className = 'code-viewer-content';
-    
+
     const codeBlock = document.createElement('pre');
     codeBlock.className = 'code-block';
-    
+
     const codeElement = document.createElement('code');
     codeElement.className = `language-${props.language || 'javascript'}`;
-    
-    // Add line numbers
-    const lines = (props.code || '// Empty file').split('\\n');
+
+    const sourceCode = typeof props.code === 'string' ? props.code : '// Empty file';
+    const lines = sourceCode.split('\n');
     const lineNumbers = document.createElement('div');
     lineNumbers.className = 'code-line-numbers';
-    lineNumbers.innerHTML = lines.map((_, i) => 
-      `<div class="code-line-number">${i + 1}</div>`
-    ).join('');
-    
-    // Syntax highlight (basic implementation)
-    const highlightedCode = highlightSyntax(props.code || '', props.language || 'javascript');
+    lineNumbers.innerHTML = lines.map((_, i) => `<div class="code-line-number">${i + 1}</div>`).join('');
+
+    const highlightedCode = highlightSyntax(sourceCode, props.language || 'javascript');
     codeElement.innerHTML = highlightedCode;
-    
+
     codeBlock.appendChild(codeElement);
-    
+
     const codeWrapper = document.createElement('div');
     codeWrapper.className = 'code-wrapper';
     codeWrapper.appendChild(lineNumbers);
     codeWrapper.appendChild(codeBlock);
-    
+
     content.appendChild(codeWrapper);
-    
+
     // Status bar
     const statusBar = document.createElement('div');
     statusBar.className = 'code-viewer-status';
@@ -95,12 +92,12 @@ export const CodeViewer = {
       <span class="status-item">${props.language || 'JavaScript'}</span>
       <span class="status-item" id="code-cursor-pos">Line 1, Column 1</span>
     `;
-    
+
     container.appendChild(header);
     container.appendChild(toolbar);
     container.appendChild(content);
     container.appendChild(statusBar);
-    
+
     return container;
   },
 
@@ -110,19 +107,31 @@ export const CodeViewer = {
       const downloadBtn = element.querySelector('.code-download-btn');
       const themeBtn = element.querySelector('.code-theme-btn');
       const codeBlock = element.querySelector('.code-block');
-      
-      // Copy to clipboard
-      copyBtn?.addEventListener('click', () => {
+
+      // Copy to clipboard (with fallback)
+      copyBtn?.addEventListener('click', async () => {
         const code = props.code || '';
-        navigator.clipboard.writeText(code).then(() => {
+        try {
+          if (navigator.clipboard?.writeText) {
+            await navigator.clipboard.writeText(code);
+          } else {
+            const textarea = document.createElement('textarea');
+            textarea.value = code;
+            document.body.appendChild(textarea);
+            textarea.select();
+            document.execCommand('copy');
+            document.body.removeChild(textarea);
+          }
           const originalText = copyBtn.textContent;
           copyBtn.textContent = 'Copied!';
           setTimeout(() => {
             copyBtn.textContent = originalText;
           }, 2000);
-        });
+        } catch (err) {
+          console.error('Copy failed', err);
+        }
       });
-      
+
       // Download code
       downloadBtn?.addEventListener('click', () => {
         const code = props.code || '';
@@ -134,17 +143,20 @@ export const CodeViewer = {
         a.click();
         window.URL.revokeObjectURL(url);
       });
-      
+
       // Toggle theme (GitHub Dark Dimmed)
       themeBtn?.addEventListener('click', () => {
         element.classList.toggle('code-viewer-light');
-        localStorage.setItem('codeViewerTheme', element.classList.contains('code-viewer-light') ? 'light' : 'dark');
+        localStorage.setItem(
+          'codeViewerTheme',
+          element.classList.contains('code-viewer-light') ? 'light' : 'dark'
+        );
       });
-      
-      // Track cursor position
-      codeBlock?.addEventListener('click', (e) => {
+
+      // Track cursor position (approximate, text-content based)
+      codeBlock?.addEventListener('click', () => {
         const selection = window.getSelection();
-        if (selection.rangeCount > 0) {
+        if (selection && selection.rangeCount > 0) {
           const range = selection.getRangeAt(0);
           const preCaretRange = range.cloneRange();
           preCaretRange.selectNodeContents(codeBlock);
@@ -153,7 +165,7 @@ export const CodeViewer = {
           updateCursorPosition(element, caretOffset);
         }
       });
-      
+
       // Restore theme preference
       const savedTheme = localStorage.getItem('codeViewerTheme');
       if (savedTheme === 'light') {
@@ -164,7 +176,7 @@ export const CodeViewer = {
 };
 
 // ============= CODE EDITOR COMPONENT =============
-export const CodeEditor = {
+const CodeEditor = {
   name: 'codeEditor',
   version: '1.0.0',
 
@@ -172,7 +184,7 @@ export const CodeEditor = {
     const container = document.createElement('div');
     container.className = 'code-editor-container';
     container.setAttribute('data-language', props.language || 'javascript');
-    
+
     // Header
     const header = document.createElement('div');
     header.className = 'code-editor-header sticky-header';
@@ -187,7 +199,7 @@ export const CodeEditor = {
       </select>
     `;
     header.querySelector('.editor-language').value = props.language || 'javascript';
-    
+
     // Toolbar
     const toolbar = document.createElement('div');
     toolbar.className = 'code-editor-toolbar sticky-toolbar';
@@ -210,14 +222,14 @@ export const CodeEditor = {
         <span class="editor-char-count">0 characters</span>
       </div>
     `;
-    
+
     // Editor area
     const editorArea = document.createElement('div');
     editorArea.className = 'code-editor-area';
-    
+
     const lineNumbers = document.createElement('div');
     lineNumbers.className = 'editor-line-numbers';
-    
+
     const textarea = document.createElement('textarea');
     textarea.className = 'editor-textarea';
     textarea.placeholder = 'Enter your code here...';
@@ -225,14 +237,14 @@ export const CodeEditor = {
     textarea.spellcheck = false;
     textarea.autocapitalize = 'off';
     textarea.autocorrect = 'off';
-    
+
     editorArea.appendChild(lineNumbers);
     editorArea.appendChild(textarea);
-    
+
     container.appendChild(header);
     container.appendChild(toolbar);
     container.appendChild(editorArea);
-    
+
     return container;
   },
 
@@ -242,75 +254,88 @@ export const CodeEditor = {
       const lineNumbers = element.querySelector('.editor-line-numbers');
       const charCount = element.querySelector('.editor-char-count');
       const saveBtn = element.querySelector('.editor-save-btn');
-      
-      // Update line numbers
+      const formatBtn = element.querySelector('.editor-format-btn');
+      const languageSelect = element.querySelector('.editor-language');
+
       const updateLineNumbers = () => {
-        const lines = textarea.value.split('\\n').length;
-        lineNumbers.innerHTML = Array.from({ length: lines }, (_, i) => 
+        const lines = textarea.value.split('\n').length;
+        lineNumbers.innerHTML = Array.from({ length: lines }, (_, i) =>
           `<div class="editor-line-number">${i + 1}</div>`
         ).join('');
-        
         charCount.textContent = `${textarea.value.length} characters`;
       };
-      
+
       // Sync scroll
       textarea.addEventListener('scroll', () => {
         lineNumbers.scrollTop = textarea.scrollTop;
       });
-      
+
       textarea.addEventListener('input', updateLineNumbers);
+
       textarea.addEventListener('keydown', (e) => {
         if (e.key === 'Tab') {
           e.preventDefault();
           const start = textarea.selectionStart;
           const end = textarea.selectionEnd;
-          textarea.value = textarea.value.substring(0, start) + '\\t' + textarea.value.substring(end);
+          textarea.value =
+            textarea.value.substring(0, start) + '\t' + textarea.value.substring(end);
           textarea.selectionStart = textarea.selectionEnd = start + 1;
           updateLineNumbers();
         }
       });
-      
+
       saveBtn?.addEventListener('click', () => {
         if (props.onSave) {
-          props.onSave(textarea.value);
+          props.onSave(textarea.value, {
+            filename: element.querySelector('.editor-filename').value,
+            language: languageSelect.value
+          });
         }
         saveBtn.textContent = 'Saved!';
         setTimeout(() => {
           saveBtn.textContent = 'Save';
         }, 2000);
       });
-      
+
+      // Basic formatter: trim trailing spaces, ensure newline at end
+      formatBtn?.addEventListener('click', () => {
+        const lines = textarea.value.split('\n').map((l) => l.replace(/\s+$/g, ''));
+        const formatted = lines.join('\n').replace(/\s+$/g, '');
+        textarea.value = formatted.endsWith('\n') ? formatted : formatted;
+        updateLineNumbers();
+      });
+
       updateLineNumbers();
     }
   }
 };
 
 // ============= HELPER: Syntax Highlighting =============
-function highlightSyntax(code, language) {
-  if (language === 'javascript' || language === 'js') {
-    return code
-      .replace(/&/g, '&amp;')
-      .replace(/</g, '&lt;')
-      .replace(/>/g, '&gt;')
-      .replace(/\"([^\"]*)\"/g, '<span class="string">&quot;$1&quot;</span>')
-      .replace(/\'([^\']*)\'/g, "<span class=\"string\">&#39;$1&#39;</span>")
-      .replace(/\\/g, '\\n')
-      .replace(/(\\b(function|const|let|var|if|else|return|class|async|await|import|export|default)\\b)/g, '<span class="keyword">$1</span>')
-      .replace(/(\\b(true|false|null|undefined)\\b)/g, '<span class="literal">$1</span>')
-      .replace(/(\\/\\/.*$)/gm, '<span class="comment">$1</span>')
-      .replace(/(\\s+)(\\d+)/g, '$1<span class="number">$2</span>');
-  }
-  
-  return code
+function escapeHTML(str) {
+  return str
     .replace(/&/g, '&amp;')
     .replace(/</g, '&lt;')
     .replace(/>/g, '&gt;');
 }
 
+function highlightSyntax(code, language) {
+  const safe = escapeHTML(code || '');
+  if (language === 'javascript' || language === 'js') {
+    return safe
+      .replace(/"([^"]*)"/g, '<span class="string">"&quot;$1&quot;"</span>')
+      .replace(/'([^']*)'/g, "<span class=\"string\">'$1'</span>")
+      .replace(/\b(function|const|let|var|if|else|return|class|async|await|import|export|default)\b/g, '<span class="keyword">$1</span>')
+      .replace(/\b(true|false|null|undefined)\b/g, '<span class="literal">$1</span>')
+      .replace(/(\/\/.*$)/gm, '<span class="comment">$1</span>')
+      .replace(/(\s+)(\d+)/g, '$1<span class="number">$2</span>');
+  }
+  return safe;
+}
+
 function updateCursorPosition(element, offset) {
-  const lines = element.querySelector('.code-block').textContent.split('\\n');
+  const lines = element.querySelector('.code-block').textContent.split('\n');
   let currentOffset = 0;
-  
+
   for (let i = 0; i < lines.length; i++) {
     if (currentOffset + lines[i].length >= offset) {
       const column = offset - currentOffset + 1;
@@ -321,7 +346,18 @@ function updateCursorPosition(element, offset) {
   }
 }
 
-export default {
-  CodeViewer,
-  CodeEditor
-};
+
+
+window.CodeViewer = CodeViewer;
+window.CodeEditor = CodeEditor;
+/**
+ * 
+ *  C R E A T E D  B Y
+ * 
+ *  William Hanson 
+ * 
+ *  Chevrolay@Outlook.com
+ * 
+ *  m.me/Chevrolay
+ * 
+ */
