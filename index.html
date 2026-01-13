@@ -319,7 +319,9 @@ html {
 
     <!-- Right Section -->
     <div class="navbar-section navbar-right">
-      <button 
+
+
+<!--      <button 
         class="navbar-button navbar-button-with-text"
         data-action="show-create-file"
         aria-label="Create new file"
@@ -327,7 +329,17 @@ html {
         <i class="fas fa-plus"></i>
         <span class="navbar-button-text">New</span>
       </button>
-      
+-->
+
+<button class="navbar-button" data-action="new-file" id="newFileButton">
+    New File
+    <svg class="chevron" width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+      <path d="M4.427 7.427l3.396 3.396a.25.25 0 0 0 .354 0l3.396-3.396A.25.25 0 0 0 10.896 2H4.604a.25.25 0 0 0-.177.427Z"/>
+    </svg>
+  </button>
+
+
+
       <button 
         class="navbar-button navbar-button-icon"
         data-action="toggle-theme"
