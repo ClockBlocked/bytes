@@ -88,7 +88,7 @@ export class builder {
         this.listeners.push({ target: element, event, handler });
         return this;
       },
-
+explorer
       call(methodName, ...args) {
         if (!this.definition.methods[methodName]) {
           throw new Error(`Method '${methodName}' not found on component '${this.name}'`);
