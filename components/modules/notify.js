@@ -1,4 +1,4 @@
-const Toast = {
+window.Toast = {
   name: 'toast',
   version: '1.0.0',
 
@@ -45,7 +45,7 @@ const Toast = {
   }
 };
 
-const Alert = {
+window.Alert = {
   name: 'alert',
   version: '1.0.0',
 
@@ -82,7 +82,7 @@ const Alert = {
   }
 };
 
-const Badge = {
+window.Badge = {
   name: 'badge',
   version: '1.0.0',
 
@@ -99,19 +99,4 @@ const Badge = {
   }
 };
 
-
-
-window.Toast = Toast;
-window.Alert = Alert;
-window.Badge = Badge;
-/**
- * 
- *  C R E A T E D  B Y
- * 
- *  William Hanson 
- * 
- *  Chevrolay@Outlook.com
- * 
- *  m.me/Chevrolay
- * 
- */
+console.log('Notification components loaded: Toast, Alert, Badge');
