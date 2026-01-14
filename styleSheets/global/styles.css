@@ -1233,44 +1233,6 @@ tr:hover .file-more-menu-btn {
   font-size: var(--textSm);
 }
 
-/* Animations */
-@keyframes slideDown {
-  from {
-    opacity: 0;
-    transform: translateY(-0.625rem);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-@keyframes slideUp {
-  from {
-    opacity: 1;
-    transform: translateY(0);
-  }
-  to {
-    opacity: 0;
-    transform: translateY(-0.625rem);
-  }
-}
-@keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
-}
-@keyframes scaleIn {
-  from {
-    opacity: 0;
-    transform: scale(0.9);
-  }
-  to {
-    opacity: 1;
-    transform: scale(1);
-  }
-}
-.animate-slide-down {
-  animation: slideDown 0.3s ease forwards;
-}
 .animate-slide-up {
   animation: slideUp 0.3s ease forwards;
 }
@@ -1599,7 +1561,7 @@ aside:hover .sidebar-title {
   visibility: hidden !important;
   transition: opacity 0.25s ease-in-out, visibility 1s ease-in-out;
 }
-.hidden {
+u.hidden {
   opacity: 0;
   visibility: hidden;
   transition: opacity 0.25s ease-in-out, visibility 1s ease-in-out;
@@ -2612,17 +2574,22 @@ aside:hover .sidebar-title {
 
 /* Breadcrumbs */
 .breadCrumbsWrapper {
+/**
   position: sticky;
   top: var(--navbar-height);
   z-index: 900;
+**/
+
   width: 100%;
   background-color: var(--canvasOverlay);
   backdrop-filter: blur(8px) saturate(180%);
   -webkit-backdrop-filter: blur(8px) saturate(180%);
   border-bottom: 1px solid var(--borderDefault);
   transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s ease;
+/**
   margin-top: var(--navbar-height);
   height: var(--breadcrumb-height);
+**/
 }
 .breadCrumbsWrapper.hidden {
   transform: translateY(-100%);
@@ -2673,13 +2640,16 @@ aside:hover .sidebar-title {
 
 /* Editor Header (Sticky) */
 .coderHeaderWrapper {
+/**
   position: sticky;
   top: calc(var(--navbar-height) + var(--breadcrumb-height));
   z-index: 800;
-  background-color: var(--canvasOverlay);
-  border-bottom: 1px solid var(--borderDefault);
-  transition: top 0.3s cubic-bezier(0.4, 0, 0.2, 1), transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   height: var(--header-height);
+*  
+  **/
+  background-color: var(--canvasOverlay);
+(  border-bottom: 1px solid var(--borderDefault);
+  transition: top 0.3s cubic-bezier(0.4, 0, 0.2, 1), transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 .coderHeaderWrapper.hidden {
   transform: translateY(-100%);
