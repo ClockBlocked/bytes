@@ -590,7 +590,7 @@ templates: {
     </div>
   </div>
 </div>
-`
+`,
 
 
     commitDropdown: () => `
