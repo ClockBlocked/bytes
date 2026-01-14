@@ -590,7 +590,7 @@ button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-
   top: 0;
   left: 0;
   right: 0;
-  height: var(--navbar-height);
+  height: 45px;
   z-index: 1000;
   background: var(--canvasOverlay);
   border-bottom: 0.0625rem solid var(--borderDefault);
