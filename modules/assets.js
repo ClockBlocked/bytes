@@ -335,180 +335,271 @@ icons: {
 ///////////////////////////////////////////////////
 templates: {
   editor: () => `
-<div class="sticky-layout-container">
-  <!-- Level 1: Navbar (always fixed at top) -->
-  <div class="navbar-sticky-container">
-    <!-- Your navbar goes here (outside this template) -->
-  </div>
+<style id="sticky">
+  .section[data-area="top"] {
+    background: transparent;
+    position: relative;
+  }
 
-  <!-- Level 2: Breadcrumbs (sticks below navbar, pushes up when scrolled) -->
-  <div class="breadcrumbs-sticky-container">
-    <div class="breadCrumbsWrapper" id="breadCrumbsWrapper">
-      <div class="breadCrumbsContainer" id="breadCrumbsContainer">
-        <nav class="breadcrumbNav" id="pathBreadcrumb">
-          <div class="breadcrumbEmpty" style="height: 44px;"></div>
-        </nav>
-      </div>
+  .section[data-area="bottom"] {
+    background: transparent;
+    position: relative;
+  }
+
+
+
+  [data-type="sticky"] {
+    position: sticky;
+    -moz-position: sticky
+    transition: position 0.35s ease-in-out;
+  }
+  [data-type="fixed"] {
+    position: fixed;
+    -moz-position: fixed;
+    transition: position 0.35s ease-in-out;
+  }
+  [data-type="relative"] {
+    position: relative;
+    -moz-position: relative;
+    transition: position 0.35s ease-in-out;
+  }
+  
+  .breadCrumbsWrapper,
+  .coderHeaderWrapper,
+  .coderToolBarWrapper {
+    width: 100%;
+    margin: 0;
+    min-height: 0;
+  }
+  
+.breadCrumbsWrapper {
+  width: 100%;
+  background-color: var(--canvasOverlay);
+  backdrop-filter: blur(8px) saturate(180%);
+  -webkit-backdrop-filter: blur(8px) saturate(180%);
+  border-bottom: 1px solid var(--borderDefault);
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s ease;
+
+  top: 45px;
+  height: 30px;
+}
+.coderHeaderWrapper {
+  background-color: var(--canvasOverlay);
+  border-bottom: 1px solid var(--borderDefault);
+  transition: top 0.3s cubic-bezier(0.4, 0, 0.2, 1), transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+
+  top: 75px;
+}
+.coderToolBarWrapper {
+  background-color: var(--canvasOverlay);
+  border-bottom: 1px solid var(--borderDefault);
+  transition: top 0.3s cubic-bezier(0.4, 0, 0.2, 1), transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+
+  top: 75px;
+}
+
+.navbar {
+  top: 0;
+}
+</style>
+
+
+
+<!-- Top -------------------->
+<div data-area="top" data-type="relative">
+
+
+  <!-- B R E A D C R U M B S -->
+  <div class="breadCrumbsWrapper" id="breadCrumbsWrapper">
+    <div class="breadCrumbsContainer" id="breadCrumbsContainer">
+      <nav class="breadcrumbNav" id="pathBreadcrumb">
+        <div class="breadcrumbEmpty" style="height: 44px"></div>
+      </nav>
     </div>
   </div>
+</div>
+<!-- End of Top -->
 
-  <!-- Level 3: Header (sticks below breadcrumbs, pushes up when scrolled) -->
-  <div class="header-sticky-container">
-    <div class="coderHeaderWrapper" id="stickyHeader">
-      <button class="headerScrollBtn left" id="headerScrollLeft" title="Scroll left">
-        <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
-          <path d="M9.78 12.78a.75.75 0 0 1-1.06 0L4.47 8.53a.75.75 0 0 1 0-1.06l4.25-4.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042L6.06 8l3.72 3.72a.75.75 0 0 1 0 1.06Z"/>
-        </svg>
-      </button>
 
-      <div class="coderHeader" id="coderHeader">
-        <div class="headerScrollContainer" id="headerScrollContainer">
-          <div class="headerContent">
-            <div class="leftSide">
-              <div class="toolbarItem fileInfoGroup">
-                <svg class="toolbarIcon" viewBox="0 0 16 16" fill="currentColor" width="16" height="16">
-                  <path d="M4 1.75C4 .784 4.784 0 5.75 0h5.586c.464 0 .909.184 1.237.513l2.914 2.914c.329.328.513.773.513 1.237v8.586A1.75 1.75 0 0 1 14.25 15h-9a.75.75 0 0 1 0-1.5h9a.25.25 0 0 0 .25-.25V6h-2.75A1.75 1.75 0 0 1 10 4.25V1.5H5.75a.25.25 0 0 0-.25.25v2.5a.75.75 0 0 1-1.5 0v-2.5Zm7.5-.188V4.25c0 .138.112.25.25.25h2.688l-2.938-2.938ZM5.72 6.72a.75.75 0 0 0 0 1.06l1.47 1.47-1.47 1.47a.75.75 0 1 0 1.06 1.06l2-2a.75.75 0 0 0 0-1.06l-2-2a.75.75 0 0 0-1.06 0ZM3.28 7.78a.75.75 0 0 0-1.06-1.06l-2 2a.75.75 0 0 0 0 1.06l2 2a.75.75 0 0 0 1.06-1.06L1.81 9.25l1.47-1.47Z"/>
-                </svg>
-                <input type="text" id="fileNameInput" class="fileNameInput" value="untitled" spellcheck="false">
-                <div class="fileExtensionGroup">
-                  <button id="fileExtensionBtn" class="fileExtensionBtn" title="Change file extension">
-                    <span id="fileExtensionLabel" class="fileExtensionLabel">.js</span>
-                  </button>
-                  <span id="modifiedIndicator" class="modifiedIndicator hide" title="Modified">
-                    <span class="modifiedDot"></span>
-                  </span>
-                </div>
-              </div>
 
-              <div class="toolbarSeparator"></div>
 
-              <div class="toolbarItem languageGroup">
-                <button id="languageBtn" class="toolbarButton languageBtn">
-                  <span id="languageBadge" class="languageBadge">
-                    ${AppAssets.icons.code("JavaScript")}
-                  </span>
-                  <svg class="chevronIcon" viewBox="0 0 16 16" fill="currentColor" width="12" height="12">
-                    <path d="M4.427 7.427l3.396 3.396a.25.25 0 0 0 .354 0l3.396-3.396A.25.25 0 0 0 10.896 2H4.604a.25.25 0 0 0-.177.427Z"/>
-                  </svg>
-                </button>
-                <div id="languageDropdown" class="dropdown hide">
-                  <div class="dropdownContent" id="languageList"></div>
-                </div>
-              </div>
+
+<!-- H E A D E R -->
+<div class="coderHeaderWrapper" id="stickyHeader">
+  <button class="headerScrollBtn left" id="headerScrollLeft" title="Scroll left">
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+      <path
+        d="M9.78 12.78a.75.75 0 0 1-1.06 0L4.47 8.53a.75.75 0 0 1 0-1.06l4.25-4.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042L6.06 8l3.72 3.72a.75.75 0 0 1 0 1.06Z"
+      />
+    </svg>
+  </button>
+
+  <div class="coderHeader" id="coderHeader">
+    <div class="headerScrollContainer" id="headerScrollContainer">
+      <div class="headerContent">
+        <div class="leftSide">
+          <div class="toolbarItem fileInfoGroup">
+            <svg class="toolbarIcon" viewBox="0 0 16 16" fill="currentColor" width="16" height="16">
+              <path
+                d="M4 1.75C4 .784 4.784 0 5.75 0h5.586c.464 0 .909.184 1.237.513l2.914 2.914c.329.328.513.773.513 1.237v8.586A1.75 1.75 0 0 1 14.25 15h-9a.75.75 0 0 1 0-1.5h9a.25.25 0 0 0 .25-.25V6h-2.75A1.75 1.75 0 0 1 10 4.25V1.5H5.75a.25.25 0 0 0-.25.25v2.5a.75.75 0 0 1-1.5 0v-2.5Zm7.5-.188V4.25c0 .138.112.25.25.25h2.688l-2.938-2.938ZM5.72 6.72a.75.75 0 0 0 0 1.06l1.47 1.47-1.47 1.47a.75.75 0 1 0 1.06 1.06l2-2a.75.75 0 0 0 0-1.06l-2-2a.75.75 0 0 0-1.06 0ZM3.28 7.78a.75.75 0 0 0-1.06-1.06l-2 2a.75.75 0 0 0 0 1.06l2 2a.75.75 0 0 0 1.06-1.06L1.81 9.25l1.47-1.47Z"
+              />
+            </svg>
+            <input type="text" id="fileNameInput" class="fileNameInput" value="untitled" spellcheck="false" />
+            <div class="fileExtensionGroup">
+              <button id="fileExtensionBtn" class="fileExtensionBtn" title="Change file extension">
+                <span id="fileExtensionLabel" class="fileExtensionLabel">.js</span>
+              </button>
+              <span id="modifiedIndicator" class="modifiedIndicator hide" title="Modified">
+                <span class="modifiedDot"></span>
+              </span>
             </div>
+          </div>
 
-            <div class="centerSide">
-              <div class="modeButtons">
-                <button id="editModeBtn" class="modeButton active" title="Edit Mode">
-                  ${AppAssets.icons.edit()}
-                  <span>Edit</span>
-                </button>
-                <button id="viewModeBtn" class="modeButton" title="View Mode">
-                  ${AppAssets.icons.view()}
-                  <span>View</span>
-                </button>
-              </div>
-            </div>
+          <div class="toolbarSeparator"></div>
 
-            <div class="rightSide">
-              <div class="actionButtons">
-                <div class="dropdown-trigger">
-                  <button id="editSaveButton" class="trigger-button" aria-haspopup="true" aria-expanded="false">
-                    <span id="editSaveLabel">Edit</span>
-                    <span class="btn-divider">|</span>
-                    <span class="more-btn">
-                      <svg class="chevron" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" width="16" height="16">
-                        <path fill="currentColor" d="M207.5 103c9.4-9.4 24.6-9.4 33.9 0l200 200c9.4 9.4 9.4 24.6 0 33.9s-24.6 9.4-33.9 0l-183-183-183 183c-9.4 9.4-24.6 9.4-33.9 0s-9.4-24.6 0-33.9l200-200z"/>
-                      </svg>
-                    </span>
-                  </button>
-                </div>
-
-                <div class="toolbarSeparator"></div>
-
-                <button id="themeBtn" class="headerButton" title="Toggle Theme">
-                  <svg id="themeIcon" class="buttonIcon" viewBox="0 0 16 16" fill="currentColor" width="14" height="14">
-                    ${AppAssets.icons.sun()}
-                  </svg>
-                </button>
-
-                <div class="toolbarSeparator"></div>
-
-                <button id="fullscreenBtn" class="headerButton" title="Toggle Fullscreen">
-                  <svg id="fullscreenIcon" class="buttonIcon" viewBox="0 0 16 16" fill="currentColor" width="14" height="14">
-                    ${AppAssets.icons.fullscreen()}
-                  </svg>
-                </button>
-
-                <button id="moreOptionsBtn" class="headerButton" title="More Options">
-                  ${AppAssets.icons.more()}
-                </button>
-              </div>
+          <div class="toolbarItem languageGroup">
+            <button id="languageBtn" class="toolbarButton languageBtn">
+              <span id="languageBadge" class="languageBadge"> ${AppAssets.icons.code("JavaScript")} </span>
+              <svg class="chevronIcon" viewBox="0 0 16 16" fill="currentColor" width="12" height="12">
+                <path
+                  d="M4.427 7.427l3.396 3.396a.25.25 0 0 0 .354 0l3.396-3.396A.25.25 0 0 0 10.896 2H4.604a.25.25 0 0 0-.177.427Z"
+                />
+              </svg>
+            </button>
+            <div id="languageDropdown" class="dropdown hide">
+              <div class="dropdownContent" id="languageList"></div>
             </div>
           </div>
         </div>
-      </div>
 
-      <button class="headerScrollBtn right" id="headerScrollRight" title="Scroll right">
-        <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
-          <path d="M6.22 12.78a.75.75 0 0 0 1.06 0l4.25-4.25a.75.75 0 0 0 0-1.06L7.28 3.22a.751.751 0 0 0-1.042-.018.751.751 0 0 0-.018 1.042L9.94 8l-3.72 3.72a.75.75 0 0 0 0 1.06Z"/>
-        </svg>
-      </button>
-
-      <div id="moreOptionsDropdown" class="dropdown2 hide">
-        <div class="dropdownContent">
-          <button class="dropdownItem" id="formatBtn">${AppAssets.icons.format()} Format Document</button>
-          <button class="dropdownItem" id="foldAllBtn">${AppAssets.icons.fold()} Fold All</button>
-          <button class="dropdownItem" id="unfoldAllBtn">${AppAssets.icons.unfold()} Unfold All</button>
-          <div class="dropdownDivider"></div>
-          <button class="dropdownItem" id="showInvisiblesBtn">${AppAssets.icons.invisibles()} Show Invisibles</button>
-          <div class="dropdownDivider"></div>
-          <button class="dropdownItem" id="wrapBtn">${AppAssets.icons.wrap()} Toggle Word Wrap</button>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Level 4: Toolbar (sticks below header, pushes up when scrolled) -->
-  <div class="toolbar-sticky-container">
-    <div class="coderToolBarWrapper" id="coderToolBarWrapper">
-      <div class="coderToolBar" id="coderToolBar">
-        <div class="toolbarGroup">
-          <button id="undoBtn" class="headerButton" title="Undo (Ctrl+Z)">${AppAssets.icons.undo()}</button>
-          <button id="redoBtn" class="headerButton" title="Redo (Ctrl+Y)">${AppAssets.icons.redo()}</button>
+        <div class="centerSide">
+          <div class="modeButtons">
+            <button id="editModeBtn" class="modeButton active" title="Edit Mode">
+              ${AppAssets.icons.edit()}
+              <span>Edit</span>
+            </button>
+            <button id="viewModeBtn" class="modeButton" title="View Mode">
+              ${AppAssets.icons.view()}
+              <span>View</span>
+            </button>
+          </div>
         </div>
 
-        <div class="separator"></div>
+        <div class="rightSide">
+          <div class="actionButtons">
+            <div class="dropdown-trigger">
+              <button id="editSaveButton" class="trigger-button" aria-haspopup="true" aria-expanded="false">
+                <span id="editSaveLabel">Edit</span>
+                <span class="btn-divider">|</span>
+                <span class="more-btn">
+                  <svg class="chevron" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" width="16" height="16">
+                    <path
+                      fill="currentColor"
+                      d="M207.5 103c9.4-9.4 24.6-9.4 33.9 0l200 200c9.4 9.4 9.4 24.6 0 33.9s-24.6 9.4-33.9 0l-183-183-183 183c-9.4 9.4-24.6 9.4-33.9 0s-9.4-24.6 0-33.9l200-200z"
+                    />
+                  </svg>
+                </span>
+              </button>
+            </div>
 
-        <div class="toolbarGroup">
-          <button id="searchBtn" class="headerButton" title="Search (Ctrl+F)">
-            ${AppAssets.icons.search()}
-            <span>Search</span>
-          </button>
-        </div>
+            <div class="toolbarSeparator"></div>
 
-        <div class="separator"></div>
+            <button id="themeBtn" class="headerButton" title="Toggle Theme">
+              <svg id="themeIcon" class="buttonIcon" viewBox="0 0 16 16" fill="currentColor" width="14" height="14">
+                ${AppAssets.icons.sun()}
+              </svg>
+            </button>
 
-        <div class="toolbarGroup">
-          <button id="copyBtn" class="headerButton" title="Copy Code">${AppAssets.icons.copy()}</button>
-          <button id="downloadBtn" class="headerButton" title="Download File">${AppAssets.icons.download()}</button>
-          <button id="uploadBtn" class="headerButton" title="Upload File">${AppAssets.icons.upload()}</button>
-        </div>
+            <div class="toolbarSeparator"></div>
 
-        <div class="separator"></div>
+            <button id="fullscreenBtn" class="headerButton" title="Toggle Fullscreen">
+              <svg
+                id="fullscreenIcon"
+                class="buttonIcon"
+                viewBox="0 0 16 16"
+                fill="currentColor"
+                width="14"
+                height="14"
+              >
+                ${AppAssets.icons.fullscreen()}
+              </svg>
+            </button>
 
-        <div class="toolbarGroup">
-          <div class="fontSizeControl">
-            <button id="fontDecreaseBtn" class="fontBtn" title="Decrease Font Size">${AppAssets.icons.minus()}</button>
-            <span id="fontSizeLabel" class="fontSizeLabel">14px</span>
-            <button id="fontIncreaseBtn" class="fontBtn" title="Increase Font Size">${AppAssets.icons.plus()}</button>
+            <button id="moreOptionsBtn" class="headerButton" title="More Options">${AppAssets.icons.more()}</button>
           </div>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- Main Content Area (scrolls under all sticky headers) -->
+  <button class="headerScrollBtn right" id="headerScrollRight" title="Scroll right">
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+      <path
+        d="M6.22 12.78a.75.75 0 0 0 1.06 0l4.25-4.25a.75.75 0 0 0 0-1.06L7.28 3.22a.751.751 0 0 0-1.042-.018.751.751 0 0 0-.018 1.042L9.94 8l-3.72 3.72a.75.75 0 0 0 0 1.06Z"
+      />
+    </svg>
+  </button>
+
+  <div id="moreOptionsDropdown" class="dropdown2 hide">
+    <div class="dropdownContent">
+      <button class="dropdownItem" id="formatBtn">${AppAssets.icons.format()} Format Document</button>
+      <button class="dropdownItem" id="foldAllBtn">${AppAssets.icons.fold()} Fold All</button>
+      <button class="dropdownItem" id="unfoldAllBtn">${AppAssets.icons.unfold()} Unfold All</button>
+      <div class="dropdownDivider"></div>
+      <button class="dropdownItem" id="showInvisiblesBtn">${AppAssets.icons.invisibles()} Show Invisibles</button>
+      <div class="dropdownDivider"></div>
+      <button class="dropdownItem" id="wrapBtn">${AppAssets.icons.wrap()} Toggle Word Wrap</button>
+    </div>
+  </div>
+</div>
+
+
+
+
+
+<!-- Bottom ------------------>
+<div data-area="bottom" data-type="relative">
+  
+  
+  <!-- T O O L B A R -->
+  <div class="coderToolBarWrapper" id="coderToolBarWrapper">
+    <div class="coderToolBar" id="coderToolBar">
+      <div class="toolbarGroup">
+        <button id="undoBtn" class="headerButton" title="Undo (Ctrl+Z)">${AppAssets.icons.undo()}</button>
+        <button id="redoBtn" class="headerButton" title="Redo (Ctrl+Y)">${AppAssets.icons.redo()}</button>
+      </div>
+
+      <div class="separator"></div>
+
+      <div class="toolbarGroup">
+        <button id="searchBtn" class="headerButton" title="Search (Ctrl+F)">
+          ${AppAssets.icons.search()}
+          <span>Search</span>
+        </button>
+      </div>
+
+      <div class="separator"></div>
+
+      <div class="toolbarGroup">
+        <button id="copyBtn" class="headerButton" title="Copy Code">${AppAssets.icons.copy()}</button>
+        <button id="downloadBtn" class="headerButton" title="Download File">${AppAssets.icons.download()}</button>
+        <button id="uploadBtn" class="headerButton" title="Upload File">${AppAssets.icons.upload()}</button>
+      </div>
+
+      <div class="separator"></div>
+
+      <div class="toolbarGroup">
+        <div class="fontSizeControl">
+          <button id="fontDecreaseBtn" class="fontBtn" title="Decrease Font Size">${AppAssets.icons.minus()}</button>
+          <span id="fontSizeLabel" class="fontSizeLabel">14px</span>
+          <button id="fontIncreaseBtn" class="fontBtn" title="Increase Font Size">${AppAssets.icons.plus()}</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- C O D E R -->
   <div class="editor-content-area">
     <div class="editorContainer" id="editorContainer">
       <div class="editorCard">
@@ -526,10 +617,19 @@ templates: {
 
           <div id="searchPanel" class="searchPanel hide">
             <div class="searchContainer">
-              <input type="text" id="searchInput" class="searchInput" placeholder="Search..." autocomplete="off" spellcheck="false">
+              <input
+                type="text"
+                id="searchInput"
+                class="searchInput"
+                placeholder="Search..."
+                autocomplete="off"
+                spellcheck="false"
+              />
               <div class="searchActions">
                 <span id="searchMatches" class="searchCount">0/0</span>
-                <button id="searchPrevBtn" class="searchNavBtn" title="Previous">${AppAssets.icons.searchPrev()}</button>
+                <button id="searchPrevBtn" class="searchNavBtn" title="Previous">
+                  ${AppAssets.icons.searchPrev()}
+                </button>
                 <button id="searchNextBtn" class="searchNavBtn" title="Next">${AppAssets.icons.searchNext()}</button>
                 <button id="closeSearchBtn" class="searchNavBtn" title="Close">${AppAssets.icons.close()}</button>
               </div>
@@ -585,11 +685,19 @@ templates: {
           </div>
         </div>
 
-        <input type="file" id="fileUploadInput" class="hide" accept=".js,.jsx,.ts,.tsx,.py,.html,.css,.json,.md,.txt,.yml,.yaml,.xml,.sql,.sh,.rb,.go,.rs,.java,.cpp,.c,.h,.cs,.php,.swift">
+        <input
+          type="file"
+          id="fileUploadInput"
+          class="hide"
+          accept=".js,.jsx,.ts,.tsx,.py,.html,.css,.json,.md,.txt,.yml,.yaml,.xml,.sql,.sh,.rb,.go,.rs,.java,.cpp,.c,.h,.cs,.php,.swift"
+        />
       </div>
     </div>
   </div>
+  
+  
 </div>
+<!-- End of bottom -->
 `,
 
 
