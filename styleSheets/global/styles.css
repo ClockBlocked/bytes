@@ -2565,7 +2565,6 @@ aside:hover .sidebar-title {
   background: var(--editorBg);
   border: 1px solid var(--editorBorder);
   border-radius: var(--radiusLg);
-  padding-top: calc(var(--navbar-height) + var(--breadcrumb-height) + var(--header-height) + var(--toolbar-height));
   transition: padding-top 0.3s ease;
 }
 .editorContainer.fullscreen {
