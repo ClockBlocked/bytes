@@ -2581,7 +2581,7 @@ aside:hover .sidebar-title {
 **/
 
 
-  position: relative;
+  position: sticky; top: 45px;
   height: 30px;
   width: 100%;
   background-color: var(--canvasOverlay);
