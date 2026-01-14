@@ -376,7 +376,7 @@ class CodeViewEditor {
     this.searchMatches = [];
     this.elements = {};
     this.fullscreenManager = null;
-    this.stickyHeaderManager = null;
+//  this.stickyHeaderManager = null;
     
     this.state = {
       fontSize: 10,
