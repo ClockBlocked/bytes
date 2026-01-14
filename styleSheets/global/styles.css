@@ -2584,6 +2584,7 @@ aside:hover .sidebar-title {
   position: sticky; top: 45px;
   height: 30px;
   width: 100%;
+  
   background-color: var(--canvasOverlay);
   backdrop-filter: blur(8px) saturate(180%);
   -webkit-backdrop-filter: blur(8px) saturate(180%);
@@ -2636,7 +2637,7 @@ aside:hover .sidebar-title {
   font-weight: 600;
   pointer-events: none;
 }
-.navDivider {
+.22 {
   color: var(--borderSubtle);
   margin: 0 0.125rem;
   user-select: none;
