@@ -339,11 +339,15 @@ templates: {
   .section[data-area="top"] {
     background: transparent;
     position: relative;
+    
+    height: 100px;
   }
 
   .section[data-area="bottom"] {
     background: transparent;
     position: relative;
+    
+    height: 100px;
   }
 
 
@@ -380,7 +384,7 @@ templates: {
   border-bottom: 1px solid var(--borderDefault);
   transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s ease;
 
-  top: 45px;
+  bottom: 0;
   height: 30px;
 }
 .coderHeaderWrapper {
@@ -388,20 +392,21 @@ templates: {
   border-bottom: 1px solid var(--borderDefault);
   transition: top 0.3s cubic-bezier(0.4, 0, 0.2, 1), transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 
-  top: 75px;
+  top: 45px;
 }
 .coderToolBarWrapper {
   background-color: var(--canvasOverlay);
   border-bottom: 1px solid var(--borderDefault);
   transition: top 0.3s cubic-bezier(0.4, 0, 0.2, 1), transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 
-  top: 75px;
+  top: 115px;
 }
 
 .navbar {
   top: 0;
 }
 </style>
+
 
 
 
