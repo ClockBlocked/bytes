@@ -412,7 +412,7 @@ class CodeViewEditor {
     this.setupNewFileButton();
     
     this.fullscreenManager = new FullscreenManager(".editorContainer");
-    this.stickyHeaderManager = new StickyHeaderManager();
+//    this.stickyHeaderManager = new StickyHeaderManager();
     
     if (typeof CodeMirror !== "undefined") {
       this.setupCodeMirror();
