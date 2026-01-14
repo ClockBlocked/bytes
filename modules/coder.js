@@ -111,7 +111,7 @@ class FullscreenManager {
 }
 
 
-
+/***†
 class StickyHeaderManager {
   constructor() {
     this.navbar = document.querySelector('.navbar');
@@ -311,7 +311,7 @@ class StickyHeaderManager {
     document.body.classList.add('header-sticky', 'header-only');
   }
 }
-
+**/
 
 
 const SUPPORTED_LANGUAGES = [
