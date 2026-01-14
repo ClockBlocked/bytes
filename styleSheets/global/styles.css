@@ -2855,13 +2855,16 @@ body.header-only .coderHeaderWrapper {
 
 /* Toolbar (Sticky) */
 .coderToolBarWrapper {
+/**
   position: sticky;
   top: calc(var(--navbar-height) + var(--breadcrumb-height) + var(--header-height));
   z-index: 700;
+  height: var(--toolbar-height);
+**/
+
   background-color: var(--canvasOverlay);
   border-bottom: 1px solid var(--borderDefault);
   transition: top 0.3s cubic-bezier(0.4, 0, 0.2, 1), transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  height: var(--toolbar-height);
 }
 body.breadcrumbs-hidden .coderToolBarWrapper {
   top: calc(var(--navbar-height) + var(--header-height));
