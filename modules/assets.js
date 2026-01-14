@@ -335,120 +335,6 @@ icons: {
 ///////////////////////////////////////////////////
 templates: {
   editor: () => `
-<style id="sticky">
-  * {
-    box-sizing: border-box;
-  }
-  
-  body {
-    margin: 0;
-    padding: 0;
-    padding-top: 45px; /* Height of fixed navbar */
-  }
-
-  /* Fixed Navbar at top */
-  .navbar {
-    position: fixed !important;
-    top: 0;
-    left: 0;
-    width: 100%;
-    z-index: 1000;
-    background: var(--canvas);
-    border-bottom: 1px solid var(--borderDefault);
-    height: 45px;
-  }
-
-  /* Sticky System Container */
-  .sticky-system {
-    position: relative;
-  }
-
-  /* BREADCRUMBS - Will be pushed up */
-  .breadCrumbsWrapper {
-    position: relative; /* Changed from sticky */
-    z-index: 800;
-    width: 100%;
-    background-color: var(--canvasOverlay);
-    backdrop-filter: blur(8px) saturate(180%);
-    -webkit-backdrop-filter: blur(8px) saturate(180%);
-    border-bottom: 1px solid var(--borderDefault);
-    height: 30px;
-    transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
-  }
-
-  /* HEADER - Will push breadcrumbs up */
-  .coderHeaderWrapper {
-    position: sticky;
-    top: 45px; /* Sticks below navbar */
-    z-index: 900;
-    background-color: var(--canvasOverlay);
-    border-bottom: 1px solid var(--borderDefault);
-    margin-top: -30px; /* Pulls up to overlap breadcrumbs */
-    transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
-    height: 40px; /* Header height */
-  }
-
-  /* TOOLBAR - Will push both breadcrumbs AND header up */
-  .coderToolBarWrapper {
-    position: sticky;
-    top: 45px; /* Sticks below navbar */
-    z-index: 910; /* Higher than header */
-    background-color: var(--canvasOverlay);
-    border-bottom: 1px solid var(--borderDefault);
-    margin-top: -70px; /* Pulls up to overlap both (30px + 40px) */
-    transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
-    height: 30px; /* Toolbar height */
-  }
-
-  /* When toolbar is active, it pushes everything */
-  .coderToolBarWrapper.active {
-    margin-top: -70px; /* Push breadcrumbs + header */
-  }
-
-  /* When only header is active (toolbar hidden) */
-  .coderToolBarWrapper.hidden + .coderHeaderWrapper {
-    margin-top: -30px; /* Only push breadcrumbs */
-  }
-
-  /* Push states based on scroll */
-  .breadCrumbsWrapper.pushed-by-header {
-    transform: translateY(-40px); /* Pushed up by header height */
-  }
-
-  .breadCrumbsWrapper.pushed-by-toolbar {
-    transform: translateY(-70px); /* Pushed up by header + toolbar */
-  }
-
-  /* Smooth transitions */
-  .breadCrumbsWrapper,
-  .coderHeaderWrapper,
-  .coderToolBarWrapper {
-    transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
-  }
-
-  /* Editor content - needs padding to account for push */
-  .editor-content-area {
-    position: relative;
-    z-index: 1;
-    padding-top: 100px; /* Initial space for breadcrumbs + header */
-    transition: padding-top 0.35s cubic-bezier(0.4, 0, 0.2, 1);
-  }
-
-  .editor-content-area.pushed-by-header {
-    padding-top: 60px; /* Reduced space when breadcrumbs are pushed */
-  }
-
-  .editor-content-area.pushed-by-toolbar {
-    padding-top: 30px; /* Minimal space when both are pushed */
-  }
-</style>
-
-
-
-<!-- Top -------------------->
-<div class="sticky-system">
-
-
   <!-- B R E A D C R U M B S -->
   <div class="breadCrumbsWrapper" id="breadCrumbsWrapper">
     <div class="breadCrumbsContainer" id="breadCrumbsContainer">
@@ -459,6 +345,10 @@ templates: {
   </div>
 
 
+  <!-- C O D E R -->
+  <div class="editor-content-area">
+    <div class="editorContainer" id="editorContainer">
+      <div class="editorCard">
 
 
 
@@ -635,10 +525,8 @@ templates: {
   </div>
 
 
-  <!-- C O D E R -->
-  <div class="editor-content-area">
-    <div class="editorContainer" id="editorContainer">
-      <div class="editorCard">
+
+
         <div id="editorBody" class="editorBody">
           <div id="loadingSpinner" class="loadingSpinner" data-active="false">
             <div class="spinnerContainer">
@@ -648,6 +536,7 @@ templates: {
               </svg>
             </div>
           </div>
+
 
           <div id="codeMirrorContainer" class="codeMirrorContainer"></div>
 
@@ -734,227 +623,6 @@ templates: {
   
 
 </div>
-
-
-
-
-
-
-
-<script>
-class PushStickyManager {
-  constructor() {
-    this.lastScrollTop = 0;
-    this.scrollThreshold = 5;
-    this.breadcrumbs = document.querySelector('.breadCrumbsWrapper');
-    this.header = document.querySelector('.coderHeaderWrapper');
-    this.toolbar = document.querySelector('.coderToolBarWrapper');
-    this.editorArea = document.querySelector('.editor-content-area');
-    this.currentState = 'normal'; // normal, header-push, toolbar-push
-    
-    this.headerHeight = 40; // Should match CSS
-    this.toolbarHeight = 30; // Should match CSS
-    this.breadcrumbsHeight = 30; // Should match CSS
-    
-    this.initialize();
-  }
-  
-  initialize() {
-    // Set initial heights based on actual elements
-    this.headerHeight = this.header?.offsetHeight || 40;
-    this.toolbarHeight = this.toolbar?.offsetHeight || 30;
-    this.breadcrumbsHeight = this.breadcrumbs?.offsetHeight || 30;
-    
-    // Add scroll listener
-    window.addEventListener('scroll', this.handleScroll.bind(this));
-    
-    // Add resize listener
-    window.addEventListener('resize', this.handleResize.bind(this));
-    
-    // Calculate initial state
-    this.calculateState();
-  }
-  
-  handleScroll() {
-    const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-    
-    if (Math.abs(scrollTop - this.lastScrollTop) > this.scrollThreshold) {
-      this.calculateState();
-    }
-    
-    this.lastScrollTop = scrollTop;
-  }
-  
-  calculateState() {
-    const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-    const navbarHeight = 45; // Fixed navbar height
-    
-    // Calculate how far each element is from sticking
-    const headerStickPoint = navbarHeight;
-    const toolbarStickPoint = navbarHeight;
-    
-    if (scrollTop >= headerStickPoint + this.toolbarHeight) {
-      // Toolbar is pushing (both header and breadcrumbs)
-      this.setState('toolbar-push');
-    } else if (scrollTop >= headerStickPoint) {
-      // Only header is pushing breadcrumbs
-      this.setState('header-push');
-    } else {
-      // Normal state
-      this.setState('normal');
-    }
-  }
-  
-  setState(state) {
-    if (this.currentState === state) return;
-    
-    // Remove all classes
-    this.breadcrumbs?.classList.remove('pushed-by-header', 'pushed-by-toolbar');
-    this.editorArea?.classList.remove('pushed-by-header', 'pushed-by-toolbar');
-    this.toolbar?.classList.remove('active', 'hidden');
-    
-    switch(state) {
-      case 'normal':
-        // Reset everything
-        this.breadcrumbs?.style.removeProperty('transform');
-        this.header?.style.removeProperty('transform');
-        this.toolbar?.style.removeProperty('transform');
-        break;
-        
-      case 'header-push':
-        // Header pushes breadcrumbs up
-        this.breadcrumbs?.classList.add('pushed-by-header');
-        this.editorArea?.classList.add('pushed-by-header');
-        this.toolbar?.classList.add('hidden');
-        break;
-        
-      case 'toolbar-push':
-        // Toolbar pushes both breadcrumbs and header up
-        this.breadcrumbs?.classList.add('pushed-by-toolbar');
-        this.editorArea?.classList.add('pushed-by-toolbar');
-        this.toolbar?.classList.add('active');
-        break;
-    }
-    
-    this.currentState = state;
-  }
-  
-  handleResize() {
-    // Update heights on resize
-    this.headerHeight = this.header?.offsetHeight || 40;
-    this.toolbarHeight = this.toolbar?.offsetHeight || 30;
-    this.breadcrumbsHeight = this.breadcrumbs?.offsetHeight || 30;
-    
-    // Recalculate state
-    this.calculateState();
-  }
-  
-  // Force a specific state if needed
-  forceState(state) {
-    this.setState(state);
-  }
-}
-
-// Alternative: Simpler Version with Visual Push Effect
-class SimplePushManager {
-  constructor() {
-    this.breadcrumbs = document.querySelector('.breadCrumbsWrapper');
-    this.header = document.querySelector('.coderHeaderWrapper');
-    this.toolbar = document.querySelector('.coderToolBarWrapper');
-    this.editorArea = document.querySelector('.editor-content-area');
-    
-    this.initialize();
-  }
-  
-  initialize() {
-    // Use IntersectionObserver for modern approach
-    this.createObservers();
-  }
-  
-  createObservers() {
-    // Create header observer
-    const headerObserver = new IntersectionObserver(
-      (entries) => {
-        entries.forEach(entry => {
-          if (!entry.isIntersecting) {
-            // Header is sticking - push breadcrumbs
-            this.pushBreadcrumbs('header');
-          } else {
-            // Header is not sticking - reset
-            this.resetPush();
-          }
-        });
-      },
-      {
-        rootMargin: '-45px 0px 0px 0px', // Offset by navbar
-        threshold: 0
-      }
-    );
-    
-    // Create toolbar observer
-    const toolbarObserver = new IntersectionObserver(
-      (entries) => {
-        entries.forEach(entry => {
-          if (!entry.isIntersecting) {
-            // Toolbar is sticking - push both
-            this.pushBreadcrumbs('toolbar');
-          }
-        });
-      },
-      {
-        rootMargin: '-45px 0px 0px 0px',
-        threshold: 0
-      }
-    );
-    
-    // Observe elements
-    if (this.header) headerObserver.observe(this.header);
-    if (this.toolbar) toolbarObserver.observe(this.toolbar);
-  }
-  
-  pushBreadcrumbs(pusher) {
-    const breadcrumbs = this.breadcrumbs;
-    const editorArea = this.editorArea;
-    
-    if (!breadcrumbs) return;
-    
-    // Remove existing classes
-    breadcrumbs.classList.remove('pushed-by-header', 'pushed-by-toolbar');
-    editorArea?.classList.remove('pushed-by-header', 'pushed-by-toolbar');
-    
-    // Add appropriate class
-    if (pusher === 'toolbar') {
-      breadcrumbs.classList.add('pushed-by-toolbar');
-      editorArea?.classList.add('pushed-by-toolbar');
-    } else {
-      breadcrumbs.classList.add('pushed-by-header');
-      editorArea?.classList.add('pushed-by-header');
-    }
-  }
-  
-  resetPush() {
-    this.breadcrumbs?.classList.remove('pushed-by-header', 'pushed-by-toolbar');
-    this.editorArea?.classList.remove('pushed-by-header', 'pushed-by-toolbar');
-  }
-}
-
-// Initialize when DOM is ready
-document.addEventListener('DOMContentLoaded', () => {
-  // Use the simple version for better performance
-  const pushManager = new SimplePushManager();
-  
-  // Optional: Add hover effects to make interaction clear
-  const stickyElements = document.querySelectorAll('.coderHeaderWrapper, .coderToolBarWrapper');
-  stickyElements.forEach(element => {
-    element.addEventListener('mouseenter', () => {
-      element.style.boxShadow = '0 2px 8px rgba(0,0,0,0.1)';
-    });
-    element.addEventListener('mouseleave', () => {
-      element.style.boxShadow = '';
-    });
-  });
-});
-</script>
 `,
 
 
