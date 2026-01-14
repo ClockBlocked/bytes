@@ -336,10 +336,6 @@ icons: {
 templates: {
   editor: () => `
 
-
-<div style="height: 100px;"></div>
-
-
   <!-- B R E A D C R U M B S -->
   <div class="breadCrumbsWrapper" id="breadCrumbsWrapper">
     <div class="breadCrumbsContainer" id="breadCrumbsContainer">
@@ -348,6 +344,12 @@ templates: {
       </nav>
     </div>
   </div>
+
+
+
+<div style="height: 100px;"></div>
+
+
 
 
   <!-- C O D E R -->
