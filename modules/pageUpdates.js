@@ -261,70 +261,132 @@ function renderRepositoryList() {
   });
 }
 
-function renderFileList() {
+
+
+async function renderFileList() {
   const tbody = document.getElementById('fileListBody');
   if (!tbody) return;
-  tbody.innerHTML = '';
   
-  if (currentState.files.length === 0) {
+  // Show loading state
+  tbody.innerHTML = `
+  <tr>
+    <td colspan="4" class="px-4 py-8 text-center text-github-fg-muted">
+      <div class="animate-pulse">Loading files...</div>
+    </td>
+  </tr>
+  `;
+  
+  try {
+    // CRITICAL: Fetch files from IndexedDB
+    if (currentState.repository && currentState.repository.id) {
+      // Make sure IndexedDB is initialized
+      await IndexedDBStorageManager.ensureInitialized();
+      
+      // Get files from the current repository and path
+      currentState.files = await IndexedDBStorageManager.listFiles(
+        currentState.repository.id, 
+        currentState.path || ''
+      );
+    } else {
+      console.error('No repository selected or repository ID missing');
+      currentState.files = [];
+    }
+    
+    // Clear the table
+    tbody.innerHTML = '';
+    
+    if (currentState.files.length === 0) {
+      tbody.innerHTML = `
+      <tr>
+        <td colspan="4" class="px-4 py-8 text-center text-github-fg-muted">
+          <svg class="w-8 h-8 mx-auto mb-2" fill="currentColor" viewBox="0 0 16 16">
+            <path d="M2 2.5A2.5 2.5 0 0 1 4.5 0h8.75a.75.75 0 0 1 .75.75v12.5a.75.75 0 0 1-.75.75h-2.5a.75.75 0 0 1 0-1.5h1.75v-2h-8a1 1 0 0 0-.714 1.7.75.75 0 1 1-1.072 1.05A2.495 2.495 0 0 1 2 11.5Zm10.5-1h-8a1 1 0 0 0-1 1v6.708A2.486 2.486 0 0 1 4.5 9h8ZM5 12.25a.25.25 0 0 1 .25-.25h3.5a.25.25 0 0 1 .25.25v3.25a.25.25 0 0 1-.4.2l-1.45-1.087a.249.249 0 0 0-.3 0L5.4 15.7a.25.25 0 0 1-.4-.2Z"/>
+          </svg>
+          <p>No files in this directory</p>
+          <button onclick="showCreateFileModal()" class="mt-2 text-github-accent-fg hover:underline text-sm">
+            Create your first file
+          </button>
+        </td>
+      </tr>
+      `;
+      return;
+    }
+    
+    // Render the file list
+    currentState.files.forEach(file => {
+      const row = document.createElement('tr');
+      row.className = 'hover:bg-github-canvas-subtle cursor-pointer border-b border-github-border-default transition-colors group';
+      
+      const fileIconSVG = getFileIcon(file.name, file.type);
+      
+      row.innerHTML = `
+        <td class="py-3 px-4">
+          <div class="flex items-center gap-3">
+            ${fileIconSVG}
+            <span class="text-github-fg-default font-mono" data-spa-navigate="explorer" href="#explorer">${escapeHTML(file.name)}</span>
+          </div>
+        </td>
+        <td class="py-3 px-4 text-github-fg-muted text-sm">${escapeHTML(file.lastCommit || 'Initial commit')}</td>
+        <td class="py-3 px-4 text-github-fg-muted text-sm">${formatDate(file.lastModified)}</td>
+        <td class="py-3 px-4 text-right">
+          <button 
+            class="file-more-menu-btn opacity-0 group-hover:opacity-100 px-2 py-1 rounded transition-all hover:bg-github-canvas-subtle"
+            onclick="fileMenuManager.showFileMenu('${escapeHTML(file.name)}', event)"
+            data-tooltip="More options"
+          >
+            <svg class="w-4 h-4 text-github-fg-muted" fill="currentColor" viewBox="0 0 16 16">
+              <path d="M9.5 13a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0zm0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0zm0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0z"/>
+            </svg>
+          </button>
+        </td>
+      `;
+      
+      row.addEventListener('click', (e) => {
+        if (!e.target.closest('.file-more-menu-btn')) {
+          window.viewFile(file.name);
+        }
+      });
+      
+      row.addEventListener('contextmenu', (e) => {
+        e.preventDefault();
+        window.showContextMenu(e.clientX, e.clientY, file.name, file.type);
+      });
+      
+      tbody.appendChild(row);
+    });
+    
+  } catch (error) {
+    console.error('Error loading files from IndexedDB:', error);
     tbody.innerHTML = `
     <tr>
-      <td colspan="4" class="px-4 py-8 text-center text-github-fg-muted">
+      <td colspan="4" class="px-4 py-8 text-center text-github-fg-muted text-red-500">
         <svg class="w-8 h-8 mx-auto mb-2" fill="currentColor" viewBox="0 0 16 16">
-          <path d="M2 2.5A2.5 2.5 0 0 1 4.5 0h8.75a.75.75 0 0 1 .75.75v12.5a.75.75 0 0 1-.75.75h-2.5a.75.75 0 0 1 0-1.5h1.75v-2h-8a1 1 0 0 0-.714 1.7.75.75 0 1 1-1.072 1.05A2.495 2.495 0 0 1 2 11.5Zm10.5-1h-8a1 1 0 0 0-1 1v6.708A2.486 2.486 0 0 1 4.5 9h8ZM5 12.25a.25.25 0 0 1 .25-.25h3.5a.25.25 0 0 1 .25.25v3.25a.25.25 0 0 1-.4.2l-1.45-1.087a.249.249 0 0 0-.3 0L5.4 15.7a.25.25 0 0 1-.4-.2Z"/>
+          <path d="M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767L8.982 1.566zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5zm.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/>
         </svg>
-        <p>No files in this directory</p>
-        <button onclick="showCreateFileModal()" class="mt-2 text-github-accent-fg hover:underline text-sm">
-          Create your first file
+        <p>Error loading files</p>
+        <p class="text-sm mt-1">${error.message}</p>
+        <button onclick="renderFileList()" class="mt-2 text-github-accent-fg hover:underline text-sm">
+          Retry
         </button>
       </td>
     </tr>
     `;
-    return;
   }
-  
-  currentState.files.forEach(file => {
-    const row = document.createElement('tr');
-    row.className = 'hover:bg-github-canvas-subtle cursor-pointer border-b border-github-border-default transition-colors group';
-    
-    const fileIconSVG = getFileIcon(file.name, file.type);
-    
-    row.innerHTML = `
-      <td class="py-3 px-4">
-        <div class="flex items-center gap-3">
-          ${fileIconSVG}
-          <span class="text-github-fg-default font-mono" data-spa-navigate="explorer" href="#explorer">${escapeHTML(file.name)}</span>
-        </div>
-      </td>
-      <td class="py-3 px-4 text-github-fg-muted text-sm">${escapeHTML(file.lastCommit || 'Initial commit')}</td>
-      <td class="py-3 px-4 text-github-fg-muted text-sm">${formatDate(file.lastModified)}</td>
-      <td class="py-3 px-4 text-right">
-        <button 
-          class="file-more-menu-btn opacity-0 group-hover:opacity-100 px-2 py-1 rounded transition-all hover:bg-github-canvas-subtle"
-          onclick="fileMenuManager.showFileMenu('${escapeHTML(file.name)}', event)"
-          data-tooltip="More options"
-        >
-          <svg class="w-4 h-4 text-github-fg-muted" fill="currentColor" viewBox="0 0 16 16">
-            <path d="M9.5 13a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0zm0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0zm0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0z"/>
-          </svg>
-        </button>
-      </td>
-    `;
-    
-    row.addEventListener('click', (e) => {
-      if (!e.target.closest('.file-more-menu-btn')) {
-        window.viewFile(file.name);
-      }
-    });
-    
-    row.addEventListener('contextmenu', (e) => {
-      e.preventDefault();
-      window.showContextMenu(e.clientX, e.clientY, file.name, file.type);
-    });
-    
-    tbody.appendChild(row);
-  });
 }
+async function refreshFileList() {
+  if (typeof renderFileList === 'function') {
+    await renderFileList();
+  }
+}
+
+// Call this when navigating to a repository
+async function loadRepository(repoId) {
+  const repo = await IndexedDBStorageManager.getRepository(repoId);
+  currentState.repository = repo;
+  currentState.path = '';
+  await refreshFileList();
+}
+
 
 function escapeHTML(str) {
   const div = document.createElement('div');
@@ -512,6 +574,11 @@ function setupEventListeners() {
     if (fileName && initialContentEditor) updateEditorMode(initialContentEditor, fileName);
   });
 }
+
+
+
+
+window.refreshFileList = refreshFileList;
 /**
  * 
  *  C R E A T E D  B Y
