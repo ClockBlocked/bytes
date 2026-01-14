@@ -2580,6 +2580,9 @@ u.hidden {
   z-index: 900;
 **/
 
+
+  position: relative;
+  height: 30px;
   width: 100%;
   background-color: var(--canvasOverlay);
   backdrop-filter: blur(8px) saturate(180%);
@@ -2599,9 +2602,10 @@ u.hidden {
 }
 .breadCrumbsContainer {
   max-width: 100%;
+  overflow: hidden;
   overflow-x: auto;
   padding: 0 1rem;
-  height: var(--breadcrumb-height);
+
   display: flex;
   align-items: center;
 }
@@ -2647,6 +2651,8 @@ u.hidden {
   height: var(--header-height);
 *  
   **/
+  
+  position: sticky; top: 0;
   background-color: var(--canvasOverlay);
   border-bottom: 1px solid var(--borderDefault);
   transition: top 0.3s cubic-bezier(0.4, 0, 0.2, 1), transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -2669,7 +2675,7 @@ body.header-only .coderHeaderWrapper {
 }
 .coderHeader {
   position: relative;
-  height: var(--header-height);
+  height: 30px;
   overflow: hidden;
 }
 .headerScrollContainer {
@@ -2861,7 +2867,8 @@ body.header-only .coderHeaderWrapper {
   z-index: 700;
   height: var(--toolbar-height);
 **/
-
+  position: sticky; top: 30px;
+  height: 30px;
   background-color: var(--canvasOverlay);
   border-bottom: 1px solid var(--borderDefault);
   transition: top 0.3s cubic-bezier(0.4, 0, 0.2, 1), transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -2884,7 +2891,6 @@ body.header-only .coderToolBarWrapper {
   align-items: center;
   gap: 0.75rem;
   padding: 0.5rem 1rem;
-  height: var(--toolbar-height);
   overflow-x: auto;
   overflow-y: hidden;
 }
