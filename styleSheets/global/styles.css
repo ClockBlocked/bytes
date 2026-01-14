@@ -1561,7 +1561,7 @@ aside:hover .sidebar-title {
   visibility: hidden !important;
   transition: opacity 0.25s ease-in-out, visibility 1s ease-in-out;
 }
-u.hidden {
+.hidden {
   opacity: 0;
   visibility: hidden;
   transition: opacity 0.25s ease-in-out, visibility 1s ease-in-out;
