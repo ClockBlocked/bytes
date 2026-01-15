@@ -263,7 +263,42 @@ html {
   
 </head>
 <body class="bg-github-canvas-default">
+<style>
+.wrapper[data-wrap="top"],
+.wrapper[data-wrap="bottom"] {
+  width: 100%;
+  margin: 0;
+  padding: 0;
+}
+.wrapper[data-wrap="top"]{
+  height: 65px;
+}
+.wrapper[data-wrap="bottom"]{
+  height: calc(100vh - 65px);
+}
 
+.nav {
+  position: sticky !important;
+  top: 0 !important;
+  height: 40px !important;
+}
+.breadCrumbsWrapper {
+  position: sticky !important;
+  top: 40px !important;
+  z-index: 9 !important;
+  height: 25px !important;
+}
+.coderHeaderWrapper {
+  position: sticky !important;
+  top: 0 !important;
+  z-index: 10 !important;
+  height: 35px !important;
+}
+.coderToolBarWrapper {
+  position: sticky !important;
+  top: 35px !important;
+}
+</style>
 
 
 <!-------
@@ -281,6 +316,7 @@ html {
 <!-------
          Top NAVBar
                   ----------->
+<div class="wrapper" data-wrap="top">
 <nav class="navbar" aria-label="Main navigation">
   <div class="navbar-inner">
     
@@ -362,171 +398,7 @@ html {
     
   </div>
 </nav>
-
-
-
-
-
-
-<!-------
-     Left & Right Sidebars
-                      ------->
-<div id="overlay" class="fixed inset-0 bg-black"></div>
-  <aside id="leftSidebar" class="sidebar left-sidebar">
-    <div class="p-4 h-full overflow-y-auto">
-      <!-- User Profile -->
-      <div class="profile-section">
-        <img src="https://dev.wuaze.com/banner.png" alt="Profile" class="profile-avatar" />
-        <div class="profile-info">
-          <h3 class="profile-name">GitDev</h3>
-          <span class="profile-username">GitHub File Manager</span>
-        </div>
-        <!-- Files are stored directly in your GitHub repository -->
-      </div>
-
-      <!-- Quick Actions -->
-      <div class="mb-6">
-        <span class="sidebar-title">Quick Actions</span>
-        <div class="space-y-1">
-          <button data-action="create-file" class="sidebar-link">
-            <i class="fas fa-file mr-2"></i>
-            New File
-          </button>
-          <button data-action="show-repo-selector" data-spa-navigate="repo" href="#repo"class="sidebar-link">
-            <i class="fas fa-folder mr-2"></i>
-            Browse Repositories
-          </button>
-          <button data-action="navigate-root" class="sidebar-link">
-            <i class="fas fa-home mr-2"></i>
-            Go to Root
-          </button>
-        </div>
-      </div>
-
-      <!-- Repository List -->
-      <div class="mb-6">
-        <div class="flex items-center justify-between mb-2">
-          <span class="sidebar-title">Repositories</span>
-          <span id="repoCount" class="text-xs text-github-fg-muted">0</span>
-        </div>
-        <div id="repoListSidebar" class="space-y-1">
-          <!-- Repositories will be populated here -->
-        </div>
-      </div>
-
-      <!-- Navigation Links -->
-      <div>
-        <span class="sidebar-title">Navigation</span>
-        <div class="space-y-1">
-          <a href="#" data-navigate="repo" class="sidebar-link">
-            <i class="fas fa-code mr-2"></i>
-            Code
-          </a>
-          <a href="#" class="sidebar-link">
-            <i class="fas fa-exclamation-circle mr-2"></i>
-            Issues
-            <span class="ml-auto bg-github-canvas-subtle text-github-fg-default text-xs px-1.5 py-0.5 rounded-full">0</span>
-          </a>
-          <a href="#" class="sidebar-link">
-            <i class="fas fa-code-branch mr-2"></i>
-            Pull Requests
-            <span class="ml-auto bg-github-canvas-subtle text-github-fg-default text-xs px-1.5 py-0.5 rounded-full">0</span>
-          </a>
-          <a href="#" class="sidebar-link">
-            <i class="fas fa-chart-bar mr-2"></i>
-            Insights
-          </a>
-        </div>
-      </div>
-
-      <!-- File Stats -->
-      <div class="mt-6 pt-4 border-t border-github-border-muted">
-        <div class="flex items-center justify-between text-sm">
-          <span class="text-github-fg-muted">Files:</span>
-          <span id="totalFilesCount" class="font-medium">0</span>
-        </div>
-        <div class="flex items-center justify-between text-sm mt-1">
-          <span class="text-github-fg-muted">Storage:</span>
-          <span id="totalStorage" class="font-medium">0 KB</span>
-        </div>
-      </div>
-    </div>
-  </aside>
-  <aside id="rightSidebar" class="sidebar right-sidebar">
-    <div class="p-4 h-full overflow-y-auto">
-      <!-- Recent Files -->
-      <div class="mb-6">
-        <div class="flex items-center justify-between mb-2">
-          <span class="sidebar-title">Recent Files</span>
-          <button onclick="refreshRecentFiles()" class="text-xs text-github-accent-fg hover:underline">
-            Refresh
-          </button>
-        </div>
-        <div id="recentFilesList" class="space-y-2">
-          <!-- Recent files will be populated here -->
-        </div>
-      </div>
-
-      <!-- Current Repository Info -->
-      <div id="currentRepoInfo" class="mb-6 hidden">
-        <span class="sidebar-title">Current Repository</span>
-        <div class="p-3 bg-github-canvas-subtle rounded-md mt-2">
-          <h4 id="currentRepoNameSidebar" class="font-semibold text-github-fg-default mb-1"></h4>
-          <p id="currentRepoDesc" class="text-xs text-github-fg-muted mb-2"></p>
-          <div class="flex items-center justify-between text-xs">
-            <span class="text-github-fg-muted">Branch:</span>
-            <span id="currentRepoBranch" class="font-medium">main</span>
-          </div>
-        </div>
-      </div>
-
-      <!-- Quick Stats -->
-      <div class="mb-6">
-        <span class="sidebar-title">Quick Stats</span>
-        <div class="grid grid-cols-2 gap-2 mt-2">
-          <div class="p-3 bg-github-canvas-subtle rounded-md text-center">
-            <div class="text-lg font-semibold text-github-accent-fg" id="statsFiles">0</div>
-            <div class="text-xs text-github-fg-muted">Files</div>
-          </div>
-          <div class="p-3 bg-github-canvas-subtle rounded-md text-center">
-            <div class="text-lg font-semibold text-github-success-fg" id="statsCommits">0</div>
-            <div class="text-xs text-github-fg-muted">Commits</div>
-          </div>
-          <div class="p-3 bg-github-canvas-subtle rounded-md text-center">
-            <div class="text-lg font-semibold text-github-warning-fg" id="statsBranches">1</div>
-            <div class="text-xs text-github-fg-muted">Branches</div>
-          </div>
-          <div class="p-3 bg-github-canvas-subtle rounded-md text-center">
-            <div class="text-lg font-semibold text-github-danger-fg" id="statsIssues">0</div>
-            <div class="text-xs text-github-fg-muted">Issues</div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Language Distribution -->
-      <div id="languageStatsSidebar" class="hidden">
-        <span class="sidebar-title">Languages</span>
-        <div id="languageStatsList" class="space-y-2 mt-2">
-          <!-- Language stats will be populated here -->
-        </div>
-      </div>
-
-      <!-- Quick Actions Footer -->
-      <div class="mt-auto pt-4 border-t border-github-border-muted">
-        <div class="space-y-2">
-          <button onclick="toggleTheme()" class="sidebar-link w-full text-left">
-            <i id="sidebarThemeIcon" class="fas fa-moon mr-2"></i>
-            Toggle Theme
-          </button>
-          <button onclick="showHelp()" class="sidebar-link w-full text-left">
-            <i class="fas fa-question-circle mr-2"></i>
-            Help & Documentation
-          </button>
-        </div>
-      </div>
-    </div>
-  </aside>
-
+</div>
 
 
 
@@ -534,6 +406,7 @@ html {
 <!--  P A G E  W R A P P E R 
 ===================================================
 ===================================================-->
+<div class="wrapper" data-wrap="bottom">
 <main id="mainArea">
 
 
@@ -750,6 +623,7 @@ html {
 
 
 </main>
+</div>
 <!--
 ===================================================
   E N D  E N D  E N D  E N D  E N D  E N D  E N D
@@ -882,6 +756,166 @@ html {
     </div>
   </div>
 <!-- E N D -- E N D -->
+
+
+<!-------
+     Left & Right Sidebars
+                      ------->
+<div id="overlay" class="fixed inset-0 bg-black"></div>
+  <aside id="leftSidebar" class="sidebar left-sidebar">
+    <div class="p-4 h-full overflow-y-auto">
+      <!-- User Profile -->
+      <div class="profile-section">
+        <img src="https://dev.wuaze.com/banner.png" alt="Profile" class="profile-avatar" />
+        <div class="profile-info">
+          <h3 class="profile-name">GitDev</h3>
+          <span class="profile-username">GitHub File Manager</span>
+        </div>
+        <!-- Files are stored directly in your GitHub repository -->
+      </div>
+
+      <!-- Quick Actions -->
+      <div class="mb-6">
+        <span class="sidebar-title">Quick Actions</span>
+        <div class="space-y-1">
+          <button data-action="create-file" class="sidebar-link">
+            <i class="fas fa-file mr-2"></i>
+            New File
+          </button>
+          <button data-action="show-repo-selector" data-spa-navigate="repo" href="#repo"class="sidebar-link">
+            <i class="fas fa-folder mr-2"></i>
+            Browse Repositories
+          </button>
+          <button data-action="navigate-root" class="sidebar-link">
+            <i class="fas fa-home mr-2"></i>
+            Go to Root
+          </button>
+        </div>
+      </div>
+
+      <!-- Repository List -->
+      <div class="mb-6">
+        <div class="flex items-center justify-between mb-2">
+          <span class="sidebar-title">Repositories</span>
+          <span id="repoCount" class="text-xs text-github-fg-muted">0</span>
+        </div>
+        <div id="repoListSidebar" class="space-y-1">
+          <!-- Repositories will be populated here -->
+        </div>
+      </div>
+
+      <!-- Navigation Links -->
+      <div>
+        <span class="sidebar-title">Navigation</span>
+        <div class="space-y-1">
+          <a href="#" data-navigate="repo" class="sidebar-link">
+            <i class="fas fa-code mr-2"></i>
+            Code
+          </a>
+          <a href="#" class="sidebar-link">
+            <i class="fas fa-exclamation-circle mr-2"></i>
+            Issues
+            <span class="ml-auto bg-github-canvas-subtle text-github-fg-default text-xs px-1.5 py-0.5 rounded-full">0</span>
+          </a>
+          <a href="#" class="sidebar-link">
+            <i class="fas fa-code-branch mr-2"></i>
+            Pull Requests
+            <span class="ml-auto bg-github-canvas-subtle text-github-fg-default text-xs px-1.5 py-0.5 rounded-full">0</span>
+          </a>
+          <a href="#" class="sidebar-link">
+            <i class="fas fa-chart-bar mr-2"></i>
+            Insights
+          </a>
+        </div>
+      </div>
+
+      <!-- File Stats -->
+      <div class="mt-6 pt-4 border-t border-github-border-muted">
+        <div class="flex items-center justify-between text-sm">
+          <span class="text-github-fg-muted">Files:</span>
+          <span id="totalFilesCount" class="font-medium">0</span>
+        </div>
+        <div class="flex items-center justify-between text-sm mt-1">
+          <span class="text-github-fg-muted">Storage:</span>
+          <span id="totalStorage" class="font-medium">0 KB</span>
+        </div>
+      </div>
+    </div>
+  </aside>
+  <aside id="rightSidebar" class="sidebar right-sidebar">
+    <div class="p-4 h-full overflow-y-auto">
+      <!-- Recent Files -->
+      <div class="mb-6">
+        <div class="flex items-center justify-between mb-2">
+          <span class="sidebar-title">Recent Files</span>
+          <button onclick="refreshRecentFiles()" class="text-xs text-github-accent-fg hover:underline">
+            Refresh
+          </button>
+        </div>
+        <div id="recentFilesList" class="space-y-2">
+          <!-- Recent files will be populated here -->
+        </div>
+      </div>
+
+      <!-- Current Repository Info -->
+      <div id="currentRepoInfo" class="mb-6 hidden">
+        <span class="sidebar-title">Current Repository</span>
+        <div class="p-3 bg-github-canvas-subtle rounded-md mt-2">
+          <h4 id="currentRepoNameSidebar" class="font-semibold text-github-fg-default mb-1"></h4>
+          <p id="currentRepoDesc" class="text-xs text-github-fg-muted mb-2"></p>
+          <div class="flex items-center justify-between text-xs">
+            <span class="text-github-fg-muted">Branch:</span>
+            <span id="currentRepoBranch" class="font-medium">main</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quick Stats -->
+      <div class="mb-6">
+        <span class="sidebar-title">Quick Stats</span>
+        <div class="grid grid-cols-2 gap-2 mt-2">
+          <div class="p-3 bg-github-canvas-subtle rounded-md text-center">
+            <div class="text-lg font-semibold text-github-accent-fg" id="statsFiles">0</div>
+            <div class="text-xs text-github-fg-muted">Files</div>
+          </div>
+          <div class="p-3 bg-github-canvas-subtle rounded-md text-center">
+            <div class="text-lg font-semibold text-github-success-fg" id="statsCommits">0</div>
+            <div class="text-xs text-github-fg-muted">Commits</div>
+          </div>
+          <div class="p-3 bg-github-canvas-subtle rounded-md text-center">
+            <div class="text-lg font-semibold text-github-warning-fg" id="statsBranches">1</div>
+            <div class="text-xs text-github-fg-muted">Branches</div>
+          </div>
+          <div class="p-3 bg-github-canvas-subtle rounded-md text-center">
+            <div class="text-lg font-semibold text-github-danger-fg" id="statsIssues">0</div>
+            <div class="text-xs text-github-fg-muted">Issues</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Language Distribution -->
+      <div id="languageStatsSidebar" class="hidden">
+        <span class="sidebar-title">Languages</span>
+        <div id="languageStatsList" class="space-y-2 mt-2">
+          <!-- Language stats will be populated here -->
+        </div>
+      </div>
+
+      <!-- Quick Actions Footer -->
+      <div class="mt-auto pt-4 border-t border-github-border-muted">
+        <div class="space-y-2">
+          <button onclick="toggleTheme()" class="sidebar-link w-full text-left">
+            <i id="sidebarThemeIcon" class="fas fa-moon mr-2"></i>
+            Toggle Theme
+          </button>
+          <button onclick="showHelp()" class="sidebar-link w-full text-left">
+            <i class="fas fa-question-circle mr-2"></i>
+            Help & Documentation
+          </button>
+        </div>
+      </div>
+    </div>
+  </aside>
 
 
 
