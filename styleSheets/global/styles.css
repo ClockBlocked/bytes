@@ -2853,6 +2853,14 @@ body.header-only .coderHeaderWrapper {
 }
 
 
+.editorContainer .upper {
+  position: relative; top: 0;
+  height: 80px;
+  overflow: hidden;
+}
+.editorContainer .lower {
+  position: relative;
+}
 .breadCrumbsWrapper {
   position: sticky; top: 45px;
   height: 30px;
