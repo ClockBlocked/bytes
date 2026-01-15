@@ -942,9 +942,8 @@ button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-
 }
 
 
-.toolbarItem .languageGroup {
+button .languageBtn {
   width: 50px; height: 20px;
-  
 }
 
 
