@@ -916,6 +916,12 @@ button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-
   display: none;
 }
 
+
+
+
+
+
+
 /* Toolbar Scroll */
 .toolbarScroll {
   overflow-x: auto;
@@ -934,6 +940,17 @@ button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-
   background-color: var(--borderMuted);
   border-radius: 0.125rem;
 }
+
+
+.toolbarItem .languageGroup {
+  width: 50px; height: 20px;
+  
+}
+
+
+
+
+
 
 /* Toolbar Buttons */
 .toolbarButtons {
@@ -967,6 +984,12 @@ button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-
   border-color: var(--accentFg);
   color: var(--accentFg);
 }
+
+
+
+
+
+
 
 /* Font Size Control */
 .fontSizeControl {
