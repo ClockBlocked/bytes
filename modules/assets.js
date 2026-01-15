@@ -392,8 +392,9 @@ templates: {
           <div class="toolbarSeparator"></div>
 
           <div class="toolbarItem languageGroup">
+            
             <button id="languageBtn" class="toolbarButton languageBtn">
-              <span id="languageBadge" class="languageBadge"> ${AppAssets.icons.code("JavaScript")} </span>
+              ${AppAssets.icons.code("JavaScript")}
               <svg class="chevronIcon" viewBox="0 0 16 16" fill="currentColor" width="12" height="12">
                 <path
                   d="M4.427 7.427l3.396 3.396a.25.25 0 0 0 .354 0l3.396-3.396A.25.25 0 0 0 10.896 2H4.604a.25.25 0 0 0-.177.427Z"
