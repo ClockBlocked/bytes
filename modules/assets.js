@@ -358,6 +358,10 @@ templates: {
 
 
 
+
+<!-- U P P E R ------------------>
+<div class="upper">
+
 <!-- H E A D E R -->
 <div class="coderHeaderWrapper" id="stickyHeader">
   <button class="headerScrollBtn left" id="headerScrollLeft" title="Scroll left">
@@ -533,6 +537,10 @@ templates: {
 
 
 
+</div><!-- End of Upper -->
+
+
+<div class="lower">
 
         <div id="editorBody" class="editorBody">
           <div id="loadingSpinner" class="loadingSpinner" data-active="false">
@@ -624,8 +632,10 @@ templates: {
           accept=".js,.jsx,.ts,.tsx,.py,.html,.css,.json,.md,.txt,.yml,.yaml,.xml,.sql,.sh,.rb,.go,.rs,.java,.cpp,.c,.h,.cs,.php,.swift"
         />
       </div>
-    </div>
-  </div>
+
+      </div><!-- End of Lower -->
+    </div><!-- End of editorCard -->
+  </div><!-- End of editorContainer -->
 
 `,
 
