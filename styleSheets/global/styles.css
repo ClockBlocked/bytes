@@ -584,19 +584,7 @@ button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-
   }
 }
 
-/* Navbar */
-.navbar {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 45px;
-  z-index: 1000;
-  background: var(--canvasOverlay);
-  border-bottom: 0.0625rem solid var(--borderDefault);
-  padding: 0.75rem 1rem;
-  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-}
+
 .navbar-inner {
   display: flex;
   align-items: center;
@@ -2647,23 +2635,6 @@ aside:hover .sidebar-title {
 
 
 
-.coderHeaderWrapper.hidden {
-  transform: translateY(-100%);
-  opacity: 0;
-  pointer-events: none;
-  height: 0;
-}
-body.breadcrumbs-hidden .coderHeaderWrapper {
-  top: var(--navbar-height);
-}
-body.header-only .coderHeaderWrapper {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
-}
-
 
 .headerScrollContainer {
   width: 100%;
@@ -2853,68 +2824,6 @@ body.header-only .coderHeaderWrapper {
 }
 
 
-.editorContainer .upper {
-  position: relative; top: 0;
-  height: 80px;
-  overflow: hidden;
-}
-.editorContainer .lower {
-  position: relative;
-}
-.breadCrumbsWrapper {
-  position: sticky; top: 45px;
-  height: 30px;
-  width: 100%;
-  
-  background-color: var(--canvasOverlay);
-  backdrop-filter: blur(8px) saturate(180%);
-  -webkit-backdrop-filter: blur(8px) saturate(180%);
-  border-bottom: 1px solid var(--borderDefault);
-  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s ease;
-}
-.coderHeaderWrapper {
-  height: 50px;
-  overflow: hidden;
-  border-top-left-radius: 10px;
-  border-top-right-radius: 10px;
-
-
-  position: sticky;
-  top: 0;
-
-  background-color: var(--canvasOverlay);
-  border-bottom: 1px solid var(--borderDefault);
-
-  transition: top 0.3s cubic-bezier(0.4, 0, 0.2, 1), transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-}
-.coderToolBarWrapper {
-  position: sticky; top: 50px;
-  height: 30px;
-  background-color: var(--canvasOverlay);
-  border-bottom: 1px solid var(--borderDefault);
-  transition: top 0.3s cubic-bezier(0.4, 0, 0.2, 1), transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  padding: 0.5rem 1rem;
-  overflow-x: auto;
-  overflow-y: hidden;
-}
-
-
-body.breadcrumbs-hidden .coderToolBarWrapper {
-  top: calc(var(--navbar-height) + var(--header-height));
-}
-body.header-hidden .coderToolBarWrapper {
-  top: var(--navbar-height);
-}
-body.header-only .coderToolBarWrapper {
-  position: fixed;
-  top: var(--header-height);
-  left: 0;
-  right: 0;
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
-}
 
 .coderToolBar::-webkit-scrollbar {
   display: none;
