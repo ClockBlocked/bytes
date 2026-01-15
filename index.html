@@ -260,49 +260,117 @@ html {
 </style>
 
 
-  
-</head>
-<body class="bg-github-canvas-default">
 <style>
-.wrapper[data-wrap="top"],
-.wrapper[data-wrap="bottom"] {
-  width: 100%;
+/**
+ * Remove the wrapper containers - they're not needed for sticky positioning
+ * Sticky elements can stick to the body or any scrolling container
+ **/
+body {
   margin: 0;
   padding: 0;
-}
-.wrapper[data-wrap="top"]{
-  height: 65px;
-}
-.wrapper[data-wrap="bottom"]{
-  height: calc(100vh - 65px);
+  overflow-x: hidden;
 }
 
+/**
+ * NAVBAR - Always at the top
+ **/
 .navbar {
-  position: sticky !important;
-  top: 0 !important;
-  height: 40px !important;
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  height: 40px;
   background: var(--canvasOverlay);
   border-bottom: 0.0625rem solid var(--borderDefault);
   padding: 0.75rem 1rem;
+}
 
-}
+/**
+ * BREADCRUMBS - Sticks below navbar, gets pushed up by coderHeader
+ **/
 .breadCrumbsWrapper {
-  position: sticky !important;
-  top: 40px !important;
-  z-index: 9 !important;
-  height: 25px !important;
+  position: sticky;
+  top: 40px; /* Stick below navbar */
+  z-index: 15; /* Lower than navbar and coderHeader */
+  height: 25px;
+  background-color: var(--canvasOverlay);
+  border-bottom: 1px solid var(--borderDefault);
+  backdrop-filter: blur(8px) saturate(180%);
+  -webkit-backdrop-filter: blur(8px) saturate(180%);
+  transition: transform 0.2s ease;
 }
+
+/**
+ * CODER HEADER - Pushes breadcrumbs up when it reaches the top
+ **/
 .coderHeaderWrapper {
-  position: sticky !important;
-  top: 0 !important;
-  z-index: 10 !important;
-  height: 35px !important;
+  position: sticky;
+  top: 40px; /* Start at same position as breadcrumbs */
+  z-index: 18; /* Higher than breadcrumbs */
+  height: 35px;
+  background-color: var(--canvasOverlay);
+  border-bottom: 1px solid var(--borderDefault);
+  backdrop-filter: blur(8px) saturate(180%);
+  -webkit-backdrop-filter: blur(8px) saturate(180%);
 }
+
+/**
+ * TOOLBAR - Sticks below coder header
+ **/
 .coderToolBarWrapper {
-  position: sticky !important;
-  top: 35px !important;
+  position: sticky;
+  top: 75px; /* 40px (navbar) + 35px (coderHeader) */
+  z-index: 17;
+  background-color: var(--canvasOverlay);
+  backdrop-filter: blur(8px) saturate(180%);
+  -webkit-backdrop-filter: blur(8px) saturate(180%);
 }
-</style>
+
+/**
+ * MAIN CONTENT AREA - Contains everything that scrolls
+ **/
+#mainArea {
+  position: relative;
+  z-index: 10;
+}
+
+/**
+ * EDITOR CONTAINER - The scrolling container for code
+ **/
+.editorContainer {
+  position: relative;
+}
+
+/**
+ * When coderHeader reaches the breadcrumbs position,
+ * breadcrumbs get pushed up (negative margin/top)
+ **/
+.coderHeaderWrapper.stuck ~ .breadCrumbsWrapper {
+  transform: translateY(-100%);
+  opacity: 0;
+  pointer-events: none;
+}
+
+/**
+ * Alternatively, you could use margin-top instead of transform:
+ **/
+.coderHeaderWrapper.stuck {
+  margin-top: -25px; /* Push up by breadcrumbs height */
+}
+
+/**
+ * If you want smooth transitions between states
+ **/
+.coderHeaderWrapper,
+.breadCrumbsWrapper,
+.coderToolBarWrapper {
+  transition: all 0.2s ease;
+}
+</style>  
+</head>
+<body class="bg-github-canvas-default">
+
+
+
 
 
 <!-------
@@ -320,7 +388,6 @@ html {
 <!-------
          Top NAVBar
                   ----------->
-<div class="wrapper" data-wrap="top">
 <nav class="navbar" aria-label="Main navigation">
   <div class="navbar-inner">
     
@@ -402,7 +469,6 @@ html {
     
   </div>
 </nav>
-</div>
 
 
 
@@ -410,8 +476,17 @@ html {
 <!--  P A G E  W R A P P E R 
 ===================================================
 ===================================================-->
-<div class="wrapper" data-wrap="bottom">
 <main id="mainArea">
+
+  <!-- B R E A D C R U M B S -->
+  <div class="breadCrumbsWrapper" id="breadCrumbsWrapper">
+    <div class="breadCrumbsContainer" id="breadCrumbsContainer">
+      <nav class="breadcrumbNav" id="pathBreadcrumb">
+        <div class="breadcrumbEmpty" style="height: 44px"></div>
+      </nav>
+    </div>
+  </div>
+
 
 
 
@@ -627,7 +702,6 @@ html {
 
 
 </main>
-</div>
 <!--
 ===================================================
   E N D  E N D  E N D  E N D  E N D  E N D  E N D
