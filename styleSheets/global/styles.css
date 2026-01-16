@@ -2588,15 +2588,7 @@ aside:hover .sidebar-title {
   pointer-events: none;
   height: 0;
 }
-.breadCrumbsContainer {
-  max-width: 100%;
-  overflow: hidden;
-  overflow-x: auto;
-  padding: 0 1rem;
 
-  display: flex;
-  align-items: center;
-}
 .breadcrumbNav {
   display: flex;
   align-items: center;
