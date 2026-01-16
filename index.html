@@ -262,118 +262,113 @@ html {
 
 <style>
 /**
- * Remove the wrapper containers - they're not needed for sticky positioning
- * Sticky elements can stick to the body or any scrolling container
- **/
-body {
+THESE wrapper containers were created because i was under 
+the impression that a sticky element has to have a container 
+to stick to other than the body container.....
+**/
+.wrapper[data-wrap="top"],
+.wrapper[data-wrap="bottom"] {
+  width: 100%;
   margin: 0;
   padding: 0;
-  overflow-x: hidden;
+}
+.wrapper[data-wrap="top"]{
+  height: 65px;
+}
+.wrapper[data-wrap="bottom"]{
+  height: calc(100vh - 65px);
 }
 
 /**
- * NAVBAR - Always at the top
- **/
+i want THIS to stick to the top of the page
+and ALWAYS be visible
+
+and for NOTHING to ever be pushed "behind" it
+EXCEPT FOR ".breadCrumbsWrapper" whenever the header
+pushes it up and out
+**/
 .navbar {
   position: sticky;
   top: 0;
-  z-index: 20;
   height: 40px;
   background: var(--canvasOverlay);
   border-bottom: 0.0625rem solid var(--borderDefault);
   padding: 0.75rem 1rem;
+  z-index: 100; /* Highest z-index */
 }
 
+
 /**
- * BREADCRUMBS - Sticks below navbar, gets pushed up by coderHeader
- **/
+i want THIS to stick to the bottom of ".navbar"
+**/
 .breadCrumbsWrapper {
   position: sticky;
-  top: 40px; /* Stick below navbar */
-  z-index: 15; /* Lower than navbar and coderHeader */
+  top: 40px; /* Height of navbar */
+  z-index: 90; /* Lower than navbar but higher than normal content */
+  
   height: 25px;
+  
   background-color: var(--canvasOverlay);
   border-bottom: 1px solid var(--borderDefault);
+  
   backdrop-filter: blur(8px) saturate(180%);
   -webkit-backdrop-filter: blur(8px) saturate(180%);
-  transition: transform 0.2s ease;
-  
-  max-width: 100%;
-  overflow: hidden;
-  overflow-x: auto;
-  padding: 0 1rem;
-
-  display: flex;
-  align-items: center;
 }
 
+
 /**
- * CODER HEADER - Pushes breadcrumbs up when it reaches the top
- **/
+i want THIS to PUSH AND REPLACE ".breadCrumbsWrapper"
+**/
 .coderHeaderWrapper {
   position: sticky;
-  top: 0; /* Start at same position as breadcrumbs */
-  z-index: 18; /* Higher than breadcrumbs */
+  top: 40px; /* Same as breadcrumbs - this will push it */
+  z-index: 95; /* Higher than breadcrumbs but lower than navbar */
+  
   height: 35px;
+  
+  overflow: hidden;
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
+
+
   background-color: var(--canvasOverlay);
   border-bottom: 1px solid var(--borderDefault);
-  backdrop-filter: blur(8px) saturate(180%);
-  -webkit-backdrop-filter: blur(8px) saturate(180%);
 }
 
 /**
- * TOOLBAR - Sticks below coder header
- **/
+i want THIS to stick to the bottom of ".coderHeaderWrapper"
+**/
 .coderToolBarWrapper {
   position: sticky;
-  top: 75px; /* 40px (navbar) + 35px (coderHeader) */
-  z-index: 17;
-  background-color: var(--canvasOverlay);
-  backdrop-filter: blur(8px) saturate(180%);
-  -webkit-backdrop-filter: blur(8px) saturate(180%);
+  top: 75px; /* navbar(40) + coderHeader(35) */
+  z-index: 80;
 }
 
-/**
- * MAIN CONTENT AREA - Contains everything that scrolls
- **/
+/* Content needs padding to not hide under sticky elements */
+.pages {
+  padding-top: 65px; /* navbar(40) + breadcrumbs(25) initially */
+}
+
+/* When breadcrumbs is pushed up, adjust padding */
+.pages.breadcrumbs-pushed {
+  padding-top: 40px; /* Only navbar remains */
+}
+
+/* Additional styling for proper layout */
+.editorContainer {
+  margin-top: -25px; /* Pull up to overlap with breadcrumbs */
+}
+
+.upper {
+  position: relative;
+}
+
+/* Ensure content flows properly */
 #mainArea {
   position: relative;
-  z-index: 10;
 }
+</style>
 
-/**
- * EDITOR CONTAINER - The scrolling container for code
- **/
-.editorContainer {
-  position: relative;
-}
-
-/**
- * When coderHeader reaches the breadcrumbs position,
- * breadcrumbs get pushed up (negative margin/top)
- **/
-.coderHeaderWrapper.stuck ~ .breadCrumbsWrapper {
-  transform: translateY(-100%);
-  opacity: 0;
-  pointer-events: none;
-}
-
-/**
- * Alternatively, you could use margin-top instead of transform:
- **/
-.coderHeaderWrapper.stuck {
-  margin-top: -25px; /* Push up by breadcrumbs height */
-}
-
-/**
- * If you want smooth transitions between states
- **/
-.coderHeaderWrapper,
-.breadCrumbsWrapper,
-.coderToolBarWrapper {
-  transition: all 0.2s ease;
-}
-</style>  
 </head>
 <body class="bg-github-canvas-default">
 
