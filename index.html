@@ -303,7 +303,7 @@ i want THIS to stick to the bottom of ".navbar"
 **/
 .breadCrumbsWrapper {
   position: sticky;
-  top: 40px; /* Height of navbar */
+  top: 0; /* Height of navbar */
   z-index: 90; /* Lower than navbar but higher than normal content */
   
   height: 25px;
@@ -321,7 +321,7 @@ i want THIS to PUSH AND REPLACE ".breadCrumbsWrapper"
 **/
 .coderHeaderWrapper {
   position: sticky;
-  top: 40px; /* Same as breadcrumbs - this will push it */
+  top: 0; /* Same as breadcrumbs - this will push it */
   z-index: 95; /* Higher than breadcrumbs but lower than navbar */
   
   height: 35px;
@@ -340,24 +340,10 @@ i want THIS to stick to the bottom of ".coderHeaderWrapper"
 **/
 .coderToolBarWrapper {
   position: sticky;
-  top: 75px; /* navbar(40) + coderHeader(35) */
+  top: 35px; /* navbar(40) + coderHeader(35) */
   z-index: 80;
 }
 
-/* Content needs padding to not hide under sticky elements */
-.pages {
-  padding-top: 65px; /* navbar(40) + breadcrumbs(25) initially */
-}
-
-/* When breadcrumbs is pushed up, adjust padding */
-.pages.breadcrumbs-pushed {
-  padding-top: 40px; /* Only navbar remains */
-}
-
-/* Additional styling for proper layout */
-.editorContainer {
-  margin-top: -25px; /* Pull up to overlap with breadcrumbs */
-}
 
 .upper {
   position: relative;
