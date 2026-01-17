@@ -353,6 +353,95 @@ i want THIS to stick to the bottom of ".coderHeaderWrapper"
 #mainArea {
   position: relative;
 }
+
+
+/* Add to your existing CSS in index.html or styles.css */
+
+/* Core sticky header logic */
+:root {
+  --navbar-height: 40px;
+  --breadcrumb-height: 25px;
+  --coder-header-height: 35px;
+  --toolbar-height: 35px;
+}
+
+.navbar {
+  position: sticky;
+  top: 0;
+  height: var(--navbar-height);
+  background: var(--canvasOverlay);
+  border-bottom: 0.0625rem solid var(--borderDefault);
+  padding: 0.75rem 1rem;
+  z-index: 1000; /* Highest z-index */
+}
+
+/* Breadcrumbs should stick below navbar */
+.breadCrumbsWrapper {
+  position: sticky;
+  top: var(--navbar-height); /* Stick below navbar */
+  z-index: 990;
+  height: var(--breadcrumb-height);
+  background-color: var(--canvasOverlay);
+  border-bottom: 1px solid var(--borderDefault);
+  backdrop-filter: blur(8px) saturate(180%);
+  -webkit-backdrop-filter: blur(8px) saturate(180%);
+  transform: translateY(0);
+  transition: transform 0.2s ease-out;
+}
+
+/* When coder header is visible, breadcrumbs should hide by sliding up */
+.breadCrumbsWrapper.hidden {
+  transform: translateY(-100%);
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* Coder header should push breadcrumbs out of view */
+.coderHeaderWrapper {
+  position: sticky;
+  top: var(--navbar-height); /* Same as breadcrumbs - this will push it */
+  z-index: 995; /* Higher than breadcrumbs but lower than navbar */
+  height: var(--coder-header-height);
+  background-color: var(--canvasOverlay);
+  border-bottom: 1px solid var(--borderDefault);
+  overflow: hidden;
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
+}
+
+/* Toolbar should stick below coder header */
+.coderToolBarWrapper {
+  position: sticky;
+  top: calc(var(--navbar-height) + var(--coder-header-height));
+  z-index: 985;
+  background-color: var(--canvasOverlay);
+  border-bottom: 1px solid var(--borderDefault);
+}
+
+/* Ensure main content flows properly */
+.pages[data-page="file"] {
+  min-height: calc(100vh - var(--navbar-height));
+  position: relative;
+}
+
+.editorContainer {
+  position: relative;
+  min-height: calc(100vh - var(--navbar-height) - var(--breadcrumb-height));
+}
+
+/* When in fullscreen mode */
+.editorContainer[data-fullscreen="true"] {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  background: var(--canvasDefault);
+}
+
+.editorContainer[data-fullscreen="true"] .navbar,
+.editorContainer[data-fullscreen="true"] .breadCrumbsWrapper {
+  position: absolute;
+  top: 0;
+}
 </style>
 
 </head>
@@ -977,7 +1066,90 @@ i want THIS to stick to the bottom of ".coderHeaderWrapper"
   </aside>
 
 
+<script>
+// Sticky header manager
+class StickyHeaderManager {
+  constructor() {
+    this.navbar = document.querySelector('.navbar');
+    this.breadcrumbs = document.querySelector('.breadCrumbsWrapper');
+    this.coderHeader = document.querySelector('.coderHeaderWrapper');
+    this.mainArea = document.getElementById('mainArea');
+    this.lastScrollTop = 0;
+    this.navbarHeight = 40;
+    this.coderHeaderOffset = 0;
+    
+    this.init();
+  }
 
+  init() {
+    if (!this.coderHeader) return;
+    
+    // Calculate the offset where coder header will push breadcrumbs
+    this.calculateOffsets();
+    
+    // Add scroll listener
+    this.mainArea.addEventListener('scroll', this.handleScroll.bind(this));
+    
+    // Recalculate on resize
+    window.addEventListener('resize', () => {
+      this.calculateOffsets();
+    });
+  }
+
+  calculateOffsets() {
+    // Get position of coder header relative to viewport
+    if (this.coderHeader) {
+      const rect = this.coderHeader.getBoundingClientRect();
+      this.coderHeaderOffset = rect.top - this.navbarHeight;
+    }
+  }
+
+  handleScroll() {
+    const scrollTop = this.mainArea.scrollTop;
+    const scrollDirection = scrollTop > this.lastScrollTop ? 'down' : 'up';
+    
+    if (this.breadcrumbs && this.coderHeader) {
+      // Get current position of coder header
+      const coderRect = this.coderHeader.getBoundingClientRect();
+      const coderTop = coderRect.top;
+      
+      // If coder header is at or above breadcrumb position, hide breadcrumbs
+      if (coderTop <= this.navbarHeight + 10) { // +10 for some threshold
+        this.breadcrumbs.classList.add('hidden');
+      } else {
+        this.breadcrumbs.classList.remove('hidden');
+      }
+    }
+    
+    this.lastScrollTop = scrollTop;
+  }
+}
+
+// Initialize when DOM is loaded
+document.addEventListener('DOMContentLoaded', () => {
+  // Initialize sticky headers
+  window.stickyHeaderManager = new StickyHeaderManager();
+  
+  // Reinitialize when switching to file view
+  const observer = new MutationObserver(() => {
+    if (document.querySelector('[data-page="file"]').classList.contains('show')) {
+      setTimeout(() => {
+        if (window.stickyHeaderManager) {
+          window.stickyHeaderManager.calculateOffsets();
+        } else {
+          window.stickyHeaderManager = new StickyHeaderManager();
+        }
+      }, 100);
+    }
+  });
+  
+  // Observe the pages container
+  const pagesContainer = document.getElementById('mainArea');
+  if (pagesContainer) {
+    observer.observe(pagesContainer, { childList: true, subtree: true });
+  }
+});
+</script>
 
 
 <script type="module" src="modules/index.js">
