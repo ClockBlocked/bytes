@@ -356,9 +356,6 @@ templates: {
 
 
 
-<!-- U P P E R ------------------>
-<div class="upper">
-
 <!-- H E A D E R -->
 <div class="coderHeaderWrapper" id="stickyHeader">
   <button class="headerScrollBtn left" id="headerScrollLeft" title="Scroll left">
@@ -534,10 +531,6 @@ templates: {
 
 
 
-</div><!-- End of Upper -->
-
-
-<div class="lower">
 
         <div id="editorBody" class="editorBody">
           <div id="loadingSpinner" class="loadingSpinner" data-active="false">
@@ -630,7 +623,6 @@ templates: {
         />
       </div>
 
-      </div><!-- End of Lower -->
     </div><!-- End of editorCard -->
   </div><!-- End of editorContainer -->
 
