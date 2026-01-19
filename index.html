@@ -261,7 +261,209 @@ html {
 
 
 <style>
+/**
+THESE wrapper containers were created because i was under 
+the impression that a sticky element has to have a container 
+to stick to other than the body container.....
+**/
+.wrapper[data-wrap="top"],
+.wrapper[data-wrap="bottom"] {
+  width: 100%;
+  margin: 0;
+  padding: 0;
+}
+.wrapper[data-wrap="top"]{
+  height: 65px;
+}
+.wrapper[data-wrap="bottom"]{
+  height: calc(100vh - 65px);
+}
 
+/**
+i want THIS to stick to the top of the page
+and ALWAYS be visible
+
+and for NOTHING to ever be pushed "behind" it
+EXCEPT FOR ".breadCrumbsWrapper" whenever the header
+pushes it up and out
+**/
+.navbar {
+  position: sticky;
+  top: 0;
+  height: 40px;
+  background: var(--canvasOverlay);
+  border-bottom: 0.0625rem solid var(--borderDefault);
+  padding: 0.75rem 1rem;
+  z-index: 100; /* Highest z-index */
+}
+
+
+/**
+i want THIS to stick to the bottom of ".navbar"
+**/
+.breadCrumbsWrapper {
+  position: sticky;
+  top: 0; /* Height of navbar */
+  z-index: 90; /* Lower than navbar but higher than normal content */
+  
+  height: 25px;
+  
+  background-color: var(--canvasOverlay);
+  border-bottom: 1px solid var(--borderDefault);
+  
+  backdrop-filter: blur(8px) saturate(180%);
+  -webkit-backdrop-filter: blur(8px) saturate(180%);
+}
+
+
+/**
+i want THIS to PUSH AND REPLACE ".breadCrumbsWrapper"
+**/
+.coderHeaderWrapper {
+  position: sticky;
+  top: 0; /* Same as breadcrumbs - this will push it */
+  z-index: 95; /* Higher than breadcrumbs but lower than navbar */
+  
+  height: 35px;
+  
+  overflow: hidden;
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
+
+
+  background-color: var(--canvasOverlay);
+  border-bottom: 1px solid var(--borderDefault);
+}
+
+/**
+i want THIS to stick to the bottom of ".coderHeaderWrapper"
+**/
+.coderToolBarWrapper {
+  position: sticky;
+  top: 35px; /* navbar(40) + coderHeader(35) */
+  z-index: 80;
+}
+
+
+.upper {
+  position: relative;
+}
+
+/* Ensure content flows properly */
+#mainArea {
+  position: relative;
+}
+
+
+/* Add to your existing CSS in index.html or styles.css */
+
+/* Core sticky header logic */
+:root {
+  --navbar-height: 40px;
+  --breadcrumb-height: 25px;
+  --coder-header-height: 35px;
+  --toolbar-height: 35px;
+}
+
+.navbar {
+  position: sticky;
+  top: 0;
+  height: var(--navbar-height);
+  background: var(--canvasOverlay);
+  border-bottom: 0.0625rem solid var(--borderDefault);
+  padding: 0.75rem 1rem;
+  z-index: 1000; /* Highest z-index */
+}
+
+/* Breadcrumbs should stick below navbar */
+.breadCrumbsWrapper {
+  position: sticky;
+  top: var(--navbar-height); /* Stick below navbar */
+  z-index: 90;
+  max-height: var(--breadcrumb-height);
+  min-height: 0;
+  background-color: var(--canvasOverlay);
+  border-bottom: 1px solid var(--borderDefault);
+  backdrop-filter: blur(8px) saturate(180%);
+  -webkit-backdrop-filter: blur(8px) saturate(180%);
+  transform: translateY(0);
+  transition: transform 0.2s ease-out;
+}
+
+/* When coder header is visible, breadcrumbs should hide by sliding up */
+.breadCrumbsWrapper.hidden {
+  transform: translateY(-100%);
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* Coder header should push breadcrumbs out of view */
+.coderHeaderWrapper {
+  position: sticky;
+  top: var(--navbar-height); /* Same as breadcrumbs - this will push it */
+  z-index: 999; /* Higher than breadcrumbs but lower than navbar */
+  height: var(--coder-header-height);
+  background-color: var(--canvasOverlay);
+  border-bottom: 1px solid var(--borderDefault);
+  overflow: hidden;
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
+}
+
+/* Toolbar should stick below coder header */
+.coderToolBarWrapper {
+  position: sticky;
+  top: calc(var(--navbar-height) + var(--coder-header-height));
+  z-index: 999;
+  background-color: var(--canvasOverlay);
+  border-bottom: 1px solid var(--borderDefault);
+}
+
+/* Ensure main content flows properly */
+.pages[data-page="file"] {
+  min-height: calc(100vh - var(--navbar-height));
+  position: relative;
+}
+
+.editorContainer {
+  position: relative;
+  min-height: calc(100vh - var(--navbar-height) - var(--breadcrumb-height));
+}
+
+/* When in fullscreen mode */
+.editorContainer[data-fullscreen="true"] {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  background: var(--canvasDefault);
+}
+
+.editorContainer[data-fullscreen="true"] .navbar,
+.editorContainer[data-fullscreen="true"] .breadCrumbsWrapper {
+  position: absolute;
+  top: 0;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* Add these to the end of your styles.css file */
+
+/* Core sticky header system */
 :root {
   --navbar-height: 3.75rem;
   --breadcrumb-height: 2.75rem;
