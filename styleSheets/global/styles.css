@@ -2995,10 +2995,6 @@ body.header-only .editorContainer {
     --coder-header-height: 2.5rem;
     --toolbar-height: 2.5rem;
   }
-  
-  .coderHeader .centerSide {
-    display: none;
-  }
 }
 
 .navbar,
