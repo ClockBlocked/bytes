@@ -555,7 +555,7 @@ button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-
 #mainArea {
   flex: 1;
   padding: 0.35rem;
-  overflow-x: hidden;
+
   margin-left: var(--sidebarWidth);
   margin-right: var(--sidebarWidth);
   transition: margin 0.3s ease;
