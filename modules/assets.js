@@ -611,7 +611,7 @@ templates: {
           class="hide"
           accept=".js,.jsx,.ts,.tsx,.py,.html,.css,.json,.md,.txt,.yml,.yaml,.xml,.sql,.sh,.rb,.go,.rs,.java,.cpp,.c,.h,.cs,.php,.swift"
         />
-      </div>
+      
 
     </div><!-- End of editorCard -->
   </div><!-- End of editorContainer -->
