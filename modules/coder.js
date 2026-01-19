@@ -605,48 +605,6 @@ bindElementEvents = function() {
 }.bind(this);
 
 
-showLanguageDropdown = function(e) {
-  if (!this.elements.languageDropdown) {
-    this.injectLanguageDropdown();
-  }
-  
-  const dropdown = this.elements.languageDropdown;
-  if (!dropdown) return;
-  
-  const isHidden = dropdown.classList.contains('hide');
-  dropdown.classList.toggle('hide', !isHidden);
-  
-  if (!isHidden) {
-    let button;
-    
-    if (e && e.currentTarget) {
-      button = e.currentTarget;
-    } else {
-      button = this.elements.fileExtensionBtn;
-    }
-    
-    if (button) {
-      const rect = button.getBoundingClientRect();
-      const dropdownRect = dropdown.getBoundingClientRect();
-      
-      let top = rect.bottom + window.scrollY + 5;
-      let left = rect.left + window.scrollX;
-      
-      if (left + dropdownRect.width > window.innerWidth) {
-        left = window.innerWidth - dropdownRect.width - 10;
-      }
-      
-      if (top + dropdownRect.height > window.innerHeight) {
-        top = rect.top + window.scrollY - dropdownRect.height - 5;
-      }
-      
-      dropdown.style.position = 'fixed';
-      dropdown.style.top = `${top}px`;
-      dropdown.style.left = `${left}px`;
-      dropdown.style.zIndex = '10000';
-    }
-  }
-}.bind(this);
 
 showMoreOptionsDropdown = function(e) {
   if (!this.elements.moreOptionsDropdown) {
@@ -703,22 +661,6 @@ hideMoreOptionsDropdown = function() {
   }
 }.bind(this);
 
-// ALSO UPDATE THESE METHODS FOR PROPER DROPDOWN HANDLING:
-
-injectLanguageDropdown = function() {
-  const existing = document.getElementById('languageDropdown');
-  if (existing) existing.remove();
-  
-  document.body.insertAdjacentHTML('beforeend', AppAssets.templates.languageDropdown());
-  this.elements.languageDropdown = document.getElementById('languageDropdown');
-  this.populateLanguageDropdown();
-  
-  // Add the 'hide' class initially
-  if (this.elements.languageDropdown) {
-    this.elements.languageDropdown.classList.add('hide');
-  }
-}.bind(this);
-
 injectMoreOptionsDropdown = function() {
   const existing = document.getElementById('moreOptionsDropdown');
   if (existing) existing.remove();
@@ -741,7 +683,109 @@ injectMoreOptionsDropdown = function() {
 
 
 
+// IN YOUR coder.js FILE, UPDATE THESE METHODS:
 
+injectLanguageDropdown = function() {
+  const existing = document.getElementById('languageDropdown');
+  if (existing) existing.remove();
+  
+  document.body.insertAdjacentHTML('beforeend', AppAssets.templates.languageDropdown());
+  this.elements.languageDropdown = document.getElementById('languageDropdown');
+  
+  // Initialize the language list element
+  this.elements.languageList = document.getElementById('languageList');
+  
+  // Add the 'hide' class initially
+  if (this.elements.languageDropdown) {
+    this.elements.languageDropdown.classList.add('hide');
+  }
+  
+  // Populate the dropdown - this should be done AFTER the element is created
+  this.populateLanguageDropdown();
+}.bind(this);
+
+// ALSO UPDATE THE populateLanguageDropdown METHOD:
+
+populateLanguageDropdown = function() {
+  if (!this.elements.languageList) {
+    console.error("Language list element not found");
+    return;
+  }
+  
+  this.elements.languageList.innerHTML = "";
+  
+  this.languages.forEach((lang) => {
+    const btn = document.createElement("button");
+    btn.className = "dropdown-item";
+    btn.textContent = lang.label;
+    btn.dataset.value = lang.value;
+    
+    // Add click handler
+    btn.addEventListener("click", () => {
+      this.setLanguage(lang.value);
+      this.hideLanguageDropdown();
+    });
+    
+    this.elements.languageList.appendChild(btn);
+  });
+}.bind(this);
+
+// ALSO ENSURE THE showLanguageDropdown METHOD PROPERLY SHOWS THE DROPDOWN:
+
+showLanguageDropdown = function(e) {
+  if (!this.elements.languageDropdown) {
+    this.injectLanguageDropdown();
+  }
+  
+  const dropdown = this.elements.languageDropdown;
+  if (!dropdown) return;
+  
+  const isHidden = dropdown.classList.contains('hide');
+  
+  // Hide other dropdowns first
+  this.hideNewFileDropdown();
+  this.hideMoreOptionsDropdown();
+  
+  // Toggle visibility
+  dropdown.classList.toggle('hide', !isHidden);
+  
+  if (isHidden) {
+    let button;
+    
+    if (e && e.currentTarget) {
+      button = e.currentTarget;
+    } else {
+      button = this.elements.fileExtensionBtn;
+    }
+    
+    if (button) {
+      const rect = button.getBoundingClientRect();
+      const dropdownRect = dropdown.getBoundingClientRect();
+      
+      let top = rect.bottom + window.scrollY + 5;
+      let left = rect.left + window.scrollX;
+      
+      // Adjust position to fit in viewport
+      if (left + dropdownRect.width > window.innerWidth) {
+        left = window.innerWidth - dropdownRect.width - 10;
+      }
+      
+      if (top + dropdownRect.height > window.innerHeight) {
+        top = rect.top + window.scrollY - dropdownRect.height - 5;
+      }
+      
+      dropdown.style.position = 'fixed';
+      dropdown.style.top = `${top}px`;
+      dropdown.style.left = `${left}px`;
+      dropdown.style.zIndex = '10000';
+    }
+    
+    // Ensure the list is populated
+    if (this.elements.languageList.children.length === 0) {
+      this.populateLanguageDropdown();
+    }
+  }
+}.bind(this);
 
 
 
@@ -1040,19 +1084,6 @@ injectMoreOptionsDropdown = function() {
     this.elements.commitDropdown = document.getElementById("commitDropdown");
   }.bind(this);
   
-  populateLanguageDropdown = function() {
-    if (!this.elements.languageList) return;
-    
-    this.elements.languageList.innerHTML = "";
-    this.languages.forEach((lang) => {
-      const btn = document.createElement("button");
-      btn.className = "dropdownItem";
-      btn.textContent = lang.label;
-      btn.dataset.value = lang.value;
-      btn.addEventListener("click", () => this.setLanguage(lang.value));
-      this.elements.languageList.appendChild(btn);
-    });
-  }.bind(this);
   
   calculateDropdownPosition = function() {
     if (!this.elements.editSaveButton || !this.elements.commitDropdown) return;
