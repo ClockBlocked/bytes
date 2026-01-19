@@ -436,18 +436,6 @@ templates: {
       />
     </svg>
   </button>
-
-  <div id="moreOptionsDropdown" class="dropdown2 hide">
-    <div class="dropdownContent">
-      <button class="dropdownItem" id="formatBtn">${AppAssets.icons.format()} Format Document</button>
-      <button class="dropdownItem" id="foldAllBtn">${AppAssets.icons.fold()} Fold All</button>
-      <button class="dropdownItem" id="unfoldAllBtn">${AppAssets.icons.unfold()} Unfold All</button>
-      <div class="dropdownDivider"></div>
-      <button class="dropdownItem" id="showInvisiblesBtn">${AppAssets.icons.invisibles()} Show Invisibles</button>
-      <div class="dropdownDivider"></div>
-      <button class="dropdownItem" id="wrapBtn">${AppAssets.icons.wrap()} Toggle Word Wrap</button>
-    </div>
-  </div>
 </div>
 
 <!-- T O O L B A R -->
@@ -580,10 +568,7 @@ templates: {
   <!-- End of editorCard -->
 </div>
 <!-- End of editorContainer -->
-
-
 `,
-
 
     commitDropdown: () => `
 <div id="commitDropdown" class="dropdown-menu hide" role="menu">
@@ -606,7 +591,6 @@ templates: {
   </div>
 </div>`,
 
-    // New File Button Template
     newFileDropdown: () => `
 <div id="newFileDropdown" class="dropdown-menu hide" role="menu">
   <div class="dropdown-header">
@@ -632,43 +616,65 @@ templates: {
   </div>
 </div>`,
 
-// Add to AppAssets.templates object:
 languageDropdown: () => `
-  <div id="languageDropdown" class="dropdown" style="display: none;">
-    <div class="dropdownContent" id="languageList"></div>
-  </div>
-`,
-
-moreOptionsDropdown: () => `
-  <div id="moreOptionsDropdown" class="dropdown" style="display: none;">
-    <div class="dropdownContent">
-      <button class="dropdownItem" id="formatBtn">
-        <svg class="dropdownIcon" viewBox="0 0 16 16" width="16" height="16">
-          <path d="M3.72 3.72a.75.75 0 0 1 1.06 0L8 6.94l3.22-3.22a.749.749 0 0 1 1.275.326.749.749 0 0 1-.215.734L9.06 8l3.22 3.22a.749.749 0 0 1-.326 1.275.749.749 0 0 1-.734-.215L8 9.06l-3.22 3.22a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042L6.94 8 3.72 4.72a.75.75 0 0 1 0-1.06Z"></path>
-        </svg>
-        Format Code
-      </button>
-      <button class="dropdownItem" id="foldAllBtn">
-        <svg class="dropdownIcon" viewBox="0 0 16 16" width="16" height="16">
-          <path d="M10.68 11.74a6 6 0 0 1-1.36 1.46v-1.22c.37-.23.7-.48 1-.76H7.14a.75.75 0 1 1 0-1.5h4.5a.75.75 0 0 1 .75.75c0 .7-.21 1.46-.71 2.06Zm-4.26-4.48h3.14a.75.75 0 0 0 0-1.5H6.42a.75.75 0 0 0 0 1.5ZM4.03 6.08a.75.75 0 0 0 .75.75h.58a6 6 0 0 0-.33 1.25H4.78a.75.75 0 0 0 0 1.5h.28c.1.51.26 1 .48 1.45a.75.75 0 0 0 1.38-.6 4 4 0 0 1-.36-1.35h1.39a.75.75 0 0 0 0-1.5H6.57a4.5 4.5 0 0 1 0-1.5h1.9a.75.75 0 1 0 0-1.5H4.78a.75.75 0 0 0-.75.75Z"></path>
-        </svg>
-        Fold All
-      </button>
-      <button class="dropdownItem" id="unfoldAllBtn">
-        <svg class="dropdownIcon" viewBox="0 0 16 16" width="16" height="16">
-          <path d="M8.177 14.323 2.343 8.484a1 1 0 0 1 0-1.415L8.177 1.197a1 1 0 0 1 1.414 0l5.834 5.835a1 1 0 0 1 0 1.414l-5.834 5.877a1 1 0 0 1-1.414 0Z"></path>
-        </svg>
-        Unfold All
-      </button>
-      <div class="dropdownDivider"></div>
-      <button class="dropdownItem" id="showInvisiblesBtn">
-        <svg class="dropdownIcon" viewBox="0 0 16 16" width="16" height="16">
-          <path d="M1.22 8.72a.75.75 0 0 0 0 1.06l4.25 4.25a.75.75 0 0 0 1.06 0l1.97-1.97v-1.13L9 9.53l1.47 1.47a.75.75 0 0 0 1.06 0l4.25-4.25a.75.75 0 0 0 0-1.06L11.53 4.78a.75.75 0 0 0-1.06 0L9 6.22l1.5 1.5h-1.19L8.03 6.22 6.22 8.03v1.19L4.78 9.03l-1.5-1.5 1.5-1.5.01-.01-1.56-1.56a.75.75 0 0 0-1.06 0L1.22 8.72Zm6.25-3.19 1.5 1.5h1.19l1.5-1.5-1.5-1.5h-1.19l-1.5 1.5Z"></path>
-        </svg>
-        Show Invisibles
-      </button>
+<div id="languageDropdown" class="dropdown-menu hide" role="menu">
+  <div class="dropdown-header">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+      <path d="M3 3h8v2H3v12h8v2H3c-1.1 0-2-.9-2-2V5c0-1.1.9-2 2-2zm10 0h8c1.1 0 2 .9 2 2v14c0 1.1-.9 2-2 2h-8c-1.1 0-2-.9-2-2V5c0-1.1.9-2 2-2zm0 2v14h8V5h-8z"/>
+    </svg>
+    <div class="save-info">
+      <h4 class="save-title">Select Language</h4>
+      <p class="save-subtitle">Choose the programming language</p>
     </div>
   </div>
-`
+  <div class="dropdown-content" id="languageList"></div>
+</div>`,
+
+moreOptionsDropdown: () => `
+<div id="moreOptionsDropdown" class="dropdown-menu hide" role="menu">
+  <div class="dropdown-header">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+      <path d="M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/>
+    </svg>
+    <div class="save-info">
+      <h4 class="save-title">More Options</h4>
+      <p class="save-subtitle">Additional editor settings</p>
+    </div>
+  </div>
+  <div class="dropdown-content">
+    <button class="dropdown-item" id="formatBtn">
+      <svg class="dropdown-icon" viewBox="0 0 16 16" width="16" height="16">
+        <path d="M3.72 3.72a.75.75 0 0 1 1.06 0L8 6.94l3.22-3.22a.749.749 0 0 1 1.275.326.749.749 0 0 1-.215.734L9.06 8l3.22 3.22a.749.749 0 0 1-.326 1.275.749.749 0 0 1-.734-.215L8 9.06l-3.22 3.22a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042L6.94 8 3.72 4.72a.75.75 0 0 1 0-1.06Z"/>
+      </svg>
+      Format Code
+    </button>
+    <button class="dropdown-item" id="foldAllBtn">
+      <svg class="dropdown-icon" viewBox="0 0 16 16" width="16" height="16">
+        <path d="M10.896 2H8.75V.75a.75.75 0 0 0-1.5 0V2H5.104a.25.25 0 0 0-.177.427l2.896 2.896a.25.25 0 0 0 .354 0l2.896-2.896A.25.25 0 0 0 10.896 2ZM8.75 15.25a.75.75 0 0 1-1.5 0V14H5.104a.25.25 0 0 1-.177-.427l2.896-2.896a.25.25 0 0 1 .354 0l2.896 2.896a.25.25 0 0 1-.177.427H8.75ZM9.78 7.22a.75.75 0 0 1 0 1.06l-2.25 2.25a.75.75 0 0 1-1.06-1.06L8.19 7.75 6.47 6.03a.75.75 0 0 1 1.06-1.06l2.25 2.25Z"/>
+      </svg>
+      Fold All
+    </button>
+    <button class="dropdown-item" id="unfoldAllBtn">
+      <svg class="dropdown-icon" viewBox="0 0 16 16" width="16" height="16">
+        <path d="M5.427 2.573a.25.25 0 0 1 .354 0l2.896 2.896a.25.25 0 0 1-.177.427H6.354v2.208a.75.75 0 0 1-1.5 0V5.896H2.75a.25.25 0 0 1-.177-.427l2.854-2.896Zm5.146 10.854a.25.25 0 0 1-.354 0l-2.896-2.896a.25.25 0 0 1 .177-.427h2.146V7.896a.75.75 0 0 1 1.5 0v2.208h2.104a.25.25 0 0 1 .177.427Z"/>
+      </svg>
+      Unfold All
+    </button>
+    <div class="dropdown-divider"></div>
+    <button class="dropdown-item" id="showInvisiblesBtn">
+      <svg class="dropdown-icon" viewBox="0 0 16 16" width="16" height="16">
+        <path d="M2.75 3.5a.25.25 0 0 0-.25.25v8.5c0 .138.112.25.25.25h10.5a.25.25 0 0 0 .25-.25v-8.5a.25.25 0 0 0-.25-.25Zm10.5-1.5a1.75 1.75 0 0 1 1.75 1.75v8.5A1.75 1.75 0 0 1 13.25 13H2.75A1.75 1.75 0 0 1 1 12.25v-8.5A1.75 1.75 0 0 1 2.75 2Zm-9.5 5h3.75a.75.75 0 0 1 0 1.5H3.75a.75.75 0 0 1 0-1.5ZM3 9.75a.75.75 0 0 1 .75-.75h6.5a.75.75 0 0 1 0 1.5h-6.5a.75.75 0 0 1-.75-.75Z"/>
+      </svg>
+      Show Invisibles
+    </button>
+    <div class="dropdown-divider"></div>
+    <button class="dropdown-item" id="wrapBtn">
+      <svg class="dropdown-icon" viewBox="0 0 16 16" width="16" height="16">
+        <path d="M2.75 3.5a.25.25 0 0 0-.25.25v8.5c0 .138.112.25.25.25h10.5a.25.25 0 0 0 .25-.25v-8.5a.25.25 0 0 0-.25-.25Zm10.5-1.5a1.75 1.75 0 0 1 1.75 1.75v8.5A1.75 1.75 0 0 1 13.25 13H2.75A1.75 1.75 0 0 1 1 12.25v-8.5A1.75 1.75 0 0 1 2.75 2Zm-9.5 5h3.75a.75.75 0 0 1 0 1.5H3.75a.75.75 0 0 1 0-1.5ZM3 9.75a.75.75 0 0 1 .75-.75h6.5a.75.75 0 0 1 0 1.5h-6.5a.75.75 0 0 1-.75-.75Z"/>
+      </svg>
+      Toggle Word Wrap
+    </button>
+  </div>
+</div>`
   }
 };
