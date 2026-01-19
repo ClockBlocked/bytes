@@ -261,271 +261,74 @@ html {
 
 
 <style>
-/* =========================================== */
-/* PURE CSS STICKY HEADER SYSTEM - NO JS NEEDED */
-/* =========================================== */
-
-:root {
-  --navbar-height: 3.75rem;
-  --breadcrumb-height: 2.75rem;
-  --coder-header-height: 2.75rem;
-  --toolbar-height: 2.75rem;
-}
-
-/* 1. NAVBAR - Always top, always visible */
+/* NAVBAR - Always at top */
 .navbar {
   position: sticky;
   top: 0;
-  height: var(--navbar-height);
+  height: 3.75rem;
   background: var(--canvasOverlay);
   border-bottom: 0.0625rem solid var(--borderDefault);
-  z-index: 1000; /* Highest */
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-}
-
-/* 2. BREADCRUMBS - Initially under navbar */
-.breadCrumbsWrapper {
-  position: sticky;
-  top: var(--navbar-height); /* Stick below navbar */
-  height: var(--breadcrumb-height);
-  background: var(--canvasOverlay);
-  border-bottom: 0.0625rem solid var(--borderDefault);
-  z-index: 900; /* Lower than navbar */
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-/* 3. FILE PAGE - This is the container that controls everything */
-.pages[data-page="file"] {
-  position: relative;
-}
-
-/* 4. CODER HEADER - Inside file page, will PUSH breadcrumbs out */
-.coderHeaderWrapper {
-  position: sticky;
-  top: var(--navbar-height); /* SAME TOP AS BREADCRUMBS - THIS IS KEY! */
-  height: var(--coder-header-height);
-  background: var(--canvasOverlay);
-  border-bottom: 0.0625rem solid var(--borderDefault);
-  z-index: 950; /* HIGHER than breadcrumbs but lower than navbar */
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-  transform: translateY(-100%); /* Start hidden ABOVE its position */
-  opacity: 0;
-  pointer-events: none;
-}
-
-/* 5. TOOLBAR - Under coder header */
-.coderToolBarWrapper {
-  position: sticky;
-  top: calc(var(--navbar-height) + var(--coder-header-height));
-  height: var(--toolbar-height);
-  background: var(--canvasOverlay);
-  border-bottom: 0.0625rem solid var(--borderDefault);
-  z-index: 850; /* Lower than coder header */
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-  transform: translateY(-100%); /* Start hidden with coder header */
-  opacity: 0;
-  pointer-events: none;
-}
-
-/* =========================================== */
-/* THE MAGIC: When coder header scrolls into view */
-/* =========================================== */
-
-/* When the file page container reaches the top of viewport */
-.pages[data-page="file"]:hover .coderHeaderWrapper,
-.pages[data-page="file"]:focus-within .coderHeaderWrapper,
-/* OR use this alternative: when the file page is scrolled into view */
-.pages[data-page="file"]:target .coderHeaderWrapper {
-  transform: translateY(0); /* Slide down into position */
-  opacity: 1;
-  pointer-events: all;
-}
-
-/* Hide breadcrumbs when coder header is visible */
-.pages[data-page="file"]:hover ~ .breadCrumbsWrapper,
-.pages[data-page="file"]:focus-within ~ .breadCrumbsWrapper,
-.pages[data-page="file"]:target ~ .breadCrumbsWrapper {
-  transform: translateY(-100%); /* Push breadcrumbs UP AND OUT */
-  opacity: 0;
-  height: 0;
-  min-height: 0;
-  max-height: 0;
-  border-bottom: none;
-  pointer-events: none;
-}
-
-/* Show toolbar when coder header is visible */
-.pages[data-page="file"]:hover .coderToolBarWrapper,
-.pages[data-page="file"]:focus-within .coderToolBarWrapper,
-.pages[data-page="file"]:target .coderToolBarWrapper {
-  transform: translateY(0);
-  opacity: 1;
-  pointer-events: all;
-}
-
-/* =========================================== */
-/* ALTERNATIVE: Using scroll-based approach */
-/* =========================================== */
-
-/* This uses CSS scroll-driven animations (newer but powerful) */
-@supports (animation-timeline: scroll()) {
-  .coderHeaderWrapper {
-    animation: slideDownHeader both;
-    animation-timeline: scroll(root block);
-    animation-range: exit 0% exit 100%;
-  }
-  
-  .breadCrumbsWrapper {
-    animation: slideUpBreadcrumbs both;
-    animation-timeline: scroll(root block);
-    animation-range: exit 0% exit 100%;
-  }
-  
-  @keyframes slideDownHeader {
-    from {
-      transform: translateY(-100%);
-      opacity: 0;
-    }
-    to {
-      transform: translateY(0);
-      opacity: 1;
-    }
-  }
-  
-  @keyframes slideUpBreadcrumbs {
-    from {
-      transform: translateY(0);
-      opacity: 1;
-    }
-    to {
-      transform: translateY(-100%);
-      opacity: 0;
-      height: 0;
-    }
-  }
-}
-
-/* =========================================== */
-/* SIMPLE SOLUTION: Just hide breadcrumbs in file page */
-/* =========================================== */
-
-/* Option C: When we're on the file page, just hide breadcrumbs */
-body[data-current-page="file"] .breadCrumbsWrapper {
-  display: none !important;
-}
-
-body[data-current-page="file"] .coderHeaderWrapper {
-  transform: translateY(0);
-  opacity: 1;
-  pointer-events: all;
-}
-
-body[data-current-page="file"] .coderToolBarWrapper {
-  transform: translateY(0);
-  opacity: 1;
-  pointer-events: all;
-}
-
-/* =========================================== */
-/* BEST SOLUTION: Using sibling selector trick */
-/* =========================================== */
-
-/* This is the cleanest: When file page appears after breadcrumbs */
-.breadCrumbsWrapper + .pages[data-page="file"] .coderHeaderWrapper {
-  transform: translateY(0);
-  opacity: 1;
-  pointer-events: all;
-}
-
-.breadCrumbsWrapper + .pages[data-page="file"] ~ .breadCrumbsWrapper {
-  display: none !important;
-}
-
-.breadCrumbsWrapper + .pages[data-page="file"] .coderToolBarWrapper {
-  transform: translateY(0);
-  opacity: 1;
-  pointer-events: all;
-}
-
-/* =========================================== */
-/* ULTIMATE SOLUTION: Position trickery */
-/* =========================================== */
-
-/* Make file page position relative to control stacking */
-.pages[data-page="file"] {
-  position: relative;
-  z-index: 1;
-}
-
-/* Make coder header ABSOLUTE within file page when active */
-.pages[data-page="file"].show .coderHeaderWrapper {
-  position: absolute;
-  top: calc(-1 * var(--coder-header-height)); /* Position ABOVE file page */
-  left: 0;
-  right: 0;
-  transform: translateY(calc(var(--navbar-height) + var(--breadcrumb-height)));
-  opacity: 1;
-  pointer-events: all;
-}
-
-/* When coder header is active, push breadcrumbs up */
-.pages[data-page="file"].show ~ .breadCrumbsWrapper {
-  transform: translateY(calc(-1 * var(--breadcrumb-height)));
-  opacity: 0;
-  height: 0;
-  min-height: 0;
-  overflow: hidden;
-  border-bottom: none;
-}
-
-/* =========================================== */
-/* SIMPLEST WORKING VERSION */
-/* =========================================== */
-
-/* Remove all transitions and just use display/position */
-.navbar {
-  position: sticky;
-  top: 0;
   z-index: 1000;
 }
 
+/* BREADCRUMBS - Starts under navbar */
 .breadCrumbsWrapper {
   position: sticky;
-  top: var(--navbar-height);
+  top: 3.75rem;
+  height: 2.75rem;
+  background: var(--canvasOverlay);
+  border-bottom: 0.0625rem solid var(--borderDefault);
   z-index: 900;
+  transition: transform 0.3s ease, opacity 0.3s ease;
 }
 
-/* When file page is active/visible */
-.pages[data-page="file"].show {
+/* FILE PAGE - The container */
+.pages[data-page="file"] {
   position: relative;
 }
 
-.pages[data-page="file"].show .coderHeaderWrapper {
-  position: fixed; /* FIXED is key here! */
-  top: var(--navbar-height); /* Same as breadcrumbs top */
+/* CODER HEADER - Will replace breadcrumbs */
+.coderHeaderWrapper {
+  position: fixed;
+  top: 3.75rem;
   left: 0;
   right: 0;
-  z-index: 950; /* Higher than breadcrumbs */
-}
-
-/* Hide breadcrumbs when coder header is fixed at same position */
-.pages[data-page="file"].show ~ .breadCrumbsWrapper {
-  visibility: hidden;
+  height: 2.75rem;
+  background: var(--canvasOverlay);
+  border-bottom: 0.0625rem solid var(--borderDefault);
+  z-index: 950;
+  transform: translateY(-100%);
   opacity: 0;
   pointer-events: none;
 }
 
-.pages[data-page="file"].show .coderToolBarWrapper {
+/* TOOLBAR - Under coder header */
+.coderToolBarWrapper {
   position: fixed;
-  top: calc(var(--navbar-height) + var(--coder-header-height));
+  top: 6.5rem; /* navbar(3.75) + coderHeader(2.75) */
   left: 0;
   right: 0;
+  height: 2.75rem;
+  background: var(--canvasOverlay);
+  border-bottom: 0.0625rem solid var(--borderDefault);
   z-index: 850;
+  transform: translateY(-100%);
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* WHEN FILE PAGE IS ACTIVE - Show headers, hide breadcrumbs */
+body.file-page-active .coderHeaderWrapper,
+body.file-page-active .coderToolBarWrapper {
+  transform: translateY(0);
+  opacity: 1;
+  pointer-events: all;
+}
+
+body.file-page-active .breadCrumbsWrapper {
+  transform: translateY(-100%);
+  opacity: 0;
+  pointer-events: none;
 }
 </style>
 
