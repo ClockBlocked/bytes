@@ -845,34 +845,203 @@ button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-
 .file-type-xml { color: var(--fileTypeXml); }
 .file-type-sql { color: var(--fileTypeSql); }
 
-/* File Name Display */
-.fileNameDisplay {
-  min-width: 9.375rem;
-  max-width: 18.75rem;
+/* File name input with icon inside */
+.fileNameContainer {
+  display: flex;
+  align-items: center;
+  position: relative;
 }
 
-.fileNameInput {
-  width: 100%;
-  border: 0.0625rem solid var(--borderMuted);
+.fileNameInputWrapper {
+  display: flex;
+  align-items: center;
   background-color: var(--canvasSubtle);
-  color: var(--fgDefault);
-  border-radius: var(--radiusSm);
-  padding: 0.375rem 0.625rem;
-  font-size: var(--textSm);
-  font-family: inherit;
-  cursor: default;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  overflow: hidden;
+  border: 1px solid var(--borderDefault);
+  border-radius: var(--radiusMd);
+  padding: 0.25rem 0.5rem;
+  min-width: 200px;
   transition: all 0.2s ease;
 }
-.fileNameInput:hover {
-  background-color: var(--btnSecondaryBg);
-}
-.fileNameInput:not([readonly]) {
-  cursor: text;
-  border-color: var(--accentFg);
+
+.fileNameInputWrapper:hover {
+  border-color: var(--borderMuted);
   background-color: var(--canvasDefault);
+}
+
+.fileNameInputWrapper:focus-within {
+  border-color: var(--accentFg);
+  box-shadow: 0 0 0 1px var(--accentSubtle);
+}
+
+/* File icon inside input */
+.fileIconInsideInput {
+  flex-shrink: 0;
+  color: var(--fgMuted);
+  margin-right: 0.5rem;
+  width: 16px;
+  height: 16px;
+}
+
+/* Input field with right-aligned text */
+.fileNameInput {
+  flex: 1;
+  background: transparent;
+  border: none;
+  color: var(--fgDefault);
+  font-family: var(--fontText);
+  font-size: var(--textSm);
+  padding: 0.25rem 0;
+  outline: none;
+  text-align: right !important;
+  min-width: 0;
+}
+
+.fileNameInput::placeholder {
+  color: var(--fgMuted);
+  opacity: 0.7;
+  text-align: right;
+}
+
+/* Extension button with dropdown */
+.fileExtensionBtn {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  background: var(--canvasDefault);
+  border: 1px solid var(--borderSubtle);
+  border-radius: var(--radiusSm);
+  color: var(--accentFg);
+  font-family: var(--fontMono);
+  font-size: var(--textSm);
+  padding: 0.25rem 0.5rem;
+  margin-left: 0.5rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+}
+
+.fileExtensionBtn:hover {
+  background: var(--accentSubtle);
+  border-color: var(--accentFg);
+}
+
+.fileExtensionBtn .extensionChevron {
+  transition: transform 0.2s ease;
+}
+
+.fileExtensionBtn:hover .extensionChevron {
+  transform: rotate(180deg);
+}
+
+.fileExtensionLabel {
+  font-weight: var(--weightMedium);
+}
+
+/* Modified indicator adjustments */
+.modifiedIndicator {
+  margin-left: 0.5rem;
+}
+
+/* Extension dropdown specific styling */
+.extensionDropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  margin-top: 0.25rem;
+  background: var(--canvasDefault);
+  border: 1px solid var(--borderDefault);
+  border-radius: var(--radiusMd);
+  box-shadow: var(--shadowLg);
+  z-index: 1000;
+  min-width: 180px;
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+/* Language dropdown items */
+#languageList {
+  padding: 0.25rem;
+}
+
+#languageList .dropdownItem {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  width: 100%;
+  padding: 0.5rem 0.75rem;
+  background: transparent;
+  border: none;
+  border-radius: var(--radiusSm);
+  color: var(--fgDefault);
+  font-size: var(--textSm);
+  text-align: left;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+#languageList .dropdownItem:hover {
+  background: var(--canvasSubtle);
+}
+
+#languageList .dropdownItem[data-value="javascript"]::before {
+  content: "JS";
+  background: var(--iconJs);
+  color: #000;
+  padding: 0.125rem 0.375rem;
+  border-radius: 0.1875rem;
+  font-size: 0.625rem;
+  font-weight: var(--weightBold);
+}
+
+#languageList .dropdownItem[data-value="typescript"]::before {
+  content: "TS";
+  background: var(--iconTs);
+  color: white;
+  padding: 0.125rem 0.375rem;
+  border-radius: 0.1875rem;
+  font-size: 0.625rem;
+  font-weight: var(--weightBold);
+}
+
+#languageList .dropdownItem[data-value="html"]::before {
+  content: "HTML";
+  background: var(--iconHtml);
+  color: white;
+  padding: 0.125rem 0.375rem;
+  border-radius: 0.1875rem;
+  font-size: 0.625rem;
+  font-weight: var(--weightBold);
+}
+
+#languageList .dropdownItem[data-value="css"]::before {
+  content: "CSS";
+  background: var(--iconCss);
+  color: white;
+  padding: 0.125rem 0.375rem;
+  border-radius: 0.1875rem;
+  font-size: 0.625rem;
+  font-weight: var(--weightBold);
+}
+
+/* ... add more language icons as needed ... */
+
+/* Responsive adjustments */
+@media (max-width: 48rem) {
+  .fileNameInputWrapper {
+    min-width: 150px;
+  }
+  
+  .fileNameInput {
+    max-width: 80px;
+  }
+  
+  .fileExtensionBtn {
+    padding: 0.25rem;
+  }
+  
+  .fileExtensionLabel {
+    font-size: var(--textXs);
+  }
 }
 
 /* Action Buttons */
