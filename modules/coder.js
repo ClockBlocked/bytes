@@ -604,29 +604,6 @@ bindElementEvents = function() {
   });
 }.bind(this);
 
-// Add these methods to your CodeViewEditor class:
-
-injectLanguageDropdown = function() {
-  const existing = document.getElementById('languageDropdown');
-  if (existing) existing.remove();
-  
-  document.body.insertAdjacentHTML('beforeend', AppAssets.templates.languageDropdown());
-  this.elements.languageDropdown = document.getElementById('languageDropdown');
-  this.populateLanguageDropdown();
-}.bind(this);
-
-injectMoreOptionsDropdown = function() {
-  const existing = document.getElementById('moreOptionsDropdown');
-  if (existing) existing.remove();
-  
-  document.body.insertAdjacentHTML('beforeend', AppAssets.templates.moreOptionsDropdown());
-  this.elements.moreOptionsDropdown = document.getElementById('moreOptionsDropdown');
-  
-  this.bindEvent(this.elements.moreOptionsDropdown.querySelector('#formatBtn'), 'click', () => this.formatCode());
-  this.bindEvent(this.elements.moreOptionsDropdown.querySelector('#foldAllBtn'), 'click', () => this.foldAll());
-  this.bindEvent(this.elements.moreOptionsDropdown.querySelector('#unfoldAllBtn'), 'click', () => this.unfoldAll());
-  this.bindEvent(this.elements.moreOptionsDropdown.querySelector('#showInvisiblesBtn'), 'click', () => this.toggleInvisibles());
-}.bind(this);
 
 showLanguageDropdown = function(e) {
   if (!this.elements.languageDropdown) {
@@ -636,10 +613,10 @@ showLanguageDropdown = function(e) {
   const dropdown = this.elements.languageDropdown;
   if (!dropdown) return;
   
-  const isHidden = dropdown.style.display === 'none' || dropdown.classList.contains('hide');
-  dropdown.style.display = isHidden ? 'block' : 'none';
+  const isHidden = dropdown.classList.contains('hide');
+  dropdown.classList.toggle('hide', !isHidden);
   
-  if (isHidden) {
+  if (!isHidden) {
     let button;
     
     if (e && e.currentTarget) {
@@ -666,7 +643,7 @@ showLanguageDropdown = function(e) {
       dropdown.style.position = 'fixed';
       dropdown.style.top = `${top}px`;
       dropdown.style.left = `${left}px`;
-      dropdown.style.zIndex = '9999';
+      dropdown.style.zIndex = '10000';
     }
   }
 }.bind(this);
@@ -679,10 +656,10 @@ showMoreOptionsDropdown = function(e) {
   const dropdown = this.elements.moreOptionsDropdown;
   if (!dropdown) return;
   
-  const isHidden = dropdown.style.display === 'none' || dropdown.classList.contains('hide');
-  dropdown.style.display = isHidden ? 'block' : 'none';
+  const isHidden = dropdown.classList.contains('hide');
+  dropdown.classList.toggle('hide', !isHidden);
   
-  if (isHidden) {
+  if (!isHidden) {
     let button;
     
     if (e && e.currentTarget) {
@@ -709,22 +686,68 @@ showMoreOptionsDropdown = function(e) {
       dropdown.style.position = 'fixed';
       dropdown.style.top = `${top}px`;
       dropdown.style.left = `${left}px`;
-      dropdown.style.zIndex = '9999';
+      dropdown.style.zIndex = '10000';
     }
   }
 }.bind(this);
 
 hideLanguageDropdown = function() {
   if (this.elements.languageDropdown) {
-    this.elements.languageDropdown.style.display = 'none';
+    this.elements.languageDropdown.classList.add('hide');
   }
 }.bind(this);
 
 hideMoreOptionsDropdown = function() {
   if (this.elements.moreOptionsDropdown) {
-    this.elements.moreOptionsDropdown.style.display = 'none';
+    this.elements.moreOptionsDropdown.classList.add('hide');
   }
 }.bind(this);
+
+// ALSO UPDATE THESE METHODS FOR PROPER DROPDOWN HANDLING:
+
+injectLanguageDropdown = function() {
+  const existing = document.getElementById('languageDropdown');
+  if (existing) existing.remove();
+  
+  document.body.insertAdjacentHTML('beforeend', AppAssets.templates.languageDropdown());
+  this.elements.languageDropdown = document.getElementById('languageDropdown');
+  this.populateLanguageDropdown();
+  
+  // Add the 'hide' class initially
+  if (this.elements.languageDropdown) {
+    this.elements.languageDropdown.classList.add('hide');
+  }
+}.bind(this);
+
+injectMoreOptionsDropdown = function() {
+  const existing = document.getElementById('moreOptionsDropdown');
+  if (existing) existing.remove();
+  
+  document.body.insertAdjacentHTML('beforeend', AppAssets.templates.moreOptionsDropdown());
+  this.elements.moreOptionsDropdown = document.getElementById('moreOptionsDropdown');
+  
+  // Add the 'hide' class initially
+  if (this.elements.moreOptionsDropdown) {
+    this.elements.moreOptionsDropdown.classList.add('hide');
+  }
+  
+  this.bindEvent(this.elements.moreOptionsDropdown.querySelector('#formatBtn'), 'click', () => this.formatCode());
+  this.bindEvent(this.elements.moreOptionsDropdown.querySelector('#foldAllBtn'), 'click', () => this.foldAll());
+  this.bindEvent(this.elements.moreOptionsDropdown.querySelector('#unfoldAllBtn'), 'click', () => this.unfoldAll());
+  this.bindEvent(this.elements.moreOptionsDropdown.querySelector('#showInvisiblesBtn'), 'click', () => this.toggleInvisibles());
+}.bind(this);
+
+
+
+
+
+
+
+
+
+
+
+
 
   setupNewFileButton = function() {
     const newFileButton = document.querySelector('[data-action="new-file"], #newFileButton');
