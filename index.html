@@ -379,8 +379,9 @@ i want THIS to stick to the bottom of ".coderHeaderWrapper"
 .breadCrumbsWrapper {
   position: sticky;
   top: var(--navbar-height); /* Stick below navbar */
-  z-index: 990;
-  height: var(--breadcrumb-height);
+  z-index: 90;
+  max-height: var(--breadcrumb-height);
+  min-height: 0;
   background-color: var(--canvasOverlay);
   border-bottom: 1px solid var(--borderDefault);
   backdrop-filter: blur(8px) saturate(180%);
