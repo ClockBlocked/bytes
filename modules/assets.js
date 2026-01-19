@@ -336,15 +336,6 @@ icons: {
 templates: {
   editor: () => `
 
-  <!-- B R E A D C R U M B S -->
-  <div class="breadCrumbsWrapper" id="breadCrumbsWrapper">
-    <div class="breadCrumbsContainer" id="breadCrumbsContainer">
-      <nav class="breadcrumbNav" id="pathBreadcrumb">
-        <div class="breadcrumbEmpty"></div>
-      </nav>
-    </div>
-  </div>
-
 
 
 
