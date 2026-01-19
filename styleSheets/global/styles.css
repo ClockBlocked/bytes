@@ -845,11 +845,16 @@ button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-
 .file-type-xml { color: var(--fileTypeXml); }
 .file-type-sql { color: var(--fileTypeSql); }
 
-/* File name input with icon inside */
+.fileInfoGroup {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  position: relative;
+}
+
 .fileNameContainer {
   display: flex;
   align-items: center;
-  position: relative;
 }
 
 .fileNameInputWrapper {
@@ -858,8 +863,9 @@ button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-
   background-color: var(--canvasSubtle);
   border: 1px solid var(--borderDefault);
   border-radius: var(--radiusMd);
-  padding: 0.25rem 0.5rem;
+  padding: 0.25rem 0.75rem;
   min-width: 200px;
+  height: 32px;
   transition: all 0.2s ease;
 }
 
@@ -873,7 +879,6 @@ button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-
   box-shadow: 0 0 0 1px var(--accentSubtle);
 }
 
-/* File icon inside input */
 .fileIconInsideInput {
   flex-shrink: 0;
   color: var(--fgMuted);
@@ -882,7 +887,6 @@ button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-
   height: 16px;
 }
 
-/* Input field with right-aligned text */
 .fileNameInput {
   flex: 1;
   background: transparent;
@@ -890,7 +894,7 @@ button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-
   color: var(--fgDefault);
   font-family: var(--fontText);
   font-size: var(--textSm);
-  padding: 0.25rem 0;
+  padding: 0;
   outline: none;
   text-align: right !important;
   min-width: 0;
@@ -902,22 +906,23 @@ button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-
   text-align: right;
 }
 
-/* Extension button with dropdown */
 .fileExtensionBtn {
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 0.25rem;
   background: var(--canvasDefault);
   border: 1px solid var(--borderSubtle);
-  border-radius: var(--radiusSm);
+  border-radius: var(--radiusMd);
   color: var(--accentFg);
   font-family: var(--fontMono);
   font-size: var(--textSm);
-  padding: 0.25rem 0.5rem;
-  margin-left: 0.5rem;
+  padding: 0.25rem 0.75rem;
+  height: 32px;
   cursor: pointer;
   transition: all 0.2s ease;
   flex-shrink: 0;
+  white-space: nowrap;
 }
 
 .fileExtensionBtn:hover {
@@ -937,16 +942,15 @@ button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-
   font-weight: var(--weightMedium);
 }
 
-/* Modified indicator adjustments */
 .modifiedIndicator {
-  margin-left: 0.5rem;
+  flex-shrink: 0;
 }
 
-/* Extension dropdown specific styling */
 .extensionDropdown {
   position: absolute;
   top: 100%;
-  left: 0;
+  left: auto;
+  right: 0;
   margin-top: 0.25rem;
   background: var(--canvasDefault);
   border: 1px solid var(--borderDefault);
