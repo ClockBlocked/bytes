@@ -507,112 +507,114 @@ class CodeViewEditor {
     this.populateLanguageDropdown();
   }.bind(this);
   
-  bindElementEvents = function() {
-    this.bindEvent(this.elements.editModeBtn, "click", () => this.enterEditMode());
-    this.bindEvent(this.elements.viewModeBtn, "click", () => this.exitEditMode());
-    this.bindEvent(this.elements.undoBtn, "click", () => this.undo());
-    this.bindEvent(this.elements.redoBtn, "click", () => this.redo());
-    this.bindEvent(this.elements.formatBtn, "click", () => this.formatCode());
-    this.bindEvent(this.elements.foldAllBtn, "click", () => this.foldAll());
-    this.bindEvent(this.elements.unfoldAllBtn, "click", () => this.unfoldAll());
-    this.bindEvent(this.elements.searchBtn, "click", () => this.openSearch());
-    this.bindEvent(this.elements.wrapBtn, "click", () => this.toggleWrapLines());
-    this.bindEvent(this.elements.copyBtn, "click", () => this.copyCode());
-    this.bindEvent(this.elements.downloadBtn, "click", () => this.downloadFile());
-    this.bindEvent(this.elements.uploadBtn, "click", () => this.elements.fileUploadInput?.click());
-    this.bindEvent(this.elements.themeBtn, "click", () => this.toggleTheme());
-    this.bindEvent(this.elements.showInvisiblesBtn, "click", () => this.toggleInvisibles());
-    this.bindEvent(this.elements.fontDecreaseBtn, "click", () => this.adjustFontSize(-2));
-    this.bindEvent(this.elements.fontIncreaseBtn, "click", () => this.adjustFontSize(2));
-    this.bindEvent(this.elements.fullscreenBtn, "click", () => this.toggleFullscreen());
-    this.bindEvent(this.elements.fileUploadInput, "change", (e) => this.handleFileUpload(e));
-    this.bindEvent(this.elements.searchPrevBtn, "click", () => this.findPrevious());
-    this.bindEvent(this.elements.searchNextBtn, "click", () => this.findNext());
-    this.bindEvent(this.elements.closeSearchBtn, "click", () => this.closeSearch());
-    this.bindEvent(this.elements.headerScrollLeft, "click", () => this.scrollHeader('left'));
-    this.bindEvent(this.elements.headerScrollRight, "click", () => this.scrollHeader('right'));
-    this.bindEvent(this.elements.headerScrollContainer, "scroll", () => this.updateHeaderScrollButtons());
+bindElementEvents = function() {
+  this.bindEvent(this.elements.editModeBtn, "click", () => this.enterEditMode());
+  this.bindEvent(this.elements.viewModeBtn, "click", () => this.exitEditMode());
+  this.bindEvent(this.elements.undoBtn, "click", () => this.undo());
+  this.bindEvent(this.elements.redoBtn, "click", () => this.redo());
+  this.bindEvent(this.elements.formatBtn, "click", () => this.formatCode());
+  this.bindEvent(this.elements.foldAllBtn, "click", () => this.foldAll());
+  this.bindEvent(this.elements.unfoldAllBtn, "click", () => this.unfoldAll());
+  this.bindEvent(this.elements.searchBtn, "click", () => this.openSearch());
+  this.bindEvent(this.elements.wrapBtn, "click", () => this.toggleWrapLines());
+  this.bindEvent(this.elements.copyBtn, "click", () => this.copyCode());
+  this.bindEvent(this.elements.downloadBtn, "click", () => this.downloadFile());
+  this.bindEvent(this.elements.uploadBtn, "click", () => this.elements.fileUploadInput?.click());
+  this.bindEvent(this.elements.themeBtn, "click", () => this.toggleTheme());
+  this.bindEvent(this.elements.showInvisiblesBtn, "click", () => this.toggleInvisibles());
+  this.bindEvent(this.elements.fontDecreaseBtn, "click", () => this.adjustFontSize(-2));
+  this.bindEvent(this.elements.fontIncreaseBtn, "click", () => this.adjustFontSize(2));
+  this.bindEvent(this.elements.fullscreenBtn, "click", () => this.toggleFullscreen());
+  this.bindEvent(this.elements.fileUploadInput, "change", (e) => this.handleFileUpload(e));
+  this.bindEvent(this.elements.searchPrevBtn, "click", () => this.findPrevious());
+  this.bindEvent(this.elements.searchNextBtn, "click", () => this.findNext());
+  this.bindEvent(this.elements.closeSearchBtn, "click", () => this.closeSearch());
+  this.bindEvent(this.elements.headerScrollLeft, "click", () => this.scrollHeader('left'));
+  this.bindEvent(this.elements.headerScrollRight, "click", () => this.scrollHeader('right'));
+  this.bindEvent(this.elements.headerScrollContainer, "scroll", () => this.updateHeaderScrollButtons());
+  
+  if (this.elements.newFileWithRepo) {
+    this.bindEvent(this.elements.newFileWithRepo, "click", () => this.handleNewFileWithRepo());
+  }
+  
+  if (this.elements.newFileWithoutRepo) {
+    this.bindEvent(this.elements.newFileWithoutRepo, "click", () => this.handleNewFileWithoutRepo());
+  }
+  
+  this.bindEvent(this.elements.fileExtensionBtn, "click", (e) => {
+    e.stopPropagation();
+    this.elements.languageDropdown?.classList.toggle("hide");
+    if (!this.elements.languageDropdown.classList.contains("hide")) {
+      const rect = this.elements.fileExtensionBtn.getBoundingClientRect();
+      this.elements.languageDropdown.style.top = `${rect.bottom + 5}px`;
+      this.elements.languageDropdown.style.left = `${rect.left}px`;
+    }
+  });
+  
+  this.bindEvent(this.elements.moreOptionsBtn, "click", (e) => {
+    e.stopPropagation();
+    const dropdown = this.elements.moreOptionsDropdown;
+    if (!dropdown) return;
+    if (dropdown.classList.contains("hide")) {
+      const btnRect = e.currentTarget.getBoundingClientRect();
+      dropdown.style.top = `${btnRect.bottom + window.scrollY}px`;
+      dropdown.style.left = `${btnRect.left + window.scrollX}px`;
+    }
+    dropdown.classList.toggle("hide");
+  });
+  
+  this.bindEvent(this.elements.editSaveButton, "click", (e) => {
+    e.stopPropagation();
+    if (!this.isEditing) {
+      this.enterEditMode();
+    } else {
+      this.showCommitPopup(e);
+    }
+  });
+  
+  this.bindEvent(this.elements.commitCancelBtn, "click", () => this.hideCommitPopup());
+  this.bindEvent(this.elements.commitSaveBtn, "click", () => this.saveChanges(true));
+  
+  this.bindEvent(this.elements.searchInput, "input", () => this.performSearch(this.elements.searchInput.value));
+  this.bindEvent(this.elements.searchInput, "keydown", (e) => {
+    if (e.key === "Escape") this.closeSearch();
+    else if (e.key === "Enter" && e.shiftKey) this.findPrevious();
+    else if (e.key === "Enter") this.findNext();
+  });
+  
+  this.bindEvent(this.elements.commitMessage, "keydown", (e) => {
+    if (e.key === "Enter" && (e.ctrlKey || e.metaKey)) {
+      e.preventDefault();
+      this.saveChanges(true);
+    }
+  });
+  
+  document.addEventListener("click", (e) => {
+    const newFileButton = document.querySelector('[data-action="new-file"], #newFileButton');
+    const dropdown = this.elements.newFileDropdown;
     
-    if (this.elements.newFileWithRepo) {
-      this.bindEvent(this.elements.newFileWithRepo, "click", () => this.handleNewFileWithRepo());
+    if (dropdown && !dropdown.contains(e.target) && newFileButton && !newFileButton.contains(e.target)) {
+      dropdown.classList.add("hide");
     }
     
-    if (this.elements.newFileWithoutRepo) {
-      this.bindEvent(this.elements.newFileWithoutRepo, "click", () => this.handleNewFileWithoutRepo());
+    if (this.elements.commitDropdown && !this.elements.commitDropdown.contains(e.target) && !this.elements.editSaveButton.contains(e.target)) {
+      this.hideCommitPopup();
     }
     
-    this.bindEvent(this.elements.fileExtensionBtn, "click", (e) => {
-      e.stopPropagation();
-      this.elements.languageDropdown?.classList.toggle("hide");
-      
-      if (!this.elements.languageDropdown.classList.contains("hide")) {
-         const rect = this.elements.fileExtensionBtn.getBoundingClientRect();
-         this.elements.languageDropdown.style.top = `${rect.bottom + 5}px`;
-         this.elements.languageDropdown.style.left = `${rect.left}px`;
-      }
-    });
+    if (this.elements.languageDropdown && !this.elements.languageDropdown.contains(e.target) && !this.elements.fileExtensionBtn.contains(e.target)) {
+      this.elements.languageDropdown.classList.add("hide");
+    }
     
-    this.bindEvent(this.elements.moreOptionsBtn, "click", (e) => {
-      e.stopPropagation();
-      const dropdown = this.elements.moreOptionsDropdown;
-      if (!dropdown) return;
-      
-      if (dropdown.classList.contains("hide")) {
-        const btnRect = e.currentTarget.getBoundingClientRect();
-        dropdown.style.top = `${btnRect.bottom + window.scrollY}px`;
-        dropdown.style.left = `${btnRect.left + window.scrollX}px`;
-      }
-      dropdown.classList.toggle("hide");
-    });
-    
-    this.bindEvent(this.elements.editSaveButton, "click", (e) => {
-      e.stopPropagation();
-      if (!this.isEditing) {
-        this.enterEditMode();
-      } else {
-        this.showCommitPopup(e);
-      }
-    });
-    
-    this.bindEvent(this.elements.commitCancelBtn, "click", () => this.hideCommitPopup());
-    this.bindEvent(this.elements.commitSaveBtn, "click", () => this.saveChanges(true));
-    
-    this.bindEvent(this.elements.searchInput, "input", () => this.performSearch(this.elements.searchInput.value));
-    this.bindEvent(this.elements.searchInput, "keydown", (e) => {
-      if (e.key === "Escape") this.closeSearch();
-      else if (e.key === "Enter" && e.shiftKey) this.findPrevious();
-      else if (e.key === "Enter") this.findNext();
-    });
-    
-    this.bindEvent(this.elements.commitMessage, "keydown", (e) => {
-      if (e.key === "Enter" && (e.ctrlKey || e.metaKey)) {
-        e.preventDefault();
-        this.saveChanges(true);
-      }
-    });
-    
-    document.addEventListener("click", (e) => {
-      const newFileButton = document.querySelector('[data-action="new-file"], #newFileButton');
-      const dropdown = this.elements.newFileDropdown;
-      
-      if (dropdown && !dropdown.contains(e.target) && newFileButton && !newFileButton.contains(e.target)) {
-        dropdown.classList.add("hide");
-      }
-      
-      if (this.elements.commitDropdown && !this.elements.commitDropdown.contains(e.target) && !this.elements.editSaveButton.contains(e.target)) {
-        this.hideCommitPopup();
-      }
-      this.elements.languageDropdown?.classList.add("hide");
-      this.elements.moreOptionsDropdown?.classList.add("hide");
-    });
-    
-    window.addEventListener("resize", () => {
-      if (this.elements.commitDropdown && !this.elements.commitDropdown.classList.contains("hide")) {
-        this.calculateDropdownPosition();
-      }
-      this.updateHeaderScrollButtons();
-    });
-  }.bind(this);
+    this.elements.moreOptionsDropdown?.classList.add("hide");
+  });
+  
+  window.addEventListener("resize", () => {
+    if (this.elements.commitDropdown && !this.elements.commitDropdown.classList.contains("hide")) {
+      this.calculateDropdownPosition();
+    }
+    this.updateHeaderScrollButtons();
+  });
+}.bind(this);
   
   setupNewFileButton = function() {
     const newFileButton = document.querySelector('[data-action="new-file"], #newFileButton');
