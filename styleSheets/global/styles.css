@@ -1899,7 +1899,7 @@ aside:hover .sidebar-title {
   border: 0.0625rem solid var(--neutralSubtle);
   border-radius: var(--radiusMd);
   box-shadow: 0 0.625rem 0.9375rem -0.1875rem rgba(0, 0, 0, 0.3);
-  z-index: 1000;
+  z-index: 100000;
   min-width: 10rem;
   max-height: 20rem;
   overflow-y: auto;
@@ -2878,54 +2878,6 @@ aside:hover .sidebar-title {
 
 
 
-/* File Info Group */
-.fileInfoGroup {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  min-width: 200px;
-}
-.fileNameInput {
-  background: transparent;
-  border: 1px solid transparent;
-  color: var(--fgDefault);
-  font-family: var(--fontMono);
-  font-size: 0.875rem;
-  padding: 0.25rem 0.5rem;
-  border-radius: 0.375rem;
-  min-width: 100px;
-  max-width: 300px;
-  transition: all 0.2s ease;
-}
-.fileNameInput:hover {
-  background: var(--canvasSubtle);
-}
-.fileNameInput:focus {
-  outline: none;
-  border-color: var(--accentFg);
-  background: var(--canvasDefault);
-}
-.fileExtensionGroup {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-}
-.fileExtensionBtn {
-  background: var(--canvasDefault);
-  border: 1px dashed var(--borderSubtle);
-  border-radius: 12px;
-  color: var(--fgMuted);
-  font-family: var(--fontMono);
-  font-size: 0.75rem;
-  padding: 0.2rem 0.5rem;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-.fileExtensionBtn:hover {
-  background: var(--accentSubtle);
-  border-color: var(--accentFg);
-  color: var(--accentFg);
-}
 .modifiedIndicator {
   display: flex;
   align-items: center;
