@@ -378,10 +378,6 @@ templates: {
     <span id="modifiedIndicator" class="modifiedIndicator hide" title="Modified">
       <span class="modifiedDot"></span>
     </span>
-    
-    <div id="languageDropdown" class="dropdown extensionDropdown hide">
-      <div class="dropdownContent" id="languageList"></div>
-    </div>
   </div>
 
   <div class="toolbarSeparator"></div>
@@ -648,6 +644,45 @@ templates: {
       Without Repository
     </button>
   </div>
-</div>`
+</div>`,
+
+// Add to AppAssets.templates object:
+languageDropdown: () => `
+  <div id="languageDropdown" class="dropdown" style="display: none;">
+    <div class="dropdownContent" id="languageList"></div>
+  </div>
+`,
+
+moreOptionsDropdown: () => `
+  <div id="moreOptionsDropdown" class="dropdown" style="display: none;">
+    <div class="dropdownContent">
+      <button class="dropdownItem" id="formatBtn">
+        <svg class="dropdownIcon" viewBox="0 0 16 16" width="16" height="16">
+          <path d="M3.72 3.72a.75.75 0 0 1 1.06 0L8 6.94l3.22-3.22a.749.749 0 0 1 1.275.326.749.749 0 0 1-.215.734L9.06 8l3.22 3.22a.749.749 0 0 1-.326 1.275.749.749 0 0 1-.734-.215L8 9.06l-3.22 3.22a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042L6.94 8 3.72 4.72a.75.75 0 0 1 0-1.06Z"></path>
+        </svg>
+        Format Code
+      </button>
+      <button class="dropdownItem" id="foldAllBtn">
+        <svg class="dropdownIcon" viewBox="0 0 16 16" width="16" height="16">
+          <path d="M10.68 11.74a6 6 0 0 1-1.36 1.46v-1.22c.37-.23.7-.48 1-.76H7.14a.75.75 0 1 1 0-1.5h4.5a.75.75 0 0 1 .75.75c0 .7-.21 1.46-.71 2.06Zm-4.26-4.48h3.14a.75.75 0 0 0 0-1.5H6.42a.75.75 0 0 0 0 1.5ZM4.03 6.08a.75.75 0 0 0 .75.75h.58a6 6 0 0 0-.33 1.25H4.78a.75.75 0 0 0 0 1.5h.28c.1.51.26 1 .48 1.45a.75.75 0 0 0 1.38-.6 4 4 0 0 1-.36-1.35h1.39a.75.75 0 0 0 0-1.5H6.57a4.5 4.5 0 0 1 0-1.5h1.9a.75.75 0 1 0 0-1.5H4.78a.75.75 0 0 0-.75.75Z"></path>
+        </svg>
+        Fold All
+      </button>
+      <button class="dropdownItem" id="unfoldAllBtn">
+        <svg class="dropdownIcon" viewBox="0 0 16 16" width="16" height="16">
+          <path d="M8.177 14.323 2.343 8.484a1 1 0 0 1 0-1.415L8.177 1.197a1 1 0 0 1 1.414 0l5.834 5.835a1 1 0 0 1 0 1.414l-5.834 5.877a1 1 0 0 1-1.414 0Z"></path>
+        </svg>
+        Unfold All
+      </button>
+      <div class="dropdownDivider"></div>
+      <button class="dropdownItem" id="showInvisiblesBtn">
+        <svg class="dropdownIcon" viewBox="0 0 16 16" width="16" height="16">
+          <path d="M1.22 8.72a.75.75 0 0 0 0 1.06l4.25 4.25a.75.75 0 0 0 1.06 0l1.97-1.97v-1.13L9 9.53l1.47 1.47a.75.75 0 0 0 1.06 0l4.25-4.25a.75.75 0 0 0 0-1.06L11.53 4.78a.75.75 0 0 0-1.06 0L9 6.22l1.5 1.5h-1.19L8.03 6.22 6.22 8.03v1.19L4.78 9.03l-1.5-1.5 1.5-1.5.01-.01-1.56-1.56a.75.75 0 0 0-1.06 0L1.22 8.72Zm6.25-3.19 1.5 1.5h1.19l1.5-1.5-1.5-1.5h-1.19l-1.5 1.5Z"></path>
+        </svg>
+        Show Invisibles
+      </button>
+    </div>
+  </div>
+`
   }
 };
