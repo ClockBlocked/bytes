@@ -1315,87 +1315,168 @@ i want THIS to stick to the bottom of ".coderHeaderWrapper"
 
 
 <script>
-// Sticky header manager
+// Sticky Header Manager - Enhanced version
 class StickyHeaderManager {
   constructor() {
     this.navbar = document.querySelector('.navbar');
     this.breadcrumbs = document.querySelector('.breadCrumbsWrapper');
     this.coderHeader = document.querySelector('.coderHeaderWrapper');
+    this.toolbar = document.querySelector('.coderToolBarWrapper');
     this.mainArea = document.getElementById('mainArea');
+    this.filePage = document.querySelector('[data-page="file"]');
+    
     this.lastScrollTop = 0;
-    this.navbarHeight = 40;
-    this.coderHeaderOffset = 0;
+    this.isCoderHeaderVisible = false;
+    this.threshold = 50; // Scroll threshold for showing coder header
     
     this.init();
   }
 
   init() {
-    if (!this.coderHeader) return;
+    if (!this.coderHeader || !this.breadcrumbs) return;
     
-    // Calculate the offset where coder header will push breadcrumbs
-    this.calculateOffsets();
+    // Initial setup
+    this.calculatePositions();
     
-    // Add scroll listener
-    this.mainArea.addEventListener('scroll', this.handleScroll.bind(this));
+    // Set initial state
+    this.setInitialState();
+    
+    // Add scroll listener to main area
+    if (this.mainArea) {
+      this.mainArea.addEventListener('scroll', this.handleScroll.bind(this));
+    } else {
+      window.addEventListener('scroll', this.handleScroll.bind(this));
+    }
     
     // Recalculate on resize
-    window.addEventListener('resize', () => {
-      this.calculateOffsets();
-    });
+    window.addEventListener('resize', this.calculatePositions.bind(this));
+    
+    // Reinitialize when switching to file view
+    this.setupPageObserver();
   }
 
-  calculateOffsets() {
-    // Get position of coder header relative to viewport
-    if (this.coderHeader) {
-      const rect = this.coderHeader.getBoundingClientRect();
-      this.coderHeaderOffset = rect.top - this.navbarHeight;
+  setInitialState() {
+    // Initially, breadcrumbs are visible, coder header is hidden
+    this.breadcrumbs.classList.remove('hidden');
+    this.isCoderHeaderVisible = false;
+  }
+
+  calculatePositions() {
+    // Get the position where coder header should appear
+    if (this.filePage) {
+      const filePageRect = this.filePage.getBoundingClientRect();
+      this.coderHeaderStart = filePageRect.top + window.scrollY;
     }
   }
 
   handleScroll() {
-    const scrollTop = this.mainArea.scrollTop;
+    const scrollTop = this.mainArea ? this.mainArea.scrollTop : window.scrollY;
     const scrollDirection = scrollTop > this.lastScrollTop ? 'down' : 'up';
     
-    if (this.breadcrumbs && this.coderHeader) {
-      // Get current position of coder header
-      const coderRect = this.coderHeader.getBoundingClientRect();
-      const coderTop = coderRect.top;
-      
-      // If coder header is at or above breadcrumb position, hide breadcrumbs
-      if (coderTop <= this.navbarHeight + 10) { // +10 for some threshold
-        this.breadcrumbs.classList.add('hidden');
-      } else {
-        this.breadcrumbs.classList.remove('hidden');
-      }
+    // Check if we're in the file page
+    const isInFilePage = this.filePage && 
+      scrollTop >= this.coderHeaderStart - this.threshold;
+    
+    if (isInFilePage && !this.isCoderHeaderVisible) {
+      // Show coder header and hide breadcrumbs
+      this.showCoderHeader();
+    } else if (!isInFilePage && this.isCoderHeaderVisible) {
+      // Hide coder header and show breadcrumbs
+      this.hideCoderHeader();
+    }
+    
+    // Optional: Hide coder header on scroll up when at top
+    if (scrollDirection === 'up' && scrollTop <= this.threshold) {
+      this.hideCoderHeader();
     }
     
     this.lastScrollTop = scrollTop;
+  }
+
+  showCoderHeader() {
+    this.isCoderHeaderVisible = true;
+    
+    // Add slight delay for smooth transition
+    setTimeout(() => {
+      this.breadcrumbs.classList.add('hidden');
+      
+      // Force reflow for smooth animation
+      this.breadcrumbs.offsetHeight;
+      
+      // Update positions
+      if (this.coderHeader) {
+        this.coderHeader.style.top = `${this.navbar.offsetHeight}px`;
+      }
+      if (this.toolbar) {
+        this.toolbar.style.top = `${this.navbar.offsetHeight + this.coderHeader.offsetHeight}px`;
+      }
+    }, 10);
+  }
+
+  hideCoderHeader() {
+    this.isCoderHeaderVisible = false;
+    
+    // Add slight delay for smooth transition
+    setTimeout(() => {
+      this.breadcrumbs.classList.remove('hidden');
+      
+      // Force reflow for smooth animation
+      this.breadcrumbs.offsetHeight;
+      
+      // Update positions
+      if (this.coderHeader) {
+        this.coderHeader.style.top = `${this.navbar.offsetHeight + this.breadcrumbs.offsetHeight}px`;
+      }
+      if (this.toolbar) {
+        this.toolbar.style.top = `${this.navbar.offsetHeight + this.breadcrumbs.offsetHeight + this.coderHeader.offsetHeight}px`;
+      }
+    }, 10);
+  }
+
+  setupPageObserver() {
+    const observer = new MutationObserver((mutations) => {
+      mutations.forEach((mutation) => {
+        if (mutation.type === 'childList') {
+          mutation.addedNodes.forEach((node) => {
+            if (node.nodeType === 1 && node.matches && node.matches('[data-page="file"]')) {
+              setTimeout(() => {
+                this.calculatePositions();
+                this.setInitialState();
+              }, 100);
+            }
+          });
+        }
+      });
+    });
+    
+    const pagesContainer = document.getElementById('mainArea') || document.body;
+    observer.observe(pagesContainer, { childList: true, subtree: true });
+  }
+
+  // Public method to manually trigger header visibility
+  toggleCoderHeader(show) {
+    if (show) {
+      this.showCoderHeader();
+    } else {
+      this.hideCoderHeader();
+    }
   }
 }
 
 // Initialize when DOM is loaded
 document.addEventListener('DOMContentLoaded', () => {
-  // Initialize sticky headers
+  // Initialize sticky header manager
   window.stickyHeaderManager = new StickyHeaderManager();
   
-  // Reinitialize when switching to file view
-  const observer = new MutationObserver(() => {
-    if (document.querySelector('[data-page="file"]').classList.contains('show')) {
-      setTimeout(() => {
-        if (window.stickyHeaderManager) {
-          window.stickyHeaderManager.calculateOffsets();
-        } else {
-          window.stickyHeaderManager = new StickyHeaderManager();
-        }
-      }, 100);
-    }
+  // Also initialize when switching pages via SPA navigation
+  document.addEventListener('spa:navigate', () => {
+    setTimeout(() => {
+      if (window.stickyHeaderManager) {
+        window.stickyHeaderManager.calculatePositions();
+        window.stickyHeaderManager.setInitialState();
+      }
+    }, 200);
   });
-  
-  // Observe the pages container
-  const pagesContainer = document.getElementById('mainArea');
-  if (pagesContainer) {
-    observer.observe(pagesContainer, { childList: true, subtree: true });
-  }
 });
 </script>
 
