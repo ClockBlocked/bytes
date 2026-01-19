@@ -628,6 +628,55 @@ i want THIS to stick to the bottom of ".coderHeaderWrapper"
     display: none;
   }
 }
+
+/* Smooth transitions for all sticky elements */
+.navbar,
+.breadCrumbsWrapper,
+.coderHeaderWrapper,
+.coderToolBarWrapper {
+  transition-property: transform, opacity, top, height;
+  transition-duration: 0.3s;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Ensure content doesn't jump */
+.pages[data-page="file"] {
+  padding-top: var(--coder-header-height);
+  transition: padding-top 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* When coder header is visible, adjust padding */
+.coderHeaderWrapper:not(.hidden) ~ .editorContainer {
+  padding-top: var(--coder-header-height);
+}
+
+/* Breadcrumb fade out effect */
+.breadCrumbsWrapper {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.breadCrumbsWrapper.hidden {
+  opacity: 0;
+  transform: translateY(-10px);
+  pointer-events: none;
+}
+
+/* Coder header slide in effect */
+.coderHeaderWrapper {
+  transform: translateY(0);
+}
+
+/* Optional: Add shadow for depth */
+.navbar,
+.coderHeaderWrapper,
+.coderToolBarWrapper {
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.breadCrumbsWrapper {
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
 </style>
 
 </head>
