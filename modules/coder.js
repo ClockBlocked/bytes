@@ -541,16 +541,19 @@ bindElementEvents = function() {
     this.bindEvent(this.elements.newFileWithoutRepo, "click", () => this.handleNewFileWithoutRepo());
   }
   
-  this.bindEvent(this.elements.fileExtensionBtn, "click", (e) => {
-    e.stopPropagation();
-    this.elements.languageDropdown?.classList.toggle("hide");
-    if (!this.elements.languageDropdown.classList.contains("hide")) {
-      const rect = this.elements.fileExtensionBtn.getBoundingClientRect();
-      this.elements.languageDropdown.style.top = `${rect.bottom + 5}px`;
-      this.elements.languageDropdown.style.left = `${rect.left}px`;
-    }
-  });
+this.bindEvent(this.elements.fileExtensionBtn, "click", (e) => {
+  e.stopPropagation();
+  const dropdown = this.elements.languageDropdown;
+  if (!dropdown) return;
   
+  dropdown.classList.toggle("hide");
+  
+  if (!dropdown.classList.contains("hide")) {
+    const rect = e.currentTarget.getBoundingClientRect();
+    dropdown.style.top = `${rect.bottom + 5}px`;
+    dropdown.style.right = `${window.innerWidth - rect.right}px`;
+  }
+});  
   this.bindEvent(this.elements.moreOptionsBtn, "click", (e) => {
     e.stopPropagation();
     const dropdown = this.elements.moreOptionsDropdown;
