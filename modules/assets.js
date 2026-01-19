@@ -340,13 +340,6 @@ templates: {
 
 
 
-  <!-- C O D E R -->
-    <div class="editorContainer" id="editorContainer">
-      <div class="editorCard">
-
-
-
-
 <!-- H E A D E R -->
 <div class="coderHeaderWrapper" id="stickyHeader">
   <button class="headerScrollBtn left" id="headerScrollLeft" title="Scroll left">
@@ -519,6 +512,12 @@ templates: {
       </div>
     </div>
   </div>
+
+
+
+  <!-- C O D E R -->
+    <div class="editorContainer" id="editorContainer">
+      <div class="editorCard">
 
 
 
