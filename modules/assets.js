@@ -398,20 +398,6 @@ templates: {
 
         <div class="rightSide">
           <div class="actionButtons">
-            <div class="dropdown-trigger">
-              <button id="editSaveButton" class="trigger-button" aria-haspopup="true" aria-expanded="false">
-                <span id="editSaveLabel">Edit</span>
-                <span class="btn-divider">|</span>
-                <span class="more-btn">
-                  <svg class="chevron" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" width="16" height="16">
-                    <path
-                      fill="currentColor"
-                      d="M207.5 103c9.4-9.4 24.6-9.4 33.9 0l200 200c9.4 9.4 9.4 24.6 0 33.9s-24.6 9.4-33.9 0l-183-183-183 183c-9.4 9.4-24.6 9.4-33.9 0s-9.4-24.6 0-33.9l200-200z"
-                    />
-                  </svg>
-                </span>
-              </button>
-            </div>
 
             <div class="toolbarSeparator"></div>
 
