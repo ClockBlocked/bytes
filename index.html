@@ -400,7 +400,7 @@ i want THIS to stick to the bottom of ".coderHeaderWrapper"
 .coderHeaderWrapper {
   position: sticky;
   top: var(--navbar-height); /* Same as breadcrumbs - this will push it */
-  z-index: 995; /* Higher than breadcrumbs but lower than navbar */
+  z-index: 999; /* Higher than breadcrumbs but lower than navbar */
   height: var(--coder-header-height);
   background-color: var(--canvasOverlay);
   border-bottom: 1px solid var(--borderDefault);
@@ -413,7 +413,7 @@ i want THIS to stick to the bottom of ".coderHeaderWrapper"
 .coderToolBarWrapper {
   position: sticky;
   top: calc(var(--navbar-height) + var(--coder-header-height));
-  z-index: 985;
+  z-index: 999;
   background-color: var(--canvasOverlay);
   border-bottom: 1px solid var(--borderDefault);
 }
