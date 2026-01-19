@@ -335,11 +335,6 @@ icons: {
 ///////////////////////////////////////////////////
 templates: {
   editor: () => `
-
-
-
-
-
 <!-- H E A D E R -->
 <div class="coderHeaderWrapper" id="stickyHeader">
   <button class="headerScrollBtn left" id="headerScrollLeft" title="Scroll left">
@@ -353,41 +348,53 @@ templates: {
   <div class="coderHeader" id="coderHeader">
     <div class="headerScrollContainer" id="headerScrollContainer">
       <div class="headerContent">
-        <div class="leftSide">
-          <div class="toolbarItem fileInfoGroup">
-            <svg class="toolbarIcon" viewBox="0 0 16 16" fill="currentColor" width="16" height="16">
-              <path
-                d="M4 1.75C4 .784 4.784 0 5.75 0h5.586c.464 0 .909.184 1.237.513l2.914 2.914c.329.328.513.773.513 1.237v8.586A1.75 1.75 0 0 1 14.25 15h-9a.75.75 0 0 1 0-1.5h9a.25.25 0 0 0 .25-.25V6h-2.75A1.75 1.75 0 0 1 10 4.25V1.5H5.75a.25.25 0 0 0-.25.25v2.5a.75.75 0 0 1-1.5 0v-2.5Zm7.5-.188V4.25c0 .138.112.25.25.25h2.688l-2.938-2.938ZM5.72 6.72a.75.75 0 0 0 0 1.06l1.47 1.47-1.47 1.47a.75.75 0 1 0 1.06 1.06l2-2a.75.75 0 0 0 0-1.06l-2-2a.75.75 0 0 0-1.06 0ZM3.28 7.78a.75.75 0 0 0-1.06-1.06l-2 2a.75.75 0 0 0 0 1.06l2 2a.75.75 0 0 0 1.06-1.06L1.81 9.25l1.47-1.47Z"
-              />
-            </svg>
-            <input type="text" id="fileNameInput" class="fileNameInput" value="untitled" spellcheck="false" />
-            <div class="fileExtensionGroup">
-              <button id="fileExtensionBtn" class="fileExtensionBtn" title="Change file extension">
-                <span id="fileExtensionLabel" class="fileExtensionLabel">.js</span>
-              </button>
-              <span id="modifiedIndicator" class="modifiedIndicator hide" title="Modified">
-                <span class="modifiedDot"></span>
-              </span>
-            </div>
-          </div>
+<div class="leftSide">
+  <div class="toolbarItem fileInfoGroup">
+    <div class="fileNameContainer">
+      <div class="fileNameInputWrapper">
+        <!-- File icon inside input on left -->
+        <svg class="fileIconInsideInput" viewBox="0 0 16 16" fill="currentColor" width="16" height="16">
+          <path
+            d="M4 1.75C4 .784 4.784 0 5.75 0h5.586c.464 0 .909.184 1.237.513l2.914 2.914c.329.328.513.773.513 1.237v8.586A1.75 1.75 0 0 1 14.25 15h-9a.75.75 0 0 1 0-1.5h9a.25.25 0 0 0 .25-.25V6h-2.75A1.75 1.75 0 0 1 10 4.25V1.5H5.75a.25.25 0 0 0-.25.25v2.5a.75.75 0 0 1-1.5 0v-2.5Zm7.5-.188V4.25c0 .138.112.25.25.25h2.688l-2.938-2.938ZM5.72 6.72a.75.75 0 0 0 0 1.06l1.47 1.47-1.47 1.47a.75.75 0 1 0 1.06 1.06l2-2a.75.75 0 0 0 0-1.06l-2-2a.75.75 0 0 0-1.06 0ZM3.28 7.78a.75.75 0 0 0-1.06-1.06l-2 2a.75.75 0 0 0 0 1.06l2 2a.75.75 0 0 0 1.06-1.06L1.81 9.25l1.47-1.47Z"
+          />
+        </svg>
+        
+        <!-- Input field with right-aligned text -->
+        <input 
+          type="text" 
+          id="fileNameInput" 
+          class="fileNameInput" 
+          value="untitled" 
+          spellcheck="false"
+          placeholder="Enter file name"
+          style="text-align: right;"
+        />
+        
+        <!-- Clickable extension with dropdown -->
+        <button id="fileExtensionBtn" class="fileExtensionBtn" title="Change file extension">
+          <span id="fileExtensionLabel" class="fileExtensionLabel">.js</span>
+          <svg class="extensionChevron" viewBox="0 0 16 16" fill="currentColor" width="12" height="12">
+            <path d="M4.427 7.427l3.396 3.396a.25.25 0 0 0 .354 0l3.396-3.396A.25.25 0 0 0 10.896 2H4.604a.25.25 0 0 0-.177.427Z" />
+          </svg>
+        </button>
+      </div>
+    </div>
+    
+    <!-- Modified indicator -->
+    <span id="modifiedIndicator" class="modifiedIndicator hide" title="Modified">
+      <span class="modifiedDot"></span>
+    </span>
+    
+    <!-- Language dropdown (hidden by default) -->
+    <div id="languageDropdown" class="dropdown extensionDropdown hide">
+      <div class="dropdownContent" id="languageList"></div>
+    </div>
+  </div>
 
-          <div class="toolbarSeparator"></div>
+  <div class="toolbarSeparator"></div>
 
-          <div class="toolbarItem languageGroup">
-            
-            <button id="languageBtn" class="toolbarButton languageBtn">
-              ${AppAssets.icons.code("JavaScript")}
-              <svg class="chevronIcon" viewBox="0 0 16 16" fill="currentColor" width="12" height="12">
-                <path
-                  d="M4.427 7.427l3.396 3.396a.25.25 0 0 0 .354 0l3.396-3.396A.25.25 0 0 0 10.896 2H4.604a.25.25 0 0 0-.177.427Z"
-                />
-              </svg>
-            </button>
-            <div id="languageDropdown" class="dropdown hide">
-              <div class="dropdownContent" id="languageList"></div>
-            </div>
-          </div>
-        </div>
+  <!-- You can remove the separate languageGroup if you want to consolidate everything -->
+</div>
 
         <div class="centerSide">
           <div class="modeButtons">
@@ -470,151 +477,137 @@ templates: {
   </div>
 </div>
 
+<!-- T O O L B A R -->
+<div class="coderToolBarWrapper" id="coderToolBarWrapper">
+  <div class="coderToolBar" id="coderToolBar">
+    <div class="toolbarGroup">
+      <button id="undoBtn" class="headerButton" title="Undo (Ctrl+Z)">${AppAssets.icons.undo()}</button>
+      <button id="redoBtn" class="headerButton" title="Redo (Ctrl+Y)">${AppAssets.icons.redo()}</button>
+    </div>
 
+    <div class="separator"></div>
 
+    <div class="toolbarGroup">
+      <button id="searchBtn" class="headerButton" title="Search (Ctrl+F)">
+        ${AppAssets.icons.search()}
+        <span>Search</span>
+      </button>
+    </div>
 
+    <div class="separator"></div>
 
-  
-  
-  <!-- T O O L B A R -->
-  <div class="coderToolBarWrapper" id="coderToolBarWrapper">
-    <div class="coderToolBar" id="coderToolBar">
-      <div class="toolbarGroup">
-        <button id="undoBtn" class="headerButton" title="Undo (Ctrl+Z)">${AppAssets.icons.undo()}</button>
-        <button id="redoBtn" class="headerButton" title="Redo (Ctrl+Y)">${AppAssets.icons.redo()}</button>
-      </div>
+    <div class="toolbarGroup">
+      <button id="copyBtn" class="headerButton" title="Copy Code">${AppAssets.icons.copy()}</button>
+      <button id="downloadBtn" class="headerButton" title="Download File">${AppAssets.icons.download()}</button>
+      <button id="uploadBtn" class="headerButton" title="Upload File">${AppAssets.icons.upload()}</button>
+    </div>
 
-      <div class="separator"></div>
+    <div class="separator"></div>
 
-      <div class="toolbarGroup">
-        <button id="searchBtn" class="headerButton" title="Search (Ctrl+F)">
-          ${AppAssets.icons.search()}
-          <span>Search</span>
-        </button>
-      </div>
-
-      <div class="separator"></div>
-
-      <div class="toolbarGroup">
-        <button id="copyBtn" class="headerButton" title="Copy Code">${AppAssets.icons.copy()}</button>
-        <button id="downloadBtn" class="headerButton" title="Download File">${AppAssets.icons.download()}</button>
-        <button id="uploadBtn" class="headerButton" title="Upload File">${AppAssets.icons.upload()}</button>
-      </div>
-
-      <div class="separator"></div>
-
-      <div class="toolbarGroup">
-        <div class="fontSizeControl">
-          <button id="fontDecreaseBtn" class="fontBtn" title="Decrease Font Size">${AppAssets.icons.minus()}</button>
-          <span id="fontSizeLabel" class="fontSizeLabel">14px</span>
-          <button id="fontIncreaseBtn" class="fontBtn" title="Increase Font Size">${AppAssets.icons.plus()}</button>
-        </div>
+    <div class="toolbarGroup">
+      <div class="fontSizeControl">
+        <button id="fontDecreaseBtn" class="fontBtn" title="Decrease Font Size">${AppAssets.icons.minus()}</button>
+        <span id="fontSizeLabel" class="fontSizeLabel">14px</span>
+        <button id="fontIncreaseBtn" class="fontBtn" title="Increase Font Size">${AppAssets.icons.plus()}</button>
       </div>
     </div>
   </div>
+</div>
 
+<!-- C O D E R -->
+<div class="editorContainer" id="editorContainer">
+  <div class="editorCard">
+    <div id="editorBody" class="editorBody">
+      <div id="loadingSpinner" class="loadingSpinner" data-active="false">
+        <div class="spinnerContainer">
+          <svg class="spinnerSvg" viewBox="0 0 50 50">
+            <circle class="spinnerTrack" cx="25" cy="25" r="20"></circle>
+            <circle class="spinnerHead" cx="25" cy="25" r="20"></circle>
+          </svg>
+        </div>
+      </div>
 
+      <div id="codeMirrorContainer" class="codeMirrorContainer"></div>
 
-  <!-- C O D E R -->
-    <div class="editorContainer" id="editorContainer">
-      <div class="editorCard">
-
-
-
-
-        <div id="editorBody" class="editorBody">
-          <div id="loadingSpinner" class="loadingSpinner" data-active="false">
-            <div class="spinnerContainer">
-              <svg class="spinnerSvg" viewBox="0 0 50 50">
-                <circle class="spinnerTrack" cx="25" cy="25" r="20"></circle>
-                <circle class="spinnerHead" cx="25" cy="25" r="20"></circle>
-              </svg>
-            </div>
-          </div>
-
-
-          <div id="codeMirrorContainer" class="codeMirrorContainer"></div>
-
-          <div id="searchPanel" class="searchPanel hide">
-            <div class="searchContainer">
-              <input
-                type="text"
-                id="searchInput"
-                class="searchInput"
-                placeholder="Search..."
-                autocomplete="off"
-                spellcheck="false"
-              />
-              <div class="searchActions">
-                <span id="searchMatches" class="searchCount">0/0</span>
-                <button id="searchPrevBtn" class="searchNavBtn" title="Previous">
-                  ${AppAssets.icons.searchPrev()}
-                </button>
-                <button id="searchNextBtn" class="searchNavBtn" title="Next">${AppAssets.icons.searchNext()}</button>
-                <button id="closeSearchBtn" class="searchNavBtn" title="Close">${AppAssets.icons.close()}</button>
-              </div>
-            </div>
+      <div id="searchPanel" class="searchPanel hide">
+        <div class="searchContainer">
+          <input
+            type="text"
+            id="searchInput"
+            class="searchInput"
+            placeholder="Search..."
+            autocomplete="off"
+            spellcheck="false"
+          />
+          <div class="searchActions">
+            <span id="searchMatches" class="searchCount">0/0</span>
+            <button id="searchPrevBtn" class="searchNavBtn" title="Previous">${AppAssets.icons.searchPrev()}</button>
+            <button id="searchNextBtn" class="searchNavBtn" title="Next">${AppAssets.icons.searchNext()}</button>
+            <button id="closeSearchBtn" class="searchNavBtn" title="Close">${AppAssets.icons.close()}</button>
           </div>
         </div>
+      </div>
+    </div>
 
-        <div class="editorFooter">
-          <div class="editorFooterLeft">
-            <div class="footerItem">
-              <span class="footerLabel">Ln</span>
-              <span id="cursorLine" class="footerValue">1</span>
-              <span class="footerLabel">,</span>
-              <span class="footerLabel">Col</span>
-              <span id="cursorCol" class="footerValue">1</span>
-            </div>
-
-            <div class="footerDivider"></div>
-
-            <div class="footerItem">
-              <span id="lineCount" class="footerValue">0</span>
-              <span class="footerLabel">lines</span>
-              <span class="footerBullet">•</span>
-              <span id="charCount" class="footerValue">0</span>
-              <span class="footerLabel">chars</span>
-            </div>
-
-            <div class="footerDivider"></div>
-
-            <div class="footerItem">
-              ${AppAssets.icons.fileSize()}
-              <span id="fileSize" class="footerValue">0 B</span>
-            </div>
-          </div>
-
-          <div class="editorFooterCenter">
-            <div id="statusIndicator" class="statusIndicator statusOk">
-              ${AppAssets.icons.statusOk()}
-              <span>No Issues</span>
-            </div>
-          </div>
-
-          <div class="editorFooterRight">
-            <div class="footerItem">
-              ${AppAssets.icons.clock()}
-              <span id="lastSaved" class="footerValue">Never</span>
-            </div>
-            <div class="footerDivider"></div>
-            <span class="footerBadge">UTF-8</span>
-            <span class="footerBadge">LF</span>
-            <span class="footerBadge">Spaces: 2</span>
-            <span class="footerBadge footerBadgeAccent" id="languageBadgeSmall">JavaScript</span>
-          </div>
+    <div class="editorFooter">
+      <div class="editorFooterLeft">
+        <div class="footerItem">
+          <span class="footerLabel">Ln</span>
+          <span id="cursorLine" class="footerValue">1</span>
+          <span class="footerLabel">,</span>
+          <span class="footerLabel">Col</span>
+          <span id="cursorCol" class="footerValue">1</span>
         </div>
 
-        <input
-          type="file"
-          id="fileUploadInput"
-          class="hide"
-          accept=".js,.jsx,.ts,.tsx,.py,.html,.css,.json,.md,.txt,.yml,.yaml,.xml,.sql,.sh,.rb,.go,.rs,.java,.cpp,.c,.h,.cs,.php,.swift"
-        />
-      
+        <div class="footerDivider"></div>
 
-    </div><!-- End of editorCard -->
-  </div><!-- End of editorContainer -->
+        <div class="footerItem">
+          <span id="lineCount" class="footerValue">0</span>
+          <span class="footerLabel">lines</span>
+          <span class="footerBullet">•</span>
+          <span id="charCount" class="footerValue">0</span>
+          <span class="footerLabel">chars</span>
+        </div>
+
+        <div class="footerDivider"></div>
+
+        <div class="footerItem">
+          ${AppAssets.icons.fileSize()}
+          <span id="fileSize" class="footerValue">0 B</span>
+        </div>
+      </div>
+
+      <div class="editorFooterCenter">
+        <div id="statusIndicator" class="statusIndicator statusOk">
+          ${AppAssets.icons.statusOk()}
+          <span>No Issues</span>
+        </div>
+      </div>
+
+      <div class="editorFooterRight">
+        <div class="footerItem">
+          ${AppAssets.icons.clock()}
+          <span id="lastSaved" class="footerValue">Never</span>
+        </div>
+        <div class="footerDivider"></div>
+        <span class="footerBadge">UTF-8</span>
+        <span class="footerBadge">LF</span>
+        <span class="footerBadge">Spaces: 2</span>
+        <span class="footerBadge footerBadgeAccent" id="languageBadgeSmall">JavaScript</span>
+      </div>
+    </div>
+
+    <input
+      type="file"
+      id="fileUploadInput"
+      class="hide"
+      accept=".js,.jsx,.ts,.tsx,.py,.html,.css,.json,.md,.txt,.yml,.yaml,.xml,.sql,.sh,.rb,.go,.rs,.java,.cpp,.c,.h,.cs,.php,.swift"
+    />
+  </div>
+  <!-- End of editorCard -->
+</div>
+<!-- End of editorContainer -->
+
 
 `,
 
