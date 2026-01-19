@@ -443,6 +443,191 @@ i want THIS to stick to the bottom of ".coderHeaderWrapper"
   position: absolute;
   top: 0;
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* Add these to the end of your styles.css file */
+
+/* Core sticky header system */
+:root {
+  --navbar-height: 3.75rem;
+  --breadcrumb-height: 2.75rem;
+  --coder-header-height: 2.75rem;
+  --toolbar-height: 2.75rem;
+  --total-header-height: calc(
+    var(--navbar-height) + 
+    var(--breadcrumb-height) + 
+    var(--coder-header-height) + 
+    var(--toolbar-height)
+  );
+}
+
+/* Navbar - Always at top, always visible */
+.navbar {
+  position: sticky;
+  top: 0;
+  height: var(--navbar-height);
+  background: var(--canvasOverlay);
+  border-bottom: 0.0625rem solid var(--borderDefault);
+  z-index: 1000;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+/* Breadcrumbs - Under navbar, gets pushed up by coderHeader */
+.breadCrumbsWrapper {
+  position: sticky;
+  top: var(--navbar-height);
+  height: var(--breadcrumb-height);
+  min-height: var(--breadcrumb-height);
+  max-height: var(--breadcrumb-height);
+  background: var(--canvasOverlay);
+  border-bottom: 0.0625rem solid var(--borderDefault);
+  z-index: 900;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  overflow: hidden;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  display: flex;
+  align-items: center;
+}
+
+/* When coder header pushes breadcrumbs up */
+.breadCrumbsWrapper.hidden {
+  transform: translateY(-100%);
+  opacity: 0;
+  height: 0;
+  min-height: 0;
+  max-height: 0;
+  pointer-events: none;
+  border-bottom: none;
+}
+
+/* Coder Header - Starts at editor area, pushes breadcrumbs up */
+.coderHeaderWrapper {
+  position: sticky;
+  top: var(--navbar-height);
+  height: var(--coder-header-height);
+  background: var(--canvasOverlay);
+  border-bottom: 0.0625rem solid var(--borderDefault);
+  z-index: 950;
+  transition: top 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  display: flex;
+  align-items: center;
+}
+
+/* When breadcrumbs are hidden, coder header moves up */
+.breadCrumbsWrapper.hidden ~ .coderHeaderWrapper {
+  top: var(--navbar-height);
+}
+
+/* Toolbar - Under coder header */
+.coderToolBarWrapper {
+  position: sticky;
+  top: calc(var(--navbar-height) + var(--coder-header-height));
+  height: var(--toolbar-height);
+  background: var(--canvasOverlay);
+  border-bottom: 0.0625rem solid var(--borderDefault);
+  z-index: 850;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  display: flex;
+  align-items: center;
+}
+
+/* When breadcrumbs are hidden, adjust toolbar position */
+.breadCrumbsWrapper.hidden ~ .coderHeaderWrapper + .coderToolBarWrapper {
+  top: calc(var(--navbar-height) + var(--coder-header-height));
+}
+
+/* Main content area adjustment */
+.pages[data-page="file"] {
+  position: relative;
+  min-height: calc(100vh - var(--navbar-height));
+}
+
+/* Editor container */
+.editorContainer {
+  min-height: calc(100vh - var(--total-header-height));
+  position: relative;
+}
+
+/* Fullscreen mode adjustments */
+.editorContainer[data-fullscreen="true"] {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  background: var(--canvasDefault);
+}
+
+.editorContainer[data-fullscreen="true"] .navbar,
+.editorContainer[data-fullscreen="true"] .breadCrumbsWrapper,
+.editorContainer[data-fullscreen="true"] .coderHeaderWrapper,
+.editorContainer[data-fullscreen="true"] .coderToolBarWrapper {
+  position: absolute;
+  top: 0;
+}
+
+/* Scroll indicator for breadcrumbs */
+.breadCrumbsWrapper::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    var(--borderDefault) 20%,
+    var(--borderDefault) 80%,
+    transparent 100%
+  );
+  opacity: 0.5;
+}
+
+/* Smooth transitions */
+.navbar,
+.breadCrumbsWrapper,
+.coderHeaderWrapper,
+.coderToolBarWrapper {
+  transition: 
+    transform 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+    opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+    top 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+    height 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Responsive adjustments */
+@media (max-width: 48rem) {
+  :root {
+    --navbar-height: 3.5rem;
+    --breadcrumb-height: 2.5rem;
+    --coder-header-height: 2.5rem;
+    --toolbar-height: 2.5rem;
+  }
+  
+  .coderHeader .centerSide {
+    display: none;
+  }
+}
 </style>
 
 </head>
