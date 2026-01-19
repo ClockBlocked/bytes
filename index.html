@@ -304,7 +304,7 @@ html {
 /* CODER HEADER - Starts in editor area, pushes breadcrumbs up */
 .coderHeaderWrapper {
   position: sticky;
-  top: calc(var(--navbar-height) + var(--breadcrumb-height));
+  top: var(--navbar-height);
   height: var(--coder-header-height);
   background-color: var(--canvasOverlay);
   border-bottom: 0.0625rem solid var(--borderDefault);
@@ -321,7 +321,7 @@ html {
 /* TOOLBAR - Under coder header */
 .coderToolBarWrapper {
   position: sticky;
-  top: calc(var(--navbar-height) + var(--breadcrumb-height) + var(--coder-header-height));
+  top: calc(var(--navbar-height) + var(--coder-header-height));
   height: var(--toolbar-height);
   background-color: var(--canvasOverlay);
   border-bottom: 0.0625rem solid var(--borderDefault);
