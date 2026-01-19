@@ -512,16 +512,12 @@ bindElementEvents = function() {
   this.bindEvent(this.elements.viewModeBtn, "click", () => this.exitEditMode());
   this.bindEvent(this.elements.undoBtn, "click", () => this.undo());
   this.bindEvent(this.elements.redoBtn, "click", () => this.redo());
-  this.bindEvent(this.elements.formatBtn, "click", () => this.formatCode());
-  this.bindEvent(this.elements.foldAllBtn, "click", () => this.foldAll());
-  this.bindEvent(this.elements.unfoldAllBtn, "click", () => this.unfoldAll());
   this.bindEvent(this.elements.searchBtn, "click", () => this.openSearch());
   this.bindEvent(this.elements.wrapBtn, "click", () => this.toggleWrapLines());
   this.bindEvent(this.elements.copyBtn, "click", () => this.copyCode());
   this.bindEvent(this.elements.downloadBtn, "click", () => this.downloadFile());
   this.bindEvent(this.elements.uploadBtn, "click", () => this.elements.fileUploadInput?.click());
   this.bindEvent(this.elements.themeBtn, "click", () => this.toggleTheme());
-  this.bindEvent(this.elements.showInvisiblesBtn, "click", () => this.toggleInvisibles());
   this.bindEvent(this.elements.fontDecreaseBtn, "click", () => this.adjustFontSize(-2));
   this.bindEvent(this.elements.fontIncreaseBtn, "click", () => this.adjustFontSize(2));
   this.bindEvent(this.elements.fullscreenBtn, "click", () => this.toggleFullscreen());
@@ -541,29 +537,16 @@ bindElementEvents = function() {
     this.bindEvent(this.elements.newFileWithoutRepo, "click", () => this.handleNewFileWithoutRepo());
   }
   
-this.bindEvent(this.elements.fileExtensionBtn, "click", (e) => {
-  e.stopPropagation();
-  const dropdown = this.elements.languageDropdown;
-  if (!dropdown) return;
+  this.bindEvent(this.elements.fileExtensionBtn, "click", (e) => {
+    e.stopPropagation();
+    e.preventDefault();
+    this.showLanguageDropdown(e);
+  });
   
-  dropdown.classList.toggle("hide");
-  
-  if (!dropdown.classList.contains("hide")) {
-    const rect = e.currentTarget.getBoundingClientRect();
-    dropdown.style.top = `${rect.bottom + 5}px`;
-    dropdown.style.right = `${window.innerWidth - rect.right}px`;
-  }
-});  
   this.bindEvent(this.elements.moreOptionsBtn, "click", (e) => {
     e.stopPropagation();
-    const dropdown = this.elements.moreOptionsDropdown;
-    if (!dropdown) return;
-    if (dropdown.classList.contains("hide")) {
-      const btnRect = e.currentTarget.getBoundingClientRect();
-      dropdown.style.top = `${btnRect.bottom + window.scrollY}px`;
-      dropdown.style.left = `${btnRect.left + window.scrollX}px`;
-    }
-    dropdown.classList.toggle("hide");
+    e.preventDefault();
+    this.showMoreOptionsDropdown(e);
   });
   
   this.bindEvent(this.elements.editSaveButton, "click", (e) => {
@@ -605,10 +588,12 @@ this.bindEvent(this.elements.fileExtensionBtn, "click", (e) => {
     }
     
     if (this.elements.languageDropdown && !this.elements.languageDropdown.contains(e.target) && !this.elements.fileExtensionBtn.contains(e.target)) {
-      this.elements.languageDropdown.classList.add("hide");
+      this.hideLanguageDropdown();
     }
     
-    this.elements.moreOptionsDropdown?.classList.add("hide");
+    if (this.elements.moreOptionsDropdown && !this.elements.moreOptionsDropdown.contains(e.target) && !this.elements.moreOptionsBtn.contains(e.target)) {
+      this.hideMoreOptionsDropdown();
+    }
   });
   
   window.addEventListener("resize", () => {
@@ -618,7 +603,129 @@ this.bindEvent(this.elements.fileExtensionBtn, "click", (e) => {
     this.updateHeaderScrollButtons();
   });
 }.bind(this);
+
+// Add these methods to your CodeViewEditor class:
+
+injectLanguageDropdown = function() {
+  const existing = document.getElementById('languageDropdown');
+  if (existing) existing.remove();
   
+  document.body.insertAdjacentHTML('beforeend', AppAssets.templates.languageDropdown());
+  this.elements.languageDropdown = document.getElementById('languageDropdown');
+  this.populateLanguageDropdown();
+}.bind(this);
+
+injectMoreOptionsDropdown = function() {
+  const existing = document.getElementById('moreOptionsDropdown');
+  if (existing) existing.remove();
+  
+  document.body.insertAdjacentHTML('beforeend', AppAssets.templates.moreOptionsDropdown());
+  this.elements.moreOptionsDropdown = document.getElementById('moreOptionsDropdown');
+  
+  this.bindEvent(this.elements.moreOptionsDropdown.querySelector('#formatBtn'), 'click', () => this.formatCode());
+  this.bindEvent(this.elements.moreOptionsDropdown.querySelector('#foldAllBtn'), 'click', () => this.foldAll());
+  this.bindEvent(this.elements.moreOptionsDropdown.querySelector('#unfoldAllBtn'), 'click', () => this.unfoldAll());
+  this.bindEvent(this.elements.moreOptionsDropdown.querySelector('#showInvisiblesBtn'), 'click', () => this.toggleInvisibles());
+}.bind(this);
+
+showLanguageDropdown = function(e) {
+  if (!this.elements.languageDropdown) {
+    this.injectLanguageDropdown();
+  }
+  
+  const dropdown = this.elements.languageDropdown;
+  if (!dropdown) return;
+  
+  const isHidden = dropdown.style.display === 'none' || dropdown.classList.contains('hide');
+  dropdown.style.display = isHidden ? 'block' : 'none';
+  
+  if (isHidden) {
+    let button;
+    
+    if (e && e.currentTarget) {
+      button = e.currentTarget;
+    } else {
+      button = this.elements.fileExtensionBtn;
+    }
+    
+    if (button) {
+      const rect = button.getBoundingClientRect();
+      const dropdownRect = dropdown.getBoundingClientRect();
+      
+      let top = rect.bottom + window.scrollY + 5;
+      let left = rect.left + window.scrollX;
+      
+      if (left + dropdownRect.width > window.innerWidth) {
+        left = window.innerWidth - dropdownRect.width - 10;
+      }
+      
+      if (top + dropdownRect.height > window.innerHeight) {
+        top = rect.top + window.scrollY - dropdownRect.height - 5;
+      }
+      
+      dropdown.style.position = 'fixed';
+      dropdown.style.top = `${top}px`;
+      dropdown.style.left = `${left}px`;
+      dropdown.style.zIndex = '9999';
+    }
+  }
+}.bind(this);
+
+showMoreOptionsDropdown = function(e) {
+  if (!this.elements.moreOptionsDropdown) {
+    this.injectMoreOptionsDropdown();
+  }
+  
+  const dropdown = this.elements.moreOptionsDropdown;
+  if (!dropdown) return;
+  
+  const isHidden = dropdown.style.display === 'none' || dropdown.classList.contains('hide');
+  dropdown.style.display = isHidden ? 'block' : 'none';
+  
+  if (isHidden) {
+    let button;
+    
+    if (e && e.currentTarget) {
+      button = e.currentTarget;
+    } else {
+      button = this.elements.moreOptionsBtn;
+    }
+    
+    if (button) {
+      const rect = button.getBoundingClientRect();
+      const dropdownRect = dropdown.getBoundingClientRect();
+      
+      let top = rect.bottom + window.scrollY + 5;
+      let left = rect.left + window.scrollX;
+      
+      if (left + dropdownRect.width > window.innerWidth) {
+        left = window.innerWidth - dropdownRect.width - 10;
+      }
+      
+      if (top + dropdownRect.height > window.innerHeight) {
+        top = rect.top + window.scrollY - dropdownRect.height - 5;
+      }
+      
+      dropdown.style.position = 'fixed';
+      dropdown.style.top = `${top}px`;
+      dropdown.style.left = `${left}px`;
+      dropdown.style.zIndex = '9999';
+    }
+  }
+}.bind(this);
+
+hideLanguageDropdown = function() {
+  if (this.elements.languageDropdown) {
+    this.elements.languageDropdown.style.display = 'none';
+  }
+}.bind(this);
+
+hideMoreOptionsDropdown = function() {
+  if (this.elements.moreOptionsDropdown) {
+    this.elements.moreOptionsDropdown.style.display = 'none';
+  }
+}.bind(this);
+
   setupNewFileButton = function() {
     const newFileButton = document.querySelector('[data-action="new-file"], #newFileButton');
     
