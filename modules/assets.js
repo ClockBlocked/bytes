@@ -338,7 +338,7 @@ templates: {
 
 
 
-<div id="editor"></div>
+
 
 <!-- H E A D E R -->
 <div class="coderHeaderWrapper" id="stickyHeader">
