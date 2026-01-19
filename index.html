@@ -135,67 +135,18 @@
   </script>
 
 <style>
-:root {
-  --navbar-height: 3.75rem;
-  --breadcrumb-height: 2.75rem;
-  --coder-header-height: 2.75rem;
-  --toolbar-height: 2.75rem;
-  --total-header-height: calc(
-    var(--navbar-height) + 
-    var(--breadcrumb-height) + 
-    var(--coder-header-height) + 
-    var(--toolbar-height)
-  );
-}
-
-.navbar {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: var(--navbar-height);
-  background: var(--canvasOverlay);
-  border-bottom: 0.0625rem solid var(--borderDefault);
-  z-index: 1000;
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
-}
-
-#mainArea {
-  margin-top: var(--navbar-height);
-  height: calc(100vh - var(--navbar-height));
-  overflow-y: auto;
-  position: relative;
-}
 
 .breadCrumbsWrapper {
-  position: sticky;
-  top: 0;
-  height: var(--breadcrumb-height);
-  min-height: var(--breadcrumb-height);
-  max-height: var(--breadcrumb-height);
-  background: var(--canvasOverlay);
-  border-bottom: 0.0625rem solid var(--borderDefault);
-  z-index: 900;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  overflow: hidden;
-  backdrop-filter: blur(8px) saturate(180%);
-  -webkit-backdrop-filter: blur(8px) saturate(180%);
-  display: flex;
-  align-items: center;
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 
-              0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  background-color: var(--overlay);
+  border-bottom: 1px solid var(--border);
+  padding: 12px 12px;
+  transition: transform 0.3s ease-in-out;
+  backdrop-filter: blur(8px);
+  background-color: rgba(var(--overlay-rgb, 15 23 42), 0.8);
 }
 
 .breadCrumbsWrapper.hidden {
   transform: translateY(-100%);
-  opacity: 0;
-  height: 0;
-  min-height: 0;
-  max-height: 0;
-  pointer-events: none;
-  border-bottom: none;
 }
 
 .breadCrumbContainer {
@@ -241,9 +192,336 @@
   flex-shrink: 0;
 }
 
+
+
+
+
+/* Add to your existing CSS */
+.breadCrumbsWrapper {
+  /* ...existing styles ...*/
+  backdrop-filter: blur(8px) saturate(180%);
+  -webkit-backdrop-filter: blur(8px) saturate(180%);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 
+              0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  transition: transform 0.15s ease-out;
+}
+
+/* Ensure main navbar stays above */
+.navbar {
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+}
+
+
+
+
+
+/* to-do */
+/* needs to be somewhere where base logic is */
+.hide {
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-10px);
+  transition: all 0.3s ease-in-out;
+}
+
+
+
+#fileName {
+  position: absolute;
+  right: 1rem;
+}
+
+
+
+
+
+
+
+
+</style>
+
+<style id="overRide">
+html {
+  font-size: 13px !important;
+}
+
+* {
+.no-scrollbar {
+    &::-webkit-scrollbar {
+        display: none;
+    }
+
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+
+</style>
+
+
+<style>
+/**
+THESE wrapper containers were created because i was under 
+the impression that a sticky element has to have a container 
+to stick to other than the body container.....
+**/
+.wrapper[data-wrap="top"],
+.wrapper[data-wrap="bottom"] {
+  width: 100%;
+  margin: 0;
+  padding: 0;
+}
+.wrapper[data-wrap="top"]{
+  height: 65px;
+}
+.wrapper[data-wrap="bottom"]{
+  height: calc(100vh - 65px);
+}
+
+/**
+i want THIS to stick to the top of the page
+and ALWAYS be visible
+
+and for NOTHING to ever be pushed "behind" it
+EXCEPT FOR ".breadCrumbsWrapper" whenever the header
+pushes it up and out
+**/
+.navbar {
+  position: sticky;
+  top: 0;
+  height: 40px;
+  background: var(--canvasOverlay);
+  border-bottom: 0.0625rem solid var(--borderDefault);
+  padding: 0.75rem 1rem;
+  z-index: 100; /* Highest z-index */
+}
+
+
+/**
+i want THIS to stick to the bottom of ".navbar"
+**/
+.breadCrumbsWrapper {
+  position: sticky;
+  top: 0; /* Height of navbar */
+  z-index: 90; /* Lower than navbar but higher than normal content */
+  
+  height: 25px;
+  
+  background-color: var(--canvasOverlay);
+  border-bottom: 1px solid var(--borderDefault);
+  
+  backdrop-filter: blur(8px) saturate(180%);
+  -webkit-backdrop-filter: blur(8px) saturate(180%);
+}
+
+
+/**
+i want THIS to PUSH AND REPLACE ".breadCrumbsWrapper"
+**/
 .coderHeaderWrapper {
   position: sticky;
-  top: var(--breadcrumb-height);
+  top: 0; /* Same as breadcrumbs - this will push it */
+  z-index: 95; /* Higher than breadcrumbs but lower than navbar */
+  
+  height: 35px;
+  
+  overflow: hidden;
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
+
+
+  background-color: var(--canvasOverlay);
+  border-bottom: 1px solid var(--borderDefault);
+}
+
+/**
+i want THIS to stick to the bottom of ".coderHeaderWrapper"
+**/
+.coderToolBarWrapper {
+  position: sticky;
+  top: 35px; /* navbar(40) + coderHeader(35) */
+  z-index: 80;
+}
+
+
+.upper {
+  position: relative;
+}
+
+/* Ensure content flows properly */
+#mainArea {
+  position: relative;
+}
+
+
+/* Add to your existing CSS in index.html or styles.css */
+
+/* Core sticky header logic */
+:root {
+  --navbar-height: 40px;
+  --breadcrumb-height: 25px;
+  --coder-header-height: 35px;
+  --toolbar-height: 35px;
+}
+
+.navbar {
+  position: sticky;
+  top: 0;
+  height: var(--navbar-height);
+  background: var(--canvasOverlay);
+  border-bottom: 0.0625rem solid var(--borderDefault);
+  padding: 0.75rem 1rem;
+  z-index: 1000; /* Highest z-index */
+}
+
+/* Breadcrumbs should stick below navbar */
+.breadCrumbsWrapper {
+  position: sticky;
+  top: var(--navbar-height); /* Stick below navbar */
+  z-index: 90;
+  max-height: var(--breadcrumb-height);
+  min-height: 0;
+  background-color: var(--canvasOverlay);
+  border-bottom: 1px solid var(--borderDefault);
+  backdrop-filter: blur(8px) saturate(180%);
+  -webkit-backdrop-filter: blur(8px) saturate(180%);
+  transform: translateY(0);
+  transition: transform 0.2s ease-out;
+}
+
+/* When coder header is visible, breadcrumbs should hide by sliding up */
+.breadCrumbsWrapper.hidden {
+  transform: translateY(-100%);
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* Coder header should push breadcrumbs out of view */
+.coderHeaderWrapper {
+  position: sticky;
+  top: var(--navbar-height); /* Same as breadcrumbs - this will push it */
+  z-index: 999; /* Higher than breadcrumbs but lower than navbar */
+  height: var(--coder-header-height);
+  background-color: var(--canvasOverlay);
+  border-bottom: 1px solid var(--borderDefault);
+  overflow: hidden;
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
+}
+
+/* Toolbar should stick below coder header */
+.coderToolBarWrapper {
+  position: sticky;
+  top: calc(var(--navbar-height) + var(--coder-header-height));
+  z-index: 999;
+  background-color: var(--canvasOverlay);
+  border-bottom: 1px solid var(--borderDefault);
+}
+
+/* Ensure main content flows properly */
+.pages[data-page="file"] {
+  min-height: calc(100vh - var(--navbar-height));
+  position: relative;
+}
+
+.editorContainer {
+  position: relative;
+  min-height: calc(100vh - var(--navbar-height) - var(--breadcrumb-height));
+}
+
+/* When in fullscreen mode */
+.editorContainer[data-fullscreen="true"] {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  background: var(--canvasDefault);
+}
+
+.editorContainer[data-fullscreen="true"] .navbar,
+.editorContainer[data-fullscreen="true"] .breadCrumbsWrapper {
+  position: absolute;
+  top: 0;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* Add these to the end of your styles.css file */
+
+/* Core sticky header system */
+:root {
+  --navbar-height: 3.75rem;
+  --breadcrumb-height: 2.75rem;
+  --coder-header-height: 2.75rem;
+  --toolbar-height: 2.75rem;
+  --total-header-height: calc(
+    var(--navbar-height) + 
+    var(--breadcrumb-height) + 
+    var(--coder-header-height) + 
+    var(--toolbar-height)
+  );
+}
+
+/* Navbar - Always at top, always visible */
+.navbar {
+  position: sticky;
+  top: 0;
+  height: var(--navbar-height);
+  background: var(--canvasOverlay);
+  border-bottom: 0.0625rem solid var(--borderDefault);
+  z-index: 1000;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+/* Breadcrumbs - Under navbar, gets pushed up by coderHeader */
+.breadCrumbsWrapper {
+  position: sticky;
+  top: var(--navbar-height);
+  height: var(--breadcrumb-height);
+  min-height: var(--breadcrumb-height);
+  max-height: var(--breadcrumb-height);
+  background: var(--canvasOverlay);
+  border-bottom: 0.0625rem solid var(--borderDefault);
+  z-index: 900;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  overflow: hidden;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  display: flex;
+  align-items: center;
+}
+
+/* When coder header pushes breadcrumbs up */
+.breadCrumbsWrapper.hidden {
+  transform: translateY(-100%);
+  opacity: 0;
+  height: 0;
+  min-height: 0;
+  max-height: 0;
+  pointer-events: none;
+  border-bottom: none;
+}
+
+/* Coder Header - Starts at editor area, pushes breadcrumbs up */
+.coderHeaderWrapper {
+  position: sticky;
+  top: var(--navbar-height);
   height: var(--coder-header-height);
   background: var(--canvasOverlay);
   border-bottom: 0.0625rem solid var(--borderDefault);
@@ -253,18 +531,17 @@
   -webkit-backdrop-filter: blur(8px);
   display: flex;
   align-items: center;
-  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
-  border-top-left-radius: 10px;
-  border-top-right-radius: 10px;
 }
 
+/* When breadcrumbs are hidden, coder header moves up */
 .breadCrumbsWrapper.hidden ~ .coderHeaderWrapper {
-  top: 0;
+  top: var(--navbar-height);
 }
 
+/* Toolbar - Under coder header */
 .coderToolBarWrapper {
   position: sticky;
-  top: calc(var(--breadcrumb-height) + var(--coder-header-height));
+  top: calc(var(--navbar-height) + var(--coder-header-height));
   height: var(--toolbar-height);
   background: var(--canvasOverlay);
   border-bottom: 0.0625rem solid var(--borderDefault);
@@ -273,23 +550,26 @@
   -webkit-backdrop-filter: blur(8px);
   display: flex;
   align-items: center;
-  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
 }
 
+/* When breadcrumbs are hidden, adjust toolbar position */
 .breadCrumbsWrapper.hidden ~ .coderHeaderWrapper + .coderToolBarWrapper {
-  top: var(--coder-header-height);
+  top: calc(var(--navbar-height) + var(--coder-header-height));
 }
 
+/* Main content area adjustment */
 .pages[data-page="file"] {
   position: relative;
   min-height: calc(100vh - var(--navbar-height));
 }
 
+/* Editor container */
 .editorContainer {
   min-height: calc(100vh - var(--total-header-height));
   position: relative;
 }
 
+/* Fullscreen mode adjustments */
 .editorContainer[data-fullscreen="true"] {
   position: fixed;
   inset: 0;
@@ -305,6 +585,7 @@
   top: 0;
 }
 
+/* Scroll indicator for breadcrumbs */
 .breadCrumbsWrapper::after {
   content: '';
   position: absolute;
@@ -322,6 +603,7 @@
   opacity: 0.5;
 }
 
+/* Smooth transitions */
 .navbar,
 .breadCrumbsWrapper,
 .coderHeaderWrapper,
@@ -333,75 +615,7 @@
     height 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.hide {
-  opacity: 0;
-  visibility: hidden;
-  transform: translateY(-10px);
-  transition: all 0.3s ease-in-out;
-}
-
-.no-scrollbar {
-  -ms-overflow-style: none;
-  scrollbar-width: none;
-}
-
-.no-scrollbar::-webkit-scrollbar {
-  display: none;
-}
-
-.wrapper[data-wrap="top"],
-.wrapper[data-wrap="bottom"] {
-  width: 100%;
-  margin: 0;
-  padding: 0;
-}
-
-.wrapper[data-wrap="top"]{
-  height: 65px;
-}
-
-.wrapper[data-wrap="bottom"]{
-  height: calc(100vh - 65px);
-}
-
-.upper {
-  position: relative;
-}
-
-.pages[data-page="file"] {
-  padding-top: var(--coder-header-height);
-  transition: padding-top 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-.coderHeaderWrapper:not(.hidden) ~ .editorContainer {
-  padding-top: var(--coder-header-height);
-}
-
-.breadCrumbsWrapper {
-  opacity: 1;
-  transform: translateY(0);
-}
-
-.breadCrumbsWrapper.hidden {
-  opacity: 0;
-  transform: translateY(-10px);
-  pointer-events: none;
-}
-
-.coderHeaderWrapper {
-  transform: translateY(0);
-}
-
-.navbar,
-.coderHeaderWrapper,
-.coderToolBarWrapper {
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-.breadCrumbsWrapper {
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
-}
-
+/* Responsive adjustments */
 @media (max-width: 48rem) {
   :root {
     --navbar-height: 3.5rem;
@@ -413,32 +627,58 @@
   .coderHeader .centerSide {
     display: none;
   }
-  
-  .breadCrumbsWrapper {
-    backdrop-filter: blur(4px) saturate(180%);
-    -webkit-backdrop-filter: blur(4px) saturate(180%);
-  }
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .navbar,
-  .breadCrumbsWrapper,
-  .coderHeaderWrapper,
-  .coderToolBarWrapper {
-    transition: none;
-  }
-  
-  .breadCrumbsWrapper.hidden {
-    transition: none;
-  }
+/* Smooth transitions for all sticky elements */
+.navbar,
+.breadCrumbsWrapper,
+.coderHeaderWrapper,
+.coderToolBarWrapper {
+  transition-property: transform, opacity, top, height;
+  transition-duration: 0.3s;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Ensure content doesn't jump */
+.pages[data-page="file"] {
+  padding-top: var(--coder-header-height);
+  transition: padding-top 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* When coder header is visible, adjust padding */
+.coderHeaderWrapper:not(.hidden) ~ .editorContainer {
+  padding-top: var(--coder-header-height);
+}
+
+/* Breadcrumb fade out effect */
+.breadCrumbsWrapper {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.breadCrumbsWrapper.hidden {
+  opacity: 0;
+  transform: translateY(-10px);
+  pointer-events: none;
+}
+
+/* Coder header slide in effect */
+.coderHeaderWrapper {
+  transform: translateY(0);
+}
+
+/* Optional: Add shadow for depth */
+.navbar,
+.coderHeaderWrapper,
+.coderToolBarWrapper {
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.breadCrumbsWrapper {
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
 }
 </style>
 
-<style id="overRide">
-html {
-  font-size: 13px !important;
-}
-</style>
 </head>
 <body class="bg-github-canvas-default">
 
@@ -1073,8 +1313,173 @@ html {
     </div>
   </aside>
 
+<!--
+<script>
+// Sticky Header Manager - Enhanced version
+class StickyHeaderManager {
+  constructor() {
+    this.navbar = document.querySelector('.navbar');
+    this.breadcrumbs = document.querySelector('.breadCrumbsWrapper');
+    this.coderHeader = document.querySelector('.coderHeaderWrapper');
+    this.toolbar = document.querySelector('.coderToolBarWrapper');
+    this.mainArea = document.getElementById('mainArea');
+    this.filePage = document.querySelector('[data-page="file"]');
+    
+    this.lastScrollTop = 0;
+    this.isCoderHeaderVisible = false;
+    this.threshold = 50; // Scroll threshold for showing coder header
+    
+    this.init();
+  }
 
+  init() {
+    if (!this.coderHeader || !this.breadcrumbs) return;
+    
+    // Initial setup
+    this.calculatePositions();
+    
+    // Set initial state
+    this.setInitialState();
+    
+    // Add scroll listener to main area
+    if (this.mainArea) {
+      this.mainArea.addEventListener('scroll', this.handleScroll.bind(this));
+    } else {
+      window.addEventListener('scroll', this.handleScroll.bind(this));
+    }
+    
+    // Recalculate on resize
+    window.addEventListener('resize', this.calculatePositions.bind(this));
+    
+    // Reinitialize when switching to file view
+    this.setupPageObserver();
+  }
 
+  setInitialState() {
+    // Initially, breadcrumbs are visible, coder header is hidden
+    this.breadcrumbs.classList.remove('hidden');
+    this.isCoderHeaderVisible = false;
+  }
+
+  calculatePositions() {
+    // Get the position where coder header should appear
+    if (this.filePage) {
+      const filePageRect = this.filePage.getBoundingClientRect();
+      this.coderHeaderStart = filePageRect.top + window.scrollY;
+    }
+  }
+
+  handleScroll() {
+    const scrollTop = this.mainArea ? this.mainArea.scrollTop : window.scrollY;
+    const scrollDirection = scrollTop > this.lastScrollTop ? 'down' : 'up';
+    
+    // Check if we're in the file page
+    const isInFilePage = this.filePage && 
+      scrollTop >= this.coderHeaderStart - this.threshold;
+    
+    if (isInFilePage && !this.isCoderHeaderVisible) {
+      // Show coder header and hide breadcrumbs
+      this.showCoderHeader();
+    } else if (!isInFilePage && this.isCoderHeaderVisible) {
+      // Hide coder header and show breadcrumbs
+      this.hideCoderHeader();
+    }
+    
+    // Optional: Hide coder header on scroll up when at top
+    if (scrollDirection === 'up' && scrollTop <= this.threshold) {
+      this.hideCoderHeader();
+    }
+    
+    this.lastScrollTop = scrollTop;
+  }
+
+  showCoderHeader() {
+    this.isCoderHeaderVisible = true;
+    
+    // Add slight delay for smooth transition
+    setTimeout(() => {
+      this.breadcrumbs.classList.add('hidden');
+      
+      // Force reflow for smooth animation
+      this.breadcrumbs.offsetHeight;
+      
+      // Update positions
+      if (this.coderHeader) {
+        this.coderHeader.style.top = `${this.navbar.offsetHeight}px`;
+      }
+      if (this.toolbar) {
+        this.toolbar.style.top = `${this.navbar.offsetHeight + this.coderHeader.offsetHeight}px`;
+      }
+    }, 10);
+  }
+
+  hideCoderHeader() {
+    this.isCoderHeaderVisible = false;
+    
+    // Add slight delay for smooth transition
+    setTimeout(() => {
+      this.breadcrumbs.classList.remove('hidden');
+      
+      // Force reflow for smooth animation
+      this.breadcrumbs.offsetHeight;
+      
+      // Update positions
+      if (this.coderHeader) {
+        this.coderHeader.style.top = `${this.navbar.offsetHeight + this.breadcrumbs.offsetHeight}px`;
+      }
+      if (this.toolbar) {
+        this.toolbar.style.top = `${this.navbar.offsetHeight + this.breadcrumbs.offsetHeight + this.coderHeader.offsetHeight}px`;
+      }
+    }, 10);
+  }
+
+  setupPageObserver() {
+    const observer = new MutationObserver((mutations) => {
+      mutations.forEach((mutation) => {
+        if (mutation.type === 'childList') {
+          mutation.addedNodes.forEach((node) => {
+            if (node.nodeType === 1 && node.matches && node.matches('[data-page="file"]')) {
+              setTimeout(() => {
+                this.calculatePositions();
+                this.setInitialState();
+              }, 100);
+            }
+          });
+        }
+      });
+    });
+    
+    const pagesContainer = document.getElementById('mainArea') || document.body;
+    observer.observe(pagesContainer, { childList: true, subtree: true });
+  }
+
+  // Public method to manually trigger header visibility
+  toggleCoderHeader(show) {
+    if (show) {
+      this.showCoderHeader();
+    } else {
+      this.hideCoderHeader();
+    }
+  }
+}
+
+// Initialize when DOM is loaded
+document.addEventListener('DOMContentLoaded', () => {
+  // Initialize sticky header manager
+  window.stickyHeaderManager = new StickyHeaderManager();
+  
+  // Also initialize when switching pages via SPA navigation
+  document.addEventListener('spa:navigate', () => {
+    setTimeout(() => {
+      if (window.stickyHeaderManager) {
+        window.stickyHeaderManager.calculatePositions();
+        window.stickyHeaderManager.setInitialState();
+      }
+    }, 200);
+  });
+});
+</script>
+-->
 
 <script type="module" src="modules/index.js">
 /**
