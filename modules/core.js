@@ -564,7 +564,7 @@ function viewFile(filename) {
       addToRecentFiles(filename, currentState.repository.id, currentState.repository.name, filePath);
       
       // Display file content
-      if (window.coderViewEdit && typeof window.coderViewEdit.displayFile === "function") {
+      if (window.fileManager && typeof window.fileManager.displayFile === "function") {
         const fileData = {
           content: content,
           category: file.category || "General",
@@ -572,7 +572,7 @@ function viewFile(filename) {
           lastModified: file.lastModified,
           lastCommit: file.lastCommit || "Local file"
         };
-        window.coderViewEdit.displayFile(filename, fileData);
+        window.fileManager.displayFile(filename, fileData);
       } else {
         displayFileContent(filename, { content: content });
       }
@@ -618,7 +618,7 @@ function editFile() {
       if (commitTitle) commitTitle.value = `Update ${currentState.currentFile.name}`;
       
       // Set up editor
-      if (window.coderViewEdit && typeof window.coderViewEdit.displayFile === "function") {
+      if (window.fileManager && typeof window.fileManager.displayFile === "function") {
         const fullFileData = {
           content: content,
           category: fileData?.category || "General",
@@ -627,7 +627,7 @@ function editFile() {
           lastCommit: fileData?.lastCommit || "Local file"
         };
         
-        window.coderViewEdit.displayFile(currentState.currentFile.name, fullFileData);
+        window.fileManager.displayFile(currentState.currentFile.name, fullFileData);
         
         setTimeout(() => {
           if (window.coderViewEdit.enterEditMode && typeof window.coderViewEdit.enterEditMode === "function") {
@@ -659,8 +659,8 @@ function editFile() {
 function saveFile() {
   if (!currentState.currentFile || !currentState.repository) return;
   
-  if (window.coderViewEdit && typeof window.coderViewEdit.saveChanges === "function") {
-    window.coderViewEdit.saveChanges();
+  if (window.fileManager && typeof window.fileManager.saveChanges === "function") {
+    window.fileManager.saveChanges();
     return;
   }
   
