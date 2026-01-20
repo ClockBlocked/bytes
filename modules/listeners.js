@@ -1,3 +1,4 @@
+
 class EventListenersManager {
     constructor() {
         this.sidebarManager = null;
@@ -183,7 +184,10 @@ class EventListenersManager {
     }
 
     handleToggleTheme() {
+        // Use new architecture if available
         if (window.coderViewEdit && typeof window.coderViewEdit.toggleTheme === "function") {
+            window.coderViewEdit.toggleTheme();
+        } else if (window.coderViewEdit && window.fileManager && typeof window.coderViewEdit.toggleTheme === "function") {
             window.coderViewEdit.toggleTheme();
         } else {
             this.toggleThemeFallback();
@@ -235,7 +239,10 @@ class EventListenersManager {
 
             if ((e.ctrlKey || e.metaKey) && e.key === "s") {
                 e.preventDefault();
-                if (typeof window.saveFile === "function") {
+                // Use new architecture if available
+                if (window.coderViewEdit && window.fileManager && typeof window.fileManager.saveChanges === "function") {
+                    window.fileManager.saveChanges();
+                } else if (typeof window.saveFile === "function") {
                     window.saveFile();
                 }
             }
@@ -416,7 +423,10 @@ class EventListenersManager {
             const editBtn = e.target.closest("#editToggleBtn, .edit-btn");
             if (editBtn) {
                 e.preventDefault();
-                if (window.coderViewEdit && typeof window.coderViewEdit.enterEditMode === "function") {
+                // Use new architecture if available
+                if (window.coderViewEdit && window.fileManager && typeof window.fileManager.enterEditMode === "function") {
+                    window.fileManager.enterEditMode();
+                } else if (window.coderViewEdit && typeof window.coderViewEdit.enterEditMode === "function") {
                     window.coderViewEdit.enterEditMode();
                 }
                 return;
@@ -425,7 +435,10 @@ class EventListenersManager {
             const saveBtn = e.target.closest("#saveChangesBtn, .commit-btn");
             if (saveBtn) {
                 e.preventDefault();
-                if (window.coderViewEdit && typeof window.coderViewEdit.saveChanges === "function") {
+                // Use new architecture if available
+                if (window.coderViewEdit && window.fileManager && typeof window.fileManager.saveChanges === "function") {
+                    window.fileManager.saveChanges();
+                } else if (window.coderViewEdit && typeof window.coderViewEdit.saveChanges === "function") {
                     window.coderViewEdit.saveChanges();
                 }
                 return;
@@ -434,7 +447,10 @@ class EventListenersManager {
             const cancelBtn = e.target.closest("#cancelEditBtn, .cancel-btn");
             if (cancelBtn) {
                 e.preventDefault();
-                if (window.coderViewEdit && typeof window.coderViewEdit.cancelEdit === "function") {
+                // Use new architecture if available
+                if (window.coderViewEdit && window.fileManager && typeof window.fileManager.cancelEdit === "function") {
+                    window.fileManager.cancelEdit();
+                } else if (window.coderViewEdit && typeof window.coderViewEdit.cancelEdit === "function") {
                     window.coderViewEdit.cancelEdit();
                 }
                 return;
