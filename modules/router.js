@@ -339,11 +339,15 @@ window.showFileViewer = function() {
 window.showFileEditor = function() {
     PageRouter.navigateTo('file');
     setTimeout(function() {
-        if (window.coderViewEdit && typeof window.coderViewEdit.enableEditing === 'function') {
+        // Use new architecture if available
+        if (window.coderViewEdit && window.fileManager && typeof window.fileManager.enableEditing === 'function') {
+            window.fileManager.enableEditing();
+        } else if (window.coderViewEdit && typeof window.coderViewEdit.enableEditing === 'function') {
             window.coderViewEdit.enableEditing();
         }
     }, PageRouter.transitionDuration + 100);
 };
+
 
 window.navigateToPage = function(pageName) {
     PageRouter.navigateTo(pageName);
