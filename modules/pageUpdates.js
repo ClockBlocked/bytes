@@ -395,12 +395,16 @@ function escapeHTML(str) {
 }
 
 function displayFileContent(filename, fileData) {
-    if (window.coderViewEdit && typeof coderViewEdit.displayFile === 'function') {
-        coderViewEdit.displayFile(filename, fileData);
-        showFileViewer();
+    // Use new architecture if available
+    if (window.coderViewEdit && window.fileManager && typeof window.fileManager.displayFile === 'function') {
+        window.fileManager.displayFile(filename, fileData);
+        if (typeof showFileViewer === 'function') {
+            showFileViewer();
+        }
         return;
     }
     
+    // Fallback to old method
     const currentFileName = document.getElementById('currentFileName');
     const fileLinesCount = document.getElementById('fileLinesCount');
     const fileSize = document.getElementById('fileSize');
