@@ -34,7 +34,7 @@
         ["importExport", ["ImportExport", "exportData", "importData"]],
         ["fileMenu", ["FileMenu", "ContextMenu"]],
         ["assets", ["AppAssets"]],
-        ["coder", ["coderViewEdit", "fileManager", "searchManager", "popoverManager", "editorStateManager"]]
+        ["coder", ["coderViewEdit", "FileManager", "SearchManager", "PopoverManager", "EditorStateManager"]]
     ]);
     const generateCacheBuster = () => `v=${Date.now()}`;
     const extractExports = id => EXPORT_MAP.get(id) || [];
