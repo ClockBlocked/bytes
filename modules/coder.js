@@ -11,7 +11,7 @@ class FullscreenManager {
     this.initializeListeners();
   }
   
-  enter = function() {
+  enter() {
     const elem = this.editorCard;
     
     if (!elem) {
@@ -33,9 +33,9 @@ class FullscreenManager {
     } else {
       this.fallbackFullscreen(true);
     }
-  }.bind(this);
+  }
   
-  exit = function() {
+  exit() {
     this.container?.setAttribute('data-fullscreen', 'false');
     
     if (document.exitFullscreen) {
@@ -49,17 +49,17 @@ class FullscreenManager {
     } else {
       this.fallbackFullscreen(false);
     }
-  }.bind(this);
+  }
   
-  toggle = function() {
+  toggle() {
     if (this.isFullscreen) {
       this.exit();
     } else {
       this.enter();
     }
-  }.bind(this);
+  }
   
-  fallbackFullscreen = function(enter) {
+  fallbackFullscreen(enter) {
     this.isFullscreen = enter;
     const value = enter ? 'true' : 'false';
     this.container?.setAttribute('data-fullscreen', value);
@@ -76,9 +76,9 @@ class FullscreenManager {
       detail: { isFullscreen: enter } 
     });
     this.container?.dispatchEvent(event);
-  }.bind(this);
+  }
   
-  initializeListeners = function() {
+  initializeListeners() {
     const events = [
       'fullscreenchange',
       'webkitfullscreenchange',
@@ -103,216 +103,12 @@ class FullscreenManager {
         }
       });
     });
-  }.bind(this);
+  }
   
   get isActive() {
     return this.isFullscreen;
   }
 }
-
-
-/***†
-class StickyHeaderManager {
-  constructor() {
-    this.navbar = document.querySelector('.navbar');
-    this.navbarHeight = this.navbar ? this.navbar.offsetHeight : 60;
-    this.breadcrumbs = document.getElementById('breadCrumbsWrapper');
-    this.header = document.getElementById('stickyHeader');
-    this.toolbar = document.getElementById('coderToolBarWrapper');
-    
-    this.lastScrollTop = 0;
-    this.scrollThreshold = 10;
-    this.headerHeight = 44;
-    this.toolbarHeight = 40;
-    this.breadcrumbHeight = 44;
-    
-    this.states = {
-      normal: 0,
-      headerSticky: 1,
-      headerOnly: 2
-    };
-    this.currentState = this.states.normal;
-    
-    if (this.header && this.toolbar) {
-      this.init();
-    }
-  }
-  
-  init() {
-    this.calculateHeights();
-    this.setupInitialStyles();
-    
-    window.addEventListener('scroll', () => this.handleScroll());
-    window.addEventListener('resize', () => this.calculateHeights());
-    
-    this.updateStickyState();
-  }
-  
-  calculateHeights() {
-    if (this.navbar) {
-      this.navbarHeight = this.navbar.offsetHeight;
-    }
-    
-    if (this.header) {
-      this.headerHeight = this.header.offsetHeight;
-    }
-    
-    if (this.toolbar) {
-      this.toolbarHeight = this.toolbar.offsetHeight;
-    }
-    
-    if (this.breadcrumbs) {
-      this.breadcrumbHeight = this.breadcrumbs.offsetHeight;
-    }
-    
-    document.documentElement.style.setProperty('--navbar-height', `${this.navbarHeight}px`);
-    document.documentElement.style.setProperty('--header-height', `${this.headerHeight}px`);
-    document.documentElement.style.setProperty('--toolbar-height', `${this.toolbarHeight}px`);
-    document.documentElement.style.setProperty('--breadcrumb-height', `${this.breadcrumbHeight}px`);
-    document.documentElement.style.setProperty('--total-sticky-height', `${this.headerHeight + this.toolbarHeight}px`);
-  }
-  
-  setupInitialStyles() {
-    if (this.header) {
-      this.header.style.transition = 'transform 0.3s ease, top 0.3s ease';
-    }
-    
-    if (this.toolbar) {
-      this.toolbar.style.transition = 'transform 0.3s ease, top 0.3s ease';
-    }
-    
-    if (this.breadcrumbs) {
-      this.breadcrumbs.style.transition = 'transform 0.3s ease';
-    }
-  }
-  
-  handleScroll() {
-    const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-    const scrollDelta = scrollTop - this.lastScrollTop;
-    
-    this.updateStickyState();
-    
-    this.lastScrollTop = scrollTop;
-  }
-  
-  updateStickyState() {
-    const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-    
-    const breadcrumbsRect = this.breadcrumbs ? this.breadcrumbs.getBoundingClientRect() : { top: 0, height: 0 };
-    const headerRect = this.header ? this.header.getBoundingClientRect() : { top: 0 };
-    const toolbarRect = this.toolbar ? this.toolbar.getBoundingClientRect() : { top: 0 };
-    
-    const breadcrumbsBottom = breadcrumbsRect.top + breadcrumbsRect.height;
-    const breadcrumbsScrolledPast = scrollTop > this.breadcrumbHeight;
-    
-    const headerTop = headerRect.top;
-    const headerScrolledPast = scrollTop > this.navbarHeight + this.breadcrumbHeight;
-    
-    if (headerScrolledPast && breadcrumbsScrolledPast) {
-      this.setState(this.states.headerOnly);
-    } else if (breadcrumbsScrolledPast) {
-      this.setState(this.states.headerSticky);
-    } else {
-      this.setState(this.states.normal);
-    }
-  }
-  
-  setState(state) {
-    if (this.currentState === state) return;
-    
-    switch(state) {
-      case this.states.normal:
-        this.applyNormalState();
-        break;
-      case this.states.headerSticky:
-        this.applyHeaderStickyState();
-        break;
-      case this.states.headerOnly:
-        this.applyHeaderOnlyState();
-        break;
-    }
-    
-    this.currentState = state;
-  }
-  
-  applyNormalState() {
-    if (this.breadcrumbs) {
-      this.breadcrumbs.style.position = 'sticky';
-      this.breadcrumbs.style.top = `${this.navbarHeight}px`;
-      this.breadcrumbs.style.transform = 'translateY(0)';
-      this.breadcrumbs.classList.remove('hidden');
-    }
-    
-    if (this.header) {
-      this.header.style.position = 'relative';
-      this.header.style.top = '0';
-      this.header.style.transform = 'translateY(0)';
-      this.header.classList.remove('hidden');
-    }
-    
-    if (this.toolbar) {
-      this.toolbar.style.position = 'relative';
-      this.toolbar.style.top = '0';
-      this.toolbar.style.transform = 'translateY(0)';
-    }
-    
-    document.body.classList.remove('header-sticky', 'header-only');
-  }
-  
-  applyHeaderStickyState() {
-    if (this.breadcrumbs) {
-      this.breadcrumbs.style.position = 'fixed';
-      this.breadcrumbs.style.top = '0';
-      this.breadcrumbs.style.transform = 'translateY(-100%)';
-      setTimeout(() => {
-        this.breadcrumbs.classList.add('hidden');
-      }, 300);
-    }
-    
-    if (this.header) {
-      this.header.style.position = 'fixed';
-      this.header.style.top = '0';
-      this.header.style.transform = 'translateY(0)';
-      this.header.classList.remove('hidden');
-    }
-    
-    if (this.toolbar) {
-      this.toolbar.style.position = 'fixed';
-      this.toolbar.style.top = `${this.headerHeight}px`;
-      this.toolbar.style.transform = 'translateY(0)';
-    }
-    
-    document.body.classList.add('header-sticky');
-    document.body.classList.remove('header-only');
-  }
-  
-  applyHeaderOnlyState() {
-    if (this.breadcrumbs) {
-      this.breadcrumbs.classList.add('hidden');
-    }
-    
-    if (this.navbar) {
-      this.navbar.style.transform = 'translateY(-100%)';
-    }
-    
-    if (this.header) {
-      this.header.style.position = 'fixed';
-      this.header.style.top = '0';
-      this.header.style.transform = 'translateY(0)';
-      this.header.classList.remove('hidden');
-    }
-    
-    if (this.toolbar) {
-      this.toolbar.style.position = 'fixed';
-      this.toolbar.style.top = `${this.headerHeight}px`;
-      this.toolbar.style.transform = 'translateY(0)';
-    }
-    
-    document.body.classList.add('header-sticky', 'header-only');
-  }
-}
-**/
-
 
 const SUPPORTED_LANGUAGES = [
   { value: "javascript", label: "JavaScript", ext: ["js", "jsx"] },
@@ -358,61 +154,611 @@ const CODEMIRROR_MODES = {
   swift: "swift",
 };
 
-class CodeViewEditor {
-  constructor() {
-    this.currentFile = null;
-    this.fileData = null;
-    this.codeMirror = null;
-    this.isEditing = false;
-    this.isLoading = false;
-    this.isInitialized = false;
-    this.searchActive = false;
-    this.marks = [];
+class PopoverManager {
+  constructor(editor) {
+    this.editor = editor;
+    this.dropdowns = {};
+  }
+
+  injectLanguageDropdown() {
+    const existing = document.getElementById('languageDropdown');
+    if (existing) existing.remove();
     
-    this.originalContent = "";
-    this.languages = SUPPORTED_LANGUAGES;
-    this.currentLanguage = "javascript";
-    this.currentSearchIndex = 0;
-    this.searchMatches = [];
-    this.elements = {};
-    this.fullscreenManager = null;
-//  this.stickyHeaderManager = null;
+    document.body.insertAdjacentHTML('beforeend', AppAssets.templates.languageDropdown());
+    this.dropdowns.language = document.getElementById('languageDropdown');
     
-    this.state = {
-      fontSize: 10,
-      wrapLines: false,
-      showInvisibles: false,
-      highlightActiveLine: true,
-      autoSave: false,
-      autoSaveInterval: null,
+    if (this.dropdowns.language) {
+      this.dropdowns.language.classList.add('hide');
+    }
+    
+    this.editor.elements.languageList = document.getElementById('languageList');
+    this.populateLanguageDropdown();
+  }
+
+  populateLanguageDropdown() {
+    if (!this.editor.elements.languageList) return;
+    
+    this.editor.elements.languageList.innerHTML = "";
+    
+    this.editor.languages.forEach((lang) => {
+      const btn = document.createElement("button");
+      btn.className = "dropdownItem";
+      btn.textContent = lang.label;
+      btn.dataset.value = lang.value;
+      
+      btn.addEventListener("click", () => {
+        this.editor.setLanguage(lang.value);
+        this.hideLanguageDropdown();
+      });
+      
+      this.editor.elements.languageList.appendChild(btn);
+    });
+  }
+
+  showLanguageDropdown(e) {
+    if (!this.dropdowns.language) {
+      this.injectLanguageDropdown();
+    }
+    
+    const dropdown = this.dropdowns.language;
+    if (!dropdown) return;
+    
+    const isHidden = dropdown.classList.contains('hide');
+    
+    this.hideNewFileDropdown();
+    this.hideMoreOptionsDropdown();
+    
+    dropdown.classList.toggle('hide', !isHidden);
+    
+    if (isHidden) {
+      const button = e?.currentTarget || this.editor.elements.fileExtensionBtn;
+      this.positionDropdown(dropdown, button);
+    }
+  }
+
+  hideLanguageDropdown() {
+    if (this.dropdowns.language) {
+      this.dropdowns.language.classList.add('hide');
+    }
+  }
+
+  injectMoreOptionsDropdown() {
+    const existing = document.getElementById('moreOptionsDropdown');
+    if (existing) existing.remove();
+    
+    document.body.insertAdjacentHTML('beforeend', AppAssets.templates.moreOptionsDropdown());
+    this.dropdowns.moreOptions = document.getElementById('moreOptionsDropdown');
+    
+    if (this.dropdowns.moreOptions) {
+      this.dropdowns.moreOptions.classList.add('hide');
+    }
+    
+    const bindEvent = (selector, handler) => {
+      const element = this.dropdowns.moreOptions?.querySelector(selector);
+      if (element) {
+        element.addEventListener('click', handler);
+      }
     };
     
+    bindEvent('#formatBtn', () => this.editor.formatCode());
+    bindEvent('#foldAllBtn', () => this.editor.foldAll());
+    bindEvent('#unfoldAllBtn', () => this.editor.unfoldAll());
+    bindEvent('#showInvisiblesBtn', () => this.editor.toggleInvisibles());
+  }
+
+  showMoreOptionsDropdown(e) {
+    if (!this.dropdowns.moreOptions) {
+      this.injectMoreOptionsDropdown();
+    }
+    
+    const dropdown = this.dropdowns.moreOptions;
+    if (!dropdown) return;
+    
+    const isHidden = dropdown.classList.contains('hide');
+    dropdown.classList.toggle('hide', !isHidden);
+    
+    if (!isHidden) {
+      const button = e?.currentTarget || this.editor.elements.moreOptionsBtn;
+      this.positionDropdown(dropdown, button);
+    }
+  }
+
+  hideMoreOptionsDropdown() {
+    if (this.dropdowns.moreOptions) {
+      this.dropdowns.moreOptions.classList.add('hide');
+    }
+  }
+
+  injectPopover() {
+    document.body.insertAdjacentHTML('beforeend', AppAssets.templates.commitDropdown());
+    this.dropdowns.commit = document.getElementById("commitDropdown");
+  }
+
+  showCommitPopup() {
+    if (!this.dropdowns.commit) return;
+    
+    this.dropdowns.commit.classList.remove("hide");
+    this.calculateDropdownPosition();
+    
+    if (this.editor.elements.popoverTitle) {
+      this.editor.elements.popoverTitle.textContent = "Add Commit & Save";
+    }
+    
+    if (this.editor.elements.popoverSubtitle) {
+      this.editor.elements.popoverSubtitle.textContent = "Enter a commit message before saving";
+    }
+    
+    if (this.editor.elements.commitMessage) {
+      this.editor.elements.commitMessage.value = `Update ${this.editor.currentFile}`;
+    }
+  }
+
+  hideCommitPopup() {
+    if (!this.dropdowns.commit) return;
+    
+    this.dropdowns.commit.classList.add("hide");
+    if (this.editor.elements.commitMessage) {
+      this.editor.elements.commitMessage.value = "";
+    }
+  }
+
+  calculateDropdownPosition() {
+    if (!this.editor.elements.editSaveButton || !this.dropdowns.commit) return;
+    
+    const buttonRect = this.editor.elements.editSaveButton.getBoundingClientRect();
+    const dropdown = this.dropdowns.commit;
+    const top = buttonRect.bottom + window.scrollY + 8;
+    let left = buttonRect.right - dropdown.offsetWidth + window.scrollX;
+    
+    if (left < 10) left = 10;
+    
+    dropdown.style.top = `${top}px`;
+    dropdown.style.left = `${left}px`;
+  }
+
+  injectNewFileDropdown() {
+    const existing = document.getElementById('newFileDropdown');
+    if (existing) existing.remove();
+    
+    document.body.insertAdjacentHTML('beforeend', AppAssets.templates.newFileDropdown());
+    
+    this.dropdowns.newFile = document.getElementById('newFileDropdown');
+    this.editor.elements.newFileWithRepo = document.getElementById('newFileWithRepo');
+    this.editor.elements.newFileWithoutRepo = document.getElementById('newFileWithoutRepo');
+  }
+
+  showNewFileDropdown(e) {
+    if (!this.dropdowns.newFile) {
+      this.injectNewFileDropdown();
+    }
+    
+    const dropdown = this.dropdowns.newFile;
+    if (!dropdown) return;
+    
+    const isHidden = dropdown.classList.contains('hide');
+    dropdown.classList.toggle('hide', !isHidden);
+    
+    if (isHidden) {
+      const button = e?.currentTarget || document.querySelector('[data-action="new-file"], #newFileButton');
+      this.positionDropdown(dropdown, button);
+    }
+  }
+
+  hideNewFileDropdown() {
+    if (this.dropdowns.newFile) {
+      this.dropdowns.newFile.classList.add('hide');
+    }
+  }
+
+  positionDropdown(dropdown, button) {
+    if (!button) return;
+    
+    const rect = button.getBoundingClientRect();
+    const dropdownRect = dropdown.getBoundingClientRect();
+    
+    let top = rect.bottom + window.scrollY + 5;
+    let left = rect.left + window.scrollX;
+    
+    if (left + dropdownRect.width > window.innerWidth) {
+      left = window.innerWidth - dropdownRect.width - 10;
+    }
+    
+    if (top + dropdownRect.height > window.innerHeight) {
+      top = rect.top + window.scrollY - dropdownRect.height - 5;
+    }
+    
+    dropdown.style.position = 'fixed';
+    dropdown.style.top = `${top}px`;
+    dropdown.style.left = `${left}px`;
+    dropdown.style.zIndex = dropdown.id === 'newFileDropdown' ? '9999' : '10000';
+  }
+}
+
+class EditorStateManager {
+  constructor() {
+    this.fontSize = 14;
+    this.wrapLines = false;
+    this.showInvisibles = false;
+    this.highlightActiveLine = true;
+    this.autoSave = false;
+    this.autoSaveInterval = null;
     this.undoHistory = [];
     this.redoHistory = [];
     this.lastCursorPosition = null;
     this.lastSaveTime = null;
+    this.currentLanguage = "javascript";
+    this.currentSearchIndex = 0;
+    this.searchMatches = [];
+    this.marks = [];
+  }
+
+  loadUserPreferences() {
+    const wrap = localStorage.getItem("editor_wrapLines");
+    if (wrap !== null) {
+      this.wrapLines = wrap === "true";
+    }
+    
+    const fontSize = localStorage.getItem("editor_fontsize");
+    if (fontSize) {
+      this.fontSize = parseInt(fontSize);
+    }
+  }
+
+  saveUserPreferences() {
+    localStorage.setItem("editor_wrapLines", this.wrapLines);
+    localStorage.setItem("editor_fontsize", this.fontSize);
+  }
+
+  pushUndoState(content) {
+    this.undoHistory.push(content);
+    if (this.undoHistory.length > 50) {
+      this.undoHistory.shift();
+    }
+  }
+
+  pushRedoState(content) {
+    this.redoHistory.push(content);
+    if (this.redoHistory.length > 50) {
+      this.redoHistory.shift();
+    }
+  }
+
+  clearSearch() {
+    this.searchMatches = [];
+    this.currentSearchIndex = 0;
+  }
+}
+
+class FileManager {
+  constructor(editor) {
+    this.editor = editor;
+    this.currentFile = null;
+    this.fileData = null;
+    this.originalContent = "";
+  }
+
+  displayFile(filename, fileData, repoName = null, path = '') {
+    this.currentFile = filename;
+    this.fileData = fileData;
+    this.originalContent = fileData.content || "";
+    
+    const lastDotIndex = filename.lastIndexOf('.');
+    let name = filename;
+    let ext = "";
+    
+    if (lastDotIndex !== -1) {
+      name = filename.substring(0, lastDotIndex);
+      ext = filename.substring(lastDotIndex);
+    }
+
+    if (this.editor.elements.fileNameInput) {
+      this.editor.elements.fileNameInput.value = name;
+    }
+    
+    if (this.editor.elements.fileExtensionLabel) {
+      this.editor.elements.fileExtensionLabel.textContent = ext || ".txt";
+    }
+    
+    const detectedLang = this.editor.detectLanguageFromExtension(filename);
+    this.editor.setLanguage(detectedLang);
+    
+    this.editor.updateBreadcrumbs(repoName, path);
+    
+    if (!this.editor.codeMirror) {
+      this.editor.setupCodeMirror();
+      setTimeout(() => {
+        if (this.editor.codeMirror) {
+          this.editor.codeMirror.setValue(this.originalContent);
+          this.editor.codeMirror.refresh();
+          this.editor.updateStats();
+          this.editor.updateLastSaved(true);
+        }
+      }, 100);
+    } else {
+      this.editor.codeMirror.setValue(this.originalContent);
+      this.editor.codeMirror.refresh();
+      this.editor.updateStats();
+      this.editor.updateLastSaved(true);
+    }
+    
+    this.editor.exitEditMode();
+    this.editor.updateModifiedBadge();
+    this.editor.show();
+    this.editor.updateHeaderScrollButtons();
+  }
+
+  createNewStandaloneFile() {
+    this.currentFile = 'untitled.js';
+    this.fileData = {
+      content: '// New file\n// Created on ' + new Date().toLocaleDateString() + '\n\n',
+      category: 'General',
+      tags: [],
+      lastModified: Date.now(),
+      lastCommit: 'Initial commit',
+      size: 0
+    };
+    this.originalContent = this.fileData.content;
+    
+    if (this.editor.elements.fileNameInput) {
+      this.editor.elements.fileNameInput.value = 'untitled';
+    }
+    if (this.editor.elements.fileExtensionLabel) {
+      this.editor.elements.fileExtensionLabel.textContent = '.js';
+    }
+    
+    if (this.editor.codeMirror) {
+      this.editor.codeMirror.setValue(this.fileData.content);
+      this.editor.codeMirror.refresh();
+    } else {
+      this.editor.setupCodeMirror();
+    }
+    
+    this.editor.setLanguage('javascript');
+    this.editor.updateStats();
+    this.editor.updateModifiedBadge();
+    this.editor.enterEditMode();
+    this.editor.show();
+  }
+
+  saveChanges(withCommit = false, commitMessage = "") {
+    if (!this.currentFile || !this.fileData) return;
+    
+    this.editor.coderLoading(1500);
+    
+    if (withCommit && !commitMessage) {
+      if (typeof showErrorMessage === "function") {
+        showErrorMessage("Please enter a commit message");
+      }
+      return;
+    }
+    
+    this.performSave(withCommit ? commitMessage : "Saved changes");
+  }
+
+  performSave(commitMessage) {
+    setTimeout(() => {
+      try {
+        const newContent = this.editor.codeMirror ? this.editor.codeMirror.getValue() : "";
+        this.fileData.content = newContent;
+        this.fileData.lastModified = Date.now();
+        this.fileData.lastCommit = commitMessage;
+        this.fileData.size = new Blob([newContent]).size;
+        
+        const filePath = (window.currentState?.path ? window.currentState.path + "/" : "") + this.currentFile;
+        
+        if (typeof LocalStorageManager !== "undefined") {
+          LocalStorageManager.saveFile(
+            window.currentState?.repository, 
+            filePath, 
+            this.fileData
+          );
+        }
+        
+        this.originalContent = newContent;
+        
+        if (typeof showSuccessMessage === "function") {
+          showSuccessMessage(`Saved ${this.currentFile}`);
+        }
+        
+        this.editor.updateLastSaved(true);
+        this.editor.updateModifiedBadge();
+        this.editor.exitEditMode();
+      } catch (error) {
+        if (typeof showErrorMessage === "function") {
+          showErrorMessage(`Save failed: ${error.message}`);
+        }
+      }
+    }, 300);
+  }
+
+  handleFileUpload(e) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      this.editor.coderLoading(3500);
+      
+      const content = event.target?.result;
+      if (this.editor.codeMirror) {
+        this.editor.codeMirror.setValue(content);
+        this.currentFile = file.name;
+        
+        const lastDotIndex = file.name.lastIndexOf('.');
+        let name = file.name;
+        let ext = "";
+        if (lastDotIndex !== -1) {
+          name = file.name.substring(0, lastDotIndex);
+          ext = file.name.substring(lastDotIndex);
+        }
+        
+        if (this.editor.elements.fileNameInput) {
+          this.editor.elements.fileNameInput.value = name;
+        }
+        if (this.editor.elements.fileExtensionLabel) {
+          this.editor.elements.fileExtensionLabel.textContent = ext || ".txt";
+        }
+        
+        this.editor.setLanguage(this.editor.detectLanguageFromExtension(file.name));
+        this.originalContent = content;
+        this.editor.updateStats();
+        this.editor.updateModifiedBadge();
+      }
+    };
+    reader.readAsText(file);
+  }
+}
+
+class SearchManager {
+  constructor(editor) {
+    this.editor = editor;
+    this.active = false;
+    this.matches = [];
+    this.currentIndex = 0;
+    this.marks = [];
+  }
+
+  open() {
+    if (!this.editor.codeMirror) return;
+    
+    this.active = true;
+    this.editor.elements.searchPanel?.classList.remove("hide");
+    
+    setTimeout(() => {
+      this.editor.elements.searchInput?.focus();
+      this.editor.elements.searchInput?.select();
+    }, 50);
+  }
+
+  close() {
+    this.active = false;
+    this.editor.elements.searchPanel?.classList.add("hide");
+    this.clear();
+  }
+
+  clear() {
+    if (this.editor.elements.searchInput) {
+      this.editor.elements.searchInput.value = "";
+    }
+    this.matches = [];
+    this.currentIndex = 0;
+    this.clearMarks();
+  }
+
+  clearMarks() {
+    if (!this.editor.codeMirror) return;
+    this.marks.forEach(mark => mark.clear());
+    this.marks = [];
+  }
+
+  perform(query) {
+    if (!this.editor.codeMirror || !query) return;
+    
+    this.clearMarks();
+    this.matches = [];
+    
+    const cursor = this.editor.codeMirror.getSearchCursor(query);
+    while (cursor.findNext()) {
+      const from = cursor.from();
+      const to = cursor.to();
+      
+      this.matches.push({
+        from: from,
+        to: to,
+        line: from.line,
+        ch: from.ch
+      });
+      
+      this.marks.push(this.editor.codeMirror.markText(from, to, {
+        className: "search-highlight"
+      }));
+    }
+    
+    if (this.matches.length > 0) {
+      this.currentIndex = 0;
+      this.highlightMatch(0);
+      
+      if (this.editor.elements.searchMatches) {
+        this.editor.elements.searchMatches.textContent = `1/${this.matches.length}`;
+      }
+    } else {
+      if (this.editor.elements.searchMatches) {
+        this.editor.elements.searchMatches.textContent = `0/0`;
+      }
+    }
+  }
+
+  highlightMatch(index) {
+    if (!this.editor.codeMirror || index < 0 || index >= this.matches.length) return;
+    
+    const match = this.matches[index];
+    
+    this.editor.codeMirror.setSelection(match.from, match.to);
+    
+    this.editor.codeMirror.scrollIntoView({
+      line: match.line,
+      ch: match.ch
+    }, 200);
+  }
+
+  findPrevious() {
+    if (this.matches.length === 0) return;
+    
+    this.currentIndex = (this.currentIndex - 1 + this.matches.length) % this.matches.length;
+    this.highlightMatch(this.currentIndex);
+    
+    if (this.editor.elements.searchMatches) {
+      this.editor.elements.searchMatches.textContent = `${this.currentIndex + 1}/${this.matches.length}`;
+    }
+  }
+
+  findNext() {
+    if (this.matches.length === 0) return;
+    
+    this.currentIndex = (this.currentIndex + 1) % this.matches.length;
+    this.highlightMatch(this.currentIndex);
+    
+    if (this.editor.elements.searchMatches) {
+      this.editor.elements.searchMatches.textContent = `${this.currentIndex + 1}/${this.matches.length}`;
+    }
+  }
+}
+
+class CodeViewEditor {
+  constructor() {
+    this.isEditing = false;
+    this.isLoading = false;
+    this.isInitialized = false;
+    this.codeMirror = null;
+    this.elements = {};
+    this.fullscreenManager = null;
+    
+    this.languages = SUPPORTED_LANGUAGES;
+    
+    this.stateManager = new EditorStateManager();
+    this.fileManager = new FileManager(this);
+    this.popoverManager = new PopoverManager(this);
+    this.searchManager = new SearchManager(this);
     
     this.boundEventHandlers = {};
     
     this.setupGlobalEventListeners();
-    this.headerIntersectionObserver = null;
   }
   
-  init = function() {
+  init() {
     if (this.isInitialized) return;
     
     const filePage = document.querySelector('.pages[data-page="file"]');
     if (!filePage) return;
     
     filePage.innerHTML = AppAssets.templates.editor();
-    this.injectPopover();
-    this.injectNewFileDropdown();
+    this.popoverManager.injectPopover();
+    this.popoverManager.injectNewFileDropdown();
     this.cacheElements();
     this.bindElementEvents();
     this.setupNewFileButton();
     
     this.fullscreenManager = new FullscreenManager(".editorContainer");
-//    this.stickyHeaderManager = new StickyHeaderManager();
     
     if (typeof CodeMirror !== "undefined") {
       this.setupCodeMirror();
@@ -420,12 +766,12 @@ class CodeViewEditor {
       setTimeout(() => this.setupCodeMirror(), 100);
     }
     
-    this.loadUserPreferences();
+    this.stateManager.loadUserPreferences();
     this.setupAutoSave();
     this.isInitialized = true;
-  }.bind(this);
+  }
   
-  cacheElements = function() {
+  cacheElements() {
     const elementIds = {
       filePage: '.pages[data-page="file"]',
       fileNameInput: "fileNameInput",
@@ -504,296 +850,126 @@ class CodeViewEditor {
     });
     
     this.elements.pathBreadcrumb = document.getElementById('pathBreadcrumb');
-    this.populateLanguageDropdown();
-  }.bind(this);
-  
-bindElementEvents = function() {
-  this.bindEvent(this.elements.editModeBtn, "click", () => this.enterEditMode());
-  this.bindEvent(this.elements.viewModeBtn, "click", () => this.exitEditMode());
-  this.bindEvent(this.elements.undoBtn, "click", () => this.undo());
-  this.bindEvent(this.elements.redoBtn, "click", () => this.redo());
-  this.bindEvent(this.elements.searchBtn, "click", () => this.openSearch());
-  this.bindEvent(this.elements.wrapBtn, "click", () => this.toggleWrapLines());
-  this.bindEvent(this.elements.copyBtn, "click", () => this.copyCode());
-  this.bindEvent(this.elements.downloadBtn, "click", () => this.downloadFile());
-  this.bindEvent(this.elements.uploadBtn, "click", () => this.elements.fileUploadInput?.click());
-  this.bindEvent(this.elements.themeBtn, "click", () => this.toggleTheme());
-  this.bindEvent(this.elements.fontDecreaseBtn, "click", () => this.adjustFontSize(-2));
-  this.bindEvent(this.elements.fontIncreaseBtn, "click", () => this.adjustFontSize(2));
-  this.bindEvent(this.elements.fullscreenBtn, "click", () => this.toggleFullscreen());
-  this.bindEvent(this.elements.fileUploadInput, "change", (e) => this.handleFileUpload(e));
-  this.bindEvent(this.elements.searchPrevBtn, "click", () => this.findPrevious());
-  this.bindEvent(this.elements.searchNextBtn, "click", () => this.findNext());
-  this.bindEvent(this.elements.closeSearchBtn, "click", () => this.closeSearch());
-  this.bindEvent(this.elements.headerScrollLeft, "click", () => this.scrollHeader('left'));
-  this.bindEvent(this.elements.headerScrollRight, "click", () => this.scrollHeader('right'));
-  this.bindEvent(this.elements.headerScrollContainer, "scroll", () => this.updateHeaderScrollButtons());
-  
-  if (this.elements.newFileWithRepo) {
-    this.bindEvent(this.elements.newFileWithRepo, "click", () => this.handleNewFileWithRepo());
   }
   
-  if (this.elements.newFileWithoutRepo) {
-    this.bindEvent(this.elements.newFileWithoutRepo, "click", () => this.handleNewFileWithoutRepo());
-  }
-  
-  this.bindEvent(this.elements.fileExtensionBtn, "click", (e) => {
-    e.stopPropagation();
-    e.preventDefault();
-    this.showLanguageDropdown(e);
-  });
-  
-  this.bindEvent(this.elements.moreOptionsBtn, "click", (e) => {
-    e.stopPropagation();
-    e.preventDefault();
-    this.showMoreOptionsDropdown(e);
-  });
-  
-  this.bindEvent(this.elements.editSaveButton, "click", (e) => {
-    e.stopPropagation();
-    if (!this.isEditing) {
-      this.enterEditMode();
-    } else {
-      this.showCommitPopup(e);
+  bindElementEvents() {
+    this.bindEvent(this.elements.editModeBtn, "click", () => this.enterEditMode());
+    this.bindEvent(this.elements.viewModeBtn, "click", () => this.exitEditMode());
+    this.bindEvent(this.elements.undoBtn, "click", () => this.undo());
+    this.bindEvent(this.elements.redoBtn, "click", () => this.redo());
+    this.bindEvent(this.elements.searchBtn, "click", () => this.searchManager.open());
+    this.bindEvent(this.elements.wrapBtn, "click", () => this.toggleWrapLines());
+    this.bindEvent(this.elements.copyBtn, "click", () => this.copyCode());
+    this.bindEvent(this.elements.downloadBtn, "click", () => this.downloadFile());
+    this.bindEvent(this.elements.uploadBtn, "click", () => this.elements.fileUploadInput?.click());
+    this.bindEvent(this.elements.themeBtn, "click", () => this.toggleTheme());
+    this.bindEvent(this.elements.fontDecreaseBtn, "click", () => this.adjustFontSize(-2));
+    this.bindEvent(this.elements.fontIncreaseBtn, "click", () => this.adjustFontSize(2));
+    this.bindEvent(this.elements.fullscreenBtn, "click", () => this.toggleFullscreen());
+    this.bindEvent(this.elements.fileUploadInput, "change", (e) => this.fileManager.handleFileUpload(e));
+    this.bindEvent(this.elements.searchPrevBtn, "click", () => this.searchManager.findPrevious());
+    this.bindEvent(this.elements.searchNextBtn, "click", () => this.searchManager.findNext());
+    this.bindEvent(this.elements.closeSearchBtn, "click", () => this.searchManager.close());
+    this.bindEvent(this.elements.headerScrollLeft, "click", () => this.scrollHeader('left'));
+    this.bindEvent(this.elements.headerScrollRight, "click", () => this.scrollHeader('right'));
+    this.bindEvent(this.elements.headerScrollContainer, "scroll", () => this.updateHeaderScrollButtons());
+    
+    if (this.elements.newFileWithRepo) {
+      this.bindEvent(this.elements.newFileWithRepo, "click", () => this.handleNewFileWithRepo());
     }
-  });
-  
-  this.bindEvent(this.elements.commitCancelBtn, "click", () => this.hideCommitPopup());
-  this.bindEvent(this.elements.commitSaveBtn, "click", () => this.saveChanges(true));
-  
-  this.bindEvent(this.elements.searchInput, "input", () => this.performSearch(this.elements.searchInput.value));
-  this.bindEvent(this.elements.searchInput, "keydown", (e) => {
-    if (e.key === "Escape") this.closeSearch();
-    else if (e.key === "Enter" && e.shiftKey) this.findPrevious();
-    else if (e.key === "Enter") this.findNext();
-  });
-  
-  this.bindEvent(this.elements.commitMessage, "keydown", (e) => {
-    if (e.key === "Enter" && (e.ctrlKey || e.metaKey)) {
+    
+    if (this.elements.newFileWithoutRepo) {
+      this.bindEvent(this.elements.newFileWithoutRepo, "click", () => this.handleNewFileWithoutRepo());
+    }
+    
+    this.bindEvent(this.elements.fileExtensionBtn, "click", (e) => {
+      e.stopPropagation();
       e.preventDefault();
-      this.saveChanges(true);
-    }
-  });
-  
-  document.addEventListener("click", (e) => {
-    const newFileButton = document.querySelector('[data-action="new-file"], #newFileButton');
-    const dropdown = this.elements.newFileDropdown;
-    
-    if (dropdown && !dropdown.contains(e.target) && newFileButton && !newFileButton.contains(e.target)) {
-      dropdown.classList.add("hide");
-    }
-    
-    if (this.elements.commitDropdown && !this.elements.commitDropdown.contains(e.target) && !this.elements.editSaveButton.contains(e.target)) {
-      this.hideCommitPopup();
-    }
-    
-    if (this.elements.languageDropdown && !this.elements.languageDropdown.contains(e.target) && !this.elements.fileExtensionBtn.contains(e.target)) {
-      this.hideLanguageDropdown();
-    }
-    
-    if (this.elements.moreOptionsDropdown && !this.elements.moreOptionsDropdown.contains(e.target) && !this.elements.moreOptionsBtn.contains(e.target)) {
-      this.hideMoreOptionsDropdown();
-    }
-  });
-  
-  window.addEventListener("resize", () => {
-    if (this.elements.commitDropdown && !this.elements.commitDropdown.classList.contains("hide")) {
-      this.calculateDropdownPosition();
-    }
-    this.updateHeaderScrollButtons();
-  });
-}.bind(this);
-
-
-
-showMoreOptionsDropdown = function(e) {
-  if (!this.elements.moreOptionsDropdown) {
-    this.injectMoreOptionsDropdown();
-  }
-  
-  const dropdown = this.elements.moreOptionsDropdown;
-  if (!dropdown) return;
-  
-  const isHidden = dropdown.classList.contains('hide');
-  dropdown.classList.toggle('hide', !isHidden);
-  
-  if (!isHidden) {
-    let button;
-    
-    if (e && e.currentTarget) {
-      button = e.currentTarget;
-    } else {
-      button = this.elements.moreOptionsBtn;
-    }
-    
-    if (button) {
-      const rect = button.getBoundingClientRect();
-      const dropdownRect = dropdown.getBoundingClientRect();
-      
-      let top = rect.bottom + window.scrollY + 5;
-      let left = rect.left + window.scrollX;
-      
-      if (left + dropdownRect.width > window.innerWidth) {
-        left = window.innerWidth - dropdownRect.width - 10;
-      }
-      
-      if (top + dropdownRect.height > window.innerHeight) {
-        top = rect.top + window.scrollY - dropdownRect.height - 5;
-      }
-      
-      dropdown.style.position = 'fixed';
-      dropdown.style.top = `${top}px`;
-      dropdown.style.left = `${left}px`;
-      dropdown.style.zIndex = '10000';
-    }
-  }
-}.bind(this);
-
-hideLanguageDropdown = function() {
-  if (this.elements.languageDropdown) {
-    this.elements.languageDropdown.classList.add('hide');
-  }
-}.bind(this);
-
-hideMoreOptionsDropdown = function() {
-  if (this.elements.moreOptionsDropdown) {
-    this.elements.moreOptionsDropdown.classList.add('hide');
-  }
-}.bind(this);
-
-injectMoreOptionsDropdown = function() {
-  const existing = document.getElementById('moreOptionsDropdown');
-  if (existing) existing.remove();
-  
-  document.body.insertAdjacentHTML('beforeend', AppAssets.templates.moreOptionsDropdown());
-  this.elements.moreOptionsDropdown = document.getElementById('moreOptionsDropdown');
-  
-  // Add the 'hide' class initially
-  if (this.elements.moreOptionsDropdown) {
-    this.elements.moreOptionsDropdown.classList.add('hide');
-  }
-  
-  this.bindEvent(this.elements.moreOptionsDropdown.querySelector('#formatBtn'), 'click', () => this.formatCode());
-  this.bindEvent(this.elements.moreOptionsDropdown.querySelector('#foldAllBtn'), 'click', () => this.foldAll());
-  this.bindEvent(this.elements.moreOptionsDropdown.querySelector('#unfoldAllBtn'), 'click', () => this.unfoldAll());
-  this.bindEvent(this.elements.moreOptionsDropdown.querySelector('#showInvisiblesBtn'), 'click', () => this.toggleInvisibles());
-}.bind(this);
-
-
-
-
-
-// IN YOUR coder.js FILE, UPDATE THESE METHODS:
-
-injectLanguageDropdown = function() {
-  const existing = document.getElementById('languageDropdown');
-  if (existing) existing.remove();
-  
-  document.body.insertAdjacentHTML('beforeend', AppAssets.templates.languageDropdown());
-  this.elements.languageDropdown = document.getElementById('languageDropdown');
-  
-  // Initialize the language list element
-  this.elements.languageList = document.getElementById('languageList');
-  
-  // Add the 'hide' class initially
-  if (this.elements.languageDropdown) {
-    this.elements.languageDropdown.classList.add('hide');
-  }
-  
-  // Populate the dropdown - this should be done AFTER the element is created
-  this.populateLanguageDropdown();
-}.bind(this);
-
-// ALSO UPDATE THE populateLanguageDropdown METHOD:
-
-populateLanguageDropdown = function() {
-  if (!this.elements.languageList) {
-    console.error("Language list element not found");
-    return;
-  }
-  
-  this.elements.languageList.innerHTML = "";
-  
-  this.languages.forEach((lang) => {
-    const btn = document.createElement("button");
-    btn.className = "dropdown-item";
-    btn.textContent = lang.label;
-    btn.dataset.value = lang.value;
-    
-    // Add click handler
-    btn.addEventListener("click", () => {
-      this.setLanguage(lang.value);
-      this.hideLanguageDropdown();
+      this.popoverManager.showLanguageDropdown(e);
     });
     
-    this.elements.languageList.appendChild(btn);
-  });
-}.bind(this);
-
-// ALSO ENSURE THE showLanguageDropdown METHOD PROPERLY SHOWS THE DROPDOWN:
-
-showLanguageDropdown = function(e) {
-  if (!this.elements.languageDropdown) {
-    this.injectLanguageDropdown();
-  }
-  
-  const dropdown = this.elements.languageDropdown;
-  if (!dropdown) return;
-  
-  const isHidden = dropdown.classList.contains('hide');
-  
-  // Hide other dropdowns first
-  this.hideNewFileDropdown();
-  this.hideMoreOptionsDropdown();
-  
-  // Toggle visibility
-  dropdown.classList.toggle('hide', !isHidden);
-  
-  if (isHidden) {
-    let button;
+    this.bindEvent(this.elements.moreOptionsBtn, "click", (e) => {
+      e.stopPropagation();
+      e.preventDefault();
+      this.popoverManager.showMoreOptionsDropdown(e);
+    });
     
-    if (e && e.currentTarget) {
-      button = e.currentTarget;
-    } else {
-      button = this.elements.fileExtensionBtn;
-    }
+    this.bindEvent(this.elements.editSaveButton, "click", (e) => {
+      e.stopPropagation();
+      if (!this.isEditing) {
+        this.enterEditMode();
+      } else {
+        this.popoverManager.showCommitPopup();
+      }
+    });
     
-    if (button) {
-      const rect = button.getBoundingClientRect();
-      const dropdownRect = dropdown.getBoundingClientRect();
+    this.bindEvent(this.elements.commitCancelBtn, "click", () => this.popoverManager.hideCommitPopup());
+    this.bindEvent(this.elements.commitSaveBtn, "click", () => {
+      const commitMessage = this.elements.commitMessage?.value.trim();
+      this.fileManager.saveChanges(true, commitMessage);
+      this.popoverManager.hideCommitPopup();
+    });
+    
+    this.bindEvent(this.elements.searchInput, "input", () => 
+      this.searchManager.perform(this.elements.searchInput.value));
+    
+    this.bindEvent(this.elements.searchInput, "keydown", (e) => {
+      if (e.key === "Escape") this.searchManager.close();
+      else if (e.key === "Enter" && e.shiftKey) this.searchManager.findPrevious();
+      else if (e.key === "Enter") this.searchManager.findNext();
+    });
+    
+    this.bindEvent(this.elements.commitMessage, "keydown", (e) => {
+      if (e.key === "Enter" && (e.ctrlKey || e.metaKey)) {
+        e.preventDefault();
+        const commitMessage = this.elements.commitMessage?.value.trim();
+        this.fileManager.saveChanges(true, commitMessage);
+        this.popoverManager.hideCommitPopup();
+      }
+    });
+    
+    document.addEventListener("click", (e) => {
+      const newFileButton = document.querySelector('[data-action="new-file"], #newFileButton');
+      const dropdown = this.elements.newFileDropdown;
       
-      let top = rect.bottom + window.scrollY + 5;
-      let left = rect.left + window.scrollX;
-      
-      // Adjust position to fit in viewport
-      if (left + dropdownRect.width > window.innerWidth) {
-        left = window.innerWidth - dropdownRect.width - 10;
+      if (dropdown && !dropdown.contains(e.target) && newFileButton && !newFileButton.contains(e.target)) {
+        this.popoverManager.hideNewFileDropdown();
       }
       
-      if (top + dropdownRect.height > window.innerHeight) {
-        top = rect.top + window.scrollY - dropdownRect.height - 5;
+      if (this.popoverManager.dropdowns.commit && 
+          !this.popoverManager.dropdowns.commit.contains(e.target) && 
+          !this.elements.editSaveButton.contains(e.target)) {
+        this.popoverManager.hideCommitPopup();
       }
       
-      dropdown.style.position = 'fixed';
-      dropdown.style.top = `${top}px`;
-      dropdown.style.left = `${left}px`;
-      dropdown.style.zIndex = '10000';
-    }
+      if (this.popoverManager.dropdowns.language && 
+          !this.popoverManager.dropdowns.language.contains(e.target) && 
+          !this.elements.fileExtensionBtn.contains(e.target)) {
+        this.popoverManager.hideLanguageDropdown();
+      }
+      
+      if (this.popoverManager.dropdowns.moreOptions && 
+          !this.popoverManager.dropdowns.moreOptions.contains(e.target) && 
+          !this.elements.moreOptionsBtn.contains(e.target)) {
+        this.popoverManager.hideMoreOptionsDropdown();
+      }
+    });
     
-    // Ensure the list is populated
-    if (this.elements.languageList.children.length === 0) {
-      this.populateLanguageDropdown();
-    }
+    window.addEventListener("resize", () => {
+      if (this.popoverManager.dropdowns.commit && 
+          !this.popoverManager.dropdowns.commit.classList.contains("hide")) {
+        this.popoverManager.calculateDropdownPosition();
+      }
+      this.updateHeaderScrollButtons();
+    });
   }
-}.bind(this);
-
-
-
-
-
-
-
-  setupNewFileButton = function() {
+  
+  bindEvent(element, event, handler) {
+    if (!element) return;
+    element.addEventListener(event, handler);
+  }
+  
+  setupNewFileButton() {
     const newFileButton = document.querySelector('[data-action="new-file"], #newFileButton');
     
     if (newFileButton) {
@@ -803,117 +979,12 @@ showLanguageDropdown = function(e) {
       newButton.addEventListener('click', (e) => {
         e.preventDefault();
         e.stopPropagation();
-        this.showNewFileDropdown(e);
+        this.popoverManager.showNewFileDropdown(e);
       });
     }
-  }.bind(this);
+  }
   
-  injectNewFileDropdown = function() {
-    const existing = document.getElementById('newFileDropdown');
-    if (existing) existing.remove();
-    
-    document.body.insertAdjacentHTML('beforeend', AppAssets.templates.newFileDropdown());
-    
-    this.elements.newFileDropdown = document.getElementById('newFileDropdown');
-    this.elements.newFileWithRepo = document.getElementById('newFileWithRepo');
-    this.elements.newFileWithoutRepo = document.getElementById('newFileWithoutRepo');
-  }.bind(this);
-  
-  showNewFileDropdown = function(e) {
-    if (!this.elements.newFileDropdown) {
-      this.injectNewFileDropdown();
-    }
-    
-    const dropdown = this.elements.newFileDropdown;
-    if (!dropdown) return;
-    
-    const isHidden = dropdown.classList.contains('hide');
-    dropdown.classList.toggle('hide', !isHidden);
-    
-    if (isHidden) {
-      let button;
-      
-      if (e && e.currentTarget) {
-        button = e.currentTarget;
-      } else {
-        button = document.querySelector('[data-action="new-file"], #newFileButton');
-      }
-      
-      if (button) {
-        const rect = button.getBoundingClientRect();
-        const dropdownRect = dropdown.getBoundingClientRect();
-        
-        let top = rect.bottom + window.scrollY + 5;
-        let left = rect.left + window.scrollX;
-        
-        if (left + dropdownRect.width > window.innerWidth) {
-          left = window.innerWidth - dropdownRect.width - 10;
-        }
-        
-        if (top + dropdownRect.height > window.innerHeight) {
-          top = rect.top + window.scrollY - dropdownRect.height - 5;
-        }
-        
-        dropdown.style.position = 'fixed';
-        dropdown.style.top = `${top}px`;
-        dropdown.style.left = `${left}px`;
-        dropdown.style.zIndex = '9999';
-      }
-    }
-  }.bind(this);
-  
-  handleNewFileWithRepo = function() {
-    if (typeof window.showCreateFileModal === 'function') {
-      window.showCreateFileModal();
-    }
-    this.hideNewFileDropdown();
-  }.bind(this);
-  
-  handleNewFileWithoutRepo = function() {
-    this.createNewStandaloneFile();
-    this.hideNewFileDropdown();
-  }.bind(this);
-  
-  createNewStandaloneFile = function() {
-    this.currentFile = 'untitled.js';
-    this.fileData = {
-      content: '// New file\n// Created on ' + new Date().toLocaleDateString() + '\n\n',
-      category: 'General',
-      tags: [],
-      lastModified: Date.now(),
-      lastCommit: 'Initial commit',
-      size: 0
-    };
-    this.originalContent = this.fileData.content;
-    
-    if (this.elements.fileNameInput) {
-      this.elements.fileNameInput.value = 'untitled';
-    }
-    if (this.elements.fileExtensionLabel) {
-      this.elements.fileExtensionLabel.textContent = '.js';
-    }
-    
-    if (this.codeMirror) {
-      this.codeMirror.setValue(this.fileData.content);
-      this.codeMirror.refresh();
-    } else {
-      this.setupCodeMirror();
-    }
-    
-    this.setLanguage('javascript');
-    this.updateStats();
-    this.updateModifiedBadge();
-    this.enterEditMode();
-    this.show();
-  }.bind(this);
-  
-  hideNewFileDropdown = function() {
-    if (this.elements.newFileDropdown) {
-      this.elements.newFileDropdown.classList.add('hide');
-    }
-  }.bind(this);
-  
-  setupCodeMirror = function() {
+  setupCodeMirror() {
     if (!this.fullscreenManager) {
       this.fullscreenManager = new FullscreenManager(".editorContainer");
     }
@@ -925,7 +996,7 @@ showLanguageDropdown = function(e) {
     
     if (!this.elements.codeMirrorContainer || this.codeMirror) return;
     
-    const fontSize = parseInt(localStorage.getItem("editor_fontsize")) || 14;
+    const fontSize = this.stateManager.fontSize;
     const savedTheme = localStorage.getItem("editor_theme");
     const isDark = savedTheme === "dark" || (!savedTheme && document.documentElement.getAttribute("data-theme") === "dark");
     
@@ -934,7 +1005,7 @@ showLanguageDropdown = function(e) {
       mode: "javascript",
       theme: isDark ? "one-dark" : "default",
       lineNumbers: true,
-      lineWrapping: this.state.wrapLines,
+      lineWrapping: this.stateManager.wrapLines,
       foldGutter: true,
       gutters: ["CodeMirror-linenumbers", "CodeMirror-foldgutter"],
       readOnly: true,
@@ -945,12 +1016,12 @@ showLanguageDropdown = function(e) {
       autoCloseBrackets: true,
       scrollbarStyle: "native",
       viewportMargin: Infinity,
-      styleActiveLine: this.state.highlightActiveLine,
+      styleActiveLine: this.stateManager.highlightActiveLine,
       highlightSelectionMatches: { showToken: /\w/ },
       extraKeys: {
-        "Ctrl-S": () => { if (this.isEditing) this.showCommitPopup(); },
-        "Cmd-S": () => { if (this.isEditing) this.showCommitPopup(); },
-        "Ctrl-F": () => this.openSearch(),
+        "Ctrl-S": () => { if (this.isEditing) this.popoverManager.showCommitPopup(); },
+        "Cmd-S": () => { if (this.isEditing) this.popoverManager.showCommitPopup(); },
+        "Ctrl-F": () => this.searchManager.open(),
         "Ctrl-/": "toggleComment",
         Tab: "indentMore",
         "Shift-Tab": "indentLess",
@@ -970,54 +1041,54 @@ showLanguageDropdown = function(e) {
     });
     
     this.codeMirror.on("cursorActivity", () => this.updateCursorPosition());
-  }.bind(this);
+  }
   
-  setCodeMirrorMode = function(langValue) {
+  setCodeMirrorMode(langValue) {
     if (!this.codeMirror) return;
     this.codeMirror.setOption("mode", CODEMIRROR_MODES[langValue] || "text");
-  }.bind(this);
+  }
   
-  setupGlobalEventListeners = function() {
+  setupGlobalEventListeners() {
     document.addEventListener("keydown", (e) => {
       const ctrl = e.ctrlKey || e.metaKey;
       
       if (ctrl && e.key === "s" && this.isEditing) {
         e.preventDefault();
-        this.showCommitPopup();
+        this.popoverManager.showCommitPopup();
       }
       
       if (e.key === "Escape") {
-        if (this.searchActive) this.closeSearch();
+        if (this.searchManager.active) this.searchManager.close();
         else if (this.fullscreenManager.isActive) this.toggleFullscreen();
-        else this.hideCommitPopup();
+        else this.popoverManager.hideCommitPopup();
       }
       
       if (ctrl && e.key === "f") {
         e.preventDefault();
-        this.openSearch();
+        this.searchManager.open();
       }
     });
-  }.bind(this);
+  }
   
-  setupAutoSave = function() {
-    if (this.state.autoSave) {
-      this.state.autoSaveInterval = setInterval(() => {
-        if (this.isEditing && this.codeMirror && this.codeMirror.getValue() !== this.originalContent) {
+  setupAutoSave() {
+    if (this.stateManager.autoSave) {
+      this.stateManager.autoSaveInterval = setInterval(() => {
+        if (this.isEditing && this.codeMirror && this.codeMirror.getValue() !== this.fileManager.originalContent) {
           this.autoSave();
         }
       }, 30000);
     }
-  }.bind(this);
+  }
   
-  setLanguage = function(langValue) {
+  setLanguage(langValue) {
     const lang = this.languages.find((l) => l.value === langValue);
     if (!lang) return;
     
-    this.currentLanguage = langValue;
+    this.stateManager.currentLanguage = langValue;
     
     const ext = lang.ext[0];
     if (this.elements.fileExtensionLabel) {
-        this.elements.fileExtensionLabel.textContent = `.${ext}`;
+      this.elements.fileExtensionLabel.textContent = `.${ext}`;
     }
     
     if (this.elements.languageBadge) {
@@ -1028,20 +1099,11 @@ showLanguageDropdown = function(e) {
       this.elements.languageBadgeSmall.textContent = lang.label;
     }
     
-    this.elements.languageDropdown?.classList.add("hide");
+    this.popoverManager.hideLanguageDropdown();
     this.setCodeMirrorMode(langValue);
-  }.bind(this);
+  }
   
-  loadUserPreferences = function() {
-    const wrap = localStorage.getItem("editor_wrapLines");
-    if (wrap !== null) {
-      this.state.wrapLines = wrap === "true";
-      this.codeMirror?.setOption("lineWrapping", this.state.wrapLines);
-      this.elements.wrapBtn?.classList.toggle("active", this.state.wrapLines);
-    }
-  }.bind(this);
-  
-  detectLanguageFromExtension = function(filename) {
+  detectLanguageFromExtension(filename) {
     const ext = filename.split(".").pop().toLowerCase();
     
     for (const lang of this.languages) {
@@ -1049,125 +1111,71 @@ showLanguageDropdown = function(e) {
     }
     
     return "javascript";
-  }.bind(this);
+  }
   
-  showCommitPopup = function(e) {
-    if (!this.elements.commitDropdown) return;
-    
-    this.elements.commitDropdown.classList.remove("hide");
-    this.calculateDropdownPosition();
-    
-    if (this.elements.popoverTitle) {
-      this.elements.popoverTitle.textContent = "Add Commit & Save";
-    }
-    
-    if (this.elements.popoverSubtitle) {
-      this.elements.popoverSubtitle.textContent = "Enter a commit message before saving";
-    }
-    
-    if (this.elements.commitMessage) {
-      this.elements.commitMessage.value = `Update ${this.currentFile}`;
-    }
-  }.bind(this);
-  
-  hideCommitPopup = function() {
-    if (!this.elements.commitDropdown) return;
-    
-    this.elements.commitDropdown.classList.add("hide");
-    if (this.elements.commitMessage) {
-      this.elements.commitMessage.value = "";
-    }
-  }.bind(this);
-  
-  injectPopover = function() {
-    document.body.insertAdjacentHTML('beforeend', AppAssets.templates.commitDropdown());
-    this.elements.commitDropdown = document.getElementById("commitDropdown");
-  }.bind(this);
-  
-  
-  calculateDropdownPosition = function() {
-    if (!this.elements.editSaveButton || !this.elements.commitDropdown) return;
-    
-    const buttonRect = this.elements.editSaveButton.getBoundingClientRect();
-    const dropdown = this.elements.commitDropdown;
-    const top = buttonRect.bottom + window.scrollY + 8;
-    let left = buttonRect.right - dropdown.offsetWidth + window.scrollX;
-    
-    if (left < 10) left = 10;
-    
-    dropdown.style.top = `${top}px`;
-    dropdown.style.left = `${left}px`;
-  }.bind(this);
-  
-  showLoadingSpinner = function() {
+  showLoadingSpinner() {
     this.elements.loadingSpinner?.setAttribute("data-active", "true");
-  }.bind(this);
+  }
   
-  hideLoadingSpinner = function() {
+  hideLoadingSpinner() {
     this.elements.loadingSpinner?.setAttribute("data-active", "false");
-  }.bind(this);
+  }
   
-  coderLoading = function(timer = 1500) {
+  show() {
+    this.elements.filePage?.classList.remove("hide");
+    setTimeout(() => this.codeMirror?.refresh(), 50);
+  }
+  
+  hide() {
+    this.elements.filePage?.classList.add("hide");
+  }
+  
+  enterEditMode() {
+    if (!this.fileManager.currentFile) return;
+    
+    this.coderLoading(1500);
+    
+    this.isEditing = true;
+    this.elements.editModeBtn?.classList.add("active");
+    this.elements.viewModeBtn?.classList.remove("active");
+    
+    if (this.elements.editSaveLabel) {
+      this.elements.editSaveLabel.textContent = "Save";
+    }
+    
+    if (this.codeMirror) {
+      this.codeMirror.setOption("readOnly", false);
+      this.codeMirror.focus();
+    }
+  }
+  
+  exitEditMode() {
+    this.coderLoading(1500);
+    
+    this.isEditing = false;
+    this.elements.editModeBtn?.classList.remove("active");
+    this.elements.viewModeBtn?.classList.add("active");
+    
+    if (this.elements.editSaveLabel) {
+      this.elements.editSaveLabel.textContent = "Edit";
+    }
+    
+    if (this.codeMirror) {
+      this.codeMirror.setOption("readOnly", true);
+    }
+    
+    this.popoverManager.hideCommitPopup();
+  }
+  
+  coderLoading(timer = 1500) {
     this.showLoadingSpinner();
-  
+    
     setTimeout(() => {
       this.hideLoadingSpinner();
-   }, timer);
-  }.bind(this);
+    }, timer);
+  }
   
-  displayFile = function(filename, fileData, repoName = null, path = '') {
-    if (!this.isInitialized) this.init();
-    
-    this.currentFile = filename;
-    this.fileData = fileData;
-    this.originalContent = fileData.content || "";
-    
-    const lastDotIndex = filename.lastIndexOf('.');
-    let name = filename;
-    let ext = "";
-    
-    if (lastDotIndex !== -1) {
-        name = filename.substring(0, lastDotIndex);
-        ext = filename.substring(lastDotIndex);
-    }
-
-    if (this.elements.fileNameInput) {
-      this.elements.fileNameInput.value = name;
-    }
-    
-    if (this.elements.fileExtensionLabel) {
-       this.elements.fileExtensionLabel.textContent = ext || ".txt";
-    }
-    
-    const detectedLang = this.detectLanguageFromExtension(filename);
-    this.setLanguage(detectedLang);
-    
-    this.updateBreadcrumbs(repoName, path);
-    
-    if (!this.codeMirror) {
-      this.setupCodeMirror();
-      setTimeout(() => {
-        if (this.codeMirror) {
-          this.codeMirror.setValue(this.originalContent);
-          this.codeMirror.refresh();
-          this.updateStats();
-          this.updateLastSaved(true);
-        }
-      }, 100);
-    } else {
-      this.codeMirror.setValue(this.originalContent);
-      this.codeMirror.refresh();
-      this.updateStats();
-      this.updateLastSaved(true);
-    }
-    
-    this.exitEditMode();
-    this.updateModifiedBadge();
-    this.show();
-    this.updateHeaderScrollButtons();
-  }.bind(this);
-  
-  updateBreadcrumbs = function(repoName = null, path = '') {
+  updateBreadcrumbs(repoName = null, path = '') {
     const breadcrumb = this.elements.pathBreadcrumb;
     if (!breadcrumb) return;
     
@@ -1196,7 +1204,7 @@ showLanguageDropdown = function(e) {
       html += `<span class="navDivider">/</span>`;
     }
     
-    html += `<span class="breadCrumb current">${this.currentFile || 'untitled.js'}</span>`;
+    html += `<span class="breadCrumb current">${this.fileManager.currentFile || 'untitled.js'}</span>`;
     
     breadcrumb.innerHTML = html;
     
@@ -1215,388 +1223,9 @@ showLanguageDropdown = function(e) {
         }
       });
     });
-  }.bind(this);
+  }
   
-  performSave = function(commitMessage) {
-    this.coderLoading(1500);
-    
-    setTimeout(() => {
-      try {
-        const newContent = this.codeMirror ? this.codeMirror.getValue() : "";
-        this.fileData.content = newContent;
-        this.fileData.lastModified = Date.now();
-        this.fileData.lastCommit = commitMessage;
-        this.fileData.size = new Blob([newContent]).size;
-        
-        const filePath = (window.currentState?.path ? window.currentState.path + "/" : "") + this.currentFile;
-        
-        if (typeof LocalStorageManager !== "undefined") {
-          LocalStorageManager.saveFile(
-            window.currentState?.repository, 
-            filePath, 
-            this.fileData
-          );
-        }
-        
-        this.originalContent = newContent;
-        
-        if (typeof showSuccessMessage === "function") {
-          showSuccessMessage(`Saved ${this.currentFile}`);
-        }
-        
-        this.updateLastSaved(true);
-        this.updateModifiedBadge();
-        this.exitEditMode();
-      } catch (error) {
-        if (typeof showErrorMessage === "function") {
-          showErrorMessage(`Save failed: ${error.message}`);
-        }
-      }
-    }, 300);
-  }.bind(this);
-  
-  saveChanges = function(withCommit = false) {
-    if (!this.currentFile || !this.fileData) return;
-    
-    this.coderLoading(1500);
-    
-    if (withCommit) {
-      const commitMessage = this.elements.commitMessage?.value.trim();
-      if (!commitMessage) {
-        if (typeof showErrorMessage === "function") {
-          showErrorMessage("Please enter a commit message");
-        }
-        return;
-      }
-      this.hideCommitPopup();
-      this.performSave(commitMessage);
-    } else {
-      this.performSave("Saved changes");
-    }
-  }.bind(this);
-  
-  handleFileUpload = function(e) {
-    const file = e.target.files?.[0];
-    if (!file) return;
-    
-    const reader = new FileReader();
-    reader.onload = (event) => {
-      this.coderLoading(3500);
-      
-      const content = event.target?.result;
-      if (this.codeMirror) {
-        this.codeMirror.setValue(content);
-        this.currentFile = file.name;
-        
-        const lastDotIndex = file.name.lastIndexOf('.');
-        let name = file.name;
-        let ext = "";
-        if (lastDotIndex !== -1) {
-            name = file.name.substring(0, lastDotIndex);
-            ext = file.name.substring(lastDotIndex);
-        }
-        
-        if (this.elements.fileNameInput) {
-          this.elements.fileNameInput.value = name;
-        }
-        if (this.elements.fileExtensionLabel) {
-           this.elements.fileExtensionLabel.textContent = ext || ".txt";
-        }
-        
-        this.setLanguage(this.detectLanguageFromExtension(file.name));
-        this.originalContent = content;
-        this.updateStats();
-        this.updateModifiedBadge();
-      }
-    };
-    reader.readAsText(file);
-  }.bind(this);
-  
-  show = function() {
-    this.elements.filePage?.classList.remove("hide");
-    setTimeout(() => this.codeMirror?.refresh(), 50);
-  }.bind(this);
-  
-  hide = function() {
-    this.elements.filePage?.classList.add("hide");
-  }.bind(this);
-  
-  enterEditMode = function() {
-    if (!this.currentFile) return;
-    
-    this.coderLoading(1500);
-    
-    this.isEditing = true;
-    this.elements.editModeBtn?.classList.add("active");
-    this.elements.viewModeBtn?.classList.remove("active");
-    
-    if (this.elements.editSaveLabel) {
-      this.elements.editSaveLabel.textContent = "Save";
-    }
-    
-    if (this.codeMirror) {
-      this.codeMirror.setOption("readOnly", false);
-      this.codeMirror.focus();
-    }
-  }.bind(this);
-  
-  exitEditMode = function() {
-    this.coderLoading(1500);
-    
-    this.isEditing = false;
-    this.elements.editModeBtn?.classList.remove("active");
-    this.elements.viewModeBtn?.classList.add("active");
-    
-    if (this.elements.editSaveLabel) {
-      this.elements.editSaveLabel.textContent = "Edit";
-    }
-    
-    if (this.codeMirror) {
-      this.codeMirror.setOption("readOnly", true);
-    }
-    
-    this.hideCommitPopup();
-  }.bind(this);
-  
-  toggleFullscreen = function() {
-    this.fullscreenManager.toggle();
-    
-    setTimeout(() => {
-      if (this.codeMirror && typeof this.codeMirror.refresh === 'function') {
-        this.codeMirror.refresh();
-      }
-    }, 100);
-  }.bind(this);
-  
-  copyCode = function() {
-    if (!this.codeMirror) return;
-    
-    const content = this.codeMirror.getSelection() || this.codeMirror.getValue();
-    navigator.clipboard.writeText(content).then(() => {
-      if (typeof showSuccessMessage === "function") {
-        showSuccessMessage("Copied to clipboard");
-      }
-    });
-  }.bind(this);
-  
-  downloadFile = function() {
-    if (!this.currentFile) return;
-    
-    const content = this.codeMirror ? this.codeMirror.getValue() : "";
-    const blob = new Blob([content], {
-      type: "text/plain;charset=utf-8"
-    });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    
-    a.href = url;
-    a.download = this.currentFile;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
-  }.bind(this);
-  
-  formatCode = function() {
-    if (!this.codeMirror || !this.isEditing) return;
-    
-    const content = this.codeMirror.getValue();
-    try {
-      const formatted = JSON.stringify(JSON.parse(content), null, 2);
-      this.codeMirror.setValue(formatted);
-    } catch (e) {
-    }
-  }.bind(this);
-  
-  foldAll = function() {
-    if (!this.codeMirror) return;
-    
-    this.codeMirror.operation(() => {
-      for (let i = 0; i < this.codeMirror.lineCount(); i++) {
-        this.codeMirror.foldCode({
-          line: i,
-          ch: 0
-        }, null, "fold");
-      }
-    });
-  }.bind(this);
-  
-  unfoldAll = function() {
-    if (!this.codeMirror) return;
-    
-    this.codeMirror.operation(() => {
-      for (let i = 0; i < this.codeMirror.lineCount(); i++) {
-        this.codeMirror.foldCode({
-          line: i,
-          ch: 0
-        }, null, "unfold");
-      }
-    });
-  }.bind(this);
-  
-  undo = function() {
-    this.codeMirror?.undo();
-  }.bind(this);
-  
-  redo = function() {
-    this.codeMirror?.redo();
-  }.bind(this);
-  
-  openSearch = function() {
-    if (!this.codeMirror) return;
-    
-    this.searchActive = true;
-    this.elements.searchPanel?.classList.remove("hide");
-    
-    setTimeout(() => {
-      this.elements.searchInput?.focus();
-      this.elements.searchInput?.select();
-    }, 50);
-  }.bind(this);
-  
-  closeSearch = function() {
-    this.searchActive = false;
-    this.elements.searchPanel?.classList.add("hide");
-    this.clearSearch();
-  }.bind(this);
-  
-  clearSearch = function() {
-    if (this.elements.searchInput) {
-      this.elements.searchInput.value = "";
-    }
-    this.searchMatches = [];
-    this.clearMarks();
-  }.bind(this);
-  
-  clearMarks = function() {
-     if (!this.codeMirror) return;
-     this.marks.forEach(mark => mark.clear());
-     this.marks = [];
-  }.bind(this);
-  
-  performSearch = function(query) {
-    if (!this.codeMirror || !query) return;
-    
-    this.clearMarks();
-    this.searchMatches = [];
-    
-    const cursor = this.codeMirror.getSearchCursor(query);
-    while (cursor.findNext()) {
-        const from = cursor.from();
-        const to = cursor.to();
-        
-        this.searchMatches.push({
-            from: from,
-            to: to,
-            line: from.line,
-            ch: from.ch
-        });
-        
-        this.marks.push(this.codeMirror.markText(from, to, {
-            className: "search-highlight"
-        }));
-    }
-    
-    if (this.searchMatches.length > 0) {
-      this.currentSearchIndex = 0;
-      this.highlightMatch(0);
-      
-      if (this.elements.searchMatches) {
-         this.elements.searchMatches.textContent = `1/${this.searchMatches.length}`;
-      }
-    } else {
-      if (this.elements.searchMatches) {
-         this.elements.searchMatches.textContent = `0/0`;
-      }
-    }
-  }.bind(this);
-  
-  findPrevious = function() {
-    if (this.searchMatches.length === 0) return;
-    
-    this.currentSearchIndex = (this.currentSearchIndex - 1 + this.searchMatches.length) % this.searchMatches.length;
-    this.highlightMatch(this.currentSearchIndex);
-    
-     if (this.elements.searchMatches) {
-         this.elements.searchMatches.textContent = `${this.currentSearchIndex + 1}/${this.searchMatches.length}`;
-      }
-  }.bind(this);
-  
-  findNext = function() {
-    if (this.searchMatches.length === 0) return;
-    
-    this.currentSearchIndex = (this.currentSearchIndex + 1) % this.searchMatches.length;
-    this.highlightMatch(this.currentSearchIndex);
-    
-     if (this.elements.searchMatches) {
-         this.elements.searchMatches.textContent = `${this.currentSearchIndex + 1}/${this.searchMatches.length}`;
-      }
-  }.bind(this);
-  
-  highlightMatch = function(index) {
-    if (!this.codeMirror || index < 0 || index >= this.searchMatches.length) return;
-    
-    const match = this.searchMatches[index];
-    
-    this.codeMirror.setSelection(match.from, match.to);
-    
-    this.codeMirror.scrollIntoView({
-      line: match.line,
-      ch: match.ch
-    }, 200);
-  }.bind(this);
-  
-  setCodeMirrorFontSize = function(size) {
-    if (!this.codeMirror) return;
-    
-    this.codeMirror.getWrapperElement().style.fontSize = `${size}px`;
-    this.state.fontSize = size;
-    
-    if (this.elements.fontSizeLabel) {
-      this.elements.fontSizeLabel.textContent = `${size}px`;
-    }
-    
-    localStorage.setItem("editor_fontsize", size);
-    this.codeMirror.refresh();
-  }.bind(this);
-  
-  adjustFontSize = function(change) {
-    const newSize = Math.max(10, Math.min(24, this.state.fontSize + change));
-    if (newSize !== this.state.fontSize) {
-      this.setCodeMirrorFontSize(newSize);
-    }
-  }.bind(this);
-  
-  updateThemeIcon = function(isDark) {
-    if (!this.elements.themeIcon) return;
-    
-    this.elements.themeIcon.innerHTML = isDark ? AppAssets.icons.moon() : AppAssets.icons.sun();
-  }.bind(this);
-  
-  toggleTheme = function() {
-    const html = document.documentElement;
-    const isDark = html.getAttribute("data-theme") === "dark";
-    const newTheme = isDark ? "light" : "dark";
-    
-    html.setAttribute("data-theme", newTheme);
-    this.updateThemeIcon(!isDark);
-    this.codeMirror?.setOption("theme", isDark ? "default" : "one-dark");
-  }.bind(this);
-  
-  toggleWrapLines = function() {
-    if (!this.codeMirror) return;
-    
-    this.state.wrapLines = !this.state.wrapLines;
-    this.codeMirror.setOption("lineWrapping", this.state.wrapLines);
-    this.elements.wrapBtn?.classList.toggle("active", this.state.wrapLines);
-  }.bind(this);
-  
-  toggleInvisibles = function() {
-    this.state.showInvisibles = !this.state.showInvisibles;
-    this.elements.showInvisiblesBtn?.classList.toggle("active", this.state.showInvisibles);
-  }.bind(this);
-  
-  updateStats = function() {
+  updateStats() {
     if (!this.codeMirror) return;
     
     const content = this.codeMirror.getValue();
@@ -1618,9 +1247,9 @@ showLanguageDropdown = function(e) {
     if (this.elements.fileSize) {
       this.elements.fileSize.textContent = sizeStr;
     }
-  }.bind(this);
+  }
   
-  updateCursorPosition = function() {
+  updateCursorPosition() {
     if (!this.codeMirror) return;
     
     const cursor = this.codeMirror.getCursor();
@@ -1632,16 +1261,16 @@ showLanguageDropdown = function(e) {
     if (this.elements.cursorCol) {
       this.elements.cursorCol.textContent = cursor.ch + 1;
     }
-  }.bind(this);
+  }
   
-  updateModifiedBadge = function() {
+  updateModifiedBadge() {
     if (!this.codeMirror) return;
     
-    const isModified = this.codeMirror.getValue() !== this.originalContent;
+    const isModified = this.codeMirror.getValue() !== this.fileManager.originalContent;
     this.elements.modifiedIndicator?.classList.toggle("hide", !isModified);
-  }.bind(this);
+  }
   
-  updateLastSaved = function(saved) {
+  updateLastSaved(saved) {
     if (!this.elements.lastSaved) return;
     
     if (saved) {
@@ -1653,21 +1282,9 @@ showLanguageDropdown = function(e) {
     } else {
       this.elements.lastSaved.textContent = "Never";
     }
-  }.bind(this);
+  }
   
-  scrollHeader = function(direction) {
-    const container = this.elements.headerScrollContainer;
-    if (!container) return;
-    
-    const scrollAmount = 150;
-    if (direction === 'left') {
-        container.scrollBy({ left: -scrollAmount, behavior: 'smooth' });
-    } else {
-        container.scrollBy({ left: scrollAmount, behavior: 'smooth' });
-    }
-  }.bind(this);
-  
-  updateHeaderScrollButtons = function() {
+  updateHeaderScrollButtons() {
     const container = this.elements.headerScrollContainer;
     const leftBtn = this.elements.headerScrollLeft;
     const rightBtn = this.elements.headerScrollRight;
@@ -1675,26 +1292,180 @@ showLanguageDropdown = function(e) {
     if (!container || !leftBtn || !rightBtn) return;
     
     if (container.scrollLeft <= 0) {
-        leftBtn.classList.add('disabled');
+      leftBtn.classList.add('disabled');
     } else {
-        leftBtn.classList.remove('disabled');
+      leftBtn.classList.remove('disabled');
     }
     
     if (container.scrollLeft + container.clientWidth >= container.scrollWidth - 1) {
-        rightBtn.classList.add('disabled');
+      rightBtn.classList.add('disabled');
     } else {
-        rightBtn.classList.remove('disabled');
+      rightBtn.classList.remove('disabled');
     }
-  }.bind(this);
+  }
   
-  bindEvent = function(element, event, handler) {
-    if (!element) return;
-    element.addEventListener(event, handler);
-  }.bind(this);
+  updateThemeIcon(isDark) {
+    if (!this.elements.themeIcon) return;
+    
+    this.elements.themeIcon.innerHTML = isDark ? AppAssets.icons.moon() : AppAssets.icons.sun();
+  }
   
-  destroy = function() {
-    if (this.state.autoSaveInterval) {
-      clearInterval(this.state.autoSaveInterval);
+  toggleTheme() {
+    const html = document.documentElement;
+    const isDark = html.getAttribute("data-theme") === "dark";
+    const newTheme = isDark ? "light" : "dark";
+    
+    html.setAttribute("data-theme", newTheme);
+    this.updateThemeIcon(!isDark);
+    this.codeMirror?.setOption("theme", isDark ? "default" : "one-dark");
+  }
+  
+  toggleWrapLines() {
+    if (!this.codeMirror) return;
+    
+    this.stateManager.wrapLines = !this.stateManager.wrapLines;
+    this.codeMirror.setOption("lineWrapping", this.stateManager.wrapLines);
+    this.elements.wrapBtn?.classList.toggle("active", this.stateManager.wrapLines);
+    this.stateManager.saveUserPreferences();
+  }
+  
+  toggleInvisibles() {
+    this.stateManager.showInvisibles = !this.stateManager.showInvisibles;
+    this.elements.showInvisiblesBtn?.classList.toggle("active", this.stateManager.showInvisibles);
+  }
+  
+  handleNewFileWithRepo() {
+    if (typeof window.showCreateFileModal === 'function') {
+      window.showCreateFileModal();
+    }
+    this.popoverManager.hideNewFileDropdown();
+  }
+  
+  handleNewFileWithoutRepo() {
+    this.fileManager.createNewStandaloneFile();
+    this.popoverManager.hideNewFileDropdown();
+  }
+  
+  toggleFullscreen() {
+    this.fullscreenManager.toggle();
+    
+    setTimeout(() => {
+      if (this.codeMirror && typeof this.codeMirror.refresh === 'function') {
+        this.codeMirror.refresh();
+      }
+    }, 100);
+  }
+  
+  copyCode() {
+    if (!this.codeMirror) return;
+    
+    const content = this.codeMirror.getSelection() || this.codeMirror.getValue();
+    navigator.clipboard.writeText(content).then(() => {
+      if (typeof showSuccessMessage === "function") {
+        showSuccessMessage("Copied to clipboard");
+      }
+    });
+  }
+  
+  downloadFile() {
+    if (!this.fileManager.currentFile) return;
+    
+    const content = this.codeMirror ? this.codeMirror.getValue() : "";
+    const blob = new Blob([content], {
+      type: "text/plain;charset=utf-8"
+    });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    
+    a.href = url;
+    a.download = this.fileManager.currentFile;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  }
+  
+  formatCode() {
+    if (!this.codeMirror || !this.isEditing) return;
+    
+    const content = this.codeMirror.getValue();
+    try {
+      const formatted = JSON.stringify(JSON.parse(content), null, 2);
+      this.codeMirror.setValue(formatted);
+    } catch (e) {
+    }
+  }
+  
+  foldAll() {
+    if (!this.codeMirror) return;
+    
+    this.codeMirror.operation(() => {
+      for (let i = 0; i < this.codeMirror.lineCount(); i++) {
+        this.codeMirror.foldCode({
+          line: i,
+          ch: 0
+        }, null, "fold");
+      }
+    });
+  }
+  
+  unfoldAll() {
+    if (!this.codeMirror) return;
+    
+    this.codeMirror.operation(() => {
+      for (let i = 0; i < this.codeMirror.lineCount(); i++) {
+        this.codeMirror.foldCode({
+          line: i,
+          ch: 0
+        }, null, "unfold");
+      }
+    });
+  }
+  
+  undo() {
+    this.codeMirror?.undo();
+  }
+  
+  redo() {
+    this.codeMirror?.redo();
+  }
+  
+  setCodeMirrorFontSize(size) {
+    if (!this.codeMirror) return;
+    
+    this.codeMirror.getWrapperElement().style.fontSize = `${size}px`;
+    this.stateManager.fontSize = size;
+    
+    if (this.elements.fontSizeLabel) {
+      this.elements.fontSizeLabel.textContent = `${size}px`;
+    }
+    
+    this.stateManager.saveUserPreferences();
+    this.codeMirror.refresh();
+  }
+  
+  adjustFontSize(change) {
+    const newSize = Math.max(10, Math.min(24, this.stateManager.fontSize + change));
+    if (newSize !== this.stateManager.fontSize) {
+      this.setCodeMirrorFontSize(newSize);
+    }
+  }
+  
+  scrollHeader(direction) {
+    const container = this.elements.headerScrollContainer;
+    if (!container) return;
+    
+    const scrollAmount = 150;
+    if (direction === 'left') {
+      container.scrollBy({ left: -scrollAmount, behavior: 'smooth' });
+    } else {
+      container.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+    }
+  }
+  
+  destroy() {
+    if (this.stateManager.autoSaveInterval) {
+      clearInterval(this.stateManager.autoSaveInterval);
     }
     
     if (this.codeMirror) {
@@ -1702,9 +1473,15 @@ showLanguageDropdown = function(e) {
     }
     
     this.isInitialized = false;
-    this.elements.commitDropdown?.remove();
-    this.elements.newFileDropdown?.remove();
-  }.bind(this);
+    
+    Object.values(this.popoverManager.dropdowns).forEach(dropdown => {
+      if (dropdown) dropdown.remove();
+    });
+  }
+  
+  autoSave() {
+    this.fileManager.performSave("Auto-saved changes");
+  }
 }
 
 window.CodeViewEditor = CodeViewEditor;
