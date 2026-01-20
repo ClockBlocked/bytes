@@ -564,7 +564,7 @@ function viewFile(filename) {
       addToRecentFiles(filename, currentState.repository.id, currentState.repository.name, filePath);
       
       // Use the new file manager if available
-      if (window.coderViewEdit && window.coderViewEdit.fileManager && typeof window.coderViewEdit.fileManager.displayFile === "function") {
+      if (window.fileManager && window.fileManager && typeof window.fileManager.displayFile === "function") {
         const fileData = {
           content: content,
           category: file.category || "General",
@@ -572,7 +572,7 @@ function viewFile(filename) {
           lastModified: file.lastModified,
           lastCommit: file.lastCommit || "Local file"
         };
-        window.coderViewEdit.fileManager.displayFile(filename, fileData);
+        window.fileManager.displayFile(filename, fileData);
       } else {
         // Fallback to old method
         displayFileContent(filename, { content: content });
@@ -619,7 +619,7 @@ function editFile() {
       if (commitTitle) commitTitle.value = `Update ${currentState.currentFile.name}`;
       
       // Use the new file manager if available
-      if (window.coderViewEdit && window.coderViewEdit.fileManager) {
+      if (window.fileManager && window.fileManager) {
         const fullFileData = {
           content: content,
           category: fileData?.category || "General",
@@ -628,12 +628,12 @@ function editFile() {
           lastCommit: fileData?.lastCommit || "Local file"
         };
         
-        if (typeof window.coderViewEdit.fileManager.displayFile === "function") {
-          window.coderViewEdit.fileManager.displayFile(currentState.currentFile.name, fullFileData);
+        if (typeof window.fileManager.displayFile === "function") {
+          window.fileManager.displayFile(currentState.currentFile.name, fullFileData);
           
           setTimeout(() => {
-            if (typeof window.coderViewEdit.fileManager.enterEditMode === "function") {
-              window.coderViewEdit.fileManager.enterEditMode();
+            if (typeof window.fileManager.enterEditMode === "function") {
+              window.fileManager.enterEditMode();
             } else {
               showFileViewer();
             }
@@ -664,8 +664,8 @@ function saveFile() {
   if (!currentState.currentFile || !currentState.repository) return;
   
   // Use new file manager if available
-  if (window.coderViewEdit && window.coderViewEdit.fileManager && typeof window.coderViewEdit.fileManager.saveChanges === "function") {
-    window.coderViewEdit.fileManager.saveChanges();
+  if (window.fileManager && window.fileManager && typeof window.fileManager.saveChanges === "function") {
+    window.fileManager.saveChanges();
     return;
   }
   
