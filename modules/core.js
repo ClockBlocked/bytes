@@ -1,4 +1,4 @@
-// Store interval references outside of DOM
+
 let _loadingProgressInterval = null;
 let _fallbackListenersInitialized = false;
 
@@ -563,8 +563,8 @@ function viewFile(filename) {
       // Add to recent files
       addToRecentFiles(filename, currentState.repository.id, currentState.repository.name, filePath);
       
-      // Display file content
-      if (window.fileManager && typeof window.fileManager.displayFile === "function") {
+      // Use the new file manager if available
+      if (window.coderViewEdit && window.coderViewEdit.fileManager && typeof window.coderViewEdit.fileManager.displayFile === "function") {
         const fileData = {
           content: content,
           category: file.category || "General",
@@ -572,8 +572,9 @@ function viewFile(filename) {
           lastModified: file.lastModified,
           lastCommit: file.lastCommit || "Local file"
         };
-        window.fileManager.displayFile(filename, fileData);
+        window.coderViewEdit.fileManager.displayFile(filename, fileData);
       } else {
+        // Fallback to old method
         displayFileContent(filename, { content: content });
       }
       
@@ -617,8 +618,8 @@ function editFile() {
       if (editingFileName) editingFileName.textContent = currentState.currentFile.name;
       if (commitTitle) commitTitle.value = `Update ${currentState.currentFile.name}`;
       
-      // Set up editor
-      if (window.fileManager && typeof window.fileManager.displayFile === "function") {
+      // Use the new file manager if available
+      if (window.coderViewEdit && window.coderViewEdit.fileManager) {
         const fullFileData = {
           content: content,
           category: fileData?.category || "General",
@@ -627,17 +628,20 @@ function editFile() {
           lastCommit: fileData?.lastCommit || "Local file"
         };
         
-        window.fileManager.displayFile(currentState.currentFile.name, fullFileData);
-        
-        setTimeout(() => {
-          if (window.coderViewEdit.enterEditMode && typeof window.coderViewEdit.enterEditMode === "function") {
-            window.coderViewEdit.enterEditMode();
-          } else {
-            showFileViewer();
-          }
-          LoadingSpinner.hide();
-        }, 100);
+        if (typeof window.coderViewEdit.fileManager.displayFile === "function") {
+          window.coderViewEdit.fileManager.displayFile(currentState.currentFile.name, fullFileData);
+          
+          setTimeout(() => {
+            if (typeof window.coderViewEdit.fileManager.enterEditMode === "function") {
+              window.coderViewEdit.fileManager.enterEditMode();
+            } else {
+              showFileViewer();
+            }
+            LoadingSpinner.hide();
+          }, 100);
+        }
       } else if (codeEditor) {
+        // Fallback to old editor
         codeEditor.setValue(content);
         updateEditorMode(codeEditor, currentState.currentFile.name);
         showFileEditor();
@@ -659,11 +663,13 @@ function editFile() {
 function saveFile() {
   if (!currentState.currentFile || !currentState.repository) return;
   
-  if (window.fileManager && typeof window.fileManager.saveChanges === "function") {
-    window.fileManager.saveChanges();
+  // Use new file manager if available
+  if (window.coderViewEdit && window.coderViewEdit.fileManager && typeof window.coderViewEdit.fileManager.saveChanges === "function") {
+    window.coderViewEdit.fileManager.saveChanges();
     return;
   }
   
+  // Fallback to old save method
   const commitTitle = document.getElementById("commitTitle");
   const commitDescription = document.getElementById("commitDescription");
   
