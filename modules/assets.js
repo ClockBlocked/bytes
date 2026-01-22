@@ -325,6 +325,21 @@ icons: {
   <path d="M1 3.5A1.5 1.5 0 0 1 2.5 2h11a1.5 1.5 0 0 1 1.5 1.5v6a1.5 1.5 0 0 1-1.5 1.5h-11A1.5 1.5 0 0 1 1 9.5Zm0 8a.75.75 0 0 1 .75-.75h12.5a.75.75 0 0 1 0 1.5H1.75A.75.75 0 0 1 1 11.5Z"/>
         
   </svg>
+`,
+
+    arrowDown: () => `
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 560">
+  <!--! Font Awesome Pro 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2025 Fonticons, Inc. -->
+  <path
+    opacity=".4"
+    fill="currentColor"
+    d="M0 293.7c0-23 18.7-41.7 41.7-41.7l168.3 0 0 182c0 7.7 6.3 14 14 14s14-6.3 14-14l0-182 168.3 0c23 0 41.7 18.7 41.7 41.7 0 9.3-3.1 18.3-8.8 25.6l-170 218.6C258.3 551.8 241.7 560 224 560s-34.3-8.2-45.2-22.1L8.8 319.3C3.1 312 0 303 0 293.7z"
+  />
+  <path
+    fill="currentColor"
+    d="M224 448c7.7 0 14-6.3 14-14l0-420c0-7.7-6.3-14-14-14s-14 6.3-14 14l0 420c0 7.7 6.3 14 14 14z"
+  />
+</svg>
 `
 },
 
@@ -370,9 +385,7 @@ templates: {
     
     <button id="fileExtensionBtn" class="fileExtensionBtn" title="Change file extension">
       <span id="fileExtensionLabel" class="fileExtensionLabel">.js</span>
-      <svg class="extensionChevron" viewBox="0 0 16 16" fill="currentColor" width="12" height="12">
-        <path d="M4.427 7.427l3.396 3.396a.25.25 0 0 0 .354 0l3.396-3.396A.25.25 0 0 0 10.896 2H4.604a.25.25 0 0 0-.177.427Z" />
-      </svg>
+        ${AppAssets.icons.arrowDown()}
     </button>
     
     <span id="modifiedIndicator" class="modifiedIndicator hide" title="Modified">
