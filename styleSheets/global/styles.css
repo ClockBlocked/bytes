@@ -844,31 +844,38 @@ button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-
   position: relative;
 }
 
+/* Unified container for both input and extension button */
 .fileNameContainer {
-  display: flex;
-  align-items: center;
-}
-
-.fileNameInputWrapper {
   display: flex;
   align-items: center;
   background-color: var(--canvasSubtle);
   border: 1px solid var(--borderDefault);
   border-radius: var(--radiusMd);
-  padding: 0.25rem 0.75rem;
+  padding: 0;
   min-width: 200px;
   height: 32px;
   transition: all 0.2s ease;
+  overflow: hidden;
 }
 
-.fileNameInputWrapper:hover {
+.fileNameContainer:hover {
   border-color: var(--borderMuted);
   background-color: var(--canvasDefault);
 }
 
-.fileNameInputWrapper:focus-within {
+.fileNameContainer:focus-within {
   border-color: var(--accentFg);
   box-shadow: 0 0 0 1px var(--accentSubtle);
+}
+
+/* Left side - icon and input */
+.fileNameInputWrapper {
+  display: flex;
+  align-items: center;
+  flex: 1;
+  padding: 0.25rem 0 0.25rem 0.75rem;
+  min-width: 0;
+  position: relative;
 }
 
 .fileIconInsideInput {
@@ -888,8 +895,9 @@ button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-
   font-size: var(--textSm);
   padding: 0;
   outline: none;
-  text-align: right;
   min-width: 0;
+  text-align: right;
+  margin-right: 4px;
 }
 
 .fileNameInput::placeholder {
@@ -898,32 +906,37 @@ button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-
   text-align: right;
 }
 
+/* Remove focus border from input itself */
+.fileNameInput:focus {
+  border: none;
+  outline: none;
+  box-shadow: none;
+}
+
+/* Right side - extension button (now inside the container) */
 .fileExtensionBtn {
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 0.25rem;
-  background: var(--canvasDefault);
-  border: 1px solid var(--borderSubtle);
-  border-radius: var(--radiusMd);
+  background: transparent;
+  border: none;
+  border-left: 1px solid var(--borderSubtle);
   color: var(--accentFg);
   font-family: var(--fontMono);
   font-size: var(--textSm);
-  padding: 0.25rem 0.75rem;
-  height: 32px;
+  padding: 0 0.75rem;
+  height: 100%;
   cursor: pointer;
   transition: all 0.2s ease;
   flex-shrink: 0;
   white-space: nowrap;
+  border-radius: 0;
+  margin-left: auto;
 }
 
 .fileExtensionBtn:hover {
   background: var(--accentSubtle);
-  border-color: var(--accentFg);
-}
-
-.fileExtensionBtn .extensionChevron {
-  transition: transform 0.2s ease;
 }
 
 .fileExtensionBtn:hover .extensionChevron {
@@ -932,6 +945,12 @@ button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-
 
 .fileExtensionLabel {
   font-weight: var(--weightMedium);
+}
+
+.extensionChevron {
+  transition: transform 0.2s ease;
+  width: 12px;
+  height: 12px;
 }
 
 .modifiedIndicator {
@@ -954,6 +973,18 @@ button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-
 .extensionDropdown.show {
   display: block;
 }
+
+/* Divider between input and button */
+.fileNameInputWrapper::after {
+  content: '';
+  position: absolute;
+  right: -1px;
+  top: 6px;
+  bottom: 6px;
+  width: 1px;
+  background-color: var(--borderSubtle);
+}
+
 
 
 #languageList .dropdownItem[data-value="javascript"]::before {
