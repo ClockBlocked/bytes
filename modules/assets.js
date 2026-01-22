@@ -381,12 +381,12 @@ templates: {
           style="text-align: right;"
         />
       </div>
-    </div>
-    
-    <button id="fileExtensionBtn" class="fileExtensionBtn" title="Change file extension">
-      <span id="fileExtensionLabel" class="fileExtensionLabel">.js</span>
+      
+      <button id="fileExtensionBtn" class="fileExtensionBtn" title="Change file extension">
+        <span id="fileExtensionLabel" class="fileExtensionLabel">.js</span>
         ${AppAssets.icons.arrowDown()}
-    </button>
+      </button>
+    </div>
     
     <span id="modifiedIndicator" class="modifiedIndicator hide" title="Modified">
       <span class="modifiedDot"></span>
