@@ -126,7 +126,7 @@ const IndexedDBStorageManager = {
     async refresh() {
         await this.ensureInitialized();
         return this.getRepositories();
-    }
+    },
 
 
 
@@ -509,7 +509,7 @@ const IndexedDBStorageManager = {
         }
         
         return results;
-    },
+    }
 };
 
 
