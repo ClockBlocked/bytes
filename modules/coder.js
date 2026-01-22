@@ -1356,6 +1356,8 @@ showLanguageDropdown = function(e) {
     }
     
     this.hideCommitPopup();
+    
+    this.saveChanges();
   }.bind(this);
   
   toggleFullscreen = function() {
