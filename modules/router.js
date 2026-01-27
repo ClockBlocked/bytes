@@ -1,427 +1,297 @@
-/**
- * GitDev Page Router
- * 
- * Simple, clean page navigation using data-page attributes
- * and CSS-based animations with .show/.hide classes
- * 
- * Created by William Hanson
- * Chevrolay@Outlook.com
- */
+const ProgressLoader = (() => {
+    let container = null;
+    let fill = null;
+    let hideTimer = null;
+    let animationTimer = null;
+    let progress = 0;
+    let isRunning = false;
 
-const PageRouter = {
-    // Page element references
-    pages: {
-        repo: null,
-        explorer: null,
-        file: null
-    },
-    
-    // Current active page
-    currentPage: null,
-    
-    // Transition duration in ms (should match CSS)
-    transitionDuration: 400,
-    
-    // Minimum loading bar display time
-    minLoadingTime: 600,
-    
-    // Loading bar element
-    loadingBar: null,
-    
-    // Loading bar animation interval
-    loadingInterval: null,
-    
-    // Prevent rapid navigation
-    isTransitioning: false,
+    let settings = {
+        color: "#1c7eec",
+        height: "2.5px",
+        minimum: 0.08,
+        maximum: 0.994,
+        animationStyle: "realistic",
+        hideDelay: 150,
+        fadeOutDuration: 300,
+        containerId: "pageProgress",
+        fillSelector: ".progress-fill"
+    };
 
-    /**
-     * Initialize the router
-     */
-    init() {
-        this.cachePageElements();
-        this.createLoadingBar();
-        this.setupEventListeners();
-        this.showInitialPage();
-    },
+    const easing = {
+        easeOutQuad: (t) => t * (2 - t),
+        easeOutCubic: (t) => (--t) * t * t + 1,
+        easeOutExpo: (t) => t === 1 ? 1 : 1 - Math.pow(2, -10 * t)
+    };
 
-    /**
-     * Cache all page elements using data-page attribute
-     */
-    cachePageElements() {
-        const allPages = document.querySelectorAll('.pages[data-page]');
-        
-        allPages.forEach(page => {
-            const pageName = page.getAttribute('data-page');
-            if (pageName) {
-                this.pages[pageName] = page;
-                
-                // Remove any legacy classes and set initial hidden state
-                page.classList.remove('hidden', 'spa-hidden', 'spa-page', 'active', 'exit', 'show');
-                page.classList.add('hide');
-            }
-        });
-    },
+    function init() {
+        container = document.getElementById(settings.containerId);
+        if (!container) {
+            container = document.createElement("div");
+            container.id = settings.containerId;
+            container.className = "page-progress";
 
-    /**
-     * Create the loading bar element
-     */
-    createLoadingBar() {
-        // Remove any existing loading bars
-        document.querySelectorAll('.page-loading-bar').forEach(el => el.remove());
-        
-        this.loadingBar = document.createElement('div');
-        this.loadingBar.className = 'page-loading-bar';
-        this.loadingBar.innerHTML = '<div class="bar-fill"></div>';
-        document.body.appendChild(this.loadingBar);
-    },
+            const progressBar = document.createElement("div");
+            progressBar.className = "progress-bar";
 
-    /**
-     * Setup navigation event listeners
-     */
-    setupEventListeners() {
-        // Handle browser back/forward buttons
-        window.addEventListener('popstate', (e) => {
-            const page = window.location.hash.slice(1) || 'repo';
-            this.navigateTo(page, false);
-        });
+            fill = document.createElement("div");
+            fill.className = "progress-fill";
 
-        // Handle clicks on elements with data-navigate attribute
-        document.addEventListener('click', (e) => {
-            const navElement = e.target.closest('[data-navigate]');
-            if (navElement && ! this.isTransitioning) {
-                e.preventDefault();
-                const targetPage = navElement.getAttribute('data-navigate');
-                this.navigateTo(targetPage, true);
-            }
-        });
-    },
-
-    /**
-     * Show the initial page based on URL hash or default to 'repo'
-     */
-    showInitialPage() {
-        const initialPage = window.location.hash.slice(1) || 'repo';
-        
-        // Ensure all pages start hidden
-        Object.values(this.pages).forEach(page => {
-            if (page) {
-                page.classList.remove('show');
-                page.classList.add('hide');
-            }
-        });
-        
-        // Show initial page without full animation sequence
-        // but still show a brief loading bar for visual consistency
-        this.showLoadingBar();
-        
-        setTimeout(() => {
-            if (this.pages[initialPage]) {
-                this.pages[initialPage].classList.remove('hide');
-                this.pages[initialPage].classList.add('show');
-                this.currentPage = initialPage;
-                this.updatePageTitle(initialPage);
-            }
-            this.completeLoadingBar();
-        }, this.minLoadingTime);
-    },
-
-    /**
-     * Navigate to a specific page
-     * @param {string} pageName - The data-page value to navigate to
-     * @param {boolean} updateHistory - Whether to push to browser history
-     */
-    async navigateTo(pageName, updateHistory = true) {
-        // Validate page exists
-        if (!this.pages[pageName]) {
-            console.warn('Page "' + pageName + '" not found');
-            return;
+            progressBar.appendChild(fill);
+            container.appendChild(progressBar);
+            document.body.insertBefore(container, document.body.firstChild);
+        } else {
+            fill = container.querySelector(settings.fillSelector);
         }
 
-        // Prevent navigation to current page or during transition
-        if (this.isTransitioning || this.currentPage === pageName) {
-            return;
-        }
-
-        this.isTransitioning = true;
-        
-        // Start loading bar immediately
-        this.showLoadingBar();
-        
-        // Record start time to ensure minimum loading display
-        const startTime = Date.now();
-
-        // Update browser history
-        if (updateHistory && window.location.hash !== '#' + pageName) {
-            window.history.pushState({ page: pageName }, '', '#' + pageName);
-        }
-
-        // Dispatch navigation start event
-        document.dispatchEvent(new CustomEvent('pageNavigationStart', {
-            detail: { from: this.currentPage, to: pageName }
-        }));
-
-        // Hide current page with exit animation
-        if (this.currentPage && this.pages[this.currentPage]) {
-            this.pages[this.currentPage].classList.remove('show');
-            this.pages[this.currentPage].classList.add('hide');
-        }
-
-        // Wait for exit animation to complete
-        await this.delay(this.transitionDuration);
-        
-        // Calculate remaining time to meet minimum loading time
-        const elapsed = Date.now() - startTime;
-        const remainingDelay = Math.max(0, this.minLoadingTime - elapsed);
-        
-        // Wait for remaining time if needed
-        if (remainingDelay > 0) {
-            await this.delay(remainingDelay);
-        }
-
-        // Scroll to top before showing new page
-        window.scrollTo(0, 0);
-
-        // Show new page with entrance animation
-        this.pages[pageName].classList.remove('hide');
-        
-        // Force reflow to ensure animation triggers
-        void this.pages[pageName].offsetWidth;
-        
-        this.pages[pageName].classList.add('show');
-
-        // Update current page reference
-        const previousPage = this.currentPage;
-        this.currentPage = pageName;
-
-        // Update page title
-        this.updatePageTitle(pageName);
-
-        // Complete loading bar
-        this.completeLoadingBar();
-
-        // Wait for entrance animation
-        await this.delay(this.transitionDuration);
-
-        // Dispatch navigation complete event
-        document.dispatchEvent(new CustomEvent('pageNavigationComplete', {
-            detail: { from: previousPage, to: pageName }
-        }));
-
-        this.isTransitioning = false;
-    },
-
-    /**
-     * Show the loading bar with animated progress
-     */
-    showLoadingBar() {
-        if (! this.loadingBar) return;
-        
-        // Clear any existing animation
-        if (this.loadingInterval) {
-            clearInterval(this.loadingInterval);
-            this.loadingInterval = null;
-        }
-        
-        const fill = this.loadingBar.querySelector('.bar-fill');
         if (fill) {
-            fill.style.transition = 'none';
-            fill.style.width = '0%';
-            
-            // Force reflow
-            void fill.offsetWidth;
-            
-            fill.style.transition = 'width 0.15s ease-out';
+            fill.style.backgroundColor = settings.color;
         }
-        
-        this.loadingBar.classList.add('active');
-        
-        // Animate progress incrementally
-        let progress = 0;
-        this.loadingInterval = setInterval(() => {
-            if (progress < 85) {
-                // Random increment between 5 and 15
-                progress += Math.random() * 10 + 5;
-                progress = Math.min(progress, 85);
-                if (fill) fill.style.width = progress + '%';
-            }
-        }, 100);
-    },
+        if (container) {
+            container.style.height = settings.height;
+        }
 
-    /**
-     * Complete the loading bar animation
-     */
-    completeLoadingBar() {
-        if (! this.loadingBar) return;
-        
-        // Clear progress animation
-        if (this.loadingInterval) {
-            clearInterval(this.loadingInterval);
-            this.loadingInterval = null;
+        return Boolean(container && fill);
+    }
+
+    function cleanup() {
+        if (hideTimer) {
+            clearTimeout(hideTimer);
+            hideTimer = null;
         }
-        
-        const fill = this.loadingBar.querySelector('.bar-fill');
+
+        if (animationTimer) {
+            clearTimeout(animationTimer);
+            animationTimer = null;
+        }
+
+        isRunning = false;
+    }
+
+    function reset() {
+        cleanup();
+
+        if (container) {
+            container.classList.add("hidden");
+            container.classList.remove("visible");
+        }
+
         if (fill) {
-            fill.style.width = '100%';
+            fill.style.width = "0%";
+            fill.style.transition = "none";
         }
-        
-        // Hide after completion animation
-        setTimeout(() => {
-            this.loadingBar.classList.remove('active');
-            
-            // Reset for next use
+
+        progress = 0;
+    }
+
+    function show() {
+        if (!container || !fill) {
+            if (!init()) return;
+        }
+
+        reset();
+        isRunning = true;
+
+        requestAnimationFrame(() => {
+            if (fill) {
+                fill.style.transition = "width 0.1s ease-out";
+            }
+
+            container.classList.remove("hidden");
+            container.classList.add("visible");
+
+            switch (settings.animationStyle) {
+                case "realistic":
+                    animateRealistic();
+                    break;
+                case "linear":
+                    animateLinear();
+                    break;
+                case "smooth":
+                    animateSmooth();
+                    break;
+                default:
+                    setProgress(settings.minimum * 100);
+            }
+        });
+    }
+
+    function hide() {
+        if (!container || !fill) return;
+
+        cleanup();
+        isRunning = false;
+
+        fill.style.transition = "width 0.2s ease-out";
+        progress = 100;
+        fill.style.width = "100%";
+
+        hideTimer = setTimeout(() => {
+            container.classList.remove("visible");
+
             setTimeout(() => {
-                if (fill) {
-                    fill.style.transition = 'none';
-                    fill.style.width = '0%';
-                }
-            }, 200);
-        }, 200);
-    },
-
-    /**
-     * Promise-based delay helper
-     * @param {number} ms - Milliseconds to delay
-     */
-    delay(ms) {
-        return new Promise(resolve => setTimeout(resolve, ms));
-    },
-
-    /**
-     * Update the page title based on current page
-     * @param {string} pageName - The current page name
-     */
-    updatePageTitle(pageName) {
-        const titles = {
-            'repo': 'Repositories - GitDev',
-            'explorer': 'File Explorer - GitDev',
-            'file': 'File Editor - GitDev'
-        };
-        document.title = titles[pageName] || 'GitDev';
-    },
-
-    /**
-     * Get a page element by name
-     * @param {string} pageName - The page name
-     * @returns {HTMLElement|null}
-     */
-    getPage(pageName) {
-        return this.pages[pageName] || null;
-    },
-
-    /**
-     * Check if a page is currently visible
-     * @param {string} pageName - The page name
-     * @returns {boolean}
-     */
-    isPageVisible(pageName) {
-        const page = this.pages[pageName];
-        return page ?  page.classList.contains('show') : false;
+                reset();
+            }, settings.fadeOutDuration);
+        }, settings.hideDelay);
     }
-};
 
-// Global navigation functions
-window.showRepoSelector = function() {
-    PageRouter.navigateTo('repo');
-};
+    function setProgress(value) {
+        if (!fill) return;
 
-window.showExplorer = function() {
-    if (! window.currentState || !window.currentState.repository) {
-        console.warn('No repository selected');
-        return;
+        progress = Math.max(0, Math.min(value, settings.maximum * 100));
+        fill.style.width = `${progress}%`;
     }
-    PageRouter.navigateTo('explorer');
-};
 
-window.showFileViewer = function() {
-    PageRouter.navigateTo('file');
-};
+    function increment(amount) {
+        if (!isRunning) return;
 
-window.showFileEditor = function() {
-    PageRouter.navigateTo('file');
-    setTimeout(function() {
-        if (window.coderViewEdit && typeof window.coderViewEdit.enableEditing === 'function') {
-            window.coderViewEdit.enableEditing();
+        const newProgress = Math.min(progress + amount, settings.maximum * 100);
+        setProgress(newProgress);
+    }
+
+    function animateRealistic() {
+        if (!isRunning || progress >= settings.maximum * 100) {
+            return;
         }
-    }, PageRouter.transitionDuration + 100);
-};
 
-window.navigateToPage = function(pageName) {
-    PageRouter.navigateTo(pageName);
-};
+        let incrementValue;
+        let delay;
 
-// Path navigation functions
-window.navigateToRoot = function() {
-    if (! window.currentState) return;
-    
-    window.currentState.path = '';
-    
-    if (typeof LocalStorageManager !== 'undefined') {
-        LocalStorageManager.listFiles(window.currentState.repository, '').then(function(files) {
-            window.currentState.files = files;
-            if (typeof renderFileList === 'function') renderFileList();
-            if (typeof updateBreadcrumb === 'function') updateBreadcrumb();
-            if (typeof updateStats === 'function') updateStats();
-        });
+        if (progress < 20) {
+            incrementValue = Math.random() * 8 + 5;
+            delay = Math.random() * 40 + 20;
+        } else if (progress < 50) {
+            incrementValue = Math.random() * 5 + 3;
+            delay = Math.random() * 80 + 40;
+        } else if (progress < 80) {
+            incrementValue = Math.random() * 2 + 1;
+            delay = Math.random() * 200 + 100;
+        } else if (progress < 90) {
+            incrementValue = Math.random() * 0.8 + 0.3;
+            delay = Math.random() * 400 + 200;
+        } else {
+            incrementValue = Math.random() * 0.3 + 0.1;
+            delay = Math.random() * 800 + 400;
+        }
+
+        increment(incrementValue);
+
+        animationTimer = setTimeout(() => {
+            animateRealistic();
+        }, delay);
     }
-};
 
-window.navigateToPath = function(path) {
-    if (! window.currentState) return;
-    
-    window.currentState.path = path;
-    var pathPrefix = path ?  path + '/' : '';
-    
-    if (typeof LocalStorageManager !== 'undefined') {
-        LocalStorageManager.listFiles(window.currentState.repository, pathPrefix).then(function(files) {
-            window.currentState.files = files;
-            if (typeof renderFileList === 'function') renderFileList();
-            if (typeof updateBreadcrumb === 'function') updateBreadcrumb();
-        });
+    function animateLinear() {
+        if (!isRunning || progress >= settings.maximum * 100) {
+            return;
+        }
+
+        const targetProgress = settings.maximum * 100;
+        const remainingProgress = targetProgress - progress;
+        const incrementValue = Math.max(0.5, remainingProgress * 0.02);
+
+        increment(incrementValue);
+
+        animationTimer = setTimeout(() => {
+            animateLinear();
+        }, 16);
     }
-};
 
-window.navigateToFolder = function(folderName) {
-    if (!window.currentState) return;
-    
-    var newPath = window.currentState.path 
-        ? window.currentState.path + '/' + folderName 
-        :  folderName;
-    
-    window.navigateToPath(newPath);
-};
+    function animateSmooth() {
+        if (!isRunning || progress >= settings.maximum * 100) {
+            return;
+        }
 
-window.navigateBack = function() {
-    if (!window.currentState) return;
-    
-    var pathParts = window.currentState.path.split('/').filter(Boolean);
-    if (pathParts.length > 0) {
-        pathParts.pop();
-        window.navigateToPath(pathParts.join('/'));
-    } else {
-        window.navigateToRoot();
+        const elapsed = Date.now() - animationStartTime;
+        const duration = 10000;
+        const t = Math.min(elapsed / duration, 1);
+        const easedProgress = easing.easeOutExpo(t) * settings.maximum * 100;
+
+        setProgress(easedProgress);
+
+        if (t < 1 && isRunning) {
+            animationTimer = setTimeout(() => {
+                animateSmooth();
+            }, 16);
+        }
     }
-};
 
-// Initialize when DOM is ready
-if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', function() {
-        PageRouter.init();
-    });
-} else {
-    PageRouter.init();
+    let animationStartTime = 0;
+
+    const originalAnimateSmooth = animateSmooth;
+    function animateSmoothWrapper() {
+        animationStartTime = Date.now();
+        originalAnimateSmooth();
+    }
+
+    function configure(options = {}) {
+        settings = { ...settings, ...options };
+
+        if (container) {
+            container.style.height = settings.height;
+        }
+
+        if (fill) {
+            fill.style.backgroundColor = settings.color;
+        }
+
+        return settings;
+    }
+
+    function isActive() {
+        return isRunning && container && container.classList.contains("visible");
+    }
+
+    function getProgress() {
+        return progress;
+    }
+
+    function getSettings() {
+        return { ...settings };
+    }
+
+    function done() {
+        hide();
+    }
+
+    function start() {
+        show();
+    }
+
+    function set(value) {
+        if (!isRunning) {
+            show();
+        }
+        setProgress(value);
+    }
+
+    function trickle() {
+        if (!isRunning) return;
+
+        const amount = (settings.maximum * 100 - progress) * 0.1 * Math.random();
+        increment(amount);
+    }
+
+    return {
+        show,
+        hide,
+        start,
+        done,
+        set,
+        increment,
+        trickle,
+        configure,
+        isActive,
+        getProgress,
+        getSettings,
+        reset
+    };
+})();
+
+if (typeof window !== "undefined") {
+    window.ProgressLoader = ProgressLoader;
+
+    if (typeof window.LoadingProgress === "undefined") {
+        window.LoadingProgress = ProgressLoader;
+    }
 }
-
-// Export for module usage
-window.PageRouter = PageRouter;
-
-/**
- * 
- *  C R E A T E D  B Y
- * 
- *  William Hanson 
- * 
- *  Chevrolay@Outlook.com
- * 
- *  m.me/Chevrolay
- * 
- */

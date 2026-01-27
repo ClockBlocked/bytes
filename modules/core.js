@@ -1,10 +1,10 @@
 // Store interval references outside of DOM
-let _loadingProgressInterval = null;
+let _ProgressLoaderInterval = null;
 let _fallbackListenersInitialized = false;
 
-// Fallback LoadingProgress if overlays.js fails to load from CDN
-if (typeof LoadingProgress === 'undefined') {
-  window.LoadingProgress = {
+// Fallback ProgressLoader if overlays.js fails to load from CDN
+if (typeof ProgressLoader === 'undefined') {
+  window.ProgressLoader = {
     show: function() {
       const progress = document.getElementById('pageProgress');
       if (progress) {
@@ -14,13 +14,13 @@ if (typeof LoadingProgress === 'undefined') {
           fill.style.width = '0%';
           let width = 0;
           // Clear any existing interval first
-          if (_loadingProgressInterval) {
-            clearInterval(_loadingProgressInterval);
+          if (_ProgressLoaderInterval) {
+            clearInterval(_ProgressLoaderInterval);
           }
-          _loadingProgressInterval = setInterval(() => {
+          _ProgressLoaderInterval = setInterval(() => {
             if (width >= 90) {
-              clearInterval(_loadingProgressInterval);
-              _loadingProgressInterval = null;
+              clearInterval(_ProgressLoaderInterval);
+              _ProgressLoaderInterval = null;
             } else {
               width += Math.random() * 10;
               fill.style.width = Math.min(width, 90) + '%';
@@ -36,9 +36,9 @@ if (typeof LoadingProgress === 'undefined') {
         if (fill) {
           fill.style.width = '100%';
         }
-        if (_loadingProgressInterval) {
-          clearInterval(_loadingProgressInterval);
-          _loadingProgressInterval = null;
+        if (_ProgressLoaderInterval) {
+          clearInterval(_ProgressLoaderInterval);
+          _ProgressLoaderInterval = null;
         }
         setTimeout(() => {
           progress.classList.remove('visible');
@@ -225,14 +225,14 @@ function setupCodeEditors() {
 
 function fetchData(operationName, callback) {
   return new Promise((resolve, reject) => {
-    LoadingProgress.show();
+    ProgressLoader.show();
     setTimeout(() => {
       try {
         const result = callback();
-        LoadingProgress.hide();
+        ProgressLoader.hide();
         resolve(result);
       } catch (error) {
-        LoadingProgress.hide();
+        ProgressLoader.hide();
         reject(error);
       }
     }, 100);
@@ -262,7 +262,7 @@ function createRepository(repoName, description = "", isPublic = false) {
     return;
   }
   
-  LoadingProgress.show();
+  ProgressLoader.show();
   setTimeout(async () => {
     try {
       const newRepo = {
@@ -276,9 +276,9 @@ function createRepository(repoName, description = "", isPublic = false) {
       await IndexedDBStorageManager.saveRepository(newRepo);
       await loadRepositories(); // Refresh the list
       showSuccessMessage(`Repository "${repoName}" created successfully!`);
-      LoadingProgress.hide();
+      ProgressLoader.hide();
     } catch (error) {
-      LoadingProgress.hide();
+      ProgressLoader.hide();
       showErrorMessage("Failed to create repository: " + error.message);
     }
   }, 1500);
@@ -287,7 +287,7 @@ function createRepository(repoName, description = "", isPublic = false) {
 function deleteRepository(repoId) {
   if (!confirm(`Are you sure you want to delete this repository? This action cannot be undone.`)) return;
   
-  LoadingProgress.show();
+  ProgressLoader.show();
   setTimeout(async () => {
     try {
       await IndexedDBStorageManager.deleteRepository(repoId);
@@ -301,9 +301,9 @@ function deleteRepository(repoId) {
       
       renderRepositoryList();
       showSuccessMessage("Repository deleted successfully!");
-      LoadingProgress.hide();
+      ProgressLoader.hide();
     } catch (error) {
-      LoadingProgress.hide();
+      ProgressLoader.hide();
       showErrorMessage("Failed to delete repository: " + error.message);
     }
   }, 1500);
@@ -329,7 +329,7 @@ function createFile() {
     return;
   }
   
-  LoadingProgress.show();
+  ProgressLoader.show();
   setTimeout(async () => {
     try {
       const filePath = (currentState.path ? currentState.path + "/" : "") + fileName;
@@ -351,9 +351,9 @@ function createFile() {
       renderFileList();
       hideCreateFileModal();
       showSuccessMessage(`File "${fileName}" created successfully!`);
-      LoadingProgress.hide();
+      ProgressLoader.hide();
     } catch (error) {
-      LoadingProgress.hide();
+      ProgressLoader.hide();
       showErrorMessage("Failed to create file: " + error.message);
     }
   }, 1500);
@@ -367,7 +367,7 @@ function confirmDeleteFile() {
 function deleteCurrentFile() {
   if (!currentState.currentFile || !currentState.repository) return;
   
-  LoadingProgress.show();
+  ProgressLoader.show();
   setTimeout(async () => {
     try {
       const filePath = currentState.currentFile.path || 
@@ -380,10 +380,10 @@ function deleteCurrentFile() {
       renderFileList();
       hideDeleteFileModal();
       showSuccessMessage(`File "${currentState.currentFile.name}" deleted successfully!`);
-      LoadingProgress.hide();
+      ProgressLoader.hide();
       setTimeout(() => showExplorer(), 500);
     } catch (error) {
-      LoadingProgress.hide();
+      ProgressLoader.hide();
       showErrorMessage("Failed to delete file: " + error.message);
     }
   }, 1500);
@@ -489,7 +489,7 @@ function addToRecentFiles(fileName, repoId, repoName, filePath) {
 }
 
 function openRecentFile(repoId, filePath, fileName) {
-  LoadingProgress.show();
+  ProgressLoader.show();
   
   setTimeout(async () => {
     try {
@@ -525,9 +525,9 @@ function openRecentFile(repoId, filePath, fileName) {
       
       // View the file
       viewFile(fileName);
-      LoadingProgress.hide();
+      ProgressLoader.hide();
     } catch (error) {
-      LoadingProgress.hide();
+      ProgressLoader.hide();
       showErrorMessage("Failed to open recent file: " + error.message);
     }
   }, 1500);
@@ -546,7 +546,7 @@ function viewFile(filename) {
   }
   
   currentState.currentFile = file;
-  LoadingProgress.show();
+  ProgressLoader.show();
   LoadingSpinner.show();
   
   setTimeout(async () => {
@@ -579,10 +579,10 @@ function viewFile(filename) {
       
       showFileViewer();
       updateStats();
-      LoadingProgress.hide();
+      ProgressLoader.hide();
       LoadingSpinner.hide();
     } catch (error) {
-      LoadingProgress.hide();
+      ProgressLoader.hide();
       LoadingSpinner.hide();
       showErrorMessage("Failed to load file: " + error.message);
     }
@@ -672,7 +672,7 @@ function saveFile() {
     return;
   }
   
-  LoadingProgress.show();
+  ProgressLoader.show();
   
   setTimeout(async () => {
     try {
@@ -703,19 +703,19 @@ function saveFile() {
       showSuccessMessage(`File "${currentState.currentFile.name}" saved successfully!`);
       
       setTimeout(() => {
-        LoadingProgress.hide();
+        ProgressLoader.hide();
         viewFile(currentState.currentFile.name);
       }, 500);
       
     } catch (error) {
-      LoadingProgress.hide();
+      ProgressLoader.hide();
       showErrorMessage("Failed to save file: " + error.message);
     }
   }, 1500);
 }
 
 function openRepository(repoId) {
-  LoadingProgress.show();
+  ProgressLoader.show();
   
   setTimeout(async () => {
     try {
@@ -749,10 +749,10 @@ function openRepository(repoId) {
       
       showExplorer();
       updateStats();
-      LoadingProgress.hide();
+      ProgressLoader.hide();
       
     } catch (error) {
-      LoadingProgress.hide();
+      ProgressLoader.hide();
       showErrorMessage("Failed to open repository: " + error.message);
     }
   }, 1500);
@@ -793,7 +793,7 @@ function initializeApp() {
   setupCodeEditors();
   updateRecentFilesUI();
   
-  LoadingProgress.show();
+  ProgressLoader.show();
   setTimeout(async () => {
     try {
       // Initialize IndexedDB
@@ -803,9 +803,9 @@ function initializeApp() {
       await loadRepositories();
       
       showSuccessMessage("Welcome to GitCodr (Local Mode)");
-      LoadingProgress.hide();
+      ProgressLoader.hide();
     } catch (error) {
-      LoadingProgress.hide();
+      ProgressLoader.hide();
       console.error("Initialization error:", error);
       showErrorMessage("Failed to initialize application: " + error.message);
     }
