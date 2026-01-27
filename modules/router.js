@@ -108,7 +108,7 @@ const ProgressLoader = (() => {
                     animateLinear();
                     break;
                 case "smooth":
-                    animateSmooth();
+                    animateSmoothWrapper();
                     break;
                 default:
                     setProgress(settings.minimum * 100);
@@ -197,6 +197,8 @@ const ProgressLoader = (() => {
         }, 16);
     }
 
+    let animationStartTime = 0;
+
     function animateSmooth() {
         if (!isRunning || progress >= settings.maximum * 100) {
             return;
@@ -216,12 +218,9 @@ const ProgressLoader = (() => {
         }
     }
 
-    let animationStartTime = 0;
-
-    const originalAnimateSmooth = animateSmooth;
     function animateSmoothWrapper() {
         animationStartTime = Date.now();
-        originalAnimateSmooth();
+        animateSmooth();
     }
 
     function configure(options = {}) {
@@ -273,6 +272,7 @@ const ProgressLoader = (() => {
     }
 
     return {
+        init,
         show,
         hide,
         start,
@@ -288,10 +288,250 @@ const ProgressLoader = (() => {
     };
 })();
 
-if (typeof window !== "undefined") {
-    window.ProgressLoader = ProgressLoader;
+const PageRouter = {
+    pages: {},
+    
+    currentPage: null,
+    
+    transitionDuration: 400,
+    
+    minLoadingTime: 600,
+    
+    isTransitioning: false,
 
-    if (typeof window.LoadingProgress === "undefined") {
-        window.LoadingProgress = ProgressLoader;
+    init() {
+        ProgressLoader.init();
+        this.cachePageElements();
+        this.setupEventListeners();
+        this.showInitialPage();
+    },
+
+    cachePageElements() {
+        const allPages = document.querySelectorAll('.pages[data-page]');
+        
+        allPages.forEach(page => {
+            const pageName = page.getAttribute('data-page');
+            if (pageName) {
+                this.pages[pageName] = page;
+                page.classList.remove('hidden', 'spa-hidden', 'spa-page', 'active', 'exit', 'show');
+                page.classList.add('hide');
+            }
+        });
+    },
+
+    setupEventListeners() {
+        window.addEventListener('popstate', (e) => {
+            const page = window.location.hash.slice(1) || 'repo';
+            this.navigateTo(page, false);
+        });
+
+        document.addEventListener('click', (e) => {
+            const navElement = e.target.closest('[data-navigate]');
+            if (navElement && !this.isTransitioning) {
+                e.preventDefault();
+                const targetPage = navElement.getAttribute('data-navigate');
+                this.navigateTo(targetPage, true);
+            }
+        });
+    },
+
+    showInitialPage() {
+        const initialPage = window.location.hash.slice(1) || 'repo';
+        
+        Object.values(this.pages).forEach(page => {
+            if (page) {
+                page.classList.remove('show');
+                page.classList.add('hide');
+            }
+        });
+        
+        ProgressLoader.start();
+        
+        setTimeout(() => {
+            if (this.pages[initialPage]) {
+                this.pages[initialPage].classList.remove('hide');
+                this.pages[initialPage].classList.add('show');
+                this.currentPage = initialPage;
+                this.updatePageTitle(initialPage);
+            }
+            ProgressLoader.done();
+        }, this.minLoadingTime);
+    },
+
+    async navigateTo(pageName, updateHistory = true) {
+        if (!this.pages[pageName]) {
+            console.warn('Page "' + pageName + '" not found');
+            return;
+        }
+
+        if (this.isTransitioning || this.currentPage === pageName) {
+            return;
+        }
+
+        this.isTransitioning = true;
+        
+        ProgressLoader.start();
+        
+        const startTime = Date.now();
+
+        if (updateHistory && window.location.hash !== '#' + pageName) {
+            window.history.pushState({ page: pageName }, '', '#' + pageName);
+        }
+
+        document.dispatchEvent(new CustomEvent('pageNavigationStart', {
+            detail: { from: this.currentPage, to: pageName }
+        }));
+
+        if (this.currentPage && this.pages[this.currentPage]) {
+            this.pages[this.currentPage].classList.remove('show');
+            this.pages[this.currentPage].classList.add('hide');
+        }
+
+        await this.delay(this.transitionDuration);
+        
+        const elapsed = Date.now() - startTime;
+        const remainingDelay = Math.max(0, this.minLoadingTime - elapsed);
+        
+        if (remainingDelay > 0) {
+            await this.delay(remainingDelay);
+        }
+
+        window.scrollTo(0, 0);
+
+        this.pages[pageName].classList.remove('hide');
+        
+        void this.pages[pageName].offsetWidth;
+        
+        this.pages[pageName].classList.add('show');
+
+        const previousPage = this.currentPage;
+        this.currentPage = pageName;
+
+        this.updatePageTitle(pageName);
+
+        ProgressLoader.done();
+
+        await this.delay(this.transitionDuration);
+
+        document.dispatchEvent(new CustomEvent('pageNavigationComplete', {
+            detail: { from: previousPage, to: pageName }
+        }));
+
+        this.isTransitioning = false;
+    },
+
+    delay(ms) {
+        return new Promise(resolve => setTimeout(resolve, ms));
+    },
+
+    updatePageTitle(pageName) {
+        const titles = {
+            'repo': 'Repositories - GitDev',
+            'explorer': 'File Explorer - GitDev',
+            'file': 'File Editor - GitDev'
+        };
+        document.title = titles[pageName] || 'GitDev';
+    },
+
+    getPage(pageName) {
+        return this.pages[pageName] || null;
+    },
+
+    isPageVisible(pageName) {
+        const page = this.pages[pageName];
+        return page ? page.classList.contains('show') : false;
     }
+};
+
+window.showRepoSelector = function() {
+    PageRouter.navigateTo('repo');
+};
+
+window.showExplorer = function() {
+    if (!window.currentState || !window.currentState.repository) {
+        console.warn('No repository selected');
+        return;
+    }
+    PageRouter.navigateTo('explorer');
+};
+
+window.showFileViewer = function() {
+    PageRouter.navigateTo('file');
+};
+
+window.showFileEditor = function() {
+    PageRouter.navigateTo('file');
+    setTimeout(function() {
+        if (window.coderViewEdit && typeof window.coderViewEdit.enableEditing === 'function') {
+            window.coderViewEdit.enableEditing();
+        }
+    }, PageRouter.transitionDuration + 100);
+};
+
+window.navigateToPage = function(pageName) {
+    PageRouter.navigateTo(pageName);
+};
+
+window.navigateToRoot = function() {
+    if (!window.currentState) return;
+    
+    window.currentState.path = '';
+    
+    if (typeof LocalStorageManager !== 'undefined') {
+        LocalStorageManager.listFiles(window.currentState.repository, '').then(function(files) {
+            window.currentState.files = files;
+            if (typeof renderFileList === 'function') renderFileList();
+            if (typeof updateBreadcrumb === 'function') updateBreadcrumb();
+            if (typeof updateStats === 'function') updateStats();
+        });
+    }
+};
+
+window.navigateToPath = function(path) {
+    if (!window.currentState) return;
+    
+    window.currentState.path = path;
+    var pathPrefix = path ? path + '/' : '';
+    
+    if (typeof LocalStorageManager !== 'undefined') {
+        LocalStorageManager.listFiles(window.currentState.repository, pathPrefix).then(function(files) {
+            window.currentState.files = files;
+            if (typeof renderFileList === 'function') renderFileList();
+            if (typeof updateBreadcrumb === 'function') updateBreadcrumb();
+        });
+    }
+};
+
+window.navigateToFolder = function(folderName) {
+    if (!window.currentState) return;
+    
+    var newPath = window.currentState.path 
+        ? window.currentState.path + '/' + folderName 
+        : folderName;
+    
+    window.navigateToPath(newPath);
+};
+
+window.navigateBack = function() {
+    if (!window.currentState) return;
+    
+    var pathParts = window.currentState.path.split('/').filter(Boolean);
+    if (pathParts.length > 0) {
+        pathParts.pop();
+        window.navigateToPath(pathParts.join('/'));
+    } else {
+        window.navigateToRoot();
+    }
+};
+
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', function() {
+        PageRouter.init();
+    });
+} else {
+    PageRouter.init();
 }
+
+window.PageRouter = PageRouter;
+window.ProgressLoader = ProgressLoader;
+window.LoadingProgress = ProgressLoader;
