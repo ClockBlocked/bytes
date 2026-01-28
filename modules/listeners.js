@@ -26,7 +26,7 @@ class EventListenersManager {
             "create-repo": () => this.handleCreateRepo(),
             "show-create-repo": () => this.handleShowCreateRepo(),
             "hide-create-repo-modal": () => this.handleHideCreateRepoModal(),
-            "create-file":  () => this.handleCreateFile(),
+            "create-file": () => this.handleCreateFile(),
             "show-create-file": () => this.handleShowCreateFile(),
             "hide-create-file-modal": () => this.handleHideCreateFileModal(),
             "edit-file": () => this.handleEditFile(),
@@ -42,16 +42,14 @@ class EventListenersManager {
             "toggle-theme": () => this.handleToggleTheme(),
             "add-tag": () => this.handleAddTag(),
             "confirm-delete-file": () => this.handleConfirmDeleteFile(),
-            "hide-delete-file-modal":  () => this.handleHideDeleteFileModal()
+            "hide-delete-file-modal": () => this.handleHideDeleteFileModal()
         };
 
         Object.keys(actionHandlers).forEach(action => {
-            document.querySelectorAll(`[data-action="${action}"]`).forEach(element => {
-                element.addEventListener("click", e => {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    actionHandlers[action]();
-                });
+            $(`[data-action="${action}"]`).on("click", e => {
+                e.preventDefault();
+                e.stopPropagation();
+                actionHandlers[action]();
             });
         });
 
@@ -60,6 +58,8 @@ class EventListenersManager {
         this.setupModalInteractions();
         this.setupAdditionalListeners();
     }
+
+    // ... (all handler methods remain the same - just change DOM queries to jQuery)
 
     handleCreateRepo() {
         if (typeof window.createRepository === "function") {
@@ -198,22 +198,22 @@ class EventListenersManager {
 
     toggleThemeFallback() {
         const html = document.documentElement;
-        const themeIcons = document.querySelectorAll("#themeIcon, #sidebarThemeIcon");
+        const themeIcons = $("#themeIcon, #sidebarThemeIcon");
         const isDarkTheme = html.getAttribute("data-theme") === "dark";
 
         if (isDarkTheme) {
             html.setAttribute("data-theme", "light");
-            themeIcons.forEach(icon => icon.className = "fas fa-sun");
+            themeIcons.removeClass("fas fa-moon").addClass("fas fa-sun");
         } else {
             html.setAttribute("data-theme", "dark");
-            themeIcons.forEach(icon => icon.className = "fas fa-moon");
+            themeIcons.removeClass("fas fa-sun").addClass("fas fa-moon");
         }
 
         localStorage.setItem("gitcodr_theme", isDarkTheme ? "light" : "dark");
     }
 
     setupKeyboardShortcuts() {
-        document.addEventListener("keydown", e => {
+        $(document).on("keydown", e => {
             if (e.key === "Escape") {
                 this.handleHideCreateRepoModal();
                 this.handleHideCreateFileModal();
@@ -250,9 +250,9 @@ class EventListenersManager {
     }
 
     setupFormInteractions() {
-        const tagInput = document.getElementById("tagInput");
-        if (tagInput) {
-            tagInput.addEventListener("keydown", e => {
+        const tagInput = $("#tagInput");
+        if (tagInput.length) {
+            tagInput.on("keydown", e => {
                 if (e.key === "Enter") {
                     e.preventDefault();
                     this.handleAddTag();
@@ -260,29 +260,29 @@ class EventListenersManager {
             });
         }
 
-        const newFileName = document.getElementById("newFileName");
-        if (newFileName) {
-            newFileName.addEventListener("focus", () => newFileName.select());
+        const newFileName = $("#newFileName");
+        if (newFileName.length) {
+            newFileName.on("focus", () => newFileName.trigger('select'));
         }
 
-        const newRepoName = document.getElementById("newRepoName");
-        if (newRepoName) {
-            newRepoName.addEventListener("focus", () => newRepoName.select());
+        const newRepoName = $("#newRepoName");
+        if (newRepoName.length) {
+            newRepoName.on("focus", () => newRepoName.trigger('select'));
         }
     }
 
     setupModalInteractions() {
         const modals = [
-            { id: "createRepoModal", handler: () => this.handleHideCreateRepoModal() },
-            { id: "createFileModal", handler: () => this.handleHideCreateFileModal() },
-            { id: "deleteFileModal", handler: () => this.handleHideDeleteFileModal() }
+            { id: "#createRepoModal", handler: () => this.handleHideCreateRepoModal() },
+            { id: "#createFileModal", handler: () => this.handleHideCreateFileModal() },
+            { id: "#deleteFileModal", handler: () => this.handleHideDeleteFileModal() }
         ];
 
         modals.forEach(({ id, handler }) => {
-            const modal = document.getElementById(id);
-            if (modal) {
-                modal.addEventListener("click", e => {
-                    if (e.target === modal) {
+            const modal = $(id);
+            if (modal.length) {
+                modal.on("click", e => {
+                    if (e.target === modal[0]) {
                         handler();
                     }
                 });
@@ -291,28 +291,27 @@ class EventListenersManager {
     }
 
     setupAdditionalListeners() {
-        const branchSelector = document.getElementById("branchSelector");
-        const branchDropdown = document.getElementById("branchDropdown");
+        const branchSelector = $("#branchSelector");
+        const branchDropdown = $("#branchDropdown");
 
-        if (branchSelector && branchDropdown) {
-            branchSelector.addEventListener("click", e => {
+        if (branchSelector.length && branchDropdown.length) {
+            branchSelector.on("click", e => {
                 e.preventDefault();
                 e.stopPropagation();
-                branchDropdown.classList.toggle("hide");
-                branchDropdown.classList.toggle("show");
+                branchDropdown.toggleClass("hide").toggleClass("show");
             });
         }
 
-        document.addEventListener("click", e => {
-            if (branchDropdown && !branchDropdown.contains(e.target) && e.target !== branchSelector) {
-                branchDropdown.classList.remove("show");
-                branchDropdown.classList.add("hide");
+        $(document).on("click", e => {
+            if (branchDropdown.length && !branchDropdown.is(e.target) && branchDropdown.has(e.target).length === 0 && 
+                !branchSelector.is(e.target) && branchSelector.has(e.target).length === 0) {
+                branchDropdown.removeClass("show").addClass("hide");
             }
         });
 
-        const leftSidebarTrigger = document.getElementById("leftSidebarTrigger");
-        if (leftSidebarTrigger) {
-            leftSidebarTrigger.addEventListener("click", e => {
+        const leftSidebarTrigger = $("#leftSidebarTrigger");
+        if (leftSidebarTrigger.length) {
+            leftSidebarTrigger.on("click", e => {
                 e.stopPropagation();
                 if (this.sidebarManager && typeof this.sidebarManager.toggleLeftSidebar === "function") {
                     this.sidebarManager.toggleLeftSidebar();
@@ -320,9 +319,9 @@ class EventListenersManager {
             });
         }
 
-        const rightSidebarTrigger = document.getElementById("rightSidebarTrigger");
-        if (rightSidebarTrigger) {
-            rightSidebarTrigger.addEventListener("click", e => {
+        const rightSidebarTrigger = $("#rightSidebarTrigger");
+        if (rightSidebarTrigger.length) {
+            rightSidebarTrigger.on("click", e => {
                 e.stopPropagation();
                 if (this.sidebarManager && typeof this.sidebarManager.toggleRightSidebar === "function") {
                     this.sidebarManager.toggleRightSidebar();
@@ -330,9 +329,9 @@ class EventListenersManager {
             });
         }
 
-        const overlay = document.getElementById("overlay");
-        if (overlay) {
-            overlay.addEventListener("click", () => {
+        const overlay = $("#overlay");
+        if (overlay.length) {
+            overlay.on("click", () => {
                 if (!this.sidebarManager) return;
                 if (typeof this.sidebarManager.closeLeftSidebar === "function") {
                     this.sidebarManager.closeLeftSidebar();
@@ -345,10 +344,13 @@ class EventListenersManager {
     }
 
     setupGlobalEventDelegation() {
-        document.addEventListener("click", e => {
-            const repoCard = e.target.closest(".bg-github-canvas-overlay.border");
-            if (repoCard && repoCard.querySelector("h3.text-github-accent-fg")) {
-                const repoName = repoCard.querySelector("h3").textContent;
+        $(document).on("click", e => {
+            const $target = $(e.target);
+            
+            // Repository card click
+            const repoCard = $target.closest(".bg-github-canvas-overlay.border");
+            if (repoCard.length) {
+                const repoName = repoCard.find("h3.text-github-accent-fg").text();
                 if (repoName && typeof window.openRepository === "function") {
                     e.preventDefault();
                     window.openRepository(repoName);
@@ -356,9 +358,10 @@ class EventListenersManager {
                 return;
             }
 
-            const repoItem = e.target.closest(".repo-item");
-            if (repoItem) {
-                const repoName = repoItem.querySelector("span: not(.text-github-fg-muted)")?.textContent;
+            // Repository item click
+            const repoItem = $target.closest(".repo-item");
+            if (repoItem.length) {
+                const repoName = repoItem.find("span:not(.text-github-fg-muted)").text();
                 if (repoName && typeof window.openRepository === "function") {
                     e.preventDefault();
                     window.openRepository(repoName);
@@ -366,10 +369,11 @@ class EventListenersManager {
                 return;
             }
 
-            const recentFileItem = e.target.closest(".recent-file-item");
-            if (recentFileItem) {
-                const fileName = recentFileItem.querySelector(".text-github-fg-default")?.textContent;
-                const repoName = recentFileItem.querySelector(".text-github-fg-muted")?.textContent;
+            // Recent file item click
+            const recentFileItem = $target.closest(".recent-file-item");
+            if (recentFileItem.length) {
+                const fileName = recentFileItem.find(".text-github-fg-default").text();
+                const repoName = recentFileItem.find(".text-github-fg-muted").text();
                 if (fileName && repoName && typeof window.openRecentFile === "function") {
                     e.preventDefault();
                     window.openRecentFile(repoName, "", fileName);
@@ -377,11 +381,12 @@ class EventListenersManager {
                 return;
             }
 
-            const fileRow = e.target.closest("tbody tr");
-            if (fileRow && fileRow.parentElement && fileRow.parentElement.id === "fileListBody") {
-                if (e.target.closest(".file-more-menu-btn")) return;
+            // File row click
+            const fileRow = $target.closest("tbody tr");
+            if (fileRow.length && fileRow.parent().attr("id") === "fileListBody") {
+                if ($target.closest(".file-more-menu-btn").length) return;
                 
-                const fileName = fileRow.querySelector("td:first-child span")?.textContent;
+                const fileName = fileRow.find("td:first-child span").text();
                 if (fileName && typeof window.viewFile === "function") {
                     e.preventDefault();
                     window.viewFile(fileName);
@@ -389,12 +394,13 @@ class EventListenersManager {
                 return;
             }
 
-            const breadcrumbLink = e.target.closest("#pathBreadcrumb a");
-            if (breadcrumbLink) {
+            // Breadcrumb click
+            const breadcrumbLink = $target.closest("#pathBreadcrumb a");
+            if (breadcrumbLink.length) {
                 e.preventDefault();
-                const text = breadcrumbLink.textContent.trim();
+                const text = breadcrumbLink.text().trim();
                 
-                const navigateTo = breadcrumbLink.getAttribute("data-navigate");
+                const navigateTo = breadcrumbLink.attr("data-navigate");
                 if (navigateTo && window.PageRouter) {
                     PageRouter.navigateTo(navigateTo);
                     return;
@@ -405,7 +411,7 @@ class EventListenersManager {
                 } else if (text === this.currentState.repository) {
                     this.handleNavigateRoot();
                 } else {
-                    const pathSegment = breadcrumbLink.getAttribute("data-path");
+                    const pathSegment = breadcrumbLink.attr("data-path");
                     if (pathSegment && typeof window.navigateToPath === "function") {
                         window.navigateToPath(pathSegment);
                     }
@@ -413,8 +419,9 @@ class EventListenersManager {
                 return;
             }
 
-            const editBtn = e.target.closest("#editToggleBtn, .edit-btn");
-            if (editBtn) {
+            // Edit button click
+            const editBtn = $target.closest("#editToggleBtn, .edit-btn");
+            if (editBtn.length) {
                 e.preventDefault();
                 if (window.coderViewEdit && typeof window.coderViewEdit.enterEditMode === "function") {
                     window.coderViewEdit.enterEditMode();
@@ -422,8 +429,9 @@ class EventListenersManager {
                 return;
             }
 
-            const saveBtn = e.target.closest("#saveChangesBtn, .commit-btn");
-            if (saveBtn) {
+            // Save button click
+            const saveBtn = $target.closest("#saveChangesBtn, .commit-btn");
+            if (saveBtn.length) {
                 e.preventDefault();
                 if (window.coderViewEdit && typeof window.coderViewEdit.saveChanges === "function") {
                     window.coderViewEdit.saveChanges();
@@ -431,8 +439,9 @@ class EventListenersManager {
                 return;
             }
 
-            const cancelBtn = e.target.closest("#cancelEditBtn, .cancel-btn");
-            if (cancelBtn) {
+            // Cancel button click
+            const cancelBtn = $target.closest("#cancelEditBtn, .cancel-btn");
+            if (cancelBtn.length) {
                 e.preventDefault();
                 if (window.coderViewEdit && typeof window.coderViewEdit.cancelEdit === "function") {
                     window.coderViewEdit.cancelEdit();
@@ -441,7 +450,7 @@ class EventListenersManager {
             }
         });
 
-        document.addEventListener("click", () => {
+        $(document).on("click", () => {
             if (typeof window.hideContextMenu === "function") {
                 window.hideContextMenu();
             }
@@ -449,8 +458,9 @@ class EventListenersManager {
     }
 
     showNotification(message, type = "success") {
-        const notification = document.createElement("div");
-        notification.className = "fixed top-4 right-4 bg-github-canvas-overlay border border-github-border-default rounded-lg p-4 shadow-lg z-50";
+        const notification = $('<div>', {
+            class: "fixed top-4 right-4 bg-github-canvas-overlay border border-github-border-default rounded-lg p-4 shadow-lg z-50"
+        });
         
         const iconColor = type === "success" ? "text-github-success-fg" : 
                           type === "error" ? "text-github-danger-fg" : 
@@ -462,34 +472,38 @@ class EventListenersManager {
             ? "M3.72 3.72a.75.75 0 0 1 1.06 0L8 6.94l3.22-3.22a.749.749 0 0 1 1.275.326.749.749 0 0 1-.215.734L9.06 8l3.22 3.22a.749.749 0 0 1-.326 1.275.749.749 0 0 1-.734-.215L8 9.06l-3.22 3.22a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042L6.94 8 3.72 4.78a.75.75 0 0 1 0-1.06Z"
             : "M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8Zm8-6.5a6.5 6.5 0 1 0 0 13 6.5 6.5 0 0 0 0-13ZM6.5 7.75A.75.75 0 0 1 7.25 7h1a.75.75 0 0 1 .75.75v2.75h.25a.75.75 0 0 1 0 1.5h-2a.75.75 0 0 1 0-1.5h.25v-2h-.25a.75.75 0 0 1-.75-.75ZM8 6a1 1 0 1 1 0-2 1 1 0 0 1 0 2Z";
 
-        notification.innerHTML = `
+        notification.html(`
             <div class="flex items-center space-x-3">
                 <svg class="w-5 h-5 ${iconColor}" fill="currentColor" viewBox="0 0 16 16">
                     <path d="${iconPath}"/>
                 </svg>
                 <span class="text-github-fg-default text-sm">${message}</span>
             </div>
-        `;
+        `);
 
-        notification.style.opacity = "0";
-        notification.style.transform = "translateY(-10px)";
-        notification.style.transition = "opacity 0.3s ease, transform 0.3s ease";
+        notification.css({
+            opacity: "0",
+            transform: "translateY(-10px)",
+            transition: "opacity 0.3s ease, transform 0.3s ease"
+        });
         
-        document.body.appendChild(notification);
+        $("body").append(notification);
 
         requestAnimationFrame(() => {
-            notification.style.opacity = "1";
-            notification.style.transform = "translateY(0)";
+            notification.css({
+                opacity: "1",
+                transform: "translateY(0)"
+            });
         });
 
         setTimeout(() => {
-            notification.style.opacity = "0";
-            notification.style.transform = "translateY(-10px)";
+            notification.css({
+                opacity: "0",
+                transform: "translateY(-10px)"
+            });
             
             setTimeout(() => {
-                if (notification.parentNode) {
-                    notification.parentNode.removeChild(notification);
-                }
+                notification.remove();
             }, 300);
         }, 3000);
     }
