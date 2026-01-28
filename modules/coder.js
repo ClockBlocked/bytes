@@ -1,18 +1,18 @@
 class FullscreenManager {
   constructor(containerSelector = ".editorContainer") {
     this.isFullscreen = false;
-    this.container = document.querySelector(containerSelector);
-    this.editorCard = this.container?.querySelector('.editorCard');
+    this.container = $(containerSelector);
+    this.editorCard = this.container.find('.editorCard');
     
-    if (!this.editorCard) {
+    if (!this.editorCard.length) {
       console.error("FullscreenManager: EditorCard not found");
     }
     
     this.initializeListeners();
   }
   
-  enter = function() {
-    const elem = this.editorCard;
+  enter = () => {
+    const elem = this.editorCard[0];
     
     if (!elem) {
       console.error("FullscreenManager: No editorCard to make fullscreen");
@@ -20,7 +20,7 @@ class FullscreenManager {
       return;
     }
     
-    this.container?.setAttribute('data-fullscreen', 'true');
+    this.container.attr('data-fullscreen', 'true');
     
     try {
       if (elem.requestFullscreen) {
@@ -38,10 +38,10 @@ class FullscreenManager {
       console.warn("Fullscreen API failed, using fallback:", error);
       this.fallbackFullscreen(true);
     }
-  }.bind(this);
+  };
   
-  exit = function() {
-    this.container?.setAttribute('data-fullscreen', 'false');
+  exit = () => {
+    this.container.attr('data-fullscreen', 'false');
     
     try {
       if (document.exitFullscreen) {
@@ -59,49 +59,49 @@ class FullscreenManager {
       console.warn("Exit Fullscreen API failed, using fallback:", error);
       this.fallbackFullscreen(false);
     }
-  }.bind(this);
+  };
   
-  toggle = function() {
+  toggle = () => {
     if (this.isFullscreen) {
       this.exit();
     } else {
       this.enter();
     }
-  }.bind(this);
+  };
   
-  fallbackFullscreen = function(enter) {
+  fallbackFullscreen = (enter) => {
     this.isFullscreen = enter;
     const value = enter ? 'true' : 'false';
-    this.container?.setAttribute('data-fullscreen', value);
+    this.container.attr('data-fullscreen', value);
     
     if (enter) {
-      document.body.style.overflow = "hidden";
-      this.container?.classList.add("fullscreen");
-      document.addEventListener("keydown", this.handleEscapeKey);
+      $('body').css("overflow", "hidden");
+      this.container.addClass("fullscreen");
+      $(document).on("keydown.fullscreen", this.handleEscapeKey);
     } else {
-      document.body.style.overflow = "";
-      this.container?.classList.remove("fullscreen");
-      document.removeEventListener("keydown", this.handleEscapeKey);
+      $('body').css("overflow", "");
+      this.container.removeClass("fullscreen");
+      $(document).off("keydown.fullscreen");
     }
     
     const event = new CustomEvent('fullscreenchange', { 
       detail: { 
         isFullscreen: enter,
-        element: this.editorCard,
+        element: this.editorCard[0],
         timestamp: Date.now()
       } 
     });
-    this.container?.dispatchEvent(event);
-    window.dispatchEvent(new Event('resize'));
-  }.bind(this);
+    this.container[0]?.dispatchEvent(event);
+    $(window).trigger('resize');
+  };
   
-  handleEscapeKey = function(e) {
+  handleEscapeKey = (e) => {
     if (e.key === "Escape" && this.isFullscreen) {
       this.exit();
     }
-  }.bind(this);
+  };
   
-  initializeListeners = function() {
+  initializeListeners = () => {
     const events = [
       'fullscreenchange',
       'webkitfullscreenchange',
@@ -120,27 +120,27 @@ class FullscreenManager {
       if (isInFullscreen !== this.isFullscreen) {
         this.isFullscreen = isInFullscreen;
         const value = isInFullscreen ? 'true' : 'false';
-        this.container?.setAttribute('data-fullscreen', value);
+        this.container.attr('data-fullscreen', value);
         this.fallbackFullscreen(isInFullscreen);
       }
     };
     
     events.forEach(event => {
-      document.addEventListener(event, handler);
+      $(document).on(event, handler);
     });
     
     // Store for cleanup
     this.eventHandlers = events.map(event => ({ event, handler }));
-  }.bind(this);
+  };
   
-  cleanup = function() {
+  cleanup = () => {
     if (this.eventHandlers) {
       this.eventHandlers.forEach(({ event, handler }) => {
-        document.removeEventListener(event, handler);
+        $(document).off(event, handler);
       });
     }
-    document.removeEventListener("keydown", this.handleEscapeKey);
-  }.bind(this);
+    $(document).off("keydown.fullscreen");
+  };
   
   get isActive() {
     return this.isFullscreen;
@@ -253,18 +253,18 @@ class CodeViewEditor {
     this.setupDragAndDrop();
   }
   
-  init = function() {
+  init = () => {
     if (this.isInitialized) return;
     
     try {
-      const filePage = document.querySelector('.pages[data-page="file"]');
-      if (!filePage) {
+      const filePage = $('.pages[data-page="file"]');
+      if (!filePage.length) {
         console.warn("CodeViewEditor: File page not found, delaying initialization");
         setTimeout(() => this.init(), 500);
         return;
       }
       
-      filePage.innerHTML = AppAssets.templates.editor();
+      filePage.html(AppAssets.templates.editor());
       this.injectPopover();
       this.injectNewFileDropdown();
       this.injectMoreOptionsDropdown();
@@ -291,9 +291,9 @@ class CodeViewEditor {
     } catch (error) {
       console.error("CodeViewEditor initialization failed:", error);
     }
-  }.bind(this);
+  };
   
-  loadCodeMirrorDependencies = function() {
+  loadCodeMirrorDependencies = () => {
     return new Promise((resolve, reject) => {
       if (typeof CodeMirror !== "undefined") {
         resolve();
@@ -313,13 +313,13 @@ class CodeViewEditor {
         attempts++;
       }, 500);
     });
-  }.bind(this);
+  };
   
-  setupFallbackEditor = function() {
+  setupFallbackEditor = () => {
     const container = this.elements.codeMirrorContainer;
     if (!container) return;
     
-    container.innerHTML = `
+    container.html(`
       <div class="fallback-editor">
         <textarea 
           class="fallback-textarea" 
@@ -330,108 +330,104 @@ class CodeViewEditor {
           <small>Basic editor mode - install CodeMirror for full features</small>
         </div>
       </div>
-    `;
+    `);
     
-    const textarea = container.querySelector('.fallback-textarea');
-    textarea.addEventListener('input', () => {
+    const textarea = container.find('.fallback-textarea');
+    textarea.on('input', () => {
       this.updateStats();
       this.updateModifiedBadge();
     });
     
-    this.fallbackEditor = textarea;
-  }.bind(this);
+    this.fallbackEditor = textarea[0];
+  };
   
-  cacheElements = function() {
-    const elementIds = {
+  cacheElements = () => {
+    const elementSelectors = {
       filePage: '.pages[data-page="file"]',
-      fileNameInput: "fileNameInput",
-      fileExtensionBtn: "fileExtensionBtn",
-      fileExtensionLabel: "fileExtensionLabel",
-      modifiedIndicator: "modifiedIndicator",
-      languageDropdown: "languageDropdown",
-      languageList: "languageList",
-      editModeBtn: "editModeBtn",
-      viewModeBtn: "viewModeBtn",
-      undoBtn: "undoBtn",
-      redoBtn: "redoBtn",
-      searchBtn: "searchBtn",
-      wrapBtn: "wrapBtn",
-      copyBtn: "copyBtn",
-      downloadBtn: "downloadBtn",
-      uploadBtn: "uploadBtn",
-      themeBtn: "themeBtn",
-      themeIcon: "themeIcon",
-      fontDecreaseBtn: "fontDecreaseBtn",
-      fontIncreaseBtn: "fontIncreaseBtn",
-      fontSizeLabel: "fontSizeLabel",
-      fullscreenBtn: "fullscreenBtn",
-      fullscreenIcon: "fullscreenIcon",
-      moreOptionsBtn: "moreOptionsBtn",
-      moreOptionsDropdown: "moreOptionsDropdown",
-      formatBtn: "formatBtn",
-      foldAllBtn: "foldAllBtn",
-      unfoldAllBtn: "unfoldAllBtn",
-      showInvisiblesBtn: "showInvisiblesBtn",
-      editorBody: "editorBody",
-      codeMirrorContainer: "codeMirrorContainer",
-      loadingSpinner: "loadingSpinner",
-      searchPanel: "searchPanel",
-      searchInput: "searchInput",
-      searchMatches: "searchMatches",
-      searchPrevBtn: "searchPrevBtn",
-      searchNextBtn: "searchNextBtn",
-      closeSearchBtn: "closeSearchBtn",
-      replaceInput: "replaceInput",
-      replaceBtn: "replaceBtn",
-      replaceAllBtn: "replaceAllBtn",
-      cursorLine: "cursorLine",
-      cursorCol: "cursorCol",
-      lineCount: "lineCount",
-      charCount: "charCount",
-      fileSize: "fileSize",
-      statusIndicator: "statusIndicator",
-      lastSaved: "lastSaved",
-      languageBadge: "languageBadge",
-      languageBadgeSmall: "languageBadgeSmall",
-      fileUploadInput: "fileUploadInput",
-      editSaveButton: "editSaveButton",
-      editSaveLabel: "editSaveLabel",
-      popoverTitle: "popoverTitle",
-      popoverSubtitle: "popoverSubtitle",
-      commitMessage: "commitMessage",
-      commitCancelBtn: "commitCancelBtn",
-      commitSaveBtn: "commitSaveBtn",
-      headerScrollContainer: "headerScrollContainer",
-      headerScrollLeft: "headerScrollLeft",
-      headerScrollRight: "headerScrollRight",
-      stickyHeader: "stickyHeader",
-      breadCrumbsWrapper: "breadCrumbsWrapper",
-      breadCrumbsContainer: "breadCrumbsContainer",
-      coderToolBarWrapper: "coderToolBarWrapper",
-      coderToolBar: "coderToolBar",
-      newFileDropdown: "newFileDropdown",
-      newFileWithRepo: "newFileWithRepo",
-      newFileWithoutRepo: "newFileWithoutRepo",
-      tabSizeInput: "tabSizeInput",
-      indentUnitInput: "indentUnitInput",
-      autoCloseBracketsBtn: "autoCloseBracketsBtn",
-      lineNumbersBtn: "lineNumbersBtn",
-      matchBracketsBtn: "matchBracketsBtn",
+      fileNameInput: "#fileNameInput",
+      fileExtensionBtn: "#fileExtensionBtn",
+      fileExtensionLabel: "#fileExtensionLabel",
+      modifiedIndicator: "#modifiedIndicator",
+      languageDropdown: "#languageDropdown",
+      languageList: "#languageList",
+      editModeBtn: "#editModeBtn",
+      viewModeBtn: "#viewModeBtn",
+      undoBtn: "#undoBtn",
+      redoBtn: "#redoBtn",
+      searchBtn: "#searchBtn",
+      wrapBtn: "#wrapBtn",
+      copyBtn: "#copyBtn",
+      downloadBtn: "#downloadBtn",
+      uploadBtn: "#uploadBtn",
+      themeBtn: "#themeBtn",
+      themeIcon: "#themeIcon",
+      fontDecreaseBtn: "#fontDecreaseBtn",
+      fontIncreaseBtn: "#fontIncreaseBtn",
+      fontSizeLabel: "#fontSizeLabel",
+      fullscreenBtn: "#fullscreenBtn",
+      fullscreenIcon: "#fullscreenIcon",
+      moreOptionsBtn: "#moreOptionsBtn",
+      moreOptionsDropdown: "#moreOptionsDropdown",
+      formatBtn: "#formatBtn",
+      foldAllBtn: "#foldAllBtn",
+      unfoldAllBtn: "#unfoldAllBtn",
+      showInvisiblesBtn: "#showInvisiblesBtn",
+      editorBody: "#editorBody",
+      codeMirrorContainer: "#codeMirrorContainer",
+      loadingSpinner: "#loadingSpinner",
+      searchPanel: "#searchPanel",
+      searchInput: "#searchInput",
+      searchMatches: "#searchMatches",
+      searchPrevBtn: "#searchPrevBtn",
+      searchNextBtn: "#searchNextBtn",
+      closeSearchBtn: "#closeSearchBtn",
+      replaceInput: "#replaceInput",
+      replaceBtn: "#replaceBtn",
+      replaceAllBtn: "#replaceAllBtn",
+      cursorLine: "#cursorLine",
+      cursorCol: "#cursorCol",
+      lineCount: "#lineCount",
+      charCount: "#charCount",
+      fileSize: "#fileSize",
+      statusIndicator: "#statusIndicator",
+      lastSaved: "#lastSaved",
+      languageBadge: "#languageBadge",
+      languageBadgeSmall: "#languageBadgeSmall",
+      fileUploadInput: "#fileUploadInput",
+      editSaveButton: "#editSaveButton",
+      editSaveLabel: "#editSaveLabel",
+      popoverTitle: "#popoverTitle",
+      popoverSubtitle: "#popoverSubtitle",
+      commitMessage: "#commitMessage",
+      commitCancelBtn: "#commitCancelBtn",
+      commitSaveBtn: "#commitSaveBtn",
+      headerScrollContainer: "#headerScrollContainer",
+      headerScrollLeft: "#headerScrollLeft",
+      headerScrollRight: "#headerScrollRight",
+      stickyHeader: "#stickyHeader",
+      breadCrumbsWrapper: "#breadCrumbsWrapper",
+      breadCrumbsContainer: "#breadCrumbsContainer",
+      coderToolBarWrapper: "#coderToolBarWrapper",
+      coderToolBar: "#coderToolBar",
+      newFileDropdown: "#newFileDropdown",
+      newFileWithRepo: "#newFileWithRepo",
+      newFileWithoutRepo: "#newFileWithoutRepo",
+      tabSizeInput: "#tabSizeInput",
+      indentUnitInput: "#indentUnitInput",
+      autoCloseBracketsBtn: "#autoCloseBracketsBtn",
+      lineNumbersBtn: "#lineNumbersBtn",
+      matchBracketsBtn: "#matchBracketsBtn",
     };
     
-    Object.entries(elementIds).forEach(([key, id]) => {
-      if (key === "filePage") {
-        this.elements[key] = document.querySelector(id);
-      } else {
-        this.elements[key] = document.getElementById(id);
-      }
+    Object.entries(elementSelectors).forEach(([key, selector]) => {
+      this.elements[key] = $(selector);
     });
     
-    this.elements.pathBreadcrumb = document.getElementById('pathBreadcrumb');
+    this.elements.pathBreadcrumb = $('#pathBreadcrumb');
     this.populateLanguageDropdown();
-  }.bind(this);
+  };
   
-  bindElementEvents = function() {
+  bindElementEvents = () => {
     this.bindEvent(this.elements.editModeBtn, "click", () => this.enterEditMode());
     this.bindEvent(this.elements.viewModeBtn, "click", () => this.exitEditMode());
     this.bindEvent(this.elements.undoBtn, "click", () => this.undo());
@@ -453,11 +449,11 @@ class CodeViewEditor {
     this.bindEvent(this.elements.headerScrollRight, "click", () => this.scrollHeader('right'));
     this.bindEvent(this.elements.headerScrollContainer, "scroll", () => this.updateHeaderScrollButtons());
     
-    if (this.elements.newFileWithRepo) {
+    if (this.elements.newFileWithRepo.length) {
       this.bindEvent(this.elements.newFileWithRepo, "click", () => this.handleNewFileWithRepo());
     }
     
-    if (this.elements.newFileWithoutRepo) {
+    if (this.elements.newFileWithoutRepo.length) {
       this.bindEvent(this.elements.newFileWithoutRepo, "click", () => this.handleNewFileWithoutRepo());
     }
     
@@ -487,7 +483,7 @@ class CodeViewEditor {
     
     this.bindEvent(this.elements.searchInput, "input", () => {
       this.debounce('search', () => {
-        this.performSearch(this.elements.searchInput.value);
+        this.performSearch(this.elements.searchInput.val());
       }, 300);
     });
     
@@ -505,182 +501,194 @@ class CodeViewEditor {
     });
     
     // Advanced editor options
-    if (this.elements.tabSizeInput) {
+    if (this.elements.tabSizeInput.length) {
       this.bindEvent(this.elements.tabSizeInput, "change", (e) => {
-        this.state.tabSize = parseInt(e.target.value) || 2;
+        this.state.tabSize = parseInt($(e.target).val()) || 2;
         if (this.codeMirror) this.codeMirror.setOption("tabSize", this.state.tabSize);
         localStorage.setItem("editor_tabSize", this.state.tabSize);
       });
     }
     
-    if (this.elements.indentUnitInput) {
+    if (this.elements.indentUnitInput.length) {
       this.bindEvent(this.elements.indentUnitInput, "change", (e) => {
-        this.state.indentUnit = parseInt(e.target.value) || 2;
+        this.state.indentUnit = parseInt($(e.target).val()) || 2;
         if (this.codeMirror) this.codeMirror.setOption("indentUnit", this.state.indentUnit);
         localStorage.setItem("editor_indentUnit", this.state.indentUnit);
       });
     }
     
-    document.addEventListener("click", (e) => {
-      const newFileButton = document.querySelector('[data-action="new-file"], #newFileButton');
+    $(document).on("click", (e) => {
+      const newFileButton = $('[data-action="new-file"], #newFileButton');
       const dropdown = this.elements.newFileDropdown;
       
-      if (dropdown && !dropdown.contains(e.target) && newFileButton && !newFileButton.contains(e.target)) {
-        dropdown.classList.add("hide");
+      if (dropdown.length && !dropdown.is(e.target) && dropdown.has(e.target).length === 0 &&
+          newFileButton.length && !newFileButton.is(e.target) && newFileButton.has(e.target).length === 0) {
+        dropdown.addClass("hide");
       }
       
-      if (this.elements.commitDropdown && !this.elements.commitDropdown.contains(e.target) && !this.elements.editSaveButton.contains(e.target)) {
+      if (this.elements.commitDropdown && !this.elements.commitDropdown.is(e.target) && 
+          this.elements.commitDropdown.has(e.target).length === 0 && 
+          !this.elements.editSaveButton.is(e.target) && 
+          this.elements.editSaveButton.has(e.target).length === 0) {
         this.hideCommitPopup();
       }
       
-      if (this.elements.languageDropdown && !this.elements.languageDropdown.contains(e.target) && !this.elements.fileExtensionBtn.contains(e.target)) {
+      if (this.elements.languageDropdown && !this.elements.languageDropdown.is(e.target) && 
+          this.elements.languageDropdown.has(e.target).length === 0 && 
+          !this.elements.fileExtensionBtn.is(e.target) && 
+          this.elements.fileExtensionBtn.has(e.target).length === 0) {
         this.hideLanguageDropdown();
       }
       
-      if (this.elements.moreOptionsDropdown && !this.elements.moreOptionsDropdown.contains(e.target) && !this.elements.moreOptionsBtn.contains(e.target)) {
+      if (this.elements.moreOptionsDropdown && !this.elements.moreOptionsDropdown.is(e.target) && 
+          this.elements.moreOptionsDropdown.has(e.target).length === 0 && 
+          !this.elements.moreOptionsBtn.is(e.target) && 
+          this.elements.moreOptionsBtn.has(e.target).length === 0) {
         this.hideMoreOptionsDropdown();
       }
     });
     
-    window.addEventListener("resize", () => {
+    $(window).on("resize", () => {
       this.debounce('resize', () => {
-        if (this.elements.commitDropdown && !this.elements.commitDropdown.classList.contains("hide")) {
+        if (this.elements.commitDropdown && !this.elements.commitDropdown.hasClass("hide")) {
           this.calculateDropdownPosition();
         }
         this.updateHeaderScrollButtons();
         this.codeMirror?.refresh();
       }, 100);
     });
-  }.bind(this);
+  };
   
-  showMoreOptionsDropdown = function(e) {
-    if (!this.elements.moreOptionsDropdown) {
+  showMoreOptionsDropdown = (e) => {
+    if (!this.elements.moreOptionsDropdown.length) {
       this.injectMoreOptionsDropdown();
     }
     
     const dropdown = this.elements.moreOptionsDropdown;
-    if (!dropdown) return;
+    if (!dropdown.length) return;
     
-    const isHidden = dropdown.classList.contains('hide');
+    const isHidden = dropdown.hasClass('hide');
     
     // Hide other dropdowns
     this.hideLanguageDropdown();
     this.hideNewFileDropdown();
     
-    dropdown.classList.toggle('hide', !isHidden);
+    dropdown.toggleClass('hide', !isHidden);
     
     if (isHidden) {
-      this.positionDropdown(dropdown, e?.currentTarget || this.elements.moreOptionsBtn);
+      this.positionDropdown(dropdown, e?.currentTarget || this.elements.moreOptionsBtn[0]);
       
       // Update toggle states
-      if (this.elements.showInvisiblesBtn) {
-        this.elements.showInvisiblesBtn.classList.toggle('active', this.state.showInvisibles);
+      if (this.elements.showInvisiblesBtn.length) {
+        this.elements.showInvisiblesBtn.toggleClass('active', this.state.showInvisibles);
       }
     }
-  }.bind(this);
+  };
   
-  hideLanguageDropdown = function() {
-    if (this.elements.languageDropdown) {
-      this.elements.languageDropdown.classList.add('hide');
+  hideLanguageDropdown = () => {
+    if (this.elements.languageDropdown.length) {
+      this.elements.languageDropdown.addClass('hide');
     }
-  }.bind(this);
+  };
   
-  hideMoreOptionsDropdown = function() {
-    if (this.elements.moreOptionsDropdown) {
-      this.elements.moreOptionsDropdown.classList.add('hide');
+  hideMoreOptionsDropdown = () => {
+    if (this.elements.moreOptionsDropdown.length) {
+      this.elements.moreOptionsDropdown.addClass('hide');
     }
-  }.bind(this);
+  };
   
-  injectMoreOptionsDropdown = function() {
-    const existing = document.getElementById('moreOptionsDropdown');
-    if (existing) existing.remove();
+  injectMoreOptionsDropdown = () => {
+    const existing = $('#moreOptionsDropdown');
+    if (existing.length) existing.remove();
     
-    document.body.insertAdjacentHTML('beforeend', AppAssets.templates.moreOptionsDropdown());
-    this.elements.moreOptionsDropdown = document.getElementById('moreOptionsDropdown');
+    $('body').append(AppAssets.templates.moreOptionsDropdown());
+    this.elements.moreOptionsDropdown = $('#moreOptionsDropdown');
     
-    if (this.elements.moreOptionsDropdown) {
-      this.elements.moreOptionsDropdown.classList.add('hide');
-      this.elements.formatBtn = document.getElementById('formatBtn');
-      this.elements.foldAllBtn = document.getElementById('foldAllBtn');
-      this.elements.unfoldAllBtn = document.getElementById('unfoldAllBtn');
-      this.elements.showInvisiblesBtn = document.getElementById('showInvisiblesBtn');
+    if (this.elements.moreOptionsDropdown.length) {
+      this.elements.moreOptionsDropdown.addClass('hide');
+      this.elements.formatBtn = $('#formatBtn');
+      this.elements.foldAllBtn = $('#foldAllBtn');
+      this.elements.unfoldAllBtn = $('#unfoldAllBtn');
+      this.elements.showInvisiblesBtn = $('#showInvisiblesBtn');
       
       this.bindEvent(this.elements.formatBtn, 'click', () => this.formatCode());
       this.bindEvent(this.elements.foldAllBtn, 'click', () => this.foldAll());
       this.bindEvent(this.elements.unfoldAllBtn, 'click', () => this.unfoldAll());
       this.bindEvent(this.elements.showInvisiblesBtn, 'click', () => this.toggleInvisibles());
     }
-  }.bind(this);
+  };
   
-  injectLanguageDropdown = function() {
-    const existing = document.getElementById('languageDropdown');
-    if (existing) existing.remove();
+  injectLanguageDropdown = () => {
+    const existing = $('#languageDropdown');
+    if (existing.length) existing.remove();
     
-    document.body.insertAdjacentHTML('beforeend', AppAssets.templates.languageDropdown());
-    this.elements.languageDropdown = document.getElementById('languageDropdown');
-    this.elements.languageList = document.getElementById('languageList');
+    $('body').append(AppAssets.templates.languageDropdown());
+    this.elements.languageDropdown = $('#languageDropdown');
+    this.elements.languageList = $('#languageList');
     
-    if (this.elements.languageDropdown) {
-      this.elements.languageDropdown.classList.add('hide');
+    if (this.elements.languageDropdown.length) {
+      this.elements.languageDropdown.addClass('hide');
     }
     
     this.populateLanguageDropdown();
-  }.bind(this);
+  };
   
-  populateLanguageDropdown = function() {
-    if (!this.elements.languageList) return;
+  populateLanguageDropdown = () => {
+    if (!this.elements.languageList.length) return;
     
-    this.elements.languageList.innerHTML = "";
+    this.elements.languageList.empty();
     
     this.languages.forEach((lang) => {
-      const btn = document.createElement("button");
-      btn.className = "dropdown-item";
-      btn.innerHTML = `
-        <span class="lang-name">${lang.label}</span>
-        <span class="lang-ext">${lang.ext.join(', ')}</span>
-      `;
-      btn.dataset.value = lang.value;
+      const btn = $('<button>', {
+        class: 'dropdown-item',
+        html: `
+          <span class="lang-name">${lang.label}</span>
+          <span class="lang-ext">${lang.ext.join(', ')}</span>
+        `,
+        'data-value': lang.value
+      });
       
-      btn.addEventListener("click", () => {
+      btn.on('click', () => {
         this.setLanguage(lang.value);
         this.hideLanguageDropdown();
       });
       
-      this.elements.languageList.appendChild(btn);
+      this.elements.languageList.append(btn);
     });
-  }.bind(this);
+  };
   
-  showLanguageDropdown = function(e) {
-    if (!this.elements.languageDropdown) {
+  showLanguageDropdown = (e) => {
+    if (!this.elements.languageDropdown.length) {
       this.injectLanguageDropdown();
     }
     
     const dropdown = this.elements.languageDropdown;
-    if (!dropdown) return;
+    if (!dropdown.length) return;
     
-    const isHidden = dropdown.classList.contains('hide');
+    const isHidden = dropdown.hasClass('hide');
     
     this.hideNewFileDropdown();
     this.hideMoreOptionsDropdown();
     
-    dropdown.classList.toggle('hide', !isHidden);
+    dropdown.toggleClass('hide', !isHidden);
     
     if (isHidden) {
-      this.positionDropdown(dropdown, e?.currentTarget || this.elements.fileExtensionBtn);
+      this.positionDropdown(dropdown, e?.currentTarget || this.elements.fileExtensionBtn[0]);
     }
-  }.bind(this);
+  };
   
-  positionDropdown = function(dropdown, button) {
-    if (!button || !dropdown) return;
+  positionDropdown = (dropdown, button) => {
+    if (!button || !dropdown.length) return;
     
+    const $button = $(button);
     const rect = button.getBoundingClientRect();
-    const dropdownRect = dropdown.getBoundingClientRect();
+    const dropdownRect = dropdown[0].getBoundingClientRect();
     
-    let top = rect.bottom + window.scrollY + 5;
-    let left = rect.left + window.scrollX;
+    let top = rect.bottom + $(window).scrollTop() + 5;
+    let left = rect.left + $(window).scrollLeft();
     
-    const viewportWidth = window.innerWidth;
-    const viewportHeight = window.innerHeight;
+    const viewportWidth = $(window).width();
+    const viewportHeight = $(window).height();
     
     // Adjust for viewport boundaries
     if (left + dropdownRect.width > viewportWidth) {
@@ -690,77 +698,79 @@ class CodeViewEditor {
     if (left < 0) left = 10;
     
     if (top + dropdownRect.height > viewportHeight) {
-      top = rect.top + window.scrollY - dropdownRect.height - 5;
+      top = rect.top + $(window).scrollTop() - dropdownRect.height - 5;
     }
     
     if (top < 0) top = 10;
     
-    dropdown.style.position = 'fixed';
-    dropdown.style.top = `${top}px`;
-    dropdown.style.left = `${left}px`;
-    dropdown.style.zIndex = '10000';
-  }.bind(this);
+    dropdown.css({
+      position: 'fixed',
+      top: `${top}px`,
+      left: `${left}px`,
+      zIndex: '10000'
+    });
+  };
   
-  setupNewFileButton = function() {
-    const newFileButton = document.querySelector('[data-action="new-file"], #newFileButton');
+  setupNewFileButton = () => {
+    const newFileButton = $('[data-action="new-file"], #newFileButton');
     
-    if (newFileButton) {
-      const newButton = newFileButton.cloneNode(true);
-      newFileButton.parentNode.replaceChild(newButton, newFileButton);
+    if (newFileButton.length) {
+      const newButton = newFileButton.clone(true);
+      newFileButton.replaceWith(newButton);
       
-      newButton.addEventListener('click', (e) => {
+      newButton.on('click', (e) => {
         e.preventDefault();
         e.stopPropagation();
         this.showNewFileDropdown(e);
       });
     }
-  }.bind(this);
+  };
   
-  injectNewFileDropdown = function() {
-    const existing = document.getElementById('newFileDropdown');
-    if (existing) existing.remove();
+  injectNewFileDropdown = () => {
+    const existing = $('#newFileDropdown');
+    if (existing.length) existing.remove();
     
-    document.body.insertAdjacentHTML('beforeend', AppAssets.templates.newFileDropdown());
+    $('body').append(AppAssets.templates.newFileDropdown());
     
-    this.elements.newFileDropdown = document.getElementById('newFileDropdown');
-    this.elements.newFileWithRepo = document.getElementById('newFileWithRepo');
-    this.elements.newFileWithoutRepo = document.getElementById('newFileWithoutRepo');
-  }.bind(this);
+    this.elements.newFileDropdown = $('#newFileDropdown');
+    this.elements.newFileWithRepo = $('#newFileWithRepo');
+    this.elements.newFileWithoutRepo = $('#newFileWithoutRepo');
+  };
   
-  showNewFileDropdown = function(e) {
-    if (!this.elements.newFileDropdown) {
+  showNewFileDropdown = (e) => {
+    if (!this.elements.newFileDropdown.length) {
       this.injectNewFileDropdown();
     }
     
     const dropdown = this.elements.newFileDropdown;
-    if (!dropdown) return;
+    if (!dropdown.length) return;
     
-    const isHidden = dropdown.classList.contains('hide');
+    const isHidden = dropdown.hasClass('hide');
     
     this.hideLanguageDropdown();
     this.hideMoreOptionsDropdown();
     
-    dropdown.classList.toggle('hide', !isHidden);
+    dropdown.toggleClass('hide', !isHidden);
     
     if (isHidden) {
-      const button = e?.currentTarget || document.querySelector('[data-action="new-file"], #newFileButton');
+      const button = e?.currentTarget || $('[data-action="new-file"], #newFileButton')[0];
       this.positionDropdown(dropdown, button);
     }
-  }.bind(this);
+  };
   
-  handleNewFileWithRepo = function() {
+  handleNewFileWithRepo = () => {
     if (typeof window.showCreateFileModal === 'function') {
       window.showCreateFileModal();
     }
     this.hideNewFileDropdown();
-  }.bind(this);
+  };
   
-  handleNewFileWithoutRepo = function() {
+  handleNewFileWithoutRepo = () => {
     this.createNewStandaloneFile();
     this.hideNewFileDropdown();
-  }.bind(this);
+  };
   
-  createNewStandaloneFile = function() {
+  createNewStandaloneFile = () => {
     const template = this.getTemplateForLanguage('javascript');
     this.currentFile = 'untitled.js';
     this.fileData = {
@@ -773,11 +783,11 @@ class CodeViewEditor {
     };
     this.originalContent = this.fileData.content;
     
-    if (this.elements.fileNameInput) {
-      this.elements.fileNameInput.value = 'untitled';
+    if (this.elements.fileNameInput.length) {
+      this.elements.fileNameInput.val('untitled');
     }
-    if (this.elements.fileExtensionLabel) {
-      this.elements.fileExtensionLabel.textContent = '.js';
+    if (this.elements.fileExtensionLabel.length) {
+      this.elements.fileExtensionLabel.text('.js');
     }
     
     this.setLanguage('javascript');
@@ -793,9 +803,9 @@ class CodeViewEditor {
     this.updateModifiedBadge();
     this.enterEditMode();
     this.show();
-  }.bind(this);
+  };
   
-  getTemplateForLanguage = function(language) {
+  getTemplateForLanguage = (language) => {
     const templates = {
       javascript: `// New JavaScript file
 // Created on ${new Date().toLocaleDateString()}
@@ -869,16 +879,16 @@ body {
     };
     
     return templates[language] || templates.default;
-  }.bind(this);
+  };
   
-  hideNewFileDropdown = function() {
-    if (this.elements.newFileDropdown) {
-      this.elements.newFileDropdown.classList.add('hide');
+  hideNewFileDropdown = () => {
+    if (this.elements.newFileDropdown.length) {
+      this.elements.newFileDropdown.addClass('hide');
     }
-  }.bind(this);
+  };
   
-  setupCodeMirror = function() {
-    if (!this.elements.codeMirrorContainer) return;
+  setupCodeMirror = () => {
+    if (!this.elements.codeMirrorContainer.length) return;
     
     if (typeof CodeMirror === "undefined") {
       console.warn("CodeMirror not available, using fallback editor");
@@ -938,7 +948,7 @@ body {
       },
     };
     
-    this.codeMirror = CodeMirror(this.elements.codeMirrorContainer, config);
+    this.codeMirror = CodeMirror(this.elements.codeMirrorContainer[0], config);
     
     // Load saved font size
     const savedFontSize = localStorage.getItem("editor_fontsize");
@@ -961,11 +971,11 @@ body {
     });
     
     this.codeMirror.on("focus", () => {
-      this.elements.editorBody?.classList.add("focused");
+      this.elements.editorBody?.addClass("focused");
     });
     
     this.codeMirror.on("blur", () => {
-      this.elements.editorBody?.classList.remove("focused");
+      this.elements.editorBody?.removeClass("focused");
     });
     
     this.codeMirror.on("scroll", () => {
@@ -977,9 +987,9 @@ body {
         cm.foldCode(cm.getCursor());
       }
     });
-  }.bind(this);
+  };
   
-  setCodeMirrorMode = function(langValue) {
+  setCodeMirrorMode = (langValue) => {
     if (!this.codeMirror) return;
     
     const mode = CODEMIRROR_MODES[langValue] || "text";
@@ -989,10 +999,10 @@ body {
     if (typeof CodeMirror.modes[mode] === "undefined") {
       console.warn(`CodeMirror mode ${mode} not loaded, trying to load...`);
     }
-  }.bind(this);
+  };
   
-  setupGlobalEventListeners = function() {
-    document.addEventListener("keydown", (e) => {
+  setupGlobalEventListeners = () => {
+    $(document).on("keydown", (e) => {
       const ctrl = e.ctrlKey || e.metaKey;
       const target = e.target;
       
@@ -1024,49 +1034,51 @@ body {
     });
     
     // Handle system theme changes
-    window.matchMedia?.('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
-      if (!localStorage.getItem("editor_theme")) {
-        const isDark = e.matches;
-        this.updateThemeIcon(isDark);
-        if (this.codeMirror) {
-          this.codeMirror.setOption("theme", isDark ? "one-dark" : "default");
+    if (window.matchMedia) {
+      window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
+        if (!localStorage.getItem("editor_theme")) {
+          const isDark = e.matches;
+          this.updateThemeIcon(isDark);
+          if (this.codeMirror) {
+            this.codeMirror.setOption("theme", isDark ? "one-dark" : "default");
+          }
         }
-      }
-    });
+      });
+    }
     
     // Handle page visibility
-    document.addEventListener("visibilitychange", () => {
+    $(document).on("visibilitychange", () => {
       if (document.hidden) {
         this.autoSave();
       }
     });
-  }.bind(this);
+  };
   
-  setupDragAndDrop = function() {
+  setupDragAndDrop = () => {
     const container = this.elements.editorBody;
-    if (!container) return;
+    if (!container.length) return;
     
-    container.addEventListener('dragover', (e) => {
+    container.on('dragover', (e) => {
       e.preventDefault();
-      container.classList.add('drag-over');
+      container.addClass('drag-over');
     });
     
-    container.addEventListener('dragleave', () => {
-      container.classList.remove('drag-over');
+    container.on('dragleave', () => {
+      container.removeClass('drag-over');
     });
     
-    container.addEventListener('drop', (e) => {
+    container.on('drop', (e) => {
       e.preventDefault();
-      container.classList.remove('drag-over');
+      container.removeClass('drag-over');
       
-      const files = e.dataTransfer.files;
+      const files = e.originalEvent.dataTransfer.files;
       if (files.length > 0) {
         this.handleDroppedFiles(files);
       }
     });
-  }.bind(this);
+  };
   
-  handleDroppedFiles = function(files) {
+  handleDroppedFiles = (files) => {
     const file = files[0];
     if (!file.type.startsWith('text/') && !file.name.match(/\.(js|ts|py|html|css|json|md|txt)$/i)) {
       showErrorMessage?.("Only text files are supported");
@@ -1086,11 +1098,11 @@ body {
         ext = file.name.substring(lastDotIndex);
       }
       
-      if (this.elements.fileNameInput) {
-        this.elements.fileNameInput.value = name;
+      if (this.elements.fileNameInput.length) {
+        this.elements.fileNameInput.val(name);
       }
-      if (this.elements.fileExtensionLabel) {
-        this.elements.fileExtensionLabel.textContent = ext || ".txt";
+      if (this.elements.fileExtensionLabel.length) {
+        this.elements.fileExtensionLabel.text(ext || ".txt");
       }
       
       if (this.codeMirror) {
@@ -1108,18 +1120,18 @@ body {
       showSuccessMessage?.(`Loaded ${file.name}`);
     };
     reader.readAsText(file);
-  }.bind(this);
+  };
   
-  setupAutoSave = function() {
+  setupAutoSave = () => {
     const autoSave = localStorage.getItem("editor_autoSave");
     this.state.autoSave = autoSave === "true";
     
     if (this.state.autoSave) {
       console.log("Auto-save enabled");
     }
-  }.bind(this);
+  };
   
-  handleAutoSave = function() {
+  handleAutoSave = () => {
     if (!this.state.autoSave || !this.isEditing) return;
     
     if (this.autoSaveTimeout) {
@@ -1131,9 +1143,9 @@ body {
         this.autoSave();
       }
     }, 30000); // 30 seconds
-  }.bind(this);
+  };
   
-  autoSave = function() {
+  autoSave = () => {
     if (!this.hasUnsavedChanges()) return;
     
     const content = this.codeMirror ? this.codeMirror.getValue() : 
@@ -1143,25 +1155,25 @@ body {
     
     this.performSave("Auto-saved changes");
     showSuccessMessage?.("Auto-saved changes");
-  }.bind(this);
+  };
   
-  setLanguage = function(langValue) {
+  setLanguage = (langValue) => {
     const lang = this.languages.find((l) => l.value === langValue);
     if (!lang) return;
     
     this.currentLanguage = langValue;
     
     const ext = lang.ext[0];
-    if (this.elements.fileExtensionLabel) {
-      this.elements.fileExtensionLabel.textContent = `.${ext}`;
+    if (this.elements.fileExtensionLabel.length) {
+      this.elements.fileExtensionLabel.text(`.${ext}`);
     }
     
-    if (this.elements.languageBadge) {
-      this.elements.languageBadge.innerHTML = AppAssets.icons.code(lang.label);
+    if (this.elements.languageBadge.length) {
+      this.elements.languageBadge.html(AppAssets.icons.code(lang.label));
     }
     
-    if (this.elements.languageBadgeSmall) {
-      this.elements.languageBadgeSmall.textContent = lang.label;
+    if (this.elements.languageBadgeSmall.length) {
+      this.elements.languageBadgeSmall.text(lang.label);
     }
     
     this.hideLanguageDropdown();
@@ -1171,15 +1183,15 @@ body {
     if (this.codeMirror) {
       this.codeMirror.refresh();
     }
-  }.bind(this);
+  };
   
-  loadUserPreferences = function() {
+  loadUserPreferences = () => {
     // Line wrapping
     const wrap = localStorage.getItem("editor_wrapLines");
     if (wrap !== null) {
       this.state.wrapLines = wrap === "true";
       this.codeMirror?.setOption("lineWrapping", this.state.wrapLines);
-      this.elements.wrapBtn?.classList.toggle("active", this.state.wrapLines);
+      this.elements.wrapBtn?.toggleClass("active", this.state.wrapLines);
     }
     
     // Font size
@@ -1204,9 +1216,9 @@ body {
     
     // Load editor state
     this.restoreEditorState();
-  }.bind(this);
+  };
   
-  restoreEditorState = function() {
+  restoreEditorState = () => {
     const state = localStorage.getItem("editor_state");
     if (state && this.codeMirror) {
       try {
@@ -1222,9 +1234,9 @@ body {
         console.warn("Failed to restore editor state:", e);
       }
     }
-  }.bind(this);
+  };
   
-  saveEditorState = function() {
+  saveEditorState = () => {
     if (!this.codeMirror) return;
     
     const state = {
@@ -1236,9 +1248,9 @@ body {
     };
     
     localStorage.setItem("editor_state", JSON.stringify(state));
-  }.bind(this);
+  };
   
-  detectLanguageFromExtension = function(filename) {
+  detectLanguageFromExtension = (filename) => {
     const ext = filename.split(".").pop().toLowerCase();
     
     for (const lang of this.languages) {
@@ -1250,90 +1262,92 @@ body {
     if (filename.toLowerCase() === 'makefile') return 'shell';
     
     return "javascript";
-  }.bind(this);
+  };
   
-  showCommitPopup = function(e) {
-    if (!this.elements.commitDropdown) return;
+  showCommitPopup = (e) => {
+    if (!this.elements.commitDropdown.length) return;
     
-    this.elements.commitDropdown.classList.remove("hide");
+    this.elements.commitDropdown.removeClass("hide");
     this.calculateDropdownPosition();
     
-    if (this.elements.popoverTitle) {
-      this.elements.popoverTitle.textContent = this.currentFile ? `Save ${this.currentFile}` : "Save File";
+    if (this.elements.popoverTitle.length) {
+      this.elements.popoverTitle.text(this.currentFile ? `Save ${this.currentFile}` : "Save File");
     }
     
-    if (this.elements.popoverSubtitle) {
-      this.elements.popoverSubtitle.textContent = "Enter a commit message (optional)";
+    if (this.elements.popoverSubtitle.length) {
+      this.elements.popoverSubtitle.text("Enter a commit message (optional)");
     }
     
-    if (this.elements.commitMessage) {
+    if (this.elements.commitMessage.length) {
       const defaultMessage = this.currentFile ? 
         `Update ${this.currentFile} - ${new Date().toLocaleDateString()}` : 
         "Save changes";
-      this.elements.commitMessage.value = defaultMessage;
-      this.elements.commitMessage.select();
+      this.elements.commitMessage.val(defaultMessage);
+      this.elements.commitMessage.trigger('select');
     }
-  }.bind(this);
+  };
   
-  hideCommitPopup = function() {
-    if (!this.elements.commitDropdown) return;
+  hideCommitPopup = () => {
+    if (!this.elements.commitDropdown.length) return;
     
-    this.elements.commitDropdown.classList.add("hide");
-    if (this.elements.commitMessage) {
-      this.elements.commitMessage.value = "";
+    this.elements.commitDropdown.addClass("hide");
+    if (this.elements.commitMessage.length) {
+      this.elements.commitMessage.val("");
     }
-  }.bind(this);
+  };
   
-  injectPopover = function() {
-    const existing = document.getElementById("commitDropdown");
-    if (existing) existing.remove();
+  injectPopover = () => {
+    const existing = $("#commitDropdown");
+    if (existing.length) existing.remove();
     
-    document.body.insertAdjacentHTML('beforeend', AppAssets.templates.commitDropdown());
-    this.elements.commitDropdown = document.getElementById("commitDropdown");
-  }.bind(this);
+    $('body').append(AppAssets.templates.commitDropdown());
+    this.elements.commitDropdown = $("#commitDropdown");
+  };
   
-  calculateDropdownPosition = function() {
-    if (!this.elements.editSaveButton || !this.elements.commitDropdown) return;
+  calculateDropdownPosition = () => {
+    if (!this.elements.editSaveButton.length || !this.elements.commitDropdown.length) return;
     
-    const buttonRect = this.elements.editSaveButton.getBoundingClientRect();
+    const buttonRect = this.elements.editSaveButton[0].getBoundingClientRect();
     const dropdown = this.elements.commitDropdown;
-    const dropdownRect = dropdown.getBoundingClientRect();
+    const dropdownRect = dropdown[0].getBoundingClientRect();
     
-    let top = buttonRect.bottom + window.scrollY + 8;
-    let left = buttonRect.left + window.scrollX;
+    let top = buttonRect.bottom + $(window).scrollTop() + 8;
+    let left = buttonRect.left + $(window).scrollLeft();
     
     // Adjust to fit viewport
-    if (left + dropdownRect.width > window.innerWidth) {
-      left = window.innerWidth - dropdownRect.width - 10;
+    if (left + dropdownRect.width > $(window).width()) {
+      left = $(window).width() - dropdownRect.width - 10;
     }
     
-    if (top + dropdownRect.height > window.innerHeight) {
-      top = buttonRect.top + window.scrollY - dropdownRect.height - 8;
+    if (top + dropdownRect.height > $(window).height()) {
+      top = buttonRect.top + $(window).scrollTop() - dropdownRect.height - 8;
     }
     
-    dropdown.style.top = `${top}px`;
-    dropdown.style.left = `${left}px`;
-  }.bind(this);
+    dropdown.css({
+      top: `${top}px`,
+      left: `${left}px`
+    });
+  };
   
-  showLoadingSpinner = function() {
+  showLoadingSpinner = () => {
     this.isLoading = true;
-    this.elements.loadingSpinner?.setAttribute("data-active", "true");
-  }.bind(this);
+    this.elements.loadingSpinner?.attr("data-active", "true");
+  };
   
-  hideLoadingSpinner = function() {
+  hideLoadingSpinner = () => {
     this.isLoading = false;
-    this.elements.loadingSpinner?.setAttribute("data-active", "false");
-  }.bind(this);
+    this.elements.loadingSpinner?.attr("data-active", "false");
+  };
   
-  coderLoading = function(timer = 1500) {
+  coderLoading = (timer = 1500) => {
     this.showLoadingSpinner();
     
     setTimeout(() => {
       this.hideLoadingSpinner();
     }, timer);
-  }.bind(this);
+  };
   
-  displayFile = function(filename, fileData, repoName = null, path = '') {
+  displayFile = (filename, fileData, repoName = null, path = '') => {
     if (!this.isInitialized) {
       this.init();
       setTimeout(() => this.displayFile(filename, fileData, repoName, path), 100);
@@ -1353,12 +1367,12 @@ body {
       ext = filename.substring(lastDotIndex);
     }
     
-    if (this.elements.fileNameInput) {
-      this.elements.fileNameInput.value = name;
+    if (this.elements.fileNameInput.length) {
+      this.elements.fileNameInput.val(name);
     }
     
-    if (this.elements.fileExtensionLabel) {
-      this.elements.fileExtensionLabel.textContent = ext || ".txt";
+    if (this.elements.fileExtensionLabel.length) {
+      this.elements.fileExtensionLabel.text(ext || ".txt");
     }
     
     const detectedLang = this.detectLanguageFromExtension(filename);
@@ -1398,9 +1412,9 @@ body {
     
     // Save to recent files
     this.saveToRecentFiles(filename, repoName, path);
-  }.bind(this);
+  };
   
-  saveToRecentFiles = function(filename, repoName, path) {
+  saveToRecentFiles = (filename, repoName, path) => {
     try {
       const recentFiles = JSON.parse(localStorage.getItem("recent_files") || "[]");
       
@@ -1435,11 +1449,11 @@ body {
     } catch (e) {
       console.warn("Failed to save to recent files:", e);
     }
-  }.bind(this);
+  };
   
-  updateBreadcrumbs = function(repoName = null, path = '') {
+  updateBreadcrumbs = (repoName = null, path = '') => {
     const breadcrumb = this.elements.pathBreadcrumb;
-    if (!breadcrumb) return;
+    if (!breadcrumb.length) return;
     
     let html = '';
     
@@ -1469,26 +1483,24 @@ body {
       html += `<span class="breadCrumb current">${this.currentFile || 'untitled.js'}</span>`;
     }
     
-    breadcrumb.innerHTML = html;
+    breadcrumb.html(html);
     
-    breadcrumb.querySelectorAll('[data-action], [data-path]').forEach(el => {
-      el.addEventListener('click', (e) => {
-        e.preventDefault();
-        const action = el.getAttribute('data-action');
-        const path = el.getAttribute('data-path');
-        
-        if (action === 'show-repo-selector') {
-          window.showRepoSelector?.();
-        } else if (action === 'show-explorer') {
-          window.showExplorer?.();
-        } else if (path) {
-          window.navigateToPath?.(path);
-        }
-      });
+    breadcrumb.find('[data-action], [data-path]').on('click', (e) => {
+      e.preventDefault();
+      const action = $(e.currentTarget).attr('data-action');
+      const path = $(e.currentTarget).attr('data-path');
+      
+      if (action === 'show-repo-selector') {
+        window.showRepoSelector?.();
+      } else if (action === 'show-explorer') {
+        window.showExplorer?.();
+      } else if (path) {
+        window.navigateToPath?.(path);
+      }
     });
-  }.bind(this);
+  };
   
-  performSave = function(commitMessage) {
+  performSave = (commitMessage) => {
     this.coderLoading(1000);
     
     setTimeout(() => {
@@ -1529,31 +1541,31 @@ body {
             timestamp: Date.now()
           }
         });
-        document.dispatchEvent(event);
+        $(document).trigger(event);
         
       } catch (error) {
         console.error("Save failed:", error);
         showErrorMessage?.(`Save failed: ${error.message}`);
       }
     }, 300);
-  }.bind(this);
+  };
   
-  saveChanges = function(withCommit = false) {
+  saveChanges = (withCommit = false) => {
     if (!this.currentFile || !this.fileData) {
       showErrorMessage?.("No file to save");
       return;
     }
     
     if (withCommit) {
-      const commitMessage = this.elements.commitMessage?.value.trim();
+      const commitMessage = this.elements.commitMessage?.val().trim();
       this.hideCommitPopup();
       this.performSave(commitMessage);
     } else {
       this.performSave("Saved changes");
     }
-  }.bind(this);
+  };
   
-  handleFileUpload = function(e) {
+  handleFileUpload = (e) => {
     const file = e.target.files?.[0];
     if (!file) return;
     
@@ -1583,11 +1595,11 @@ body {
         ext = file.name.substring(lastDotIndex);
       }
       
-      if (this.elements.fileNameInput) {
-        this.elements.fileNameInput.value = name;
+      if (this.elements.fileNameInput.length) {
+        this.elements.fileNameInput.val(name);
       }
-      if (this.elements.fileExtensionLabel) {
-        this.elements.fileExtensionLabel.textContent = ext || ".txt";
+      if (this.elements.fileExtensionLabel.length) {
+        this.elements.fileExtensionLabel.text(ext || ".txt");
       }
       
       this.setLanguage(this.detectLanguageFromExtension(file.name));
@@ -1606,21 +1618,21 @@ body {
     
     // Reset input
     e.target.value = '';
-  }.bind(this);
+  };
   
-  show = function() {
-    this.elements.filePage?.classList.remove("hide");
+  show = () => {
+    this.elements.filePage?.removeClass("hide");
     setTimeout(() => {
       this.codeMirror?.refresh();
       this.updateHeaderScrollButtons();
     }, 50);
-  }.bind(this);
+  };
   
-  hide = function() {
-    this.elements.filePage?.classList.add("hide");
-  }.bind(this);
+  hide = () => {
+    this.elements.filePage?.addClass("hide");
+  };
   
-  enterEditMode = function() {
+  enterEditMode = () => {
     if (!this.currentFile && !this.fallbackEditor) {
       this.createNewStandaloneFile();
       return;
@@ -1629,11 +1641,11 @@ body {
     this.coderLoading(500);
     
     this.isEditing = true;
-    this.elements.editModeBtn?.classList.add("active");
-    this.elements.viewModeBtn?.classList.remove("active");
+    this.elements.editModeBtn?.addClass("active");
+    this.elements.viewModeBtn?.removeClass("active");
     
-    if (this.elements.editSaveLabel) {
-      this.elements.editSaveLabel.textContent = "Save";
+    if (this.elements.editSaveLabel.length) {
+      this.elements.editSaveLabel.text("Save");
     }
     
     if (this.codeMirror) {
@@ -1648,20 +1660,20 @@ body {
     const event = new CustomEvent('editModeEntered', {
       detail: { filename: this.currentFile, timestamp: Date.now() }
     });
-    document.dispatchEvent(event);
-  }.bind(this);
+    $(document).trigger(event);
+  };
   
-  exitEditMode = function() {
+  exitEditMode = () => {
     if (!this.isEditing) return;
     
     this.coderLoading(500);
     
     this.isEditing = false;
-    this.elements.editModeBtn?.classList.remove("active");
-    this.elements.viewModeBtn?.classList.add("active");
+    this.elements.editModeBtn?.removeClass("active");
+    this.elements.viewModeBtn?.addClass("active");
     
-    if (this.elements.editSaveLabel) {
-      this.elements.editSaveLabel.textContent = "Edit";
+    if (this.elements.editSaveLabel.length) {
+      this.elements.editSaveLabel.text("Edit");
     }
     
     if (this.codeMirror) {
@@ -1681,16 +1693,16 @@ body {
     const event = new CustomEvent('editModeExited', {
       detail: { filename: this.currentFile, timestamp: Date.now() }
     });
-    document.dispatchEvent(event);
-  }.bind(this);
+    $(document).trigger(event);
+  };
   
-  hasUnsavedChanges = function() {
+  hasUnsavedChanges = () => {
     const currentContent = this.codeMirror ? this.codeMirror.getValue() : 
                          this.fallbackEditor ? this.fallbackEditor.value : "";
     return currentContent !== this.originalContent;
-  }.bind(this);
+  };
   
-  toggleFullscreen = function() {
+  toggleFullscreen = () => {
     if (!this.fullscreenManager) {
       this.fullscreenManager = new FullscreenManager(".editorContainer");
     }
@@ -1700,9 +1712,9 @@ body {
     setTimeout(() => {
       this.codeMirror?.refresh();
     }, 100);
-  }.bind(this);
+  };
   
-  copyCode = function() {
+  copyCode = () => {
     let content = "";
     
     if (this.codeMirror) {
@@ -1717,17 +1729,15 @@ body {
       showSuccessMessage?.("Copied to clipboard");
     }).catch(() => {
       // Fallback for older browsers
-      const textArea = document.createElement('textarea');
-      textArea.value = content;
-      document.body.appendChild(textArea);
-      textArea.select();
+      const textArea = $('<textarea>').val(content).appendTo('body');
+      textArea[0].select();
       document.execCommand('copy');
-      document.body.removeChild(textArea);
+      textArea.remove();
       showSuccessMessage?.("Copied to clipboard");
     });
-  }.bind(this);
+  };
   
-  downloadFile = function() {
+  downloadFile = () => {
     if (!this.currentFile) return;
     
     const content = this.codeMirror ? this.codeMirror.getValue() : 
@@ -1736,20 +1746,20 @@ body {
       type: "text/plain;charset=utf-8"
     });
     const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
+    const a = $('<a>', {
+      href: url,
+      download: this.currentFile,
+      css: { display: 'none' }
+    }).appendTo('body');
     
-    a.href = url;
-    a.download = this.currentFile;
-    a.style.display = "none";
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
+    a[0].click();
+    a.remove();
     URL.revokeObjectURL(url);
     
     showSuccessMessage?.(`Downloaded ${this.currentFile}`);
-  }.bind(this);
+  };
   
-  formatCode = function() {
+  formatCode = () => {
     if (!this.isEditing) return;
     
     if (this.codeMirror) {
@@ -1789,9 +1799,9 @@ body {
     }
     
     this.hideMoreOptionsDropdown();
-  }.bind(this);
+  };
   
-  autoIndent = function(code) {
+  autoIndent = (code) => {
     // Basic auto-indent logic
     const lines = code.split('\n');
     let indentLevel = 0;
@@ -1814,9 +1824,9 @@ body {
     }
     
     return result.join('\n');
-  }.bind(this);
+  };
   
-  formatHTML = function(html) {
+  formatHTML = (html) => {
     // Basic HTML formatting
     let formatted = '';
     let indent = 0;
@@ -1833,9 +1843,9 @@ body {
     }
     
     return formatted;
-  }.bind(this);
+  };
   
-  formatCSS = function(css) {
+  formatCSS = (css) => {
     // Basic CSS formatting
     return css
       .replace(/\s*{\s*/g, ' {\n  ')
@@ -1843,9 +1853,9 @@ body {
       .replace(/}\s*/g, '\n}\n\n')
       .replace(/\s+/g, ' ')
       .trim();
-  }.bind(this);
+  };
   
-  foldAll = function() {
+  foldAll = () => {
     if (!this.codeMirror) return;
     
     this.codeMirror.operation(() => {
@@ -1855,9 +1865,9 @@ body {
     });
     
     this.hideMoreOptionsDropdown();
-  }.bind(this);
+  };
   
-  unfoldAll = function() {
+  unfoldAll = () => {
     if (!this.codeMirror) return;
     
     this.codeMirror.operation(() => {
@@ -1867,84 +1877,84 @@ body {
     });
     
     this.hideMoreOptionsDropdown();
-  }.bind(this);
+  };
   
-  undo = function() {
+  undo = () => {
     if (this.codeMirror) {
       this.codeMirror.undo();
     } else if (this.fallbackEditor) {
       document.execCommand('undo');
     }
-  }.bind(this);
+  };
   
-  redo = function() {
+  redo = () => {
     if (this.codeMirror) {
       this.codeMirror.redo();
     } else if (this.fallbackEditor) {
       document.execCommand('redo');
     }
-  }.bind(this);
+  };
   
-  openSearch = function() {
+  openSearch = () => {
     if (!this.codeMirror && !this.fallbackEditor) return;
     
     this.searchActive = true;
-    this.elements.searchPanel?.classList.remove("hide");
+    this.elements.searchPanel?.removeClass("hide");
     
     setTimeout(() => {
-      this.elements.searchInput?.focus();
-      this.elements.searchInput?.select();
+      this.elements.searchInput?.trigger('focus');
+      this.elements.searchInput?.trigger('select');
     }, 50);
-  }.bind(this);
+  };
   
-  openReplace = function() {
+  openReplace = () => {
     this.openSearch();
     // Show replace inputs if available
     const replaceInput = this.elements.replaceInput;
-    if (replaceInput) {
-      replaceInput.style.display = 'block';
-      replaceInput.focus();
+    if (replaceInput.length) {
+      replaceInput.show();
+      replaceInput.trigger('focus');
     }
-  }.bind(this);
+  };
   
-  closeSearch = function() {
+  closeSearch = () => {
     this.searchActive = false;
-    this.elements.searchPanel?.classList.add("hide");
+    this.elements.searchPanel?.addClass("hide");
     this.clearSearch();
     
     // Hide replace inputs
     const replaceInput = this.elements.replaceInput;
-    if (replaceInput) {
-      replaceInput.style.display = 'none';
+    if (replaceInput.length) {
+      replaceInput.hide();
     }
-  }.bind(this);
+  };
   
-  clearSearch = function() {
-    if (this.elements.searchInput) {
-      this.elements.searchInput.value = "";
+  clearSearch = () => {
+    if (this.elements.searchInput.length) {
+      this.elements.searchInput.val("");
     }
-    if (this.elements.replaceInput) {
-      this.elements.replaceInput.value = "";
+    if (this.elements.replaceInput.length) {
+      this.elements.replaceInput.val("");
     }
     this.searchMatches = [];
     this.clearMarks();
-  }.bind(this);
+  };
   
-  clearMarks = function() {
+  clearMarks = () => {
     if (!this.codeMirror) return;
     this.marks.forEach(mark => mark.clear());
     this.marks = [];
-  }.bind(this);
+  };
   
-  performSearch = function(query) {
+  performSearch = (query) => {
     if (!this.codeMirror) return;
     
     this.clearMarks();
     this.searchMatches = [];
     
     if (!query) {
-      if (this.elements.searchMatches) {
-        this.elements.searchMatches.textContent = "0/0";
+      if (this.elements.searchMatches.length) {
+        this.elements.searchMatches.text("0/0");
       }
       return;
     }
@@ -1974,39 +1984,39 @@ body {
       this.currentSearchIndex = 0;
       this.highlightMatch(0);
       
-      if (this.elements.searchMatches) {
-        this.elements.searchMatches.textContent = `1/${count}`;
+      if (this.elements.searchMatches.length) {
+        this.elements.searchMatches.text(`1/${count}`);
       }
     } else {
-      if (this.elements.searchMatches) {
-        this.elements.searchMatches.textContent = `0/0`;
+      if (this.elements.searchMatches.length) {
+        this.elements.searchMatches.text(`0/0`);
       }
     }
-  }.bind(this);
+  };
   
-  findPrevious = function() {
+  findPrevious = () => {
     if (this.searchMatches.length === 0) return;
     
     this.currentSearchIndex = (this.currentSearchIndex - 1 + this.searchMatches.length) % this.searchMatches.length;
     this.highlightMatch(this.currentSearchIndex);
     
-    if (this.elements.searchMatches) {
-      this.elements.searchMatches.textContent = `${this.currentSearchIndex + 1}/${this.searchMatches.length}`;
+    if (this.elements.searchMatches.length) {
+      this.elements.searchMatches.text(`${this.currentSearchIndex + 1}/${this.searchMatches.length}`);
     }
-  }.bind(this);
+  };
   
-  findNext = function() {
+  findNext = () => {
     if (this.searchMatches.length === 0) return;
     
     this.currentSearchIndex = (this.currentSearchIndex + 1) % this.searchMatches.length;
     this.highlightMatch(this.currentSearchIndex);
     
-    if (this.elements.searchMatches) {
-      this.elements.searchMatches.textContent = `${this.currentSearchIndex + 1}/${this.searchMatches.length}`;
+    if (this.elements.searchMatches.length) {
+      this.elements.searchMatches.text(`${this.currentSearchIndex + 1}/${this.searchMatches.length}`);
     }
-  }.bind(this);
+  };
   
-  highlightMatch = function(index) {
+  highlightMatch = (index) => {
     if (!this.codeMirror || index < 0 || index >= this.searchMatches.length) return;
     
     const match = this.searchMatches[index];
@@ -2016,37 +2026,37 @@ body {
       line: match.line,
       ch: match.ch
     }, 200);
-  }.bind(this);
+  };
   
-  setCodeMirrorFontSize = function(size) {
+  setCodeMirrorFontSize = (size) => {
     if (!this.codeMirror) return;
     
     size = Math.max(8, Math.min(32, size));
     this.codeMirror.getWrapperElement().style.fontSize = `${size}px`;
     this.state.fontSize = size;
     
-    if (this.elements.fontSizeLabel) {
-      this.elements.fontSizeLabel.textContent = `${size}px`;
+    if (this.elements.fontSizeLabel.length) {
+      this.elements.fontSizeLabel.text(`${size}px`);
     }
     
     localStorage.setItem("editor_fontsize", size);
     this.codeMirror.refresh();
-  }.bind(this);
+  };
   
-  adjustFontSize = function(change) {
+  adjustFontSize = (change) => {
     const newSize = Math.max(8, Math.min(32, this.state.fontSize + change));
     if (newSize !== this.state.fontSize) {
       this.setCodeMirrorFontSize(newSize);
     }
-  }.bind(this);
+  };
   
-  updateThemeIcon = function(isDark) {
-    if (!this.elements.themeIcon) return;
+  updateThemeIcon = (isDark) => {
+    if (!this.elements.themeIcon.length) return;
     
-    this.elements.themeIcon.innerHTML = isDark ? AppAssets.icons.moon() : AppAssets.icons.sun();
-  }.bind(this);
+    this.elements.themeIcon.html(isDark ? AppAssets.icons.moon() : AppAssets.icons.sun());
+  };
   
-  toggleTheme = function() {
+  toggleTheme = () => {
     const html = document.documentElement;
     const isDark = html.getAttribute("data-theme") === "dark";
     const newTheme = isDark ? "light" : "dark";
@@ -2058,26 +2068,26 @@ body {
     if (this.codeMirror) {
       this.codeMirror.setOption("theme", isDark ? "default" : "one-dark");
     }
-  }.bind(this);
+  };
   
-  toggleWrapLines = function() {
+  toggleWrapLines = () => {
     if (!this.codeMirror) return;
     
     this.state.wrapLines = !this.state.wrapLines;
     this.codeMirror.setOption("lineWrapping", this.state.wrapLines);
-    this.elements.wrapBtn?.classList.toggle("active", this.state.wrapLines);
+    this.elements.wrapBtn?.toggleClass("active", this.state.wrapLines);
     localStorage.setItem("editor_wrapLines", this.state.wrapLines);
-  }.bind(this);
+  };
   
-  toggleInvisibles = function() {
+  toggleInvisibles = () => {
     this.state.showInvisibles = !this.state.showInvisibles;
     if (this.codeMirror) {
       this.codeMirror.setOption("showInvisibles", this.state.showInvisibles);
     }
-    this.elements.showInvisiblesBtn?.classList.toggle("active", this.state.showInvisibles);
-  }.bind(this);
+    this.elements.showInvisiblesBtn?.toggleClass("active", this.state.showInvisibles);
+  };
   
-  updateStats = function() {
+  updateStats = () => {
     let content = "";
     
     if (this.codeMirror) {
@@ -2095,156 +2105,156 @@ body {
                  bytes < 1024 * 1024 ? `${(bytes / 1024).toFixed(1)} KB` : 
                  `${(bytes / (1024 * 1024)).toFixed(2)} MB`;
     
-    if (this.elements.lineCount) {
-      this.elements.lineCount.textContent = lines.toLocaleString();
+    if (this.elements.lineCount.length) {
+      this.elements.lineCount.text(lines.toLocaleString());
     }
     
-    if (this.elements.charCount) {
-      this.elements.charCount.textContent = characters.toLocaleString();
+    if (this.elements.charCount.length) {
+      this.elements.charCount.text(characters.toLocaleString());
     }
     
-    if (this.elements.fileSize) {
-      this.elements.fileSize.textContent = sizeStr;
+    if (this.elements.fileSize.length) {
+      this.elements.fileSize.text(sizeStr);
     }
     
     // Update word count if element exists
-    const wordCountElement = document.getElementById('wordCount');
-    if (wordCountElement) {
-      wordCountElement.textContent = words.toLocaleString();
+    const wordCountElement = $('#wordCount');
+    if (wordCountElement.length) {
+      wordCountElement.text(words.toLocaleString());
     }
-  }.bind(this);
+  };
   
-  updateCursorPosition = function() {
+  updateCursorPosition = () => {
     if (!this.codeMirror) return;
     
     const cursor = this.codeMirror.getCursor();
     
-    if (this.elements.cursorLine) {
-      this.elements.cursorLine.textContent = (cursor.line + 1).toLocaleString();
+    if (this.elements.cursorLine.length) {
+      this.elements.cursorLine.text((cursor.line + 1).toLocaleString());
     }
     
-    if (this.elements.cursorCol) {
-      this.elements.cursorCol.textContent = (cursor.ch + 1).toLocaleString();
+    if (this.elements.cursorCol.length) {
+      this.elements.cursorCol.text((cursor.ch + 1).toLocaleString());
     }
-  }.bind(this);
+  };
   
-  updateSelectionInfo = function() {
+  updateSelectionInfo = () => {
     if (!this.codeMirror) return;
     
     const selections = this.codeMirror.listSelections();
     if (selections.length > 1) {
       // Multiple selections
-      const selectionCountElement = document.getElementById('selectionCount');
-      if (selectionCountElement) {
-        selectionCountElement.textContent = `${selections.length} selections`;
-        selectionCountElement.style.display = 'inline';
+      const selectionCountElement = $('#selectionCount');
+      if (selectionCountElement.length) {
+        selectionCountElement.text(`${selections.length} selections`);
+        selectionCountElement.show();
       }
     } else {
-      const selectionCountElement = document.getElementById('selectionCount');
-      if (selectionCountElement) {
-        selectionCountElement.style.display = 'none';
+      const selectionCountElement = $('#selectionCount');
+      if (selectionCountElement.length) {
+        selectionCountElement.hide();
       }
     }
-  }.bind(this);
+  };
   
-  updateScrollPosition = function() {
+  updateScrollPosition = () => {
     if (!this.codeMirror) return;
     
     const scrollInfo = this.codeMirror.getScrollInfo();
     const scrollPercent = (scrollInfo.top / (scrollInfo.height - scrollInfo.clientHeight)) * 100;
     
-    const scrollPositionElement = document.getElementById('scrollPosition');
-    if (scrollPositionElement) {
-      scrollPositionElement.textContent = `${Math.round(scrollPercent)}%`;
+    const scrollPositionElement = $('#scrollPosition');
+    if (scrollPositionElement.length) {
+      scrollPositionElement.text(`${Math.round(scrollPercent)}%`);
     }
-  }.bind(this);
+  };
   
-  updateModifiedBadge = function() {
+  updateModifiedBadge = () => {
     if (!this.codeMirror && !this.fallbackEditor) return;
     
     const currentContent = this.codeMirror ? this.codeMirror.getValue() : 
                          this.fallbackEditor ? this.fallbackEditor.value : "";
     const isModified = currentContent !== this.originalContent;
-    this.elements.modifiedIndicator?.classList.toggle("hide", !isModified);
+    this.elements.modifiedIndicator?.toggleClass("hide", !isModified);
     
     // Update document title
     if (this.currentFile) {
       document.title = `${this.currentFile}${isModified ? ' *' : ''} - Code Editor`;
     }
-  }.bind(this);
+  };
   
-  updateLastSaved = function(saved) {
-    if (!this.elements.lastSaved) return;
+  updateLastSaved = (saved) => {
+    if (!this.elements.lastSaved.length) return;
     
     if (saved) {
       const now = new Date();
-      this.elements.lastSaved.textContent = now.toLocaleTimeString([], {
+      this.elements.lastSaved.text(now.toLocaleTimeString([], {
         hour: "2-digit",
         minute: "2-digit"
-      });
-      this.elements.lastSaved.title = now.toLocaleString();
+      }));
+      this.elements.lastSaved.attr('title', now.toLocaleString());
     } else {
-      this.elements.lastSaved.textContent = "Never";
-      this.elements.lastSaved.title = "Not saved yet";
+      this.elements.lastSaved.text("Never");
+      this.elements.lastSaved.attr('title', "Not saved yet");
     }
-  }.bind(this);
+  };
   
-  scrollHeader = function(direction) {
+  scrollHeader = (direction) => {
     const container = this.elements.headerScrollContainer;
-    if (!container) return;
+    if (!container.length) return;
     
     const scrollAmount = 200;
     if (direction === 'left') {
-      container.scrollBy({ left: -scrollAmount, behavior: 'smooth' });
+      container[0].scrollBy({ left: -scrollAmount, behavior: 'smooth' });
     } else {
-      container.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+      container[0].scrollBy({ left: scrollAmount, behavior: 'smooth' });
     }
     
     // Update buttons after scrolling
     setTimeout(() => this.updateHeaderScrollButtons(), 300);
-  }.bind(this);
+  };
   
-  updateHeaderScrollButtons = function() {
+  updateHeaderScrollButtons = () => {
     const container = this.elements.headerScrollContainer;
     const leftBtn = this.elements.headerScrollLeft;
     const rightBtn = this.elements.headerScrollRight;
     
-    if (!container || !leftBtn || !rightBtn) return;
+    if (!container.length || !leftBtn.length || !rightBtn.length) return;
     
     // Check if scrolling is needed
-    const needsScroll = container.scrollWidth > container.clientWidth;
-    leftBtn.style.display = needsScroll ? 'flex' : 'none';
-    rightBtn.style.display = needsScroll ? 'flex' : 'none';
+    const needsScroll = container[0].scrollWidth > container[0].clientWidth;
+    leftBtn.css('display', needsScroll ? 'flex' : 'none');
+    rightBtn.css('display', needsScroll ? 'flex' : 'none');
     
-    if (container.scrollLeft <= 5) {
-      leftBtn.classList.add('disabled');
+    if (container[0].scrollLeft <= 5) {
+      leftBtn.addClass('disabled');
     } else {
-      leftBtn.classList.remove('disabled');
+      leftBtn.removeClass('disabled');
     }
     
-    if (container.scrollLeft + container.clientWidth >= container.scrollWidth - 5) {
-      rightBtn.classList.add('disabled');
+    if (container[0].scrollLeft + container[0].clientWidth >= container[0].scrollWidth - 5) {
+      rightBtn.addClass('disabled');
     } else {
-      rightBtn.classList.remove('disabled');
+      rightBtn.removeClass('disabled');
     }
-  }.bind(this);
+  };
   
-  bindEvent = function(element, event, handler) {
-    if (!element) return;
+  bindEvent = (element, event, handler) => {
+    if (!element.length) return;
     
     const key = `${event}-${Math.random().toString(36).substr(2, 9)}`;
-    element.addEventListener(event, handler);
+    element.on(event, handler);
     
     if (!this.eventListeners.has(element)) {
       this.eventListeners.set(element, new Map());
     }
     this.eventListeners.get(element).set(key, { event, handler });
-  }.bind(this);
+  };
   
-  unbindEvent = function(element, event, handler) {
-    if (!element) return;
+  unbindEvent = (element, event, handler) => {
+    if (!element.length) return;
     
-    element.removeEventListener(event, handler);
+    element.off(event, handler);
     
     if (this.eventListeners.has(element)) {
       const elementListeners = this.eventListeners.get(element);
@@ -2255,16 +2265,16 @@ body {
         }
       }
     }
-  }.bind(this);
+  };
   
-  debounce = function(id, func, delay) {
+  debounce = (id, func, delay) => {
     if (this.debounceTimers[id]) {
       clearTimeout(this.debounceTimers[id]);
     }
     this.debounceTimers[id] = setTimeout(func, delay);
-  }.bind(this);
+  };
   
-  restoreSession = function() {
+  restoreSession = () => {
     try {
       const session = localStorage.getItem("editor_session");
       if (session) {
@@ -2293,9 +2303,9 @@ body {
     } catch (e) {
       console.warn("Failed to restore session:", e);
     }
-  }.bind(this);
+  };
   
-  saveSession = function() {
+  saveSession = () => {
     const content = this.codeMirror ? this.codeMirror.getValue() : 
                    this.fallbackEditor ? this.fallbackEditor.value : "";
     const cursor = this.codeMirror ? this.codeMirror.getCursor() : null;
@@ -2309,9 +2319,9 @@ body {
     };
     
     localStorage.setItem("editor_session", JSON.stringify(session));
-  }.bind(this);
+  };
   
-  destroy = function() {
+  destroy = () => {
     // Clear timers
     if (this.state.autoSaveInterval) {
       clearInterval(this.state.autoSaveInterval);
@@ -2345,7 +2355,7 @@ body {
     // Remove event listeners
     this.eventListeners.forEach((listeners, element) => {
       listeners.forEach(({ event, handler }) => {
-        element.removeEventListener(event, handler);
+        element.off(event, handler);
       });
     });
     this.eventListeners.clear();
@@ -2357,16 +2367,16 @@ body {
     this.elements.moreOptionsDropdown?.remove();
     
     this.isInitialized = false;
-  }.bind(this);
+  };
 }
 
 window.CodeViewEditor = CodeViewEditor;
 window.coderViewEdit = new CodeViewEditor();
 
 // Enhanced initialization with error handling
-document.addEventListener("DOMContentLoaded", () => {
+$(document).ready(() => {
   try {
-    if (document.querySelector('.pages[data-page="file"]')) {
+    if ($('.pages[data-page="file"]').length) {
       // Initialize with a small delay to ensure DOM is ready
       setTimeout(() => {
         if (!window.coderViewEdit.isInitialized) {
@@ -2380,7 +2390,7 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 // Handle page unload
-window.addEventListener('beforeunload', (e) => {
+$(window).on('beforeunload', (e) => {
   if (window.coderViewEdit?.hasUnsavedChanges()) {
     e.preventDefault();
     e.returnValue = 'You have unsaved changes. Are you sure you want to leave?';
