@@ -1,6 +1,6 @@
 const ProgressLoader = (() => {
-    let container = null;
-    let fill = null;
+    let $container = null;
+    let $fill = null;
     let hideTimer = null;
     let animationTimer = null;
     let progress = 0;
@@ -25,33 +25,36 @@ const ProgressLoader = (() => {
     };
 
     function init() {
-        container = document.getElementById(settings.containerId);
-        if (!container) {
-            container = document.createElement("div");
-            container.id = settings.containerId;
-            container.className = "page-progress";
-
-            const progressBar = document.createElement("div");
-            progressBar.className = "progress-bar";
-
-            fill = document.createElement("div");
-            fill.className = "progress-fill";
-
-            progressBar.appendChild(fill);
-            container.appendChild(progressBar);
-            document.body.insertBefore(container, document.body.firstChild);
+        $container = $(`#${settings.containerId}`);
+        if (!$container.length) {
+            $container = $('<div>', {
+                id: settings.containerId,
+                class: "page-progress"
+            });
+            
+            const $progressBar = $('<div>', {
+                class: "progress-bar"
+            });
+            
+            $fill = $('<div>', {
+                class: "progress-fill"
+            });
+            
+            $progressBar.append($fill);
+            $container.append($progressBar);
+            $('body').prepend($container);
         } else {
-            fill = container.querySelector(settings.fillSelector);
+            $fill = $container.find(settings.fillSelector);
         }
 
-        if (fill) {
-            fill.style.backgroundColor = settings.color;
+        if ($fill.length) {
+            $fill.css('backgroundColor', settings.color);
         }
-        if (container) {
-            container.style.height = settings.height;
+        if ($container.length) {
+            $container.css('height', settings.height);
         }
 
-        return Boolean(container && fill);
+        return Boolean($container.length && $fill.length);
     }
 
     function cleanup() {
@@ -71,21 +74,22 @@ const ProgressLoader = (() => {
     function reset() {
         cleanup();
 
-        if (container) {
-            container.classList.add("hidden");
-            container.classList.remove("visible");
+        if ($container.length) {
+            $container.addClass("hidden").removeClass("visible");
         }
 
-        if (fill) {
-            fill.style.width = "0%";
-            fill.style.transition = "none";
+        if ($fill.length) {
+            $fill.css({
+                width: "0%",
+                transition: "none"
+            });
         }
 
         progress = 0;
     }
 
     function show() {
-        if (!container || !fill) {
+        if (!$container || !$fill.length) {
             if (!init()) return;
         }
 
@@ -93,12 +97,11 @@ const ProgressLoader = (() => {
         isRunning = true;
 
         requestAnimationFrame(() => {
-            if (fill) {
-                fill.style.transition = "width 0.1s ease-out";
+            if ($fill.length) {
+                $fill.css('transition', 'width 0.1s ease-out');
             }
 
-            container.classList.remove("hidden");
-            container.classList.add("visible");
+            $container.removeClass("hidden").addClass("visible");
 
             switch (settings.animationStyle) {
                 case "realistic":
@@ -117,17 +120,17 @@ const ProgressLoader = (() => {
     }
 
     function hide() {
-        if (!container || !fill) return;
+        if (!$container || !$fill.length) return;
 
         cleanup();
         isRunning = false;
 
-        fill.style.transition = "width 0.2s ease-out";
+        $fill.css('transition', 'width 0.2s ease-out');
         progress = 100;
-        fill.style.width = "100%";
+        $fill.css('width', '100%');
 
         hideTimer = setTimeout(() => {
-            container.classList.remove("visible");
+            $container.removeClass("visible");
 
             setTimeout(() => {
                 reset();
@@ -136,10 +139,10 @@ const ProgressLoader = (() => {
     }
 
     function setProgress(value) {
-        if (!fill) return;
+        if (!$fill.length) return;
 
         progress = Math.max(0, Math.min(value, settings.maximum * 100));
-        fill.style.width = `${progress}%`;
+        $fill.css('width', `${progress}%`);
     }
 
     function increment(amount) {
@@ -226,19 +229,19 @@ const ProgressLoader = (() => {
     function configure(options = {}) {
         settings = { ...settings, ...options };
 
-        if (container) {
-            container.style.height = settings.height;
+        if ($container.length) {
+            $container.css('height', settings.height);
         }
 
-        if (fill) {
-            fill.style.backgroundColor = settings.color;
+        if ($fill.length) {
+            $fill.css('backgroundColor', settings.color);
         }
 
         return settings;
     }
 
     function isActive() {
-        return isRunning && container && container.classList.contains("visible");
+        return isRunning && $container.length && $container.hasClass("visible");
     }
 
     function getProgress() {
@@ -307,29 +310,29 @@ const PageRouter = {
     },
 
     cachePageElements() {
-        const allPages = document.querySelectorAll('.pages[data-page]');
+        const $allPages = $('.pages[data-page]');
         
-        allPages.forEach(page => {
-            const pageName = page.getAttribute('data-page');
+        $allPages.each((_, page) => {
+            const $page = $(page);
+            const pageName = $page.attr('data-page');
             if (pageName) {
-                this.pages[pageName] = page;
-                page.classList.remove('hidden', 'spa-hidden', 'spa-page', 'active', 'exit', 'show');
-                page.classList.add('hide');
+                this.pages[pageName] = $page;
+                $page.removeClass('hidden spa-hidden spa-page active exit show')
+                      .addClass('hide');
             }
         });
     },
 
     setupEventListeners() {
-        window.addEventListener('popstate', (e) => {
+        $(window).on('popstate', (e) => {
             const page = window.location.hash.slice(1) || 'repo';
             this.navigateTo(page, false);
         });
 
-        document.addEventListener('click', (e) => {
-            const navElement = e.target.closest('[data-navigate]');
-            if (navElement && !this.isTransitioning) {
+        $(document).on('click', '[data-navigate]', (e) => {
+            if (!this.isTransitioning) {
                 e.preventDefault();
-                const targetPage = navElement.getAttribute('data-navigate');
+                const targetPage = $(e.currentTarget).attr('data-navigate');
                 this.navigateTo(targetPage, true);
             }
         });
@@ -338,19 +341,18 @@ const PageRouter = {
     showInitialPage() {
         const initialPage = window.location.hash.slice(1) || 'repo';
         
-        Object.values(this.pages).forEach(page => {
-            if (page) {
-                page.classList.remove('show');
-                page.classList.add('hide');
+        $.each(this.pages, (_, $page) => {
+            if ($page) {
+                $page.removeClass('show').addClass('hide');
             }
         });
         
         ProgressLoader.start();
         
         setTimeout(() => {
-            if (this.pages[initialPage]) {
-                this.pages[initialPage].classList.remove('hide');
-                this.pages[initialPage].classList.add('show');
+            const $targetPage = this.pages[initialPage];
+            if ($targetPage && $targetPage.length) {
+                $targetPage.removeClass('hide').addClass('show');
                 this.currentPage = initialPage;
                 this.updatePageTitle(initialPage);
             }
@@ -359,7 +361,8 @@ const PageRouter = {
     },
 
     async navigateTo(pageName, updateHistory = true) {
-        if (!this.pages[pageName]) {
+        const $targetPage = this.pages[pageName];
+        if (!$targetPage || !$targetPage.length) {
             console.warn('Page "' + pageName + '" not found');
             return;
         }
@@ -378,13 +381,13 @@ const PageRouter = {
             window.history.pushState({ page: pageName }, '', '#' + pageName);
         }
 
-        document.dispatchEvent(new CustomEvent('pageNavigationStart', {
+        $(document).trigger('pageNavigationStart', {
             detail: { from: this.currentPage, to: pageName }
-        }));
+        });
 
-        if (this.currentPage && this.pages[this.currentPage]) {
-            this.pages[this.currentPage].classList.remove('show');
-            this.pages[this.currentPage].classList.add('hide');
+        const $currentPage = this.pages[this.currentPage];
+        if ($currentPage && $currentPage.length) {
+            $currentPage.removeClass('show').addClass('hide');
         }
 
         await this.delay(this.transitionDuration);
@@ -396,13 +399,14 @@ const PageRouter = {
             await this.delay(remainingDelay);
         }
 
-        window.scrollTo(0, 0);
+        $(window).scrollTop(0);
 
-        this.pages[pageName].classList.remove('hide');
+        $targetPage.removeClass('hide');
         
-        void this.pages[pageName].offsetWidth;
+        // Force reflow for smooth transition
+        $targetPage[0].offsetHeight;
         
-        this.pages[pageName].classList.add('show');
+        $targetPage.addClass('show');
 
         const previousPage = this.currentPage;
         this.currentPage = pageName;
@@ -413,9 +417,9 @@ const PageRouter = {
 
         await this.delay(this.transitionDuration);
 
-        document.dispatchEvent(new CustomEvent('pageNavigationComplete', {
+        $(document).trigger('pageNavigationComplete', {
             detail: { from: previousPage, to: pageName }
-        }));
+        });
 
         this.isTransitioning = false;
     },
@@ -438,9 +442,48 @@ const PageRouter = {
     },
 
     isPageVisible(pageName) {
-        const page = this.pages[pageName];
-        return page ? page.classList.contains('show') : false;
+        const $page = this.pages[pageName];
+        return $page ? $page.hasClass('show') : false;
     }
+};
+
+// Enhanced jQuery SPA navigation helpers
+$.fn.spaShow = function(speed = 400, easing = 'swing', callback) {
+    return this.each(function() {
+        const $this = $(this);
+        $this.stop(true, true).css({ opacity: 0, display: 'block' })
+            .animate({ opacity: 1 }, speed, easing, callback);
+    });
+};
+
+$.fn.spaHide = function(speed = 400, easing = 'swing', callback) {
+    return this.each(function() {
+        const $this = $(this);
+        $this.stop(true, true).animate({ opacity: 0 }, speed, easing, function() {
+            $this.css('display', 'none');
+            if (callback) callback.call(this);
+        });
+    });
+};
+
+$.fn.spaTransition = function(direction = 'forward', speed = 400) {
+    return this.each(function() {
+        const $this = $(this);
+        const offset = direction === 'forward' ? '100%' : '-100%';
+        $this.css({
+            transform: `translateX(${offset})`,
+            opacity: 0,
+            display: 'block',
+            transition: `all ${speed}ms ease-in-out`
+        });
+        
+        setTimeout(() => {
+            $this.css({
+                transform: 'translateX(0)',
+                opacity: 1
+            });
+        }, 50);
+    });
 };
 
 window.showRepoSelector = function() {
@@ -524,13 +567,9 @@ window.navigateBack = function() {
     }
 };
 
-if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', function() {
-        PageRouter.init();
-    });
-} else {
+$(function() {
     PageRouter.init();
-}
+});
 
 window.PageRouter = PageRouter;
 window.ProgressLoader = ProgressLoader;
