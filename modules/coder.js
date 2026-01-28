@@ -293,6 +293,12 @@ class CodeViewEditor {
     }
   };
   
+  getElement = (element) => {
+  return element && element.length ? element : $();
+};
+
+
+  
   loadCodeMirrorDependencies = () => {
     return new Promise((resolve, reject) => {
       if (typeof CodeMirror !== "undefined") {
@@ -317,7 +323,8 @@ class CodeViewEditor {
   
   setupFallbackEditor = () => {
     const container = this.elements.codeMirrorContainer;
-    if (!container) return;
+//  if (!container) return;
+    if (!container || container.length === 0) return;
     
     container.html(`
       <div class="fallback-editor">
@@ -418,12 +425,32 @@ class CodeViewEditor {
       lineNumbersBtn: "#lineNumbersBtn",
       matchBracketsBtn: "#matchBracketsBtn",
     };
-    
+ 
+/**   
     Object.entries(elementSelectors).forEach(([key, selector]) => {
       this.elements[key] = $(selector);
     });
-    
+
     this.elements.pathBreadcrumb = $('#pathBreadcrumb');
+**/
+
+
+Object.entries(elementSelectors).forEach(([key, selector]) => {
+    this.elements[key] = $(selector);
+    
+    // Initialize as empty jQuery object if not found
+    if (!this.elements[key].length) {
+      this.elements[key] = $();
+    }
+  });
+  
+  // Also for these:
+  this.elements.pathBreadcrumb = $('#pathBreadcrumb');
+  if (!this.elements.pathBreadcrumb.length) {
+    this.elements.pathBreadcrumb = $();
+  }
+
+
     this.populateLanguageDropdown();
   };
   
@@ -560,12 +587,24 @@ class CodeViewEditor {
   };
   
   showMoreOptionsDropdown = (e) => {
+  /**
     if (!this.elements.moreOptionsDropdown.length) {
       this.injectMoreOptionsDropdown();
     }
     
     const dropdown = this.elements.moreOptionsDropdown;
     if (!dropdown.length) return;
+ **/
+ 
+ 
+  if (!this.elements.moreOptionsDropdown || this.elements.moreOptionsDropdown.length === 0) {
+    this.injectMoreOptionsDropdown();
+  }
+  
+  const dropdown = this.elements.moreOptionsDropdown;
+  if (!dropdown || dropdown.length === 0) return;
+  
+    
     
     const isHidden = dropdown.hasClass('hide');
     
@@ -2240,7 +2279,8 @@ body {
   };
   
   bindEvent = (element, event, handler) => {
-    if (!element.length) return;
+//  if (!element.length) return;
+    if (!element || element.length === 0) return;
     
     const key = `${event}-${Math.random().toString(36).substr(2, 9)}`;
     element.on(event, handler);
@@ -2252,7 +2292,8 @@ body {
   };
   
   unbindEvent = (element, event, handler) => {
-    if (!element.length) return;
+//  if (!element.length) return;
+    if (!element || element.length === 0) return;
     
     element.off(event, handler);
     
