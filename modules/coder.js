@@ -250,7 +250,7 @@ class CodeViewEditor {
     this.eventListeners = new Map();
     
     this.setupGlobalEventListeners();
-    this.setupDragAndDrop();
+//    this.setupDragAndDrop();
   }
   
   init = () => {
