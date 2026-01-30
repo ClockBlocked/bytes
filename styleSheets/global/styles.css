@@ -2810,15 +2810,13 @@ aside:hover .sidebar-title {
 }
 
 .editorContainer {
-  position: relative;
+  position: sticky; top: calc(var(--navbar-height) + var(--coder-header-height) + var(--toolbar-height));
   display: flex;
   flex-direction: column;
   height: 90dvh;
   padding-top: 0;
   margin-top: 0;
-  
-  overflow: hidden;
-  overflow-y: auto;
+  z-index: 50;
 }
 
 
@@ -2842,12 +2840,13 @@ aside:hover .sidebar-title {
   display: flex;
   flex-direction: column;
   flex: 1;
-  min-height: 0;
+  height: 100%;
 }
 .editorBody {
   flex: 1;
-  min-height: 0;
+  height: 100%;
   overflow: hidden;
+  overflow-y: auto;
 }
 .CodeMirror {
   height: 100%;
