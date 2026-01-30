@@ -111,8 +111,8 @@
   --miniSidebarWidth: 3.75rem;
 
 /** Important Heights **/
-  --topNAV: 3.75rem;
-  --breadcrumbs: 2.95rem;
+  --topNAV: 4.75rem;
+  --breadcrumbs: 3.15rem;
   --header: 3.75rem;
   --toolbar: 3.15rem;
   --total-sticky-height: calc(
@@ -3352,8 +3352,7 @@ to stick to other than the body container.....
   position: sticky;
   top: var(--topNAV);
   height: var(--breadcrumbs);
-  min-height: var(--breadcrumbs);
-  max-height: var(--breadcrumbs);
+  min-height: 0;
   background: var(--canvasOverlay);
   border-bottom: 0.0625rem solid var(--borderDefault);
   z-index: 900;
@@ -3382,9 +3381,11 @@ to stick to other than the body container.....
   position: sticky;
   top: var(--topNAV);
   height: var(--header);
-  background: var(--borderMuted);
+  background: var(--editorCardBg);
   border-bottom: 0.0625rem solid var(--borderDefault);
   z-index: 950;
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
   overflow: hidden;
   overflow-x: auto;
   backdrop-filter: blur(8px);
@@ -3405,7 +3406,7 @@ to stick to other than the body container.....
   position: sticky;
   top: calc(var(--topNAV) + var(--header));
   height: var(--toolbar);
-  background: var(--borderMuted);
+  background: var(--editorCardBg);
   border-bottom: 0.0625rem solid var(--borderDefault);
   z-index: 850;
   overflow: hidden;
