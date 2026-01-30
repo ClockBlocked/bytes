@@ -121,6 +121,33 @@
 }
 
 [data-theme="dark"] {
+  
+  --background: hsl(216, 18%, 13%);
+  --foreground: hsl(210, 14%, 83%);
+  --card: hsl(217, 17%, 16%);
+  --card-foreground: hsl(210, 14%, 83%);
+  --popover: hsl(217, 17%, 16%);
+  --popover-foreground: hsl(210, 14%, 83%);
+  --primary: hsl(212, 92%, 45%);
+  --primary-foreground: hsl(0, 0%, 100%);
+  --secondary: hsl(215, 14%, 22%);
+  --secondary-foreground: hsl(210, 14%, 83%);
+  --muted: hsl(215, 14%, 22%);
+  --muted-foreground: hsl(215, 13%, 55%);
+  --accent: hsl(215, 14%, 25%);
+  --accent-foreground: hsl(210, 14%, 83%);
+  --destructive: hsl(0, 72%, 51%);
+  --destructive-foreground: hsl(0, 0%, 100%);
+  --border: hsl(215, 14%, 25%);
+  --input: hsl(215, 14%, 25%);
+  --ring: hsl(212, 92%, 45%);
+  --sidebar: hsl(216, 18%, 11%);
+  --sidebar-foreground: hsl(210, 14%, 83%);
+  --sidebar-border: hsl(215, 14%, 25%);
+  --editor-bg: hsl(0, 0%, 15%);
+  
+  
+  
   --canvasDefault: #22272e;
   --canvasOverlay: #2d333b;
   --canvasInset: #1c2128;
@@ -3383,7 +3410,8 @@ to stick to other than the body container.....
   position: sticky;
   top: var(--topNAV);
   height: var(--header);
-  background: var(--editorCardBg);
+  background: var(--accent);
+  color: var(--accent-foreground);
   border-bottom: 0.0625rem solid var(--borderDefault);
   z-index: 950;
   border-top-left-radius: 10px;
@@ -3408,7 +3436,8 @@ to stick to other than the body container.....
   position: sticky;
   top: calc(var(--topNAV) + var(--header));
   height: var(--toolbar);
-  background: var(--editorCardBg);
+  background: var(--accent);
+  color: var(--accent-foreground);
   border-bottom: 0.0625rem solid var(--borderDefault);
   z-index: 850;
   overflow: hidden;
