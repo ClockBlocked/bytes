@@ -3440,8 +3440,8 @@ to stick to other than the body container.....
 @media (max-width: 48rem) {
   :root {
     --topNAV: 3.5rem;
-    --breadcrumbs: 2.5rem;
-    --header: 2.5rem;
-    --toolbar: 2.5rem;
+    --breadcrumbs: 2.85rem;
+    --header: 3.35rem;
+    --toolbar: 2.75rem;
   }
 }
