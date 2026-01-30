@@ -110,12 +110,13 @@
   --sidebarWidth: 18.5rem;
   --miniSidebarWidth: 3.75rem;
 
-  --navbar-height: 3.75rem;
-  --breadcrumb-height: 2.95rem;
-  --coder-header-height: 3.75rem;
-  --toolbar-height: 3.15rem;
+/** Important Heights **/
+  --topNAV: 3.75rem;
+  --breadcrumbs: 2.95rem;
+  --header: 3.75rem;
+  --toolbar: 3.15rem;
   --total-sticky-height: calc(
-    var(--navbar-height) + var(--breadcrumb-height) + var(--coder-header-height) + var(--toolbar-height)
+    var(--topNAV) + var(--breadcrumbs) + var(--header) + var(--toolbar)
   );
 }
 
@@ -624,7 +625,7 @@ textarea:focus-visible {
   visibility: hidden;
   transform: translateY(1.5rem);
   pointer-events: none;
-  position: absolute;
+  position: ;
   top: 0;
   min-height: 0;
   max-height: 100%;
@@ -2165,7 +2166,7 @@ aside:hover .sidebar-title {
   position: relative;
   flex: 1;
   min-height: 25rem;
-  max-height: calc(100vh - 15.625rem);
+  height: 100%;
   background: var(--editorBg);
   overflow: hidden;
 }
@@ -2810,7 +2811,7 @@ aside:hover .sidebar-title {
 }
 
 .editorContainer {
-  position: sticky; top: calc(var(--navbar-height) + var(--coder-header-height) + var(--toolbar-height));
+  position: sticky; top: calc(var(--topNAV) + var(--header) + var(--toolbar));
   display: flex;
   flex-direction: column;
   height: 100%;
@@ -3376,16 +3377,16 @@ to stick to other than the body container.....
 
 /****************  F I X E D  ******************/
 :root {
-  --navbar-height: 40px;
-  --breadcrumb-height: 25px;
-  --coder-header-height: 35px;
-  --toolbar-height: 35px;
+  --topNAV: 40px;
+  --breadcrumbs: 25px;
+  --header: 35px;
+  --toolbar: 35px;
 }
 
 .navbar {
   position: sticky;
   top: 0;
-  height: var(--navbar-height);
+  height: var(--topNAV);
   background: var(--canvasOverlay);
   border-bottom: 0.0625rem solid var(--borderDefault);
   padding: 0.75rem 1rem;
@@ -3397,10 +3398,10 @@ to stick to other than the body container.....
 
 .breadCrumbsWrapper {
   position: sticky;
-  top: var(--navbar-height);
-  height: var(--breadcrumb-height);
-  min-height: var(--breadcrumb-height);
-  max-height: var(--breadcrumb-height);
+  top: var(--topNAV);
+  height: var(--breadcrumbs);
+  min-height: var(--breadcrumbs);
+  max-height: var(--breadcrumbs);
   background: var(--canvasOverlay);
   border-bottom: 0.0625rem solid var(--borderDefault);
   z-index: 900;
@@ -3427,8 +3428,8 @@ to stick to other than the body container.....
 
 .coderHeaderWrapper {
   position: sticky;
-  top: var(--navbar-height);
-  height: var(--coder-header-height);
+  top: var(--topNAV);
+  height: var(--header);
   background: var(--canvasOverlay);
   border-bottom: 0.0625rem solid var(--borderDefault);
   z-index: 950;
@@ -3445,13 +3446,13 @@ to stick to other than the body container.....
 }
 
 .breadCrumbsWrapper.hidden ~ .coderHeaderWrapper {
-  top: var(--navbar-height);
+  top: var(--topNAV);
 }
 
 .coderToolBarWrapper {
   position: sticky;
-  top: calc(var(--navbar-height) + var(--coder-header-height));
-  height: var(--toolbar-height);
+  top: calc(var(--topNAV) + var(--header));
+  height: var(--toolbar);
   background: var(--canvasOverlay);
   border-bottom: 0.0625rem solid var(--borderDefault);
   z-index: 850;
@@ -3467,12 +3468,12 @@ to stick to other than the body container.....
 }
 
 .breadCrumbsWrapper.hidden ~ .coderHeaderWrapper + .coderToolBarWrapper {
-  top: calc(var(--navbar-height) + var(--coder-header-height));
+  top: calc(var(--topNAV) + var(--header));
 }
 
 .pages[data-page="file"] {
   position: relative;
-  min-height: calc(100vh - var(--navbar-height));
+  min-height: calc(100vh - var(--topNAV));
 }
 
 .editorContainer[data-fullscreen="true"] {
@@ -3492,9 +3493,9 @@ to stick to other than the body container.....
 
 @media (max-width: 48rem) {
   :root {
-    --navbar-height: 3.5rem;
-    --breadcrumb-height: 2.5rem;
-    --coder-header-height: 2.5rem;
-    --toolbar-height: 2.5rem;
+    --topNAV: 3.5rem;
+    --breadcrumbs: 2.5rem;
+    --header: 2.5rem;
+    --toolbar: 2.5rem;
   }
 }
