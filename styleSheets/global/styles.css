@@ -3382,7 +3382,7 @@ to stick to other than the body container.....
   position: sticky;
   top: var(--topNAV);
   height: var(--header);
-  background: var(--canvasOverlay);
+  background: var(--borderMuted);
   border-bottom: 0.0625rem solid var(--borderDefault);
   z-index: 950;
   overflow: hidden;
@@ -3405,7 +3405,7 @@ to stick to other than the body container.....
   position: sticky;
   top: calc(var(--topNAV) + var(--header));
   height: var(--toolbar);
-  background: var(--canvasOverlay);
+  background: var(--borderMuted);
   border-bottom: 0.0625rem solid var(--borderDefault);
   z-index: 850;
   overflow: hidden;
