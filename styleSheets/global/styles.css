@@ -3422,7 +3422,7 @@ to stick to other than the body container.....
   -webkit-backdrop-filter: blur(8px);
   display: flex;
   align-items: center;
-  padding: 1rem;
+  padding: 0.5rem;
   justify-content: space-evenly;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   transition: top 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -3446,7 +3446,7 @@ to stick to other than the body container.....
   -webkit-backdrop-filter: blur(8px);
   display: flex;
   align-items: center;
-  padding: 1rem;
+  padding: 0.5rem;
   justify-content: space-evenly;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
@@ -3471,3 +3471,6 @@ to stick to other than the body container.....
   top: 0;
 }
 
+.pages button {
+  background: var(--btnDefault) !important;
+}
