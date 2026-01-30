@@ -3375,6 +3375,13 @@ to stick to other than the body container.....
 
 
 /****************  F I X E D  ******************/
+:root {
+  --navbar-height: 40px;
+  --breadcrumb-height: 25px;
+  --coder-header-height: 35px;
+  --toolbar-height: 35px;
+}
+
 .navbar {
   position: sticky;
   top: 0;
@@ -3384,21 +3391,38 @@ to stick to other than the body container.....
   padding: 0.75rem 1rem;
   z-index: 1000;
   backdrop-filter: blur(8px);
--webkit-backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .breadCrumbsWrapper {
   position: sticky;
   top: var(--navbar-height);
   height: var(--breadcrumb-height);
-  min-height: 0;
+  min-height: var(--breadcrumb-height);
+  max-height: var(--breadcrumb-height);
   background: var(--canvasOverlay);
   border-bottom: 0.0625rem solid var(--borderDefault);
-  z-index: 700;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  overflow: hidden;  
+  z-index: 900;
+  overflow: hidden;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
   display: flex;
-  align-items: center;  
+  align-items: center;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  transform: translateY(0);
+  opacity: 1;
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1), height 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.breadCrumbsWrapper.hidden {
+  transform: translateY(-100%);
+  opacity: 0;
+  height: 0;
+  min-height: 0;
+  max-height: 0;
+  pointer-events: none;
+  border-bottom: none;
 }
 
 .coderHeaderWrapper {
@@ -3408,42 +3432,48 @@ to stick to other than the body container.....
   background: var(--canvasOverlay);
   border-bottom: 0.0625rem solid var(--borderDefault);
   z-index: 950;
-  transition: top 0.3s cubic-bezier(0.4, 0, 0.2, 1);  
-  display: flex;
-  align-items: center;
   overflow: hidden;
   overflow-x: auto;
-  padding: 1rem; 
-  justify-content: space-evenly; 
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  display: flex;
+  align-items: center;
+  padding: 1rem;
+  justify-content: space-evenly;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  transition: top 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.breadCrumbsWrapper.hidden ~ .coderHeaderWrapper {
+  top: var(--navbar-height);
 }
 
 .coderToolBarWrapper {
   position: sticky;
-
   top: calc(var(--navbar-height) + var(--coder-header-height));
-
-  
   height: var(--toolbar-height);
   background: var(--canvasOverlay);
   border-bottom: 0.0625rem solid var(--borderDefault);
   z-index: 850;
-  backdrop-filter: blur(8px);
--webkit-backdrop-filter: blur(8px);
-  display: flex;
-  align-items: center;
   overflow: hidden;
   overflow-x: auto;
-  padding: 1rem; 
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  display: flex;
+  align-items: center;
+  padding: 1rem;
   justify-content: space-evenly;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
+.breadCrumbsWrapper.hidden ~ .coderHeaderWrapper + .coderToolBarWrapper {
+  top: calc(var(--navbar-height) + var(--coder-header-height));
+}
 
-
-
-
-
-
-
+.pages[data-page="file"] {
+  position: relative;
+  min-height: calc(100vh - var(--navbar-height));
+}
 
 .editorContainer[data-fullscreen="true"] {
   position: fixed;
@@ -3458,4 +3488,13 @@ to stick to other than the body container.....
 .editorContainer[data-fullscreen="true"] .coderToolBarWrapper {
   position: absolute;
   top: 0;
+}
+
+@media (max-width: 48rem) {
+  :root {
+    --navbar-height: 3.5rem;
+    --breadcrumb-height: 2.5rem;
+    --coder-header-height: 2.5rem;
+    --toolbar-height: 2.5rem;
+  }
 }
