@@ -2813,7 +2813,7 @@ aside:hover .sidebar-title {
   position: sticky; top: calc(var(--navbar-height) + var(--coder-header-height) + var(--toolbar-height));
   display: flex;
   flex-direction: column;
-  height: 90dvh;
+  height: 100%;
   padding-top: 0;
   margin-top: 0;
   z-index: 50;
