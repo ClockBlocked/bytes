@@ -112,7 +112,7 @@
 
 /** Important Heights **/
   --topNAV: 4.75rem;
-  --breadcrumbs: 3.15rem;
+  --breadcrumbs: 5.15rem;
   --header: 3.75rem;
   --toolbar: 3.15rem;
   --total-sticky-height: calc(
@@ -3365,11 +3365,12 @@ to stick to other than the body container.....
 
 
 .navbar {
-  position: sticky;
-  top: 0;
-  height: var(--topNAV);
+  position: fixed;
+  bottom: 2rem;
+  height: 40px;
   background: var(--canvasOverlay);
-  border-bottom: 0.0625rem solid var(--borderDefault);
+  border: 1px solid var(--borderDefault);
+  border-radius: 12px;
   padding: 0.75rem 1rem;
   z-index: 10000;
   backdrop-filter: blur(8px);
@@ -3379,7 +3380,7 @@ to stick to other than the body container.....
 
 .breadCrumbsWrapper {
   position: sticky;
-  top: var(--topNAV);
+  top: 0;
   height: var(--breadcrumbs);
   min-height: 0;
   background: var(--canvasOverlay);
@@ -3408,7 +3409,7 @@ to stick to other than the body container.....
 
 .coderHeaderWrapper {
   position: sticky;
-  top: var(--topNAV);
+  top: var(--breadcrumbs);
   height: var(--header);
   background: var(--accent);
   color: var(--accent-foreground);
@@ -3434,7 +3435,7 @@ to stick to other than the body container.....
 
 .coderToolBarWrapper {
   position: sticky;
-  top: calc(var(--topNAV) + var(--header));
+  top: calc(var(--breadcrumbs) + var(--header));
   height: var(--toolbar);
   background: var(--accent);
   color: var(--accent-foreground);
