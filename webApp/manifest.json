@@ -2,124 +2,124 @@
   "name": "GitDev - File Explorer",
   "short_name": "GitDev",
   "description": "A professional file explorer and code editor interface that mimics GitHub's design and functionality. Browse repositories, manage files, and edit code with local storage persistence.",
-  "start_url": "/bytes/index.html",
-  "scope": "/bytes/",
+  "start_url": "https://clockblocked.github.io/bytes/index.html",
+  "scope": "https://clockblocked.github.io/bytes/",
+  "id": "https://clockblocked.github.io/bytes/",
   "display": "standalone",
-  "display_override": ["window-controls-overlay", "standalone", "minimal-ui"],
+  "display_override": ["tabbed", "window-controls-overlay", "standalone", "minimal-ui"],
   "orientation": "any",
   "background_color": "#22272e",
   "theme_color": "#22272e",
-  "id": "/bytes/",
   "categories": ["developer tools", "productivity", "utilities"],
   "dir": "ltr",
   "lang": "en-US",
   "prefer_related_applications": false,
-  "iarc_rating_id": "",
+  "iarc_rating_id": "e84b072d-71b3-4d3e-86ae-31a8ce4e53b7",
   "icons": [
     {
-      "src": "icons/icon-48x48.png",
+      "src": "https://clockblocked.github.io/bytes/webApp/icons/icon-48.png",
       "sizes": "48x48",
       "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "icons/icon-72x72.png",
+      "src": "https://clockblocked.github.io/bytes/webApp/icons/icon-72.png",
       "sizes": "72x72",
       "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "icons/icon-96x96.png",
+      "src": "https://clockblocked.github.io/bytes/webApp/icons/icon-96.png",
       "sizes": "96x96",
       "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "icons/icon-128x128.png",
+      "src": "https://clockblocked.github.io/bytes/webApp/icons/icon-128.png",
       "sizes": "128x128",
       "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "icons/icon-144x144.png",
+      "src": "https://clockblocked.github.io/bytes/webApp/icons/icon-144.png",
       "sizes": "144x144",
       "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "icons/icon-152x152.png",
+      "src": "https://clockblocked.github.io/bytes/webApp/icons/icon-152.png",
       "sizes": "152x152",
       "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "icons/icon-192x192.png",
+      "src": "https://clockblocked.github.io/bytes/webApp/icons/icon-192.png",
       "sizes": "192x192",
       "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "icons/icon-256x256.png",
+      "src": "https://clockblocked.github.io/bytes/webApp/icons/icon-256.png",
       "sizes": "256x256",
       "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "icons/icon-384x384.png",
+      "src": "https://clockblocked.github.io/bytes/webApp/icons/icon-384.png",
       "sizes": "384x384",
       "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "icons/icon-512x512.png",
+      "src": "https://clockblocked.github.io/bytes/webApp/icons/icon-512.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "icons/icon-512x512-maskable.png",
-      "sizes": "512x512",
+      "src": "https://clockblocked.github.io/bytes/webApp/icons/maskable-192.png",
+      "sizes": "192x192",
       "type": "image/png",
       "purpose": "maskable"
     },
     {
-      "src": "icons/icon-192x192-maskable.png",
-      "sizes": "192x192",
+      "src": "https://clockblocked.github.io/bytes/webApp/icons/maskable-512.png",
+      "sizes": "512x512",
       "type": "image/png",
       "purpose": "maskable"
     }
   ],
   "screenshots": [
     {
-      "src": "screenshots/desktop-home.png",
+      "src": "https://clockblocked.github.io/bytes/webApp/screenshots/desktop-home-1920x1080.png",
       "sizes": "1920x1080",
       "type": "image/png",
       "form_factor": "wide",
       "label": "GitDev Repository Browser - Desktop View"
     },
     {
-      "src": "screenshots/desktop-explorer.png",
+      "src": "https://clockblocked.github.io/bytes/webApp/screenshots/desktop-explorer-1920x1080.png",
       "sizes": "1920x1080",
       "type": "image/png",
       "form_factor": "wide",
       "label": "File Explorer - Browse and manage your files"
     },
     {
-      "src": "screenshots/desktop-editor.png",
+      "src": "https://clockblocked.github.io/bytes/webApp/screenshots/desktop-editor-1920x1080.png",
       "sizes": "1920x1080",
       "type": "image/png",
       "form_factor": "wide",
       "label": "Code Editor - Edit files with syntax highlighting"
     },
     {
-      "src": "screenshots/mobile-home.png",
+      "src": "https://clockblocked.github.io/bytes/webApp/screenshots/mobile-home-750x1334.png",
       "sizes": "750x1334",
       "type": "image/png",
       "form_factor": "narrow",
       "label": "GitDev Repository Browser - Mobile View"
     },
     {
-      "src": "screenshots/mobile-explorer.png",
+      "src": "https://clockblocked.github.io/bytes/webApp/screenshots/mobile-explorer-750x1334.png",
       "sizes": "750x1334",
       "type": "image/png",
       "form_factor": "narrow",
@@ -131,10 +131,10 @@
       "name": "Browse Repositories",
       "short_name": "Repos",
       "description": "View and select from your repositories",
-      "url": "/bytes/index.html#repo",
+      "url": "https://clockblocked.github.io/bytes/index.html#repo",
       "icons": [
         {
-          "src": "icons/shortcut-repo.png",
+          "src": "https://clockblocked.github.io/bytes/webApp/icons/shortcut-repo-96.png",
           "sizes": "96x96",
           "type": "image/png"
         }
@@ -144,10 +144,10 @@
       "name": "New File",
       "short_name": "New",
       "description": "Create a new file in your repository",
-      "url": "/bytes/index.html?action=new-file",
+      "url": "https://clockblocked.github.io/bytes/index.html?action=new-file",
       "icons": [
         {
-          "src": "icons/shortcut-new-file.png",
+          "src": "https://clockblocked.github.io/bytes/webApp/icons/shortcut-new-file-96.png",
           "sizes": "96x96",
           "type": "image/png"
         }
@@ -157,10 +157,10 @@
       "name": "File Explorer",
       "short_name": "Files",
       "description": "Browse files in your current repository",
-      "url": "/bytes/index.html#explorer",
+      "url": "https://clockblocked.github.io/bytes/index.html#explorer",
       "icons": [
         {
-          "src": "icons/shortcut-explorer.png",
+          "src": "https://clockblocked.github.io/bytes/webApp/icons/shortcut-explorer-96.png",
           "sizes": "96x96",
           "type": "image/png"
         }
@@ -170,10 +170,10 @@
       "name": "Icon Library",
       "short_name": "Icons",
       "description": "Browse and copy SVG icons",
-      "url": "/bytes/awesome/index.html",
+      "url": "https://clockblocked.github.io/bytes/awesome/index.html",
       "icons": [
         {
-          "src": "icons/shortcut-icons.png",
+          "src": "https://clockblocked.github.io/bytes/webApp/icons/shortcut-icons-96.png",
           "sizes": "96x96",
           "type": "image/png"
         }
@@ -181,7 +181,7 @@
     }
   ],
   "share_target": {
-    "action": "/bytes/index.html",
+    "action": "https://clockblocked.github.io/bytes/index.html",
     "method": "GET",
     "params": {
       "title": "title",
@@ -191,7 +191,7 @@
   },
   "file_handlers": [
     {
-      "action": "/bytes/index.html?action=open",
+      "action": "https://clockblocked.github.io/bytes/index.html?action=open",
       "accept": {
         "text/javascript": [".js", ".mjs", ".cjs"],
         "text/css": [".css"],
@@ -211,13 +211,99 @@
   "protocol_handlers": [
     {
       "protocol": "web+gitdev",
-      "url": "/bytes/index.html?repo=%s"
+      "url": "https://clockblocked.github.io/bytes/index.html?repo=%s"
     }
   ],
   "launch_handler": {
     "client_mode": ["navigate-existing", "auto"]
   },
   "handle_links": "preferred",
+  "scope_extensions": [
+    {
+      "origin": "https://clockblocked.github.io"
+    },
+    {
+      "origin": "https://*.github.io"
+    },
+    {
+      "origin": "https://api.github.com"
+    },
+    {
+      "origin": "https://raw.githubusercontent.com"
+    },
+    {
+      "origin": "https://cdn.jsdelivr.net"
+    },
+    {
+      "origin": "https://cdnjs.cloudflare.com"
+    },
+    {
+      "origin": "https://unpkg.com"
+    }
+  ],
+  "tabbed": {
+    "home_tab": "auto",
+    "new_tab_button": {
+      "url": "https://clockblocked.github.io/bytes/index.html?action=new-tab"
+    }
+  },
+  "widgets": [
+    {
+      "name": "GitDev Quick Access",
+      "short_name": "GitDev",
+      "description": "Quick access to your repositories and recent files",
+      "tag": "gitdev-quick-access",
+      "ms_ac_template": "https://clockblocked.github.io/bytes/webApp/widgets/quick-access.json",
+      "data": "https://clockblocked.github.io/bytes/webApp/widgets/quick-access-data.json",
+      "type": "application/json",
+      "screenshots": [
+        {
+          "src": "https://clockblocked.github.io/bytes/webApp/widgets/widget-preview-400x200.png",
+          "sizes": "400x200",
+          "type": "image/png",
+          "label": "GitDev Quick Access Widget"
+        }
+      ],
+      "icons": [
+        {
+          "src": "https://clockblocked.github.io/bytes/webApp/icons/widget-icon-48.png",
+          "sizes": "48x48",
+          "type": "image/png"
+        }
+      ],
+      "backgrounds": [
+        {
+          "src": "https://clockblocked.github.io/bytes/webApp/widgets/widget-bg-dark.png",
+          "sizes": "400x200",
+          "type": "image/png"
+        }
+      ]
+    },
+    {
+      "name": "GitDev Stats",
+      "short_name": "Stats",
+      "description": "View your repository statistics at a glance",
+      "tag": "gitdev-stats",
+      "ms_ac_template": "https://clockblocked.github.io/bytes/webApp/widgets/stats.json",
+      "data": "https://clockblocked.github.io/bytes/webApp/widgets/stats-data.json",
+      "type": "application/json",
+      "screenshots": [
+        {
+          "src": "https://clockblocked.github.io/bytes/webApp/widgets/stats-preview-400x200.png",
+          "sizes": "400x200",
+          "type": "image/png",
+          "label": "GitDev Stats Widget"
+        }
+      ],
+      "icons": [
+        {
+          "src": "https://clockblocked.github.io/bytes/webApp/icons/widget-stats-48.png",
+          "sizes": "48x48",
+          "type": "image/png"
+        }
+      ]
+    }
+  ],
   "edge_side_panel": {
     "preferred_width": 480
   },
