@@ -3421,9 +3421,6 @@ to stick to other than the body container.....
   top: calc(var(--topNAV) + var(--header));
 }
 
-.pages[data-page="file"] {
-  position: absolute; top: var(--topNAV);
-}
 
 .editorContainer[data-fullscreen="true"] {
   position: fixed;
