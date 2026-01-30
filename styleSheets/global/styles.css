@@ -467,6 +467,38 @@
   user-select: none;
 }
 
+html {
+  font-size: 13px !important;
+}
+
+html, body, * {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  overflow: -moz-scrollbars-none;
+}
+
+body {
+  background-color: var(--bgBody);
+  color: var(--colorTextPrimary);
+  font-family: var(--fontText);
+  font-size: var(--textMd);
+  font-weight: var(--weightNormal);
+  scroll-behavior: smooth;
+
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  
+  height: 100%;
+}
+
+::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+  background: transparent;
+  display: none;
+}
+
+
 pre,
 code,
 .code-block,
@@ -515,27 +547,6 @@ textarea {
   background: var(--canvasDefault);
 }
 
-html {
-  font-size: 0.8125rem;
-}
-
-body {
-  background-color: var(--bgBody);
-  color: var(--colorTextPrimary);
-  font-family: var(--fontText);
-  font-size: var(--textMd);
-  font-weight: var(--weightNormal);
-  scroll-behavior: smooth;
-
-  scrollbar-width: none;
-  -ms-overflow-style: none;
-  
-  height: 100%;
-}
-
-*::-webkit-scrollbar {
-  display: none;
-}
 
 h1,
 .h1 {
@@ -3269,10 +3280,6 @@ aside:hover .sidebar-title {
   right: 1rem;
 }
 
-html {
-  font-size: 13px !important;
-}
-
 /**
 THESE wrapper containers were created because i was under 
 the impression that a sticky element has to have a container 
@@ -3326,12 +3333,7 @@ to stick to other than the body container.....
 
 
 /****************  F I X E D  ******************/
-:root {
-  --topNAV: 40px;
-  --breadcrumbs: 25px;
-  --header: 35px;
-  --toolbar: 35px;
-}
+
 
 .navbar {
   position: sticky;
@@ -3437,11 +3439,3 @@ to stick to other than the body container.....
   top: 0;
 }
 
-@media (max-width: 48rem) {
-  :root {
-    --topNAV: 3.5rem;
-    --breadcrumbs: 2.85rem;
-    --header: 3.35rem;
-    --toolbar: 2.75rem;
-  }
-}
