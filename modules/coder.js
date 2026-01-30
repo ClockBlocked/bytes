@@ -1689,10 +1689,10 @@ body {
     
     if (this.codeMirror) {
       this.codeMirror.setOption("readOnly", false);
-      this.codeMirror.focus();
+//    this.codeMirror.focus();
     } else if (this.fallbackEditor) {
       this.fallbackEditor.readOnly = false;
-      this.fallbackEditor.focus();
+//    this.fallbackEditor.focus();
     }
     
     // Dispatch event
