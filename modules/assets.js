@@ -414,28 +414,19 @@ templates: {
 
             <div class="toolbarSeparator"></div>
 
-            <button id="themeBtn" class="headerButton" title="Toggle Theme">
-              <svg id="themeIcon" class="buttonIcon" viewBox="0 0 16 16" fill="currentColor" width="14" height="14">
-                ${AppAssets.icons.sun()}
-              </svg>
-            </button>
 
-            <div class="toolbarSeparator"></div>
 
-            <button id="fullscreenBtn" class="headerButton" title="Toggle Fullscreen">
-              <svg
-                id="fullscreenIcon"
-                class="buttonIcon"
-                viewBox="0 0 16 16"
-                fill="currentColor"
-                width="14"
-                height="14"
-              >
-                ${AppAssets.icons.fullscreen()}
-              </svg>
-            </button>
 
-            <button id="moreOptionsBtn" class="headerButton" title="More Options">${AppAssets.icons.more()}</button>
+
+
+
+
+
+
+
+
+
+
           </div>
         </div>
       </div>
@@ -485,6 +476,38 @@ templates: {
         <button id="fontIncreaseBtn" class="fontBtn" title="Increase Font Size">${AppAssets.icons.plus()}</button>
       </div>
     </div>
+    
+  <div class="toolbarGroup">
+  
+  
+            <button id="themeBtn" class="headerButton" title="Toggle Theme">
+              <svg id="themeIcon" class="buttonIcon" viewBox="0 0 16 16" fill="currentColor" width="14" height="14">
+                ${AppAssets.icons.sun()}
+              </svg>
+            </button>
+
+            <div class="toolbarSeparator"></div>
+
+            <button id="fullscreenBtn" class="headerButton" title="Toggle Fullscreen">
+              <svg
+                id="fullscreenIcon"
+                class="buttonIcon"
+                viewBox="0 0 16 16"
+                fill="currentColor"
+                width="14"
+                height="14"
+              >
+                ${AppAssets.icons.fullscreen()}
+              </svg>
+            </button>
+
+            <button id="moreOptionsBtn" class="headerButton" title="More Options">${AppAssets.icons.more()}</button>
+
+  
+  </div>  
+    
+    
+    
   </div>
 </div>
 
