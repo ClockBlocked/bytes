@@ -2165,7 +2165,6 @@ aside:hover .sidebar-title {
 .editorBody {
   position: relative;
   flex: 1;
-  min-height: 25rem;
   height: 100%;
   background: var(--editorBg);
   overflow: hidden;
@@ -3094,9 +3093,7 @@ aside:hover .sidebar-title {
   flex-shrink: 0;
 }
 
-#editorBody {
-  min-height: 400px;
-}
+
 
 .searchPanel {
   position: absolute;
@@ -3473,7 +3470,6 @@ to stick to other than the body container.....
 
 .pages[data-page="file"] {
   position: relative;
-  min-height: calc(100vh - var(--topNAV));
 }
 
 .editorContainer[data-fullscreen="true"] {
