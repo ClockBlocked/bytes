@@ -3410,12 +3410,12 @@ to stick to other than the body container.....
 
 .coderHeaderWrapper {
   position: sticky;
-  top: var(--breadcrumbs);
+  top: 0;
   height: var(--header);
   background: var(--accent);
   color: var(--accent-foreground);
   border-bottom: 0.0625rem solid var(--borderDefault);
-  z-index: 10000;
+  z-index: 10005;
   border-top-left-radius: 10px;
   border-top-right-radius: 10px;
   overflow: hidden;
@@ -3436,12 +3436,12 @@ to stick to other than the body container.....
 
 .coderToolBarWrapper {
   position: sticky;
-  top: calc(var(--breadcrumbs) + var(--header));
+  top: var(--header);
   height: var(--toolbar);
   background: var(--accent);
   color: var(--accent-foreground);
   border-bottom: 0.0625rem solid var(--borderDefault);
-  z-index: 10000;
+  z-index: 10005;
   overflow: hidden;
   overflow-x: auto;
   backdrop-filter: blur(8px);
