@@ -634,6 +634,8 @@ textarea:focus-visible {
     opacity 0.65s cubic-bezier(0.4, 0, 0.2, 1),
     transform 0.85s cubic-bezier(0.4, 0, 0.2, 1),
     visibility 0s linear;
+    
+  padding: 1rem;
 }
 
 .pages.show {
