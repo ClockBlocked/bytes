@@ -2729,7 +2729,7 @@ aside:hover .sidebar-title {
   overflow: hidden;
   overflow-y: auto;
 }
-#codeMirrorContainer . co-worker {
+#codeMirrorContainer .co-worker {
   height: 100%;
   background-color: var(--codeBg);
 }
@@ -3469,7 +3469,7 @@ to stick to other than the body container.....
 }
 
 .pages[data-page="file"] {
-  position: relative;
+  position: absolute; top: var(--topNAV);
 }
 
 .editorContainer[data-fullscreen="true"] {
