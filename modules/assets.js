@@ -614,13 +614,13 @@ templates: {
     </div>
   </div>
   <div class="dropdown-content">
-    <button id="newFileWithRepo" class="dropdown-item" data-action="new-file-with-repo">
+    <button id="newFileWithRepo" class="dropdownItem" data-action="new-file-with-repo">
       <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
         <path d="M2 2.5A2.5 2.5 0 0 1 4.5 0h8.75a.75.75 0 0 1 .75.75v12.5a.75.75 0 0 1-.75.75h-2.5a.75.75 0 0 1 0-1.5h1.75v-2h-8a1 1 0 0 0-.714 1.7.75.75 0 1 1-1.072 1.05A2.495 2.495 0 0 1 2 11.5v-9zm10.5-1V9h-8c-.356 0-.694.074-1 .208V2.5a1 1 0 0 1 1-1h8zM5 12.25v3.25a.25.25 0 0 0 .4.2l1.45-1.087a.25.25 0 0 1 .3 0L8.6 15.7a.25.25 0 0 0 .4-.2v-3.25a.25.25 0 0 0-.25-.25h-3.5a.25.25 0 0 0-.25.25z"/>
       </svg>
       With Repository
     </button>
-    <button id="newFileWithoutRepo" class="dropdown-item" data-action="new-file-without-repo">
+    <button id="newFileWithoutRepo" class="dropdownItem" data-action="new-file-without-repo">
       <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
         <path d="M2 1.75C2 .784 2.784 0 3.75 0h6.586c.464 0 .909.184 1.237.513l2.914 2.914c.329.328.513.773.513 1.237v9.586A1.75 1.75 0 0 1 13.25 15H3.75A1.75 1.75 0 0 1 2 13.25Zm1.75-.25a.25.25 0 0 0-.25.25v11.5c0 .138.112.25.25.25h9.5a.25.25 0 0 0 .25-.25V4.664a.25.25 0 0 0-.073-.177l-2.914-2.914a.25.25 0 0 0-.177-.073Zm.75 9.5a.75.75 0 0 1 .75-.75h4a.75.75 0 0 1 0 1.5h-4a.75.75 0 0 1-.75-.75Zm.75-3.25a.75.75 0 0 0 0 1.5h6a.75.75 0 0 0 0-1.5Z"/>
       </svg>
@@ -655,33 +655,33 @@ moreOptionsDropdown: () => `
     </div>
   </div>
   <div class="dropdown-content">
-    <button class="dropdown-item" id="formatBtn">
+    <button class="dropdownItem" id="formatBtn">
       <svg class="dropdown-icon" viewBox="0 0 16 16" width="16" height="16">
         <path d="M3.72 3.72a.75.75 0 0 1 1.06 0L8 6.94l3.22-3.22a.749.749 0 0 1 1.275.326.749.749 0 0 1-.215.734L9.06 8l3.22 3.22a.749.749 0 0 1-.326 1.275.749.749 0 0 1-.734-.215L8 9.06l-3.22 3.22a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042L6.94 8 3.72 4.72a.75.75 0 0 1 0-1.06Z"/>
       </svg>
       Format Code
     </button>
-    <button class="dropdown-item" id="foldAllBtn">
+    <button class="dropdownItem" id="foldAllBtn">
       <svg class="dropdown-icon" viewBox="0 0 16 16" width="16" height="16">
         <path d="M10.896 2H8.75V.75a.75.75 0 0 0-1.5 0V2H5.104a.25.25 0 0 0-.177.427l2.896 2.896a.25.25 0 0 0 .354 0l2.896-2.896A.25.25 0 0 0 10.896 2ZM8.75 15.25a.75.75 0 0 1-1.5 0V14H5.104a.25.25 0 0 1-.177-.427l2.896-2.896a.25.25 0 0 1 .354 0l2.896 2.896a.25.25 0 0 1-.177.427H8.75ZM9.78 7.22a.75.75 0 0 1 0 1.06l-2.25 2.25a.75.75 0 0 1-1.06-1.06L8.19 7.75 6.47 6.03a.75.75 0 0 1 1.06-1.06l2.25 2.25Z"/>
       </svg>
       Fold All
     </button>
-    <button class="dropdown-item" id="unfoldAllBtn">
+    <button class="dropdownItem" id="unfoldAllBtn">
       <svg class="dropdown-icon" viewBox="0 0 16 16" width="16" height="16">
         <path d="M5.427 2.573a.25.25 0 0 1 .354 0l2.896 2.896a.25.25 0 0 1-.177.427H6.354v2.208a.75.75 0 0 1-1.5 0V5.896H2.75a.25.25 0 0 1-.177-.427l2.854-2.896Zm5.146 10.854a.25.25 0 0 1-.354 0l-2.896-2.896a.25.25 0 0 1 .177-.427h2.146V7.896a.75.75 0 0 1 1.5 0v2.208h2.104a.25.25 0 0 1 .177.427Z"/>
       </svg>
       Unfold All
     </button>
     <div class="dropdown-divider"></div>
-    <button class="dropdown-item" id="showInvisiblesBtn">
+    <button class="dropdownItem" id="showInvisiblesBtn">
       <svg class="dropdown-icon" viewBox="0 0 16 16" width="16" height="16">
         <path d="M2.75 3.5a.25.25 0 0 0-.25.25v8.5c0 .138.112.25.25.25h10.5a.25.25 0 0 0 .25-.25v-8.5a.25.25 0 0 0-.25-.25Zm10.5-1.5a1.75 1.75 0 0 1 1.75 1.75v8.5A1.75 1.75 0 0 1 13.25 13H2.75A1.75 1.75 0 0 1 1 12.25v-8.5A1.75 1.75 0 0 1 2.75 2Zm-9.5 5h3.75a.75.75 0 0 1 0 1.5H3.75a.75.75 0 0 1 0-1.5ZM3 9.75a.75.75 0 0 1 .75-.75h6.5a.75.75 0 0 1 0 1.5h-6.5a.75.75 0 0 1-.75-.75Z"/>
       </svg>
       Show Invisibles
     </button>
     <div class="dropdown-divider"></div>
-    <button class="dropdown-item" id="wrapBtn">
+    <button class="dropdownItem" id="wrapBtn">
       <svg class="dropdown-icon" viewBox="0 0 16 16" width="16" height="16">
         <path d="M2.75 3.5a.25.25 0 0 0-.25.25v8.5c0 .138.112.25.25.25h10.5a.25.25 0 0 0 .25-.25v-8.5a.25.25 0 0 0-.25-.25Zm10.5-1.5a1.75 1.75 0 0 1 1.75 1.75v8.5A1.75 1.75 0 0 1 13.25 13H2.75A1.75 1.75 0 0 1 1 12.25v-8.5A1.75 1.75 0 0 1 2.75 2Zm-9.5 5h3.75a.75.75 0 0 1 0 1.5H3.75a.75.75 0 0 1 0-1.5ZM3 9.75a.75.75 0 0 1 .75-.75h6.5a.75.75 0 0 1 0 1.5h-6.5a.75.75 0 0 1-.75-.75Z"/>
       </svg>
