@@ -947,7 +947,7 @@ body {
     const config = {
       value: "",
       mode: "javascript",
-      theme: isDark ? "chatgpt-calm-dark" : "default",
+      theme: isDark ? "myDark" : "default",
       lineNumbers: this.state.lineNumbers,
       lineWrapping: this.state.wrapLines,
       foldGutter: true,
@@ -1079,7 +1079,7 @@ body {
           const isDark = e.matches;
           this.updateThemeIcon(isDark);
           if (this.codeMirror) {
-            this.codeMirror.setOption("theme", isDark ? "chatgpt-calm-dark" : "default");
+            this.codeMirror.setOption("theme", isDark ? "myDark" : "default");
           }
         }
       });
@@ -2105,7 +2105,7 @@ body {
     this.updateThemeIcon(!isDark);
     
     if (this.codeMirror) {
-      this.codeMirror.setOption("theme", isDark ? "default" : "chatgpt-calm-dark");
+      this.codeMirror.setOption("theme", isDark ? "default" : "myDark");
     }
   };
   
