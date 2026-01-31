@@ -3,8 +3,10 @@ const ProgressLoader = (() => {
     let $fill = null;
     let hideTimer = null;
     let animationTimer = null;
+    let rafId = null;
     let progress = 0;
     let isRunning = false;
+    let isVisible = false;
 
     let settings = {
         color: "#1c7eec",
@@ -15,7 +17,8 @@ const ProgressLoader = (() => {
         hideDelay: 150,
         fadeOutDuration: 300,
         containerId: "pageProgress",
-        fillSelector: ".progress-fill"
+        fillSelector: ".progress-fill",
+        reducedMotionStyle: "linear"
     };
 
     const easing = {
@@ -24,22 +27,30 @@ const ProgressLoader = (() => {
         easeOutExpo: (t) => t === 1 ? 1 : 1 - Math.pow(2, -10 * t)
     };
 
+    function prefersReducedMotion() {
+        return window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    }
+
     function init() {
         $container = $(`#${settings.containerId}`);
         if (!$container.length) {
             $container = $('<div>', {
                 id: settings.containerId,
-                class: "page-progress"
+                class: "page-progress",
+                role: "progressbar",
+                "aria-live": "polite",
+                "aria-valuemin": "0",
+                "aria-valuemax": "100"
             });
-            
+
             const $progressBar = $('<div>', {
                 class: "progress-bar"
             });
-            
+
             $fill = $('<div>', {
                 class: "progress-fill"
             });
-            
+
             $progressBar.append($fill);
             $container.append($progressBar);
             $('body').prepend($container);
@@ -57,17 +68,23 @@ const ProgressLoader = (() => {
         return Boolean($container.length && $fill.length);
     }
 
-    function cleanup() {
+    function clearTimers() {
         if (hideTimer) {
             clearTimeout(hideTimer);
             hideTimer = null;
         }
-
         if (animationTimer) {
             clearTimeout(animationTimer);
             animationTimer = null;
         }
+        if (rafId) {
+            cancelAnimationFrame(rafId);
+            rafId = null;
+        }
+    }
 
+    function cleanup() {
+        clearTimers();
         isRunning = false;
     }
 
@@ -83,9 +100,11 @@ const ProgressLoader = (() => {
                 width: "0%",
                 transition: "none"
             });
+            $fill.attr("aria-valuenow", "0");
         }
 
         progress = 0;
+        isVisible = false;
     }
 
     function show() {
@@ -93,17 +112,24 @@ const ProgressLoader = (() => {
             if (!init()) return;
         }
 
+        if (isRunning && isVisible) {
+            return;
+        }
+
         reset();
         isRunning = true;
+        isVisible = true;
 
-        requestAnimationFrame(() => {
+        rafId = requestAnimationFrame(() => {
             if ($fill.length) {
                 $fill.css('transition', 'width 0.1s ease-out');
             }
 
             $container.removeClass("hidden").addClass("visible");
 
-            switch (settings.animationStyle) {
+            const motionStyle = prefersReducedMotion() ? settings.reducedMotionStyle : settings.animationStyle;
+
+            switch (motionStyle) {
                 case "realistic":
                     animateRealistic();
                     break;
@@ -122,12 +148,13 @@ const ProgressLoader = (() => {
     function hide() {
         if (!$container || !$fill.length) return;
 
-        cleanup();
+        clearTimers();
         isRunning = false;
 
         $fill.css('transition', 'width 0.2s ease-out');
         progress = 100;
         $fill.css('width', '100%');
+        $fill.attr("aria-valuenow", "100");
 
         hideTimer = setTimeout(() => {
             $container.removeClass("visible");
@@ -143,6 +170,7 @@ const ProgressLoader = (() => {
 
         progress = Math.max(0, Math.min(value, settings.maximum * 100));
         $fill.css('width', `${progress}%`);
+        $fill.attr("aria-valuenow", Math.round(progress).toString());
     }
 
     function increment(amount) {
@@ -274,6 +302,17 @@ const ProgressLoader = (() => {
         increment(amount);
     }
 
+    function destroy() {
+        cleanup();
+        if ($container && $container.length) {
+            $container.remove();
+        }
+        $container = null;
+        $fill = null;
+        progress = 0;
+        isVisible = false;
+    }
+
     return {
         init,
         show,
@@ -287,83 +326,106 @@ const ProgressLoader = (() => {
         isActive,
         getProgress,
         getSettings,
-        reset
+        reset,
+        destroy
     };
 })();
 
 const PageRouter = {
     pages: {},
-    
+    pageConfig: {},
     currentPage: null,
-    
     transitionDuration: 400,
-    
     minLoadingTime: 600,
-    
     isTransitioning: false,
+    queuedNavigation: null,
+    pendingTimers: [],
 
     init() {
         ProgressLoader.init();
+        this.cacheGlobals();
         this.cachePageElements();
         this.setupEventListeners();
         this.showInitialPage();
     },
 
+    cacheGlobals() {
+        this.$window = $(window);
+        this.$document = $(document);
+        this.$body = $('body');
+    },
+
     cachePageElements() {
         const $allPages = $('.pages[data-page]');
-        
+
         $allPages.each((_, page) => {
             const $page = $(page);
             const pageName = $page.attr('data-page');
             if (pageName) {
                 this.pages[pageName] = $page;
+                this.pageConfig[pageName] = {
+                    title: $page.attr('data-title') || this.getDefaultTitle(pageName)
+                };
                 $page.removeClass('hidden spa-hidden spa-page active exit show')
-                      .addClass('hide');
+                    .addClass('hide');
             }
         });
     },
 
     setupEventListeners() {
-        $(window).on('popstate', (e) => {
+        this.$window.on('popstate', () => {
             const page = window.location.hash.slice(1) || 'repo';
-            this.navigateTo(page, false);
+            this.navigateTo(page, false, { reason: 'popstate' });
         });
 
-        $(document).on('click', '[data-navigate]', (e) => {
-            if (!this.isTransitioning) {
+        this.$document.on('click', '[data-navigate]', (e) => {
+            if (this.isTransitioning) {
                 e.preventDefault();
                 const targetPage = $(e.currentTarget).attr('data-navigate');
-                this.navigateTo(targetPage, true);
+                this.queueNavigation(targetPage, { reason: 'click' });
+                return;
             }
+            e.preventDefault();
+            const targetPage = $(e.currentTarget).attr('data-navigate');
+            this.navigateTo(targetPage, true, { reason: 'click' });
         });
     },
 
     showInitialPage() {
         const initialPage = window.location.hash.slice(1) || 'repo';
-        
+
         $.each(this.pages, (_, $page) => {
             if ($page) {
                 $page.removeClass('show').addClass('hide');
             }
         });
-        
+
         ProgressLoader.start();
-        
-        setTimeout(() => {
-            const $targetPage = this.pages[initialPage];
+
+        this.delay(this.minLoadingTime).then(() => {
+            const $targetPage = this.pages[initialPage] || this.pages['repo'];
             if ($targetPage && $targetPage.length) {
                 $targetPage.removeClass('hide').addClass('show');
-                this.currentPage = initialPage;
-                this.updatePageTitle(initialPage);
+                this.currentPage = initialPage in this.pages ? initialPage : 'repo';
+                this.updatePageTitle(this.currentPage);
             }
             ProgressLoader.done();
-        }, this.minLoadingTime);
+        });
     },
 
-    async navigateTo(pageName, updateHistory = true) {
+    queueNavigation(pageName, meta) {
+        this.queuedNavigation = { pageName, meta };
+    },
+
+    cancelPendingTimers() {
+        this.pendingTimers.forEach((timer) => clearTimeout(timer));
+        this.pendingTimers = [];
+    },
+
+    async navigateTo(pageName, updateHistory = true, meta = {}) {
         const $targetPage = this.pages[pageName];
         if (!$targetPage || !$targetPage.length) {
-            console.warn('Page "' + pageName + '" not found');
+            this.navigateToFallback(pageName, meta);
             return;
         }
 
@@ -371,19 +433,28 @@ const PageRouter = {
             return;
         }
 
+        const startEvent = $.Event('pageNavigationStart');
+        const startDetail = {
+            from: this.currentPage,
+            to: pageName,
+            timestamp: Date.now(),
+            reason: meta.reason || 'programmatic'
+        };
+
+        this.$document.trigger(startEvent, { detail: startDetail });
+        if (startEvent.isDefaultPrevented()) {
+            return;
+        }
+
         this.isTransitioning = true;
-        
+        this.cancelPendingTimers();
         ProgressLoader.start();
-        
+
         const startTime = Date.now();
 
         if (updateHistory && window.location.hash !== '#' + pageName) {
             window.history.pushState({ page: pageName }, '', '#' + pageName);
         }
-
-        $(document).trigger('pageNavigationStart', {
-            detail: { from: this.currentPage, to: pageName }
-        });
 
         const $currentPage = this.pages[this.currentPage];
         if ($currentPage && $currentPage.length) {
@@ -391,21 +462,19 @@ const PageRouter = {
         }
 
         await this.delay(this.transitionDuration);
-        
+
         const elapsed = Date.now() - startTime;
-        const remainingDelay = Math.max(0, this.minLoadingTime - elapsed);
-        
+        const minimum = this.computeMinimumLoadingTime();
+        const remainingDelay = Math.max(0, minimum - elapsed);
+
         if (remainingDelay > 0) {
             await this.delay(remainingDelay);
         }
 
-        $(window).scrollTop(0);
+        this.$window.scrollTop(0);
 
         $targetPage.removeClass('hide');
-        
-        // Force reflow for smooth transition
         $targetPage[0].offsetHeight;
-        
         $targetPage.addClass('show');
 
         const previousPage = this.currentPage;
@@ -417,24 +486,58 @@ const PageRouter = {
 
         await this.delay(this.transitionDuration);
 
-        $(document).trigger('pageNavigationComplete', {
-            detail: { from: previousPage, to: pageName }
+        this.$document.trigger('pageNavigationComplete', {
+            detail: {
+                from: previousPage,
+                to: pageName,
+                timestamp: Date.now(),
+                reason: meta.reason || 'programmatic'
+            }
         });
 
         this.isTransitioning = false;
+
+        if (this.queuedNavigation) {
+            const next = this.queuedNavigation;
+            this.queuedNavigation = null;
+            this.navigateTo(next.pageName, true, next.meta);
+        }
+    },
+
+    navigateToFallback(requestedPage, meta = {}) {
+        const fallback = this.pages['repo'] ? 'repo' : Object.keys(this.pages)[0];
+        if (!fallback) {
+            console.warn(`Page "${requestedPage}" not found and no fallback available`);
+            return;
+        }
+        this.navigateTo(fallback, true, { ...meta, reason: meta.reason || 'fallback' });
+    },
+
+    computeMinimumLoadingTime() {
+        return Math.max(this.minLoadingTime, this.transitionDuration);
     },
 
     delay(ms) {
-        return new Promise(resolve => setTimeout(resolve, ms));
+        return new Promise(resolve => {
+            const timer = setTimeout(() => {
+                resolve();
+            }, ms);
+            this.pendingTimers.push(timer);
+        });
     },
 
     updatePageTitle(pageName) {
+        const config = this.pageConfig[pageName];
+        document.title = (config && config.title) ? config.title : 'GitDev';
+    },
+
+    getDefaultTitle(pageName) {
         const titles = {
             'repo': 'Repositories - GitDev',
             'explorer': 'File Explorer - GitDev',
             'file': 'File Editor - GitDev'
         };
-        document.title = titles[pageName] || 'GitDev';
+        return titles[pageName] || 'GitDev';
     },
 
     getPage(pageName) {
@@ -447,7 +550,15 @@ const PageRouter = {
     }
 };
 
-// Enhanced jQuery SPA navigation helpers
+const SpaDom = {
+    show($el) {
+        $el.removeClass('hide').addClass('show');
+    },
+    hide($el) {
+        $el.removeClass('show').addClass('hide');
+    }
+};
+
 $.fn.spaShow = function(speed = 400, easing = 'swing', callback) {
     return this.each(function() {
         const $this = $(this);
@@ -476,7 +587,7 @@ $.fn.spaTransition = function(direction = 'forward', speed = 400) {
             display: 'block',
             transition: `all ${speed}ms ease-in-out`
         });
-        
+
         setTimeout(() => {
             $this.css({
                 transform: 'translateX(0)',
@@ -517,9 +628,9 @@ window.navigateToPage = function(pageName) {
 
 window.navigateToRoot = function() {
     if (!window.currentState) return;
-    
+
     window.currentState.path = '';
-    
+
     if (typeof LocalStorageManager !== 'undefined') {
         LocalStorageManager.listFiles(window.currentState.repository, '').then(function(files) {
             window.currentState.files = files;
@@ -532,10 +643,10 @@ window.navigateToRoot = function() {
 
 window.navigateToPath = function(path) {
     if (!window.currentState) return;
-    
+
     window.currentState.path = path;
     var pathPrefix = path ? path + '/' : '';
-    
+
     if (typeof LocalStorageManager !== 'undefined') {
         LocalStorageManager.listFiles(window.currentState.repository, pathPrefix).then(function(files) {
             window.currentState.files = files;
@@ -547,17 +658,17 @@ window.navigateToPath = function(path) {
 
 window.navigateToFolder = function(folderName) {
     if (!window.currentState) return;
-    
-    var newPath = window.currentState.path 
-        ? window.currentState.path + '/' + folderName 
+
+    var newPath = window.currentState.path
+        ? window.currentState.path + '/' + folderName
         : folderName;
-    
+
     window.navigateToPath(newPath);
 };
 
 window.navigateBack = function() {
     if (!window.currentState) return;
-    
+
     var pathParts = window.currentState.path.split('/').filter(Boolean);
     if (pathParts.length > 0) {
         pathParts.pop();
