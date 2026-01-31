@@ -616,28 +616,41 @@ html {
 
 
 <script>
-const slideElement = document.getElementById('breadCrumbsWrapper');
+
+const breadcrumbs = document.getElementById('breadCrumbsWrapper');
+const header = document.getElementById('coderHeaderWrapper');
 const threshold = 40;
-let scrollTimeout;
+let lastScrollY = window.scrollY;
+let scrollTimeout = null;
 
 function handleScroll() {
-  const scrollY = window.scrollY;
-  
-  if (scrollY > threshold) {
-    slideElement.classList.add('hide');
-  } else {
-    slideElement.classList.remove('hide');
+  const currentScrollY = window.scrollY;
+  const scrollDirection = currentScrollY > lastScrollY ? 'down' : 'up';
+
+//////////////////////////////////  S C R O L L I N G ////////////
+//////////////////////////////////////////////////////////////////
+  if (currentScrollY > threshold && scrollDirection === 'down') {
+    breadcrumbs.classList.add('hide');
+//  header.classList.add('show');
+  } else if (currentScrollY <= threshold || scrollDirection === 'up') {
+    breadcrumbs.classList.remove('hide');
+//  header.classList.remove('show');
   }
+  
+  lastScrollY = currentScrollY;
 }
 
-// Throttle scroll events for better performance
+
+
 window.addEventListener('scroll', () => {
-  if (!scrollTimeout) {
-    scrollTimeout = setTimeout(() => {
-      handleScroll();
-      scrollTimeout = null;
-    }, 10);
+  if (scrollTimeout) {
+    window.cancelAnimationFrame(scrollTimeout);
   }
+  scrollTimeout = window.requestAnimationFrame(handleScroll);
+});
+window.addEventListener('resize', () => {
+  breadcrumbs.classList.remove('hide');
+  header.classList.remove('show');
 });
 </script>
 
