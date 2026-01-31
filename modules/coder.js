@@ -947,7 +947,7 @@ body {
     const config = {
       value: "",
       mode: "javascript",
-      theme: isDark ? "myDark" : "default",
+      theme: isDark ? "dark-dimmed" : "default",
       lineNumbers: this.state.lineNumbers,
       lineWrapping: this.state.wrapLines,
       foldGutter: true,
@@ -1079,7 +1079,7 @@ body {
           const isDark = e.matches;
           this.updateThemeIcon(isDark);
           if (this.codeMirror) {
-            this.codeMirror.setOption("theme", isDark ? "myDark" : "default");
+            this.codeMirror.setOption("theme", isDark ? "dark-dimmed" : "default");
           }
         }
       });
@@ -2105,7 +2105,7 @@ body {
     this.updateThemeIcon(!isDark);
     
     if (this.codeMirror) {
-      this.codeMirror.setOption("theme", isDark ? "default" : "myDark");
+      this.codeMirror.setOption("theme", isDark ? "default" : "dark-dimmed");
     }
   };
   
