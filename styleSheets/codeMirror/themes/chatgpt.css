@@ -1,169 +1,109 @@
+/*
+  CodeMirror Theme: chatgpt-calm-dark
+  Purpose: Visually pleasing, low-fatigue ChatGPT-style canvas
+*/
 
-.CodeMirror {
-  -webkit-font-smoothing: antialiased;
-  text-rendering: optimizeLegibility;
-}
-
-/** Syntax Highlighting **/
-.cm-s-chatgpt-dark.CodeMirror {
-  background-color: #0f1117;
-  color: #e6e6eb;
+.cm-s-chatgpt-calm-dark.CodeMirror {
+  background: #121212;
+  color: #d4d4d8;
   font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
   font-size: 14px;
-  line-height: 1.55;
+  line-height: 1.6;
 }
 
 /* Cursor */
-.cm-s-chatgpt-dark .CodeMirror-cursor {
-  border-left: 2px solid #e6e6eb;
+.cm-s-chatgpt-calm-dark .CodeMirror-cursor {
+  border-left: 2px solid #d4d4d8;
 }
 
 /* Selection */
-.cm-s-chatgpt-dark .CodeMirror-selected {
-  background: rgba(120, 130, 255, 0.25);
-}
-
-.cm-s-chatgpt-dark.CodeMirror-focused .CodeMirror-selected {
-  background: rgba(120, 130, 255, 0.35);
+.cm-s-chatgpt-calm-dark .CodeMirror-selected {
+  background: rgba(124, 156, 255, 0.22);
 }
 
 /* Gutters */
-.cm-s-chatgpt-dark .CodeMirror-gutters {
-  background-color: #0f1117;
-  border-right: 1px solid #1f2330;
+.cm-s-chatgpt-calm-dark .CodeMirror-gutters {
+  background: #121212;
+  border-right: 1px solid #1e1e1e;
 }
 
-.cm-s-chatgpt-dark .CodeMirror-linenumber {
-  color: #6b7280;
+.cm-s-chatgpt-calm-dark .CodeMirror-linenumber {
+  color: #6e6e73;
 }
 
 /* Active line */
-.cm-s-chatgpt-dark .CodeMirror-activeline-background {
-  background: #161a24;
+.cm-s-chatgpt-calm-dark .CodeMirror-activeline-background {
+  background: #181818;
 }
 
 /* Matching brackets */
-.cm-s-chatgpt-dark .CodeMirror-matchingbracket {
-  outline: 1px solid #7aa2f7;
-  color: inherit;
+.cm-s-chatgpt-calm-dark .CodeMirror-matchingbracket {
+  outline: 1px solid #7c9cff;
 }
 
-/* Scrollbar filler */
-.cm-s-chatgpt-dark .CodeMirror-scrollbar-filler,
-.cm-s-chatgpt-dark .CodeMirror-gutter-filler {
-  background-color: #0f1117;
-}
+/* ======================
+   Syntax
+   ====================== */
 
-/* =========================
-   Syntax Highlighting
-   ========================= */
-
-/* Keywords */
-.cm-s-chatgpt-dark .cm-keyword {
-  color: #7aa2f7;
+.cm-s-chatgpt-calm-dark .cm-keyword {
+  color: #7c9cff;
   font-weight: 500;
 }
 
-/* Variables */
-.cm-s-chatgpt-dark .cm-variable {
-  color: #e6e6eb;
+.cm-s-chatgpt-calm-dark .cm-def {
+  color: #8fd19e;
 }
 
-.cm-s-chatgpt-dark .cm-variable-2 {
-  color: #c0caf5;
+.cm-s-chatgpt-calm-dark .cm-variable {
+  color: #d4d4d8;
 }
 
-.cm-s-chatgpt-dark .cm-variable-3 {
-  color: #9ece6a;
+.cm-s-chatgpt-calm-dark .cm-property {
+  color: #9cdcfe;
 }
 
-/* Functions / Methods */
-.cm-s-chatgpt-dark .cm-def {
-  color: #9ece6a;
+.cm-s-chatgpt-calm-dark .cm-string {
+  color: #d19a66;
 }
 
-/* Strings */
-.cm-s-chatgpt-dark .cm-string {
-  color: #fca5a5;
+.cm-s-chatgpt-calm-dark .cm-number,
+.cm-s-chatgpt-calm-dark .cm-atom {
+  color: #b5cea8;
 }
 
-/* Numbers */
-.cm-s-chatgpt-dark .cm-number {
-  color: #ff9e64;
+.cm-s-chatgpt-calm-dark .cm-operator {
+  color: #c586c0;
 }
 
-/* Booleans / null / undefined */
-.cm-s-chatgpt-dark .cm-atom {
-  color: #ff9e64;
-}
-
-/* Operators */
-.cm-s-chatgpt-dark .cm-operator {
-  color: #89ddff;
-}
-
-/* Properties */
-.cm-s-chatgpt-dark .cm-property {
-  color: #7dcfff;
-}
-
-/* Comments */
-.cm-s-chatgpt-dark .cm-comment {
-  color: #6b7280;
+.cm-s-chatgpt-calm-dark .cm-comment {
+  color: #7a7f87;
   font-style: italic;
 }
 
-/* Types / Classes */
-.cm-s-chatgpt-dark .cm-type {
-  color: #2ac3de;
+.cm-s-chatgpt-calm-dark .cm-type,
+.cm-s-chatgpt-calm-dark .cm-builtin {
+  color: #4ec9b0;
 }
 
-/* Built-ins */
-.cm-s-chatgpt-dark .cm-builtin {
-  color: #7dcfff;
+.cm-s-chatgpt-calm-dark .cm-tag {
+  color: #7c9cff;
 }
 
-/* Tags (HTML/XML) */
-.cm-s-chatgpt-dark .cm-tag {
-  color: #7aa2f7;
+.cm-s-chatgpt-calm-dark .cm-attribute {
+  color: #8fd19e;
 }
 
-/* Attributes */
-.cm-s-chatgpt-dark .cm-attribute {
-  color: #9ece6a;
+.cm-s-chatgpt-calm-dark .cm-error {
+  color: #e06c75;
+  background: rgba(224, 108, 117, 0.15);
 }
 
-/* Meta */
-.cm-s-chatgpt-dark .cm-meta {
-  color: #bb9af7;
+/* Search */
+.cm-s-chatgpt-calm-dark .CodeMirror-searching {
+  background: rgba(209, 154, 102, 0.25);
 }
 
-/* Errors */
-.cm-s-chatgpt-dark .cm-error {
-  color: #f7768e;
-  background-color: rgba(247, 118, 142, 0.15);
+/* Readonly */
+.cm-s-chatgpt-calm-dark.CodeMirror-readonly {
+  opacity: 0.9;
 }
-
-/* Links */
-.cm-s-chatgpt-dark .cm-link {
-  color: #89ddff;
-  text-decoration: underline;
-}
-
-/* =========================
-   Search Highlight
-   ========================= */
-
-.cm-s-chatgpt-dark .CodeMirror-searching {
-  background-color: rgba(255, 215, 0, 0.25);
-}
-
-/* =========================
-   Readonly
-   ========================= */
-
-.cm-s-chatgpt-dark.CodeMirror-readonly {
-  opacity: 0.85;
-}
-
-
