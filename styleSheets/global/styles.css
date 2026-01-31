@@ -2862,6 +2862,190 @@ aside:hover .sidebar-title {
 }
 
 
+.CodeMirror {
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+/** Syntax Highlighting **/
+.cm-s-chatgpt-dark.CodeMirror {
+  background-color: #0f1117;
+  color: #e6e6eb;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+  font-size: 14px;
+  line-height: 1.55;
+}
+
+/* Cursor */
+.cm-s-chatgpt-dark .CodeMirror-cursor {
+  border-left: 2px solid #e6e6eb;
+}
+
+/* Selection */
+.cm-s-chatgpt-dark .CodeMirror-selected {
+  background: rgba(120, 130, 255, 0.25);
+}
+
+.cm-s-chatgpt-dark.CodeMirror-focused .CodeMirror-selected {
+  background: rgba(120, 130, 255, 0.35);
+}
+
+/* Gutters */
+.cm-s-chatgpt-dark .CodeMirror-gutters {
+  background-color: #0f1117;
+  border-right: 1px solid #1f2330;
+}
+
+.cm-s-chatgpt-dark .CodeMirror-linenumber {
+  color: #6b7280;
+}
+
+/* Active line */
+.cm-s-chatgpt-dark .CodeMirror-activeline-background {
+  background: #161a24;
+}
+
+/* Matching brackets */
+.cm-s-chatgpt-dark .CodeMirror-matchingbracket {
+  outline: 1px solid #7aa2f7;
+  color: inherit;
+}
+
+/* Scrollbar filler */
+.cm-s-chatgpt-dark .CodeMirror-scrollbar-filler,
+.cm-s-chatgpt-dark .CodeMirror-gutter-filler {
+  background-color: #0f1117;
+}
+
+/* =========================
+   Syntax Highlighting
+   ========================= */
+
+/* Keywords */
+.cm-s-chatgpt-dark .cm-keyword {
+  color: #7aa2f7;
+  font-weight: 500;
+}
+
+/* Variables */
+.cm-s-chatgpt-dark .cm-variable {
+  color: #e6e6eb;
+}
+
+.cm-s-chatgpt-dark .cm-variable-2 {
+  color: #c0caf5;
+}
+
+.cm-s-chatgpt-dark .cm-variable-3 {
+  color: #9ece6a;
+}
+
+/* Functions / Methods */
+.cm-s-chatgpt-dark .cm-def {
+  color: #9ece6a;
+}
+
+/* Strings */
+.cm-s-chatgpt-dark .cm-string {
+  color: #fca5a5;
+}
+
+/* Numbers */
+.cm-s-chatgpt-dark .cm-number {
+  color: #ff9e64;
+}
+
+/* Booleans / null / undefined */
+.cm-s-chatgpt-dark .cm-atom {
+  color: #ff9e64;
+}
+
+/* Operators */
+.cm-s-chatgpt-dark .cm-operator {
+  color: #89ddff;
+}
+
+/* Properties */
+.cm-s-chatgpt-dark .cm-property {
+  color: #7dcfff;
+}
+
+/* Comments */
+.cm-s-chatgpt-dark .cm-comment {
+  color: #6b7280;
+  font-style: italic;
+}
+
+/* Types / Classes */
+.cm-s-chatgpt-dark .cm-type {
+  color: #2ac3de;
+}
+
+/* Built-ins */
+.cm-s-chatgpt-dark .cm-builtin {
+  color: #7dcfff;
+}
+
+/* Tags (HTML/XML) */
+.cm-s-chatgpt-dark .cm-tag {
+  color: #7aa2f7;
+}
+
+/* Attributes */
+.cm-s-chatgpt-dark .cm-attribute {
+  color: #9ece6a;
+}
+
+/* Meta */
+.cm-s-chatgpt-dark .cm-meta {
+  color: #bb9af7;
+}
+
+/* Errors */
+.cm-s-chatgpt-dark .cm-error {
+  color: #f7768e;
+  background-color: rgba(247, 118, 142, 0.15);
+}
+
+/* Links */
+.cm-s-chatgpt-dark .cm-link {
+  color: #89ddff;
+  text-decoration: underline;
+}
+
+/* =========================
+   Search Highlight
+   ========================= */
+
+.cm-s-chatgpt-dark .CodeMirror-searching {
+  background-color: rgba(255, 215, 0, 0.25);
+}
+
+/* =========================
+   Readonly
+   ========================= */
+
+.cm-s-chatgpt-dark.CodeMirror-readonly {
+  opacity: 0.85;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 .breadcrumbNav {
   display: flex;
   align-items: center;
