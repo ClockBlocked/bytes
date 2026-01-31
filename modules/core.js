@@ -144,7 +144,7 @@ function setupCodeEditors() {
   const editorConfig = {
     lineNumbers: true,
     lineWrapping: false,
-    theme: "one-dark",
+    theme: "chatgpt-dark",
     mode: "javascript",
     indentUnit: 2,
     tabSize: 2,
