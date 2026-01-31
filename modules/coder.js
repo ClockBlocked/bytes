@@ -1079,7 +1079,7 @@ body {
           const isDark = e.matches;
           this.updateThemeIcon(isDark);
           if (this.codeMirror) {
-            this.codeMirror.setOption("theme", isDark ? "dark-dimmed" : "default");
+            this.codeMirror.setOption("theme", isDark ? "dark" : "default");
           }
         }
       });
