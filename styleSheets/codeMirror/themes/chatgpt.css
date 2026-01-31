@@ -1,34 +1,141 @@
+/* ==========================================================================
+   GitHub Dark Dimmed Theme for CodeMirror
+   Based on GitHub's Official Primer Design System
+   
+   Color Reference (Primer Dark Dimmed):
+   - Background:        #22272e
+   - Canvas Subtle:     #2d333b
+   - Canvas Inset:      #1c2128
+   - Border Default:    #444c56
+   - Border Muted:      #373e47
+   - Text Primary:      #adbac7
+   - Text Secondary:    #768390
+   - Text Muted:        #636e7b
+   - Accent Blue:       #539bf5
+   - Accent Green:      #57ab5a
+   - Accent Red:        #f47067
+   - Accent Orange:     #e0823d
+   - Accent Purple:     #dcbdfb
+   - Accent Pink:       #db61a2
+   - Accent Coral:      #f69d50
+   ========================================================================== */
+
+/* ==========================================================================
+   BASE EDITOR STYLES
+   ========================================================================== */
+
 .cm-s-dark-dimmed.CodeMirror {
   background-color: #22272e;
   color: #adbac7;
-  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
   font-size: 14px;
   line-height: 1.5;
   height: 100%;
+  border-radius: 6px;
 }
+
+.cm-s-dark-dimmed .CodeMirror-lines {
+  padding: 8px 0;
+}
+
+.cm-s-dark-dimmed .CodeMirror-line {
+  padding: 0 16px;
+}
+
+.cm-s-dark-dimmed pre.CodeMirror-line,
+.cm-s-dark-dimmed pre.CodeMirror-line-like {
+  padding: 0 16px;
+}
+
+/* ==========================================================================
+   CURSOR STYLES
+   ========================================================================== */
 
 .cm-s-dark-dimmed .CodeMirror-cursor {
-  border-left: 2px solid #768390;
+  border-left: 2px solid #539bf5;
 }
 
+.cm-s-dark-dimmed .CodeMirror-cursors {
+  visibility: visible;
+}
+
+.cm-s-dark-dimmed.CodeMirror-focused .CodeMirror-cursor {
+  border-left: 2px solid #539bf5;
+}
+
+.cm-s-dark-dimmed .CodeMirror-secondarycursor {
+  border-left: 1px solid #768390;
+}
+
+.cm-s-dark-dimmed .CodeMirror-overwrite .CodeMirror-cursor {
+  border-left: none;
+  border-bottom: 2px solid #539bf5;
+  width: auto;
+}
+
+/* ==========================================================================
+   SELECTION STYLES
+   ========================================================================== */
+
 .cm-s-dark-dimmed .CodeMirror-selected {
-  background-color: rgba(65, 132, 228, 0.2);
+  background-color: rgba(56, 139, 253, 0.15);
 }
 
 .cm-s-dark-dimmed.CodeMirror-focused .CodeMirror-selected {
-  background-color: rgba(65, 132, 228, 0.3);
+  background-color: rgba(56, 139, 253, 0.25);
 }
+
+.cm-s-dark-dimmed .CodeMirror-line::selection,
+.cm-s-dark-dimmed .CodeMirror-line > span::selection,
+.cm-s-dark-dimmed .CodeMirror-line > span > span::selection {
+  background-color: rgba(56, 139, 253, 0.25);
+}
+
+.cm-s-dark-dimmed .CodeMirror-line::-moz-selection,
+.cm-s-dark-dimmed .CodeMirror-line > span::-moz-selection,
+.cm-s-dark-dimmed .CodeMirror-line > span > span::-moz-selection {
+  background-color: rgba(56, 139, 253, 0.25);
+}
+
+/* ==========================================================================
+   GUTTER STYLES
+   ========================================================================== */
 
 .cm-s-dark-dimmed .CodeMirror-gutters {
   background-color: #22272e;
-  border-right: 1px solid #444c56;
+  border-right: 1px solid #373e47;
+  padding-right: 8px;
 }
 
 .cm-s-dark-dimmed .CodeMirror-linenumber {
-  color: #768390;
+  color: #636e7b;
+  font-size: 12px;
+  min-width: 32px;
+  padding: 0 8px 0 16px;
+  text-align: right;
 }
 
+.cm-s-dark-dimmed .CodeMirror-linenumbers {
+  padding: 0;
+}
+
+.cm-s-dark-dimmed .CodeMirror-gutter-wrapper {
+  left: 0 !important;
+}
+
+.cm-s-dark-dimmed .CodeMirror-gutter-elt {
+  left: 0 !important;
+}
+
+/* ==========================================================================
+   ACTIVE LINE STYLES
+   ========================================================================== */
+
 .cm-s-dark-dimmed .CodeMirror-activeline-background {
+  background-color: rgba(99, 110, 123, 0.1);
+}
+
+.cm-s-dark-dimmed .CodeMirror-activeline-gutter {
   background-color: rgba(99, 110, 123, 0.1);
 }
 
@@ -37,194 +144,765 @@
   font-weight: 600;
 }
 
+/* ==========================================================================
+   BRACKET MATCHING
+   ========================================================================== */
+
 .cm-s-dark-dimmed .CodeMirror-matchingbracket {
-  background-color: rgba(83, 155, 245, 0.15);
-  color: #539bf5 !important;
-  border: 1px solid rgba(83, 155, 245, 0.3);
-  border-radius: 2px;
+  background-color: rgba(87, 171, 90, 0.2);
+  color: #57ab5a !important;
+  border: 1px solid rgba(87, 171, 90, 0.4);
+  border-radius: 3px;
+  font-weight: 600;
 }
 
+.cm-s-dark-dimmed .CodeMirror-nonmatchingbracket {
+  background-color: rgba(248, 81, 73, 0.2);
+  color: #f85149 !important;
+  border: 1px solid rgba(248, 81, 73, 0.4);
+  border-radius: 3px;
+}
+
+/* ==========================================================================
+   SYNTAX HIGHLIGHTING - PRETTYLIGHTS COLORS (GitHub Official)
+   
+   These colors are from GitHub's Primer prettylights system:
+   - Comment:           #768390
+   - Constant:          #6cb6ff
+   - Entity:            #dcbdfb
+   - Entity Tag:        #8ddb8c
+   - Keyword:           #f47067
+   - String:            #96d0ff
+   - String Regexp:     #96d0ff
+   - Variable:          #f69d50
+   - Storage Modifier:  #adbac7
+   - Markup Heading:    #539bf5
+   - Markup Bold:       #adbac7
+   - Markup Italic:     #adbac7
+   - Markup List:       #f69d50
+   ========================================================================== */
+
+/* Keywords: if, else, return, function, class, const, let, var, etc. */
 .cm-s-dark-dimmed .cm-keyword {
   color: #f47067;
   font-weight: 500;
 }
 
+/* Variables */
 .cm-s-dark-dimmed .cm-variable {
   color: #adbac7;
 }
 
 .cm-s-dark-dimmed .cm-variable-2 {
-  color: #6cb6ff;
+  color: #f69d50;
 }
 
-.cm-s-dark-dimmed .cm-variable-3 {
-  color: #dcbdfb;
-}
-
-.cm-s-dark-dimmed .cm-def {
-  color: #6cb6ff;
-  font-weight: 500;
-}
-
-.cm-s-dark-dimmed .cm-function {
-  color: #6cb6ff;
-  font-weight: 500;
-}
-
-.cm-s-dark-dimmed .cm-string {
-  color: #96d0ff;
-}
-
-.cm-s-dark-dimmed .cm-string-2 {
-  color: #8ddb8c;
-}
-
-.cm-s-dark-dimmed .cm-number {
-  color: #e082ff;
-}
-
-.cm-s-dark-dimmed .cm-atom {
-  color: #e082ff;
-}
-
-.cm-s-dark-dimmed .cm-operator {
-  color: #8ddb8c;
-}
-
-.cm-s-dark-dimmed .cm-property {
-  color: #6cb6ff;
-}
-
-.cm-s-dark-dimmed .cm-qualifier {
-  color: #6cb6ff;
-}
-
-.cm-s-dark-dimmed .cm-comment {
-  color: #768390;
-  font-style: italic;
-}
-
+.cm-s-dark-dimmed .cm-variable-3,
 .cm-s-dark-dimmed .cm-type {
   color: #8ddb8c;
   font-weight: 500;
 }
 
-.cm-s-dark-dimmed .cm-builtin {
-  color: #6cb6ff;
+/* Function/method definitions */
+.cm-s-dark-dimmed .cm-def {
+  color: #dcbdfb;
   font-weight: 500;
 }
 
+/* Function calls */
+.cm-s-dark-dimmed .cm-callee {
+  color: #dcbdfb;
+}
+
+/* Property access */
+.cm-s-dark-dimmed .cm-property {
+  color: #6cb6ff;
+}
+
+/* Operators: +, -, *, /, =, ==, ===, etc. */
+.cm-s-dark-dimmed .cm-operator {
+  color: #f47067;
+}
+
+/* Punctuation: brackets, parentheses, commas, semicolons */
+.cm-s-dark-dimmed .cm-punctuation {
+  color: #adbac7;
+}
+
+/* Strings */
+.cm-s-dark-dimmed .cm-string {
+  color: #96d0ff;
+}
+
+.cm-s-dark-dimmed .cm-string-2 {
+  color: #96d0ff;
+}
+
+/* Numbers */
+.cm-s-dark-dimmed .cm-number {
+  color: #6cb6ff;
+}
+
+/* Atoms: true, false, null, undefined, etc. */
+.cm-s-dark-dimmed .cm-atom {
+  color: #6cb6ff;
+}
+
+/* Built-in objects and functions */
+.cm-s-dark-dimmed .cm-builtin {
+  color: #dcbdfb;
+  font-weight: 500;
+}
+
+/* Qualifiers (CSS selectors, etc.) */
+.cm-s-dark-dimmed .cm-qualifier {
+  color: #8ddb8c;
+}
+
+/* Comments */
+.cm-s-dark-dimmed .cm-comment {
+  color: #768390;
+  font-style: italic;
+}
+
+/* ==========================================================================
+   HTML/XML SPECIFIC
+   ========================================================================== */
+
+/* HTML/XML tags */
 .cm-s-dark-dimmed .cm-tag {
   color: #8ddb8c;
   font-weight: 500;
 }
 
+/* HTML/XML attributes */
 .cm-s-dark-dimmed .cm-attribute {
   color: #6cb6ff;
 }
 
+/* Bracket in tags */
+.cm-s-dark-dimmed .cm-bracket {
+  color: #adbac7;
+}
+
+/* ==========================================================================
+   CSS SPECIFIC
+   ========================================================================== */
+
+/* CSS property names */
+.cm-s-dark-dimmed .cm-property.cm-css {
+  color: #6cb6ff;
+}
+
+/* CSS values */
+.cm-s-dark-dimmed .cm-value {
+  color: #6cb6ff;
+}
+
+/* CSS units */
+.cm-s-dark-dimmed .cm-unit {
+  color: #6cb6ff;
+}
+
+/* ==========================================================================
+   META AND SPECIAL
+   ========================================================================== */
+
+/* Meta information (@import, @media, etc.) */
 .cm-s-dark-dimmed .cm-meta {
   color: #dcbdfb;
   font-weight: 500;
 }
 
+/* Headers (markdown) */
 .cm-s-dark-dimmed .cm-header {
-  color: #f47067;
+  color: #539bf5;
   font-weight: 600;
 }
 
-.cm-s-dark-dimmed .cm-hr {
-  color: #768390;
+.cm-s-dark-dimmed .cm-header-1 {
+  font-size: 1.5em;
 }
 
+.cm-s-dark-dimmed .cm-header-2 {
+  font-size: 1.3em;
+}
+
+.cm-s-dark-dimmed .cm-header-3 {
+  font-size: 1.15em;
+}
+
+.cm-s-dark-dimmed .cm-header-4,
+.cm-s-dark-dimmed .cm-header-5,
+.cm-s-dark-dimmed .cm-header-6 {
+  font-size: 1em;
+}
+
+/* Horizontal rules */
+.cm-s-dark-dimmed .cm-hr {
+  color: #636e7b;
+}
+
+/* Links */
 .cm-s-dark-dimmed .cm-link {
-  color: #6cb6ff;
+  color: #539bf5;
   text-decoration: underline;
 }
 
+.cm-s-dark-dimmed .cm-url {
+  color: #96d0ff;
+  text-decoration: underline;
+}
+
+/* Bold text */
 .cm-s-dark-dimmed .cm-strong {
   font-weight: 700;
-  color: #f47067;
+  color: #adbac7;
 }
 
+/* Italic text */
 .cm-s-dark-dimmed .cm-em {
   font-style: italic;
-  color: #dcbdfb;
+  color: #adbac7;
 }
 
+/* Strikethrough */
 .cm-s-dark-dimmed .cm-strikethrough {
   text-decoration: line-through;
-  color: #768390;
+  color: #636e7b;
 }
+
+/* Quote */
+.cm-s-dark-dimmed .cm-quote {
+  color: #768390;
+  font-style: italic;
+}
+
+/* ==========================================================================
+   ERROR STATES
+   ========================================================================== */
 
 .cm-s-dark-dimmed .cm-error {
-  color: #e5534b;
-  background-color: rgba(229, 83, 75, 0.1);
-  border-bottom: 1px dotted #e5534b;
+  color: #f85149;
+  background-color: rgba(248, 81, 73, 0.1);
+  border-bottom: 1px dotted #f85149;
 }
 
+.cm-s-dark-dimmed .cm-invalidchar {
+  color: #f85149;
+}
+
+/* ==========================================================================
+   SEARCH AND REPLACE
+   ========================================================================== */
+
 .cm-s-dark-dimmed .CodeMirror-searching {
-  background-color: rgba(255, 211, 67, 0.3);
+  background-color: rgba(210, 153, 34, 0.3);
+  border-radius: 2px;
 }
 
 .cm-s-dark-dimmed .CodeMirror-search-match {
-  background-color: rgba(255, 211, 67, 0.5);
-  border: 1px solid rgba(255, 211, 67, 0.7);
+  background-color: rgba(210, 153, 34, 0.4);
+  border: 1px solid rgba(210, 153, 34, 0.6);
+  border-radius: 3px;
 }
 
-.cm-s-dark-dimmed.CodeMirror-readonly {
-  opacity: 0.9;
-  cursor: not-allowed;
+.cm-s-dark-dimmed .cm-searching {
+  background-color: rgba(210, 153, 34, 0.4) !important;
 }
+
+/* ==========================================================================
+   READ-ONLY STATE
+   ========================================================================== */
+
+.cm-s-dark-dimmed.CodeMirror-readonly {
+  opacity: 0.85;
+  cursor: default;
+}
+
+.cm-s-dark-dimmed.CodeMirror-readonly .CodeMirror-cursor {
+  display: none !important;
+}
+
+/* ==========================================================================
+   CODE FOLDING
+   ========================================================================== */
 
 .cm-s-dark-dimmed .CodeMirror-foldmarker {
   color: #768390;
-  background: #2d333b;
+  background-color: #2d333b;
   border: 1px solid #444c56;
-  border-radius: 3px;
-  padding: 0 4px;
+  border-radius: 4px;
+  padding: 1px 6px;
+  font-size: 11px;
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+}
+
+.cm-s-dark-dimmed .CodeMirror-foldmarker:hover {
+  background-color: #373e47;
+  color: #adbac7;
+}
+
+.cm-s-dark-dimmed .CodeMirror-foldgutter {
+  width: 16px;
+}
+
+.cm-s-dark-dimmed .CodeMirror-foldgutter-open,
+.cm-s-dark-dimmed .CodeMirror-foldgutter-folded {
+  cursor: pointer;
+  color: #636e7b;
+  line-height: 1;
+  padding: 0 2px;
+  transition: color 0.15s ease;
+}
+
+.cm-s-dark-dimmed .CodeMirror-foldgutter-open:hover,
+.cm-s-dark-dimmed .CodeMirror-foldgutter-folded:hover {
+  color: #adbac7;
 }
 
 .cm-s-dark-dimmed .CodeMirror-foldgutter-open:after {
   content: "▼";
-  color: #768390;
   font-size: 10px;
 }
 
 .cm-s-dark-dimmed .CodeMirror-foldgutter-folded:after {
   content: "▶";
-  color: #768390;
   font-size: 10px;
+}
+
+/* ==========================================================================
+   SCROLLBARS
+   ========================================================================== */
+
+.cm-s-dark-dimmed .CodeMirror-scrollbar-filler {
+  background-color: #22272e;
+}
+
+.cm-s-dark-dimmed .CodeMirror-gutter-filler {
+  background-color: #22272e;
+}
+
+.cm-s-dark-dimmed .CodeMirror-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: #444c56 #22272e;
+}
+
+.cm-s-dark-dimmed .CodeMirror-scroll::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+.cm-s-dark-dimmed .CodeMirror-scroll::-webkit-scrollbar-track {
+  background-color: #22272e;
+  border-radius: 5px;
+}
+
+.cm-s-dark-dimmed .CodeMirror-scroll::-webkit-scrollbar-thumb {
+  background-color: #444c56;
+  border-radius: 5px;
+  border: 2px solid #22272e;
+}
+
+.cm-s-dark-dimmed .CodeMirror-scroll::-webkit-scrollbar-thumb:hover {
+  background-color: #636e7b;
+}
+
+.cm-s-dark-dimmed .CodeMirror-scroll::-webkit-scrollbar-corner {
+  background-color: #22272e;
 }
 
 .cm-s-dark-dimmed .CodeMirror-overlayscroll-horizontal div,
 .cm-s-dark-dimmed .CodeMirror-overlayscroll-vertical div {
   background-color: #444c56;
+  border-radius: 5px;
 }
+
+.cm-s-dark-dimmed .CodeMirror-overlayscroll-horizontal div:hover,
+.cm-s-dark-dimmed .CodeMirror-overlayscroll-vertical div:hover {
+  background-color: #636e7b;
+}
+
+/* ==========================================================================
+   DIALOGS (Search, Replace, Jump to Line)
+   ========================================================================== */
 
 .cm-s-dark-dimmed .CodeMirror-dialog {
   background-color: #2d333b;
   border-bottom: 1px solid #444c56;
   color: #adbac7;
+  padding: 8px 12px;
+  font-size: 13px;
+}
+
+.cm-s-dark-dimmed .CodeMirror-dialog-top {
+  border-bottom: 1px solid #444c56;
+  border-top: none;
+}
+
+.cm-s-dark-dimmed .CodeMirror-dialog-bottom {
+  border-top: 1px solid #444c56;
+  border-bottom: none;
 }
 
 .cm-s-dark-dimmed .CodeMirror-dialog input {
   background-color: #22272e;
   border: 1px solid #444c56;
+  border-radius: 6px;
   color: #adbac7;
+  padding: 4px 8px;
+  font-family: inherit;
+  font-size: 13px;
+  outline: none;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
 }
+
+.cm-s-dark-dimmed .CodeMirror-dialog input:focus {
+  border-color: #539bf5;
+  box-shadow: 0 0 0 3px rgba(83, 155, 245, 0.3);
+}
+
+.cm-s-dark-dimmed .CodeMirror-dialog input::placeholder {
+  color: #636e7b;
+}
+
+.cm-s-dark-dimmed .CodeMirror-dialog button {
+  background-color: #373e47;
+  border: 1px solid #444c56;
+  border-radius: 6px;
+  color: #adbac7;
+  padding: 4px 12px;
+  font-size: 13px;
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+}
+
+.cm-s-dark-dimmed .CodeMirror-dialog button:hover {
+  background-color: #444c56;
+}
+
+/* ==========================================================================
+   AUTOCOMPLETE / HINTS
+   ========================================================================== */
 
 .cm-s-dark-dimmed .CodeMirror-hints {
   background-color: #2d333b;
   border: 1px solid #444c56;
+  border-radius: 6px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
   color: #adbac7;
+  font-family: inherit;
+  font-size: 13px;
+  padding: 4px 0;
+  max-height: 300px;
+  overflow-y: auto;
+  z-index: 10;
 }
 
 .cm-s-dark-dimmed .CodeMirror-hint {
   color: #adbac7;
+  padding: 4px 12px;
+  cursor: pointer;
+  border-radius: 0;
+  transition: background-color 0.1s ease;
 }
 
-.cm-s-dark-dimmed .CodeMirror-hint-active {
+.cm-s-dark-dimmed .CodeMirror-hint:hover {
   background-color: #373e47;
+}
+
+.cm-s-dark-dimmed .CodeMirror-hint-active,
+.cm-s-dark-dimmed li.CodeMirror-hint-active {
+  background-color: rgba(83, 155, 245, 0.2);
   color: #539bf5;
+}
+
+/* ==========================================================================
+   LINT MARKERS
+   ========================================================================== */
+
+.cm-s-dark-dimmed .CodeMirror-lint-mark-error {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='6' height='3'%3E%3Cpath d='M0 3 L3 0 L6 3' fill='none' stroke='%23f85149' stroke-width='1'/%3E%3C/svg%3E");
+  background-repeat: repeat-x;
+  background-position: bottom;
+}
+
+.cm-s-dark-dimmed .CodeMirror-lint-mark-warning {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='6' height='3'%3E%3Cpath d='M0 3 L3 0 L6 3' fill='none' stroke='%23d29922' stroke-width='1'/%3E%3C/svg%3E");
+  background-repeat: repeat-x;
+  background-position: bottom;
+}
+
+.cm-s-dark-dimmed .CodeMirror-lint-marker-error {
+  color: #f85149;
+}
+
+.cm-s-dark-dimmed .CodeMirror-lint-marker-warning {
+  color: #d29922;
+}
+
+.cm-s-dark-dimmed .CodeMirror-lint-marker-info {
+  color: #539bf5;
+}
+
+.cm-s-dark-dimmed .CodeMirror-lint-tooltip {
+  background-color: #2d333b;
+  border: 1px solid #444c56;
+  border-radius: 6px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+  color: #adbac7;
+  padding: 8px 12px;
+  font-size: 12px;
+}
+
+/* ==========================================================================
+   MERGE VIEW
+   ========================================================================== */
+
+.cm-s-dark-dimmed .CodeMirror-merge-copy,
+.cm-s-dark-dimmed .CodeMirror-merge-copy-reverse {
+  color: #768390;
+}
+
+.cm-s-dark-dimmed .CodeMirror-merge-copy:hover,
+.cm-s-dark-dimmed .CodeMirror-merge-copy-reverse:hover {
+  color: #adbac7;
+}
+
+.cm-s-dark-dimmed .CodeMirror-merge-l-inserted,
+.cm-s-dark-dimmed .CodeMirror-merge-r-inserted {
+  background-color: rgba(46, 160, 67, 0.15);
+}
+
+.cm-s-dark-dimmed .CodeMirror-merge-l-deleted,
+.cm-s-dark-dimmed .CodeMirror-merge-r-deleted {
+  background-color: rgba(248, 81, 73, 0.15);
+}
+
+.cm-s-dark-dimmed .CodeMirror-merge-l-chunk,
+.cm-s-dark-dimmed .CodeMirror-merge-r-chunk {
+  background-color: rgba(83, 155, 245, 0.1);
+}
+
+.cm-s-dark-dimmed .CodeMirror-merge-l-chunk-start,
+.cm-s-dark-dimmed .CodeMirror-merge-r-chunk-start {
+  border-top: 1px solid #539bf5;
+}
+
+.cm-s-dark-dimmed .CodeMirror-merge-l-chunk-end,
+.cm-s-dark-dimmed .CodeMirror-merge-r-chunk-end {
+  border-bottom: 1px solid #539bf5;
+}
+
+.cm-s-dark-dimmed .CodeMirror-merge-gap {
+  background-color: #1c2128;
+  border-left: 1px solid #373e47;
+  border-right: 1px solid #373e47;
+}
+
+/* ==========================================================================
+   GIT DIFF HIGHLIGHTING
+   ========================================================================== */
+
+.cm-s-dark-dimmed .cm-positive {
+  color: #57ab5a;
+}
+
+.cm-s-dark-dimmed .cm-negative {
+  color: #f85149;
+}
+
+.cm-s-dark-dimmed .cm-diff-added {
+  background-color: rgba(46, 160, 67, 0.15);
+  color: #57ab5a;
+}
+
+.cm-s-dark-dimmed .cm-diff-removed {
+  background-color: rgba(248, 81, 73, 0.15);
+  color: #f85149;
+}
+
+/* ==========================================================================
+   TRAILING WHITESPACE
+   ========================================================================== */
+
+.cm-s-dark-dimmed .cm-trailingspace {
+  background-color: rgba(248, 81, 73, 0.2);
+}
+
+/* ==========================================================================
+   TAB INDICATOR
+   ========================================================================== */
+
+.cm-s-dark-dimmed .cm-tab {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='100'%3E%3Cline x1='10' y1='50' x2='180' y2='50' stroke='%23444c56' stroke-width='2' stroke-dasharray='6 4'/%3E%3Cpolygon points='180,40 200,50 180,60' fill='%23444c56'/%3E%3C/svg%3E");
+  background-position: right center;
+  background-repeat: no-repeat;
+  background-size: auto 50%;
+}
+
+/* ==========================================================================
+   PLACEHOLDER TEXT
+   ========================================================================== */
+
+.cm-s-dark-dimmed .CodeMirror-placeholder {
+  color: #636e7b;
+  font-style: italic;
+}
+
+/* ==========================================================================
+   FOCUSED STATE
+   ========================================================================== */
+
+.cm-s-dark-dimmed.CodeMirror-focused {
+  outline: none;
+}
+
+.cm-s-dark-dimmed.CodeMirror:focus-within {
+  box-shadow: 0 0 0 3px rgba(83, 155, 245, 0.3);
+}
+
+/* ==========================================================================
+   SPECIAL CHARACTERS
+   ========================================================================== */
+
+.cm-s-dark-dimmed .cm-special {
+  color: #f47067;
+}
+
+.cm-s-dark-dimmed .CodeMirror-specialChar {
+  color: #f47067;
+}
+
+/* ==========================================================================
+   LINE WIDGETS
+   ========================================================================== */
+
+.cm-s-dark-dimmed .CodeMirror-linewidget {
+  background-color: #2d333b;
+  border-top: 1px solid #373e47;
+  padding: 8px 16px;
+}
+
+/* ==========================================================================
+   RULER
+   ========================================================================== */
+
+.cm-s-dark-dimmed .CodeMirror-ruler {
+  border-left: 1px solid #373e47;
+}
+
+/* ==========================================================================
+   COMPOSING (IME Input)
+   ========================================================================== */
+
+.cm-s-dark-dimmed .CodeMirror-composing {
+  border-bottom: 2px solid #539bf5;
+}
+
+/* ==========================================================================
+   WIDGET AND MARK STYLES
+   ========================================================================== */
+
+.cm-s-dark-dimmed .CodeMirror-widget {
+  color: #adbac7;
+}
+
+.cm-s-dark-dimmed .CodeMirror-mark {
+  background-color: rgba(210, 153, 34, 0.2);
+}
+
+/* ==========================================================================
+   GUTTER MARKERS
+   ========================================================================== */
+
+.cm-s-dark-dimmed .CodeMirror-gutter-background {
+  background-color: transparent;
+}
+
+.cm-s-dark-dimmed .breakpoint {
+  color: #f85149;
+}
+
+.cm-s-dark-dimmed .CodeMirror-gutter-wrapper .CodeMirror-linenumbererror {
+  background-color: rgba(248, 81, 73, 0.2);
+  color: #f85149;
+}
+
+.cm-s-dark-dimmed .CodeMirror-gutter-wrapper .CodeMirror-linenumberwarning {
+  background-color: rgba(210, 153, 34, 0.2);
+  color: #d29922;
+}
+
+/* ==========================================================================
+   JSON SPECIFIC
+   ========================================================================== */
+
+.cm-s-dark-dimmed .cm-property.cm-json {
+  color: #6cb6ff;
+}
+
+/* ==========================================================================
+   YAML SPECIFIC
+   ========================================================================== */
+
+.cm-s-dark-dimmed .cm-yaml-key {
+  color: #8ddb8c;
+}
+
+.cm-s-dark-dimmed .cm-yaml-value {
+  color: #96d0ff;
+}
+
+/* ==========================================================================
+   REGEX SPECIFIC
+   ========================================================================== */
+
+.cm-s-dark-dimmed .cm-string.cm-regex {
+  color: #96d0ff;
+}
+
+/* ==========================================================================
+   PRINT STYLES
+   ========================================================================== */
+
+@media print {
+  .cm-s-dark-dimmed.CodeMirror {
+    background-color: #fff;
+    color: #24292f;
+  }
+  
+  .cm-s-dark-dimmed .CodeMirror-gutters {
+    background-color: #fff;
+    border-right-color: #d0d7de;
+  }
+  
+  .cm-s-dark-dimmed .CodeMirror-linenumber {
+    color: #57606a;
+  }
+  
+  .cm-s-dark-dimmed .cm-keyword {
+    color: #cf222e;
+  }
+  
+  .cm-s-dark-dimmed .cm-string {
+    color: #0a3069;
+  }
+  
+  .cm-s-dark-dimmed .cm-comment {
+    color: #6e7781;
+  }
+  
+  .cm-s-dark-dimmed .cm-number {
+    color: #0550ae;
+  }
+  
+  .cm-s-dark-dimmed .cm-def {
+    color: #8250df;
+  }
+  
+  .cm-s-dark-dimmed .cm-tag {
+    color: #116329;
+  }
 }
