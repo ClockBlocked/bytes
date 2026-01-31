@@ -2626,9 +2626,6 @@ aside:hover .sidebar-title {
   height: 100%;
 }
 
-
-
-/**
 .CodeMirror-gutters {
   background: var(--editorGutterBg);
   border-right: 1px solid var(--editorBorder);
@@ -2874,7 +2871,6 @@ aside:hover .sidebar-title {
   }
 }
 
-*****/
 
 
 
