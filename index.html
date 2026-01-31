@@ -615,44 +615,6 @@ html {
 
 
 
-<script>
-
-const breadcrumbs = document.getElementById('breadCrumbsWrapper');
-const header = document.getElementById('stickyHeader');
-const threshold = 40;
-let lastScrollY = window.scrollY;
-let scrollTimeout = null;
-
-function handleScroll() {
-  const currentScrollY = window.scrollY;
-  const scrollDirection = currentScrollY > lastScrollY ? 'down' : 'up';
-
-//////////////////////////////////  S C R O L L I N G ////////////
-//////////////////////////////////////////////////////////////////
-  if (currentScrollY > threshold && scrollDirection === 'down') {
-    breadcrumbs.classList.add('hide');
-//  header.classList.add('show');
-  } else if (currentScrollY <= threshold || scrollDirection === 'up') {
-    breadcrumbs.classList.remove('hide');
-//  header.classList.remove('show');
-  }
-  
-  lastScrollY = currentScrollY;
-}
-
-
-
-window.addEventListener('scroll', () => {
-  if (scrollTimeout) {
-    window.cancelAnimationFrame(scrollTimeout);
-  }
-  scrollTimeout = window.requestAnimationFrame(handleScroll);
-});
-window.addEventListener('resize', () => {
-  breadcrumbs.classList.remove('hide');
-//  header.classList.remove('show');
-});
-</script>
 
 
 <!-- Modals -------------------------->
