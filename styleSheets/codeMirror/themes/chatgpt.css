@@ -1,72 +1,109 @@
-/* Modified for GitHub Dark Dimmed Palette */
+/*
+  CodeMirror Theme: chatgpt-calm-dark
+  Purpose: Visually pleasing, low-fatigue ChatGPT-style canvas
+*/
+
 .cm-s-chatgpt-calm-dark.CodeMirror {
-  background: #22272e; /* Dimmed background */
-  color: #adbac7;      /* Main text/variable color */
+  background: #121212;
+  color: #d4d4d8;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+  font-size: 14px;
+  line-height: 1.6;
 }
 
-/* Selection and UI */
+/* Cursor */
+.cm-s-chatgpt-calm-dark .CodeMirror-cursor {
+  border-left: 2px solid #d4d4d8;
+}
+
+/* Selection */
 .cm-s-chatgpt-calm-dark .CodeMirror-selected {
-  background: rgba(108, 182, 255, 0.2); /* Muted blue selection */
+  background: rgba(124, 156, 255, 0.22);
 }
 
+/* Gutters */
 .cm-s-chatgpt-calm-dark .CodeMirror-gutters {
-  background: #22272e;
-  border-right: 1px solid #373e47;
+  background: #121212;
+  border-right: 1px solid #1e1e1e;
 }
 
 .cm-s-chatgpt-calm-dark .CodeMirror-linenumber {
-  color: #768390;
+  color: #6e6e73;
 }
 
+/* Active line */
 .cm-s-chatgpt-calm-dark .CodeMirror-activeline-background {
-  background: #2d333b;
+  background: #181818;
+}
+
+/* Matching brackets */
+.cm-s-chatgpt-calm-dark .CodeMirror-matchingbracket {
+  outline: 1px solid #7c9cff;
 }
 
 /* ======================
-   Syntax Highlighting
+   Syntax
    ====================== */
 
 .cm-s-chatgpt-calm-dark .cm-keyword {
-  color: #f47067; /* Muted Red/Coral */
+  color: #7c9cff;
   font-weight: 500;
 }
 
-.cm-s-chatgpt-calm-dark .cm-def,
-.cm-s-chatgpt-calm-dark .cm-variable-2 {
-  color: #6cb6ff; /* Soft Blue */
+.cm-s-chatgpt-calm-dark .cm-def {
+  color: #8fd19e;
+}
+
+.cm-s-chatgpt-calm-dark .cm-variable {
+  color: #d4d4d8;
 }
 
 .cm-s-chatgpt-calm-dark .cm-property {
-  color: #adbac7; /* Variable/Property color */
+  color: #9cdcfe;
 }
 
 .cm-s-chatgpt-calm-dark .cm-string {
-  color: #96d0ff; /* Light Cyan/Blue */
+  color: #d19a66;
 }
 
 .cm-s-chatgpt-calm-dark .cm-number,
 .cm-s-chatgpt-calm-dark .cm-atom {
-  color: #6cb6ff; /* Constants/Numbers */
+  color: #b5cea8;
 }
 
 .cm-s-chatgpt-calm-dark .cm-operator {
-  color: #adbac7; /* Operators often match text color in Dimmed */
+  color: #c586c0;
 }
 
 .cm-s-chatgpt-calm-dark .cm-comment {
-  color: #768390; /* Muted Grey-Blue */
+  color: #7a7f87;
   font-style: italic;
 }
 
 .cm-s-chatgpt-calm-dark .cm-type,
 .cm-s-chatgpt-calm-dark .cm-builtin {
-  color: #f69d50; /* Muted Orange */
+  color: #4ec9b0;
 }
 
 .cm-s-chatgpt-calm-dark .cm-tag {
-  color: #8ddb8c; /* Muted Green */
+  color: #7c9cff;
 }
 
 .cm-s-chatgpt-calm-dark .cm-attribute {
-  color: #6cb6ff;
+  color: #8fd19e;
+}
+
+.cm-s-chatgpt-calm-dark .cm-error {
+  color: #e06c75;
+  background: rgba(224, 108, 117, 0.15);
+}
+
+/* Search */
+.cm-s-chatgpt-calm-dark .CodeMirror-searching {
+  background: rgba(209, 154, 102, 0.25);
+}
+
+/* Readonly */
+.cm-s-chatgpt-calm-dark.CodeMirror-readonly {
+  opacity: 0.9;
 }
