@@ -303,7 +303,7 @@
   height: 100% !important;
   width: 100% !important;
   background: var(--editor-bg) !important;
-  font-family: "JetBrains Mono", "Fira Code", Consolas, monospace;
+  font-family: "WF Visual Sans Text", sans-serif;
   font-size: 14px;
   line-height: 1.6;
   color: var(--editor-text);
@@ -316,18 +316,20 @@
 .codeMirrorContainer .CodeMirror-gutters {
   background: var(--editor-gutter-bg) !important;
   border-right: 1px solid var(--editor-border);
-  padding-right: 0.5rem;
+  padding-right: 4px;
+  width: auto !important;
+  min-width: auto !important;
 }
 
 .codeMirrorContainer .CodeMirror-linenumber {
   color: var(--editor-text-subtle);
-  padding: 0 0.75rem 0 0.5rem;
-  font-family: "JetBrains Mono", monospace;
+  padding: 0 6px 0 8px;
+  font-family: "WF Visual Sans Text", sans-serif;
   font-size: 0.75rem;
 }
 
 .codeMirrorContainer .CodeMirror-foldgutter {
-  width: 1rem;
+  width: 12px;
 }
 
 .codeMirrorContainer .CodeMirror-foldgutter-open,

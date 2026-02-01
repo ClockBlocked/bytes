@@ -27,7 +27,7 @@
 .cm-s-dark-dimmed.CodeMirror {
   background-color: #22272e;
   color: #adbac7;
-  font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  font-family: "WF Visual Sans Text", sans-serif;
   font-size: 14px;
   line-height: 1.5;
   height: 100%;
@@ -104,14 +104,17 @@
 .cm-s-dark-dimmed .CodeMirror-gutters {
   background-color: #22272e;
   border-right: 1px solid #373e47;
-  padding-right: 8px;
+  padding-right: 4px;
+  width: auto !important;
+  min-width: auto !important;
 }
 
 .cm-s-dark-dimmed .CodeMirror-linenumber {
   color: #636e7b;
+  font-family: "WF Visual Sans Text", sans-serif;
   font-size: 12px;
-  min-width: 32px;
-  padding: 0 8px 0 16px;
+  min-width: 20px;
+  padding: 0 6px 0 8px;
   text-align: right;
 }
 
@@ -445,7 +448,7 @@
 }
 
 .cm-s-dark-dimmed .CodeMirror-foldgutter {
-  width: 16px;
+  width: 12px;
 }
 
 .cm-s-dark-dimmed .CodeMirror-foldgutter-open,
@@ -453,7 +456,7 @@
   cursor: pointer;
   color: #636e7b;
   line-height: 1;
-  padding: 0 2px;
+  padding: 0 1px;
   transition: color 0.15s ease;
 }
 
