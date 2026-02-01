@@ -296,7 +296,7 @@
 
 .codeMirrorContainer .CodeMirror {
   height: 100%;
-  font-family: var(--fontMono, 'JetBrains Mono', monospace);
+  font-family: "WF Visual Sans Text", sans-serif;
   background: var(--editorBg);
 }
 

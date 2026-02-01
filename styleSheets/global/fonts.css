@@ -45,7 +45,7 @@
   /* Font Families */
   --font-text: "WF Visual Sans Text", sans-serif;
   --font-headings: "WF Visual Sans", sans-serif;
-  --font-mono: Inconsolata, monospace;
+  --font-mono: "WF Visual Sans Text", sans-serif;
 
   /* Font Sizes */
   --text-xs: 0.75rem;

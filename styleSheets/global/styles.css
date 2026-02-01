@@ -62,7 +62,7 @@
 :root {
   --fontText: "WF Visual Sans Text", sans-serif;
   --fontHead: "WF Visual Sans", sans-serif;
-  --fontMono: "JetBrains Mono", "Fira Code", Consolas, monospace;
+  --fontMono: "WF Visual Sans Text", sans-serif;
 
   --textXs: 0.75rem;
   --textSm: 0.875rem;
