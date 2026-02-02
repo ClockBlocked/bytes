@@ -2626,6 +2626,9 @@ aside:hover .sidebar-title {
   height: 100%;
 }
 
+
+
+/***
 .CodeMirror-gutters {
   background: var(--editorGutterBg);
   border-right: 1px solid var(--editorBorder);
@@ -2675,6 +2678,12 @@ aside:hover .sidebar-title {
 #codeMirrorContainer .cm-editor .cm-activeLineGutter {
   background-color: var(--codeBg);
 }
+***/
+
+
+
+
+
 
 #overlay {
   position: fixed;
@@ -2757,6 +2766,8 @@ aside:hover .sidebar-title {
   width: 100%;
   height: 100%;
 }
+
+/**
 .codeMirrorContainer .CodeMirror {
   height: 100%;
   width: 100%;
@@ -2773,6 +2784,9 @@ aside:hover .sidebar-title {
   background: var(--editorGutterBg);
   border-right: 0.0625rem solid var(--neutralSubtle);
   padding-right: 0.5rem;
+  
+  overflow: hidden;
+  overflow-y: auto;
 }
 .codeMirrorContainer .CodeMirror-linenumber {
   color: var(--editorTextSubtle);
@@ -2816,6 +2830,8 @@ aside:hover .sidebar-title {
 .codeMirrorContainer .CodeMirror-cursor {
   border-left: 0.125rem solid var(--editorAccent);
 }
+**/
+
 
 .loadingSpinner {
   position: absolute;
