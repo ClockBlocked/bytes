@@ -686,7 +686,7 @@ textarea:focus-visible {
               rgba(0, 0, 0, 0.7) 0%, 
               rgba(0, 0, 0, 0.6) 100%);
   backdrop-filter: blur(8px) saturate(1.5);
-  z-index: 99998;
+  z-index: 998;
   opacity: 0;
   visibility: hidden;
   transition: opacity 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
@@ -695,6 +695,7 @@ textarea:focus-visible {
 #overlay.active {
   opacity: 1;
   visibility: visible;
+  transition: opacity 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
 #mainArea {
@@ -3385,7 +3386,7 @@ aside:hover .sidebar-title {
   border: 1px solid var(--borderDefault);
   border-radius: 10px;
   padding: 0.75rem 1rem;
-  z-index: 100;
+  z-index: 999;
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
