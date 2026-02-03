@@ -680,7 +680,7 @@ textarea:focus-visible {
 /* Add these to your existing CSS */
 
 /* Overlay for sidebar backdrop */
-.overlay {
+#overlay {
   position: fixed;
   top: 0;
   left: 0;
@@ -696,7 +696,7 @@ textarea:focus-visible {
   transition: opacity 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
-.overlay.active {
+#overlay.active {
   opacity: 1;
   visibility: visible;
 }
