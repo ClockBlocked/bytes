@@ -643,6 +643,42 @@ textarea:focus-visible {
   border-left: 0.0625rem solid var(--colorBorder);
 }
 
+@media (max-width: 75rem) {
+  #leftSidebar,
+  #rightSidebar {
+    position: fixed;
+    top: 1rem;
+    bottom: 1rem;
+    z-index: 999999;
+    box-shadow: var(--shadowLg);
+    border-radius: 0.875rem;
+    border: 1px solid var(--colorBorder);
+    transition: transform 0.45s ease-in-out;
+  }
+  
+  /* Left sidebar positioning */
+  #leftSidebar {
+    left: 1rem;
+    right: auto;
+    transform: translateX(-100%);
+  }
+  
+  /* Right sidebar positioning */
+  #rightSidebar {
+    right: 1rem;
+    left: auto;
+    transform: translateX(100%);
+  }
+  
+  /* Open states - floating with spacing from edges */
+  #leftSidebar.open {
+    transform: translateX(0);
+  }
+  
+  #rightSidebar.open {
+    transform: translateX(0);
+  }
+}
 
 
 .pages {
@@ -718,32 +754,6 @@ textarea:focus-visible {
 
 
 
-@media (max-width: 75rem) {
-  #leftSidebar,
-  #rightSidebar {
-    position: fixed;
-    top: 1rem;
-    bottom: 1rem;
-    z-index: 999999;
-    transform: translateX(-100%);
-    box-shadow: var(--shadowLg);
-    
-    border-radius: 0.875rem;
-    border: 1px solid var(--colorBorder);
-    transition: transform 0.45s ease-in-out;
-  }
-  #rightSidebar {
-    right: 0;
-    left: auto;
-    transform: translateX(100%);
-  }
-  #leftSidebar.open,
-  #rightSidebar.open {
-    transform: translateX(-20%);
-    transition: transform 0.45s ease-in-out;
-
-  }
-}
 
 .navbar-inner {
   display: flex;
