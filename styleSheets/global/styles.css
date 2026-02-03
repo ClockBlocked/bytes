@@ -722,11 +722,13 @@ textarea:focus-visible {
   #leftSidebar,
   #rightSidebar {
     position: fixed;
-    top: 0;
-    bottom: 0;
-    z-index: 999;
+    top: 1rem;
+    bottom: 1rem;
+    z-index: 999999;
     transform: translateX(-100%);
     box-shadow: var(--shadowLg);
+    
+    transition: transform 0.45s ease-in-out;
   }
   #rightSidebar {
     right: 0;
@@ -735,7 +737,9 @@ textarea:focus-visible {
   }
   #leftSidebar.open,
   #rightSidebar.open {
-    transform: translateX(0);
+    transform: translateX(-20%);
+    transition: transform 0.45s ease-in-out;
+
   }
 }
 
