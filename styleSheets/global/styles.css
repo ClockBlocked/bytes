@@ -656,30 +656,24 @@ textarea:focus-visible {
     transition: transform 0.45s ease-in-out;
   }
   
-  /* Left sidebar positioning */
   #leftSidebar {
-    left: 1rem;
-    right: auto;
-    transform: translateX(-100%);
+    left: 0;
+    transform: translateX(calc(-100% - 1rem));
   }
   
-  /* Right sidebar positioning */
   #rightSidebar {
-    right: 1rem;
-    left: auto;
-    transform: translateX(100%);
+    right: 0;
+    transform: translateX(calc(100% + 1rem));
   }
   
-  /* Open states - floating with spacing from edges */
   #leftSidebar.open {
-    transform: translateX(0);
+    transform: translateX(1rem);
   }
   
   #rightSidebar.open {
-    transform: translateX(0);
+    transform: translateX(-1rem);
   }
 }
-
 
 .pages {
   opacity: 0;
