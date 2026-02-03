@@ -676,10 +676,6 @@ textarea:focus-visible {
 }
 
 
-
-/* Add these to your existing CSS */
-
-/* Overlay for sidebar backdrop */
 #overlay {
   position: fixed;
   top: 0;
@@ -773,7 +769,7 @@ textarea:focus-visible {
   flex: 1;
   margin-left: var(--sidebarWidth);
   margin-right: var(--sidebarWidth);
-  transition: margin 0.3s ease;
+  transition: all 0.35s ease-in-out;
   
   height: 100%;
   z-index: 1000;
@@ -1067,7 +1063,6 @@ textarea:focus-visible {
   position: relative;
 }
 
-/* Unified container for both input and extension button */
 .fileNameContainer {
   display: flex;
   align-items: center;
@@ -1091,7 +1086,6 @@ textarea:focus-visible {
   box-shadow: 0 0 0 1px var(--accentSubtle);
 }
 
-/* Left side - icon and input */
 .fileNameInputWrapper {
   display: flex;
   align-items: center;
@@ -2821,71 +2815,6 @@ aside:hover .sidebar-title {
   height: 100%;
 }
 
-/**
-.codeMirrorContainer .CodeMirror {
-  height: 100%;
-  width: 100%;
-  background: var(--editorBg);
-  font-family: "JetBrains Mono", "Fira Code", Consolas, monospace;
-  font-size: 0.875rem;
-  line-height: 1.25;
-  color: var(--editorText);
-}
-.codeMirrorContainer .CodeMirror-scroll {
-  overflow: auto;
-}
-.codeMirrorContainer .CodeMirror-gutters {
-  background: var(--editorGutterBg);
-  border-right: 0.0625rem solid var(--neutralSubtle);
-  padding-right: 0.5rem;
-  
-  overflow: hidden;
-  overflow-y: auto;
-}
-.codeMirrorContainer .CodeMirror-linenumber {
-  color: var(--editorTextSubtle);
-  padding: 0 0.75rem 0 0.5rem;
-  font-family: "JetBrains Mono", monospace;
-  font-size: var(--textXs);
-}
-.codeMirrorContainer .CodeMirror-foldgutter {
-  width: 0.5rem;
-}
-.codeMirrorContainer .CodeMirror-foldgutter-open,
-.codeMirrorContainer .CodeMirror-foldgutter-folded {
-  cursor: pointer;
-  color: var(--editorTextSubtle);
-  font-size: 1.175rem;
-  line-height: 1.25;
-  text-align: center;
-  transition: color 0.15s ease;
-}
-.codeMirrorContainer .CodeMirror-foldgutter-open::after {
-  content: "▾";
-}
-.codeMirrorContainer .CodeMirror-foldgutter-folded::after {
-  content: "▸";
-}
-.codeMirrorContainer .CodeMirror-foldgutter-open:hover,
-.codeMirrorContainer .CodeMirror-foldgutter-folded:hover {
-  color: var(--editorText);
-}
-.codeMirrorContainer .CodeMirror-activeline-background {
-  background: var(--editorLineHighlight);
-}
-.codeMirrorContainer .CodeMirror-selected {
-  background: var(--editorSelection);
-}
-.codeMirrorContainer .CodeMirror-matchingbracket {
-  color: var(--editorAccent);
-  background: rgba(83, 155, 245, 0.2);
-  border-bottom: 0.0625rem solid var(--editorAccent);
-}
-.codeMirrorContainer .CodeMirror-cursor {
-  border-left: 0.125rem solid var(--editorAccent);
-}
-**/
-
 
 .loadingSpinner {
   position: absolute;
@@ -3398,11 +3327,6 @@ aside:hover .sidebar-title {
   right: 1rem;
 }
 
-/**
-THESE wrapper containers were created because i was under 
-the impression that a sticky element has to have a container 
-to stick to other than the body container.....
-**/
 .wrapper[data-wrap="top"],
 .wrapper[data-wrap="bottom"] {
   width: 100%;
@@ -3455,17 +3379,18 @@ to stick to other than the body container.....
 
 .navbar {
   position: fixed;
-  bottom: 2rem;
+  bottom: 2rem; left: 1rem; right: 1rem;
   height: 50px;
-  left: 1rem; right: 1rem;
   background: var(--canvasOverlay);
   border: 1px solid var(--borderDefault);
   border-radius: 10px;
   padding: 0.75rem 1rem;
-  z-index: 10000;
+  z-index: 100;
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  
+  overflow: hidden;
 }
 
 .breadCrumbsWrapper {
