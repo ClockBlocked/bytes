@@ -728,6 +728,8 @@ textarea:focus-visible {
     transform: translateX(-100%);
     box-shadow: var(--shadowLg);
     
+    border-radius: 0.875rem;
+    border: 1px solid var(--colorBorder);
     transition: transform 0.45s ease-in-out;
   }
   #rightSidebar {
