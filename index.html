@@ -1085,6 +1085,7 @@ document.addEventListener('DOMContentLoaded', () => {
 </script>
 
 
+
 <script id="sidebars">
 const SidebarManager = {
   state: {
@@ -1110,6 +1111,7 @@ const SidebarManager = {
     const leftSidebarTrigger = document.getElementById('leftSidebarTrigger');
     const rightSidebarTrigger = document.getElementById('rightSidebarTrigger');
     const overlay = document.getElementById('overlay');
+    const body = document.body;
 
     if (leftSidebarTrigger) {
       leftSidebarTrigger.addEventListener('click', (e) => {
@@ -1136,6 +1138,14 @@ const SidebarManager = {
       });
     }
 
+    // Close sidebar with Escape key
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        if (this.state.isLeftSidebarOpen) this.closeLeftSidebar();
+        if (this.state.isRightSidebarOpen) this.closeRightSidebar();
+      }
+    });
+
     document.addEventListener('click', (e) => {
       if (window.innerWidth > 1200) return;
       
@@ -1146,8 +1156,8 @@ const SidebarManager = {
       
       const isClickOnLeftTrigger = e.target === leftTrigger || leftTrigger.contains(e.target);
       const isClickOnRightTrigger = e.target === rightTrigger || rightTrigger.contains(e.target);
-      const isClickInLeftSidebar = leftSidebar.contains(e.target);
-      const isClickInRightSidebar = rightSidebar.contains(e.target);
+      const isClickInLeftSidebar = leftSidebar && leftSidebar.contains(e.target);
+      const isClickInRightSidebar = rightSidebar && rightSidebar.contains(e.target);
       
       if (this.state.isLeftSidebarOpen && !isClickInLeftSidebar && !isClickOnLeftTrigger) {
         this.closeLeftSidebar();
@@ -1196,46 +1206,54 @@ const SidebarManager = {
   openLeftSidebar() {
     const leftSidebar = document.getElementById('leftSidebar');
     const overlay = document.getElementById('overlay');
+    const body = document.body;
     
     this.closeRightSidebar();
     
     this.state.isLeftSidebarOpen = true;
     leftSidebar.classList.add('open');
     overlay.classList.add('active');
+    body.classList.add('sidebar-open');
   },
 
   openRightSidebar() {
     const rightSidebar = document.getElementById('rightSidebar');
     const overlay = document.getElementById('overlay');
+    const body = document.body;
     
     this.closeLeftSidebar();
     
     this.state.isRightSidebarOpen = true;
     rightSidebar.classList.add('open');
     overlay.classList.add('active');
+    body.classList.add('sidebar-open');
   },
 
   closeLeftSidebar() {
     const leftSidebar = document.getElementById('leftSidebar');
     const overlay = document.getElementById('overlay');
+    const body = document.body;
     
     this.state.isLeftSidebarOpen = false;
     leftSidebar.classList.remove('open');
     
     if (!this.state.isRightSidebarOpen) {
       overlay.classList.remove('active');
+      body.classList.remove('sidebar-open');
     }
   },
 
   closeRightSidebar() {
     const rightSidebar = document.getElementById('rightSidebar');
     const overlay = document.getElementById('overlay');
+    const body = document.body;
     
     this.state.isRightSidebarOpen = false;
     rightSidebar.classList.remove('open');
     
     if (!this.state.isLeftSidebarOpen) {
       overlay.classList.remove('active');
+      body.classList.remove('sidebar-open');
     }
   },
 
@@ -1244,6 +1262,7 @@ const SidebarManager = {
     const rightSidebar = document.getElementById('rightSidebar');
     const overlay = document.getElementById('overlay');
     const mainContentWrapper = document.getElementById('mainArea');
+    const body = document.body;
     
     if (window.innerWidth <= 1200) {
       leftSidebar.classList.remove('open');
@@ -1251,6 +1270,7 @@ const SidebarManager = {
       this.state.isLeftSidebarOpen = false;
       this.state.isRightSidebarOpen = false;
       overlay.classList.remove('active');
+      body.classList.remove('sidebar-open');
       
       if (mainContentWrapper) {
         mainContentWrapper.style.marginLeft = '0';
@@ -1262,6 +1282,7 @@ const SidebarManager = {
       this.state.isLeftSidebarOpen = false;
       this.state.isRightSidebarOpen = false;
       overlay.classList.remove('active');
+      body.classList.remove('sidebar-open');
       
       if (mainContentWrapper) {
         mainContentWrapper.style.marginLeft = 'var(--sidebar-width)';
