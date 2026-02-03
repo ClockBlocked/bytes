@@ -481,6 +481,12 @@ const PageRouter = {
         this.currentPage = pageName;
 
         this.updatePageTitle(pageName);
+        
+        
+        
+        if (typeof updateBreadcrumb === 'function') {
+  updateBreadcrumb();
+}
 
         ProgressLoader.done();
 
@@ -646,6 +652,12 @@ function updateBreadcrumb() {
   const container = breadcrumb.querySelector('.breadCrumbContainer');
   if (!container) return;
 
+  if (!currentState || !currentState.repository) {
+    container.innerHTML = '<span data-navigate="repo" class="breadCrumb current">Repositories</span>';
+    setupBreadcrumbListeners();
+    return;
+  }
+
   let html = `
     <span data-navigate="repo" class="breadCrumb">
       Repositories
@@ -653,6 +665,10 @@ function updateBreadcrumb() {
   `;
 
   if (currentState.repository) {
+    const repoName = typeof currentState.repository === 'object' 
+      ? currentState.repository.name 
+      : currentState.repository;
+      
     html += `
       <div class="navDivider" aria-hidden="true">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16">
@@ -660,7 +676,7 @@ function updateBreadcrumb() {
         </svg>
       </div>
       <span data-navigate="explorer" class="breadCrumb">
-        ${currentState.repository}
+        ${repoName}
       </span>
     `;
   }
@@ -668,6 +684,8 @@ function updateBreadcrumb() {
   if (currentState.path) {
     const segments = currentState.path.split('/');
     let currentPath = '';
+    
+    const isFileView = currentState.currentFile != null;
     
     segments.forEach((segment, index) => {
       currentPath += (currentPath ? '/' : '') + segment;
@@ -681,11 +699,28 @@ function updateBreadcrumb() {
         </div>
         <span 
            data-navigate-path="${currentPath}"
-           class="breadCrumb ${isLast ? 'current' : ''}">
+           class="breadCrumb ${isLast && !isFileView ? 'current' : ''}">
           ${segment}
         </span>
       `;
     });
+  }
+
+  if (currentState.currentFile) {
+    const fileName = typeof currentState.currentFile === 'object'
+      ? currentState.currentFile.name
+      : currentState.currentFile;
+      
+    html += `
+      <div class="navDivider" aria-hidden="true">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16">
+          <path d="M6.22 13.72a.75.75 0 0 0 1.06 0l4.25-4.25a.75.75 0 0 0 0-1.06L7.28 4.22a.751.751 0 0 0-1.042.018.751.751 0 0 0-.018 1.042L9.94 8l-3.72 3.72a.75.75 0 0 0 0 1.06Z"/>
+        </svg>
+      </div>
+      <span class="breadCrumb current">
+        ${fileName}
+      </span>
+    `;
   }
 
   container.innerHTML = html;
@@ -1047,6 +1082,11 @@ function setupEventListeners() {
 }
 
 window.showRepoSelector = function() {
+    if (window.currentState) {
+      window.currentState.path = '';
+      window.currentState.currentFile = null;
+      window.currentState.repository = null;
+    }
     PageRouter.navigateTo('repo');
 };
 
@@ -1142,12 +1182,22 @@ document.addEventListener('pageNavigationComplete', function(e) {
       updateBreadcrumb();
     }
   } else if (e.detail.to === 'repo') {
+    if (window.currentState) {
+      window.currentState.path = '';
+      window.currentState.currentFile = null;
+      window.currentState.repository = null;
+    }
+    
     const breadcrumb = document.getElementById('pathBreadcrumb');
     if (breadcrumb) {
       const container = breadcrumb.querySelector('.breadCrumbContainer');
       if (container) {
         container.innerHTML = '<span data-navigate="repo" class="breadCrumb current">Repositories</span>';
       }
+    }
+  } else if (e.detail.to === 'file') {
+    if (typeof updateBreadcrumb === 'function') {
+      updateBreadcrumb();
     }
   }
 });
