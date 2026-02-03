@@ -119,13 +119,6 @@
   padding: 0;
 }
 
-.cm-s-dark-dimmed .CodeMirror-gutter-wrapper {
-  left: 0 !important;
-}
-
-.cm-s-dark-dimmed .CodeMirror-gutter-elt {
-  left: 0 !important;
-}
 
 /* ==========================================================================
    ACTIVE LINE STYLES
