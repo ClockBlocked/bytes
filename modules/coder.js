@@ -1666,70 +1666,77 @@ body {
   };
   
   
-  enterEditMode = () => {
-    if (!this.currentFile && !this.fallbackEditor) {
-      this.createNewStandaloneFile();
-      return;
-    }
-    
-    this.coderLoading(500);
-    
-    this.isEditing = true;
-    this.elements.editModeBtn?.addClass("active");
-    this.elements.viewModeBtn?.removeClass("active");
-    
-    if (this.elements.editSaveLabel.length) {
-      this.elements.editSaveLabel.text("Save");
-    }
-    
-    if (this.codeMirror) {
-      this.codeMirror.setOption("readOnly", false);
-//    this.codeMirror.focus();
-    } else if (this.fallbackEditor) {
-      this.fallbackEditor.readOnly = false;
-//    this.fallbackEditor.focus();
-    }
-    
-    // Dispatch event
-    const event = new CustomEvent('editModeEntered', {
-      detail: { filename: this.currentFile, timestamp: Date.now() }
-    });
-    $(document).trigger(event);
-  };
+exitEditMode = () => {
+  if (!this.isEditing) return;
   
-  exitEditMode = () => {
-    if (!this.isEditing) return;
-    
-    this.coderLoading(500);
-    
-    this.isEditing = false;
-    this.elements.editModeBtn?.removeClass("active");
-    this.elements.viewModeBtn?.addClass("active");
-    
-    if (this.elements.editSaveLabel.length) {
-      this.elements.editSaveLabel.text("Edit");
-    }
-    
-    if (this.codeMirror) {
-      this.codeMirror.setOption("readOnly", true);
-    } else if (this.fallbackEditor) {
-      this.fallbackEditor.readOnly = true;
-    }
-    
-    this.hideCommitPopup();
-    
-    // Auto-save if changes exist
-    if (this.hasUnsavedChanges()) {
-      this.saveChanges();
-    }
-    
-    // Dispatch event
-    const event = new CustomEvent('editModeExited', {
-      detail: { filename: this.currentFile, timestamp: Date.now() }
-    });
-    $(document).trigger(event);
-  };
+  this.coderLoading(500);
   
+  this.isEditing = false;
+  this.elements.editModeBtn?.removeClass("active");
+  this.elements.viewModeBtn?.addClass("active");
+  
+  if (this.elements.editSaveLabel.length) {
+    this.elements.editSaveLabel.text("Edit");
+  }
+  
+  if (this.codeMirror) {
+    this.codeMirror.setOption("readOnly", true);
+    
+    if (this.isMobileDevice()) {
+      const inputField = this.codeMirror.getInputField();
+      inputField.setAttribute('readonly', 'readonly');
+      inputField.setAttribute('inputmode', 'none');
+      inputField.blur();
+    }
+  } else if (this.fallbackEditor) {
+    this.fallbackEditor.readOnly = true;
+  }
+  
+  this.hideCommitPopup();
+  
+  if (this.hasUnsavedChanges()) {
+    this.saveChanges();
+  }
+  
+  const event = new CustomEvent('editModeExited', {
+    detail: { filename: this.currentFile, timestamp: Date.now() }
+  });
+  $(document).trigger(event);
+};
+
+enterEditMode = () => {
+  if (!this.currentFile && !this.fallbackEditor) {
+    this.createNewStandaloneFile();
+    return;
+  }
+  
+  this.coderLoading(500);
+  
+  this.isEditing = true;
+  this.elements.editModeBtn?.addClass("active");
+  this.elements.viewModeBtn?.removeClass("active");
+  
+  if (this.elements.editSaveLabel.length) {
+    this.elements.editSaveLabel.text("Save");
+  }
+  
+  if (this.codeMirror) {
+    this.codeMirror.setOption("readOnly", false);
+    
+    if (this.isMobileDevice()) {
+      const inputField = this.codeMirror.getInputField();
+      inputField.removeAttribute('readonly');
+      inputField.removeAttribute('inputmode');
+    }
+  } else if (this.fallbackEditor) {
+    this.fallbackEditor.readOnly = false;
+  }
+  
+  const event = new CustomEvent('editModeEntered', {
+    detail: { filename: this.currentFile, timestamp: Date.now() }
+  });
+  $(document).trigger(event);
+};  
   
   
   hasUnsavedChanges = () => {
