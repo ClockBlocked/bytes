@@ -29,6 +29,8 @@ class EventListenersManager {
             "create-file": () => this.handleCreateFile(),
             "show-create-file": () => this.handleShowCreateFile(),
             "hide-create-file-modal": () => this.handleHideCreateFileModal(),
+            "show-upload-modal": () => this.handleShowUploadModal(),
+            "show-create-folder": () => this.handleShowCreateFolder(),
             "edit-file": () => this.handleEditFile(),
             "download-file": () => this.handleDownloadFile(),
             "delete-file": () => this.handleDeleteFile(),
@@ -133,6 +135,16 @@ class EventListenersManager {
         if (typeof window.hideDeleteFileModal === "function") {
             window.hideDeleteFileModal();
         }
+    }
+
+    handleShowUploadModal() {
+        if (typeof window.showUploadModal === "function") {
+            window.showUploadModal();
+        }
+    }
+
+    handleShowCreateFolder() {
+        console.log("Create folder functionality not yet implemented");
     }
 
     handleShowRepoSelector() {
@@ -291,6 +303,24 @@ class EventListenersManager {
     }
 
     setupAdditionalListeners() {
+        const newDropdownButton = $("#newDropdownButton");
+        const newDropdownMenu = $("#newDropdownMenu");
+
+        if (newDropdownButton.length && newDropdownMenu.length) {
+            newDropdownButton.on("click", e => {
+                e.preventDefault();
+                e.stopPropagation();
+                newDropdownMenu.toggleClass("hidden");
+            });
+        }
+
+        $(document).on("click", e => {
+            if (newDropdownMenu.length && !newDropdownMenu.is(e.target) && newDropdownMenu.has(e.target).length === 0 && 
+                !newDropdownButton.is(e.target) && newDropdownButton.has(e.target).length === 0) {
+                newDropdownMenu.addClass("hidden");
+            }
+        });
+
         const branchSelector = $("#branchSelector");
         const branchDropdown = $("#branchDropdown");
 

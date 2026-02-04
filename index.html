@@ -349,13 +349,34 @@ html {
       </button>
 -->
 
-<button class="navbar-button" data-action="new-file" id="newFileButton">
-    New File
+<div class="relative inline-block" id="newDropdownContainer">
+  <button class="navbar-button" id="newDropdownButton">
+    New
     <svg class="chevron" width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
       <path d="M4.427 7.427l3.396 3.396a.25.25 0 0 0 .354 0l3.396-3.396A.25.25 0 0 0 10.896 2H4.604a.25.25 0 0 0-.177.427Z"/>
     </svg>
   </button>
-
+  <div id="newDropdownMenu" class="dropdown-menu hidden absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-github-canvas-default border border-github-border-default z-50">
+    <div class="py-1">
+      <button data-action="show-create-repo" class="dropdown-item block w-full text-left px-4 py-2 text-sm text-github-fg-default hover:bg-github-canvas-subtle">
+        <i class="fas fa-folder mr-2"></i>
+        Repository
+      </button>
+      <button data-action="show-create-file" class="dropdown-item block w-full text-left px-4 py-2 text-sm text-github-fg-default hover:bg-github-canvas-subtle">
+        <i class="fas fa-file mr-2"></i>
+        File
+      </button>
+      <button data-action="show-upload-modal" class="dropdown-item block w-full text-left px-4 py-2 text-sm text-github-fg-default hover:bg-github-canvas-subtle">
+        <i class="fas fa-upload mr-2"></i>
+        Upload
+      </button>
+      <button data-action="show-create-folder" class="dropdown-item block w-full text-left px-4 py-2 text-sm text-github-fg-default hover:bg-github-canvas-subtle">
+        <i class="fas fa-folder-plus mr-2"></i>
+        Folder
+      </button>
+    </div>
+  </div>
+</div>
 
 
       <button 

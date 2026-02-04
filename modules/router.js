@@ -659,7 +659,9 @@ function updateBreadcrumb() {
     const container = breadcrumb.querySelector('.breadCrumbContainer');
     if (!container) return;
 
-    if (typeof currentState === 'undefined' || !currentState || !currentState.repository) {
+    const currentPage = PageRouter.currentPage;
+    
+    if (currentPage === 'repo' || typeof currentState === 'undefined' || !currentState || !currentState.repository) {
         container.innerHTML = '<span data-navigate="repo" class="breadCrumb current">Repositories</span>';
         setupBreadcrumbListeners();
         return;
@@ -675,24 +677,26 @@ function updateBreadcrumb() {
         ? (currentState.repository.name || currentState.repository.id)
         : currentState.repository;
 
+    const isExplorerCurrent = currentPage === 'explorer' && !currentState.path && !currentState.currentFile;
+    
     html += `
         <div class="navDivider" aria-hidden="true">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16">
                 <path d="M6.22 13.72a.75.75 0 0 0 1.06 0l4.25-4.25a.75.75 0 0 0 0-1.06L7.28 4.22a.751.751 0 0 0-1.042.018.751.751 0 0 0-.018 1.042L9.94 8l-3.72 3.72a.75.75 0 0 0 0 1.06Z"/>
             </svg>
         </div>
-        <span data-navigate="explorer" class="breadCrumb${!currentState.path && !currentState.currentFile ? ' current' : ''}">
+        <span data-navigate="explorer" class="breadCrumb${isExplorerCurrent ? ' current' : ''}">
             ${repoName}
         </span>
     `;
 
-    if (currentState.path) {
+    if (currentPage === 'explorer' && currentState.path) {
         const segments = currentState.path.split('/').filter(Boolean);
         let currentPath = '';
 
         segments.forEach((segment, index) => {
             currentPath += (currentPath ? '/' : '') + segment;
-            const isLast = index === segments.length - 1 && !currentState.currentFile;
+            const isLast = index === segments.length - 1;
 
             html += `
                 <div class="navDivider" aria-hidden="true">
@@ -709,21 +713,40 @@ function updateBreadcrumb() {
         });
     }
 
-    if (currentState.currentFile) {
-        const fileName = typeof currentState.currentFile === 'object'
-            ? (currentState.currentFile.name || currentState.currentFile)
-            : currentState.currentFile;
+    if (currentPage === 'file') {
+        const filePageMode = window.filePageMode || 'view';
+        
+        if (filePageMode === 'create' || filePageMode === 'create-standalone') {
+            html += `
+                <div class="navDivider" aria-hidden="true">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16">
+                        <path d="M6.22 13.72a.75.75 0 0 0 1.06 0l4.25-4.25a.75.75 0 0 0 0-1.06L7.28 4.22a.751.751 0 0 0-1.042.018.751.751 0 0 0-.018 1.042L9.94 8l-3.72 3.72a.75.75 0 0 0 0 1.06Z"/>
+                    </svg>
+                </div>
+                <span class="breadCrumb current">
+                    Create
+                </span>
+            `;
+        } else if (currentState.currentFile) {
+            const fileName = typeof currentState.currentFile === 'object'
+                ? (currentState.currentFile.name || currentState.currentFile)
+                : currentState.currentFile;
+            
+            const fileNameWithoutExt = fileName.includes('.') 
+                ? fileName.substring(0, fileName.lastIndexOf('.'))
+                : fileName;
 
-        html += `
-            <div class="navDivider" aria-hidden="true">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16">
-                    <path d="M6.22 13.72a.75.75 0 0 0 1.06 0l4.25-4.25a.75.75 0 0 0 0-1.06L7.28 4.22a.751.751 0 0 0-1.042.018.751.751 0 0 0-.018 1.042L9.94 8l-3.72 3.72a.75.75 0 0 0 0 1.06Z"/>
-                </svg>
-            </div>
-            <span class="breadCrumb current">
-                ${fileName}
-            </span>
-        `;
+            html += `
+                <div class="navDivider" aria-hidden="true">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16">
+                        <path d="M6.22 13.72a.75.75 0 0 0 1.06 0l4.25-4.25a.75.75 0 0 0 0-1.06L7.28 4.22a.751.751 0 0 0-1.042.018.751.751 0 0 0-.018 1.042L9.94 8l-3.72 3.72a.75.75 0 0 0 0 1.06Z"/>
+                    </svg>
+                </div>
+                <span class="breadCrumb current">
+                    ${fileNameWithoutExt}
+                </span>
+            `;
+        }
     }
 
     container.innerHTML = html;
