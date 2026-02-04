@@ -925,9 +925,8 @@ body {
       this.elements.newFileDropdown.addClass('hide');
     }
   };
-  
-  setupCodeMirror = () => {
-    if (!this.elements.codeMirrorContainer.length) return;
+    setupCodeMirror = function() {
+    if (!this.elements.codeMirrorContainer) return;
     
     if (typeof CodeMirror === "undefined") {
       console.warn("CodeMirror not available, using fallback editor");
@@ -952,7 +951,11 @@ body {
       lineWrapping: this.state.wrapLines,
       foldGutter: true,
       gutters: ["CodeMirror-linenumbers", "CodeMirror-foldgutter", "CodeMirror-lint-markers"],
-      readOnly: true,
+      readOnly: "nocursor", 
+      inputStyle: "textarea",
+      spellcheck: false,
+      autocorrect: false,
+      autocapitalize: false,
       tabSize: this.state.tabSize,
       indentUnit: this.state.indentUnit,
       smartIndent: true,
@@ -987,9 +990,8 @@ body {
       },
     };
     
-    this.codeMirror = CodeMirror(this.elements.codeMirrorContainer[0], config);
+    this.codeMirror = CodeMirror(this.elements.codeMirrorContainer, config);
     
-    // Load saved font size
     const savedFontSize = localStorage.getItem("editor_fontsize");
     if (savedFontSize) {
       this.setCodeMirrorFontSize(parseInt(savedFontSize));
@@ -997,7 +999,6 @@ body {
     
     this.updateThemeIcon(isDark);
     
-    // Setup event listeners
     this.codeMirror.on("change", () => {
       this.updateStats();
       this.updateModifiedBadge();
@@ -1010,11 +1011,11 @@ body {
     });
     
     this.codeMirror.on("focus", () => {
-      this.elements.editorBody?.addClass("focused");
+      this.elements.editorBody?.classList.add("focused");
     });
     
     this.codeMirror.on("blur", () => {
-      this.elements.editorBody?.removeClass("focused");
+      this.elements.editorBody?.classList.remove("focused");
     });
     
     this.codeMirror.on("scroll", () => {
@@ -1027,6 +1028,7 @@ body {
       }
     });
   };
+
   
   setCodeMirrorMode = (langValue) => {
     if (!this.codeMirror) return;
@@ -1034,7 +1036,6 @@ body {
     const mode = CODEMIRROR_MODES[langValue] || "text";
     this.codeMirror.setOption("mode", mode);
     
-    // Try to load mode if not available
     if (typeof CodeMirror.modes[mode] === "undefined") {
       console.warn(`CodeMirror mode ${mode} not loaded, trying to load...`);
     }
@@ -1045,7 +1046,6 @@ body {
       const ctrl = e.ctrlKey || e.metaKey;
       const target = e.target;
       
-      // Ignore if in input fields
       if (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA') {
         return;
       }
@@ -1072,7 +1072,6 @@ body {
       }
     });
     
-    // Handle system theme changes
     if (window.matchMedia) {
       window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
         if (!localStorage.getItem("editor_theme")) {
@@ -1085,7 +1084,6 @@ body {
       });
     }
     
-    // Handle page visibility
     $(document).on("visibilitychange", () => {
       if (document.hidden) {
         this.autoSave();
@@ -1217,8 +1215,7 @@ body {
     
     this.hideLanguageDropdown();
     this.setCodeMirrorMode(langValue);
-    
-    // Update syntax highlighting
+
     if (this.codeMirror) {
       this.codeMirror.refresh();
     }
@@ -1246,14 +1243,14 @@ body {
       this.codeMirror?.setOption("tabSize", this.state.tabSize);
     }
     
-    // Indent unit
+    // Indent
     const indentUnit = localStorage.getItem("editor_indentUnit");
     if (indentUnit) {
       this.state.indentUnit = parseInt(indentUnit);
       this.codeMirror?.setOption("indentUnit", this.state.indentUnit);
     }
     
-    // Load editor state
+    // Load
     this.restoreEditorState();
   };
   
@@ -1449,7 +1446,7 @@ body {
     this.show();
     this.updateHeaderScrollButtons();
     
-    // Save to recent files
+    // Save to recents
     this.saveToRecentFiles(filename, repoName, path);
   };
   
@@ -1465,7 +1462,7 @@ body {
         language: this.currentLanguage
       };
       
-      // Remove if already exists
+      // Remove existing
       const existingIndex = recentFiles.findIndex(f => 
         f.filename === filename && 
         f.repoName === repoName && 
@@ -1655,7 +1652,6 @@ body {
     
     reader.readAsText(file);
     
-    // Reset input
     e.target.value = '';
   };
   
@@ -1671,7 +1667,7 @@ body {
     this.elements.filePage?.addClass("hide");
   };
   
-  enterEditMode = () => {
+  enterEditMode = function() {
     if (!this.currentFile && !this.fallbackEditor) {
       this.createNewStandaloneFile();
       return;
@@ -1680,60 +1676,59 @@ body {
     this.coderLoading(500);
     
     this.isEditing = true;
-    this.elements.editModeBtn?.addClass("active");
-    this.elements.viewModeBtn?.removeClass("active");
+    this.elements.editModeBtn?.classList.add("active");
+    this.elements.viewModeBtn?.classList.remove("active");
     
-    if (this.elements.editSaveLabel.length) {
-      this.elements.editSaveLabel.text("Save");
+    if (this.elements.editSaveLabel) {
+      this.elements.editSaveLabel.textContent = "Save";
     }
     
     if (this.codeMirror) {
       this.codeMirror.setOption("readOnly", false);
-//    this.codeMirror.focus();
+      this.codeMirror.focus();
     } else if (this.fallbackEditor) {
       this.fallbackEditor.readOnly = false;
-//    this.fallbackEditor.focus();
+      this.fallbackEditor.focus();
     }
     
-    // Dispatch event
     const event = new CustomEvent('editModeEntered', {
       detail: { filename: this.currentFile, timestamp: Date.now() }
     });
-    $(document).trigger(event);
+    document.dispatchEvent(event);
   };
-  
-  exitEditMode = () => {
+    exitEditMode = function() {
     if (!this.isEditing) return;
     
     this.coderLoading(500);
     
     this.isEditing = false;
-    this.elements.editModeBtn?.removeClass("active");
-    this.elements.viewModeBtn?.addClass("active");
+    this.elements.editModeBtn?.classList.remove("active");
+    this.elements.viewModeBtn?.classList.add("active");
     
-    if (this.elements.editSaveLabel.length) {
-      this.elements.editSaveLabel.text("Edit");
+    if (this.elements.editSaveLabel) {
+      this.elements.editSaveLabel.textContent = "Edit";
     }
     
     if (this.codeMirror) {
-      this.codeMirror.setOption("readOnly", true);
+      this.codeMirror.setOption("readOnly", "nocursor");
+      this.codeMirror.getInputField().blur();
     } else if (this.fallbackEditor) {
       this.fallbackEditor.readOnly = true;
     }
     
     this.hideCommitPopup();
     
-    // Auto-save if changes exist
     if (this.hasUnsavedChanges()) {
       this.saveChanges();
     }
     
-    // Dispatch event
     const event = new CustomEvent('editModeExited', {
       detail: { filename: this.currentFile, timestamp: Date.now() }
     });
-    $(document).trigger(event);
+    document.dispatchEvent(event);
   };
+
+  
   
   hasUnsavedChanges = () => {
     const currentContent = this.codeMirror ? this.codeMirror.getValue() : 
