@@ -715,47 +715,49 @@ function saveFile() {
 }
 
 function openRepository(repoId) {
-  ProgressLoader.show();
-  
-  setTimeout(async () => {
-    try {
-      const repo = await IndexedDBStorageManager.getRepository(repoId);
-      if (!repo) {
-        throw new Error("Repository not found");
-      }
-      
-      currentState.repository = repo;
-      currentState.path = "";
-      
-      // Load files
-      currentState.files = await IndexedDBStorageManager.listFiles(repoId, "");
-      renderFileList();
-      updateBreadcrumb();
-      
-      // Update UI
-      const currentRepoName = document.getElementById("currentRepoName");
-      const repoNameInViewer = document.getElementById("repoNameInViewer");
-      const repoNameInEditor = document.getElementById("repoNameInEditor");
-      
-      if (currentRepoName) currentRepoName.textContent = repo.name;
-      if (repoNameInViewer) repoNameInViewer.textContent = repo.name;
-      if (repoNameInEditor) repoNameInEditor.textContent = repo.name;
-      
-      // Update repository description if available
-      const repoDescription = document.getElementById("repoDescription");
-      if (repoDescription && repo.description) {
-        repoDescription.textContent = repo.description;
-      }
-      
-      showExplorer();
-      updateStats();
-      ProgressLoader.hide();
-      
-    } catch (error) {
-      ProgressLoader.hide();
-      showErrorMessage("Failed to open repository: " + error.message);
-    }
-  }, 1500);
+    ProgressLoader.show();
+
+    setTimeout(async () => {
+        try {
+            const repo = await IndexedDBStorageManager.getRepository(repoId);
+            if (!repo) {
+                throw new Error("Repository not found");
+            }
+
+            currentState.repository = repo;
+            currentState.path = "";
+            currentState.currentFile = null;
+
+            currentState.files = await IndexedDBStorageManager.listFiles(repoId, "");
+            renderFileList();
+            
+            $(document).trigger('repositoryChanged', { repository: repo });
+          // document.dispatchEvent(new CustomEvent('repositoryChanged', { detail: { repository: repo } }));
+
+            updateBreadcrumb();
+
+            const currentRepoName = document.getElementById("currentRepoName");
+            const repoNameInViewer = document.getElementById("repoNameInViewer");
+            const repoNameInEditor = document.getElementById("repoNameInEditor");
+
+            if (currentRepoName) currentRepoName.textContent = repo.name;
+            if (repoNameInViewer) repoNameInViewer.textContent = repo.name;
+            if (repoNameInEditor) repoNameInEditor.textContent = repo.name;
+
+            const repoDescription = document.getElementById("repoDescription");
+            if (repoDescription && repo.description) {
+                repoDescription.textContent = repo.description;
+            }
+
+            showExplorer();
+            updateStats();
+            ProgressLoader.hide();
+
+        } catch (error) {
+            ProgressLoader.hide();
+            showErrorMessage("Failed to open repository: " + error.message);
+        }
+    }, 1500);
 }
 
 function showCreateFileModal() {
