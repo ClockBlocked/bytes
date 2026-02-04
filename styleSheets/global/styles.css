@@ -3491,3 +3491,49 @@ aside:hover .sidebar-title {
 .pages button {
   background: var(--btnDefault) !important;
 }
+.dropdown-menu {
+  position: absolute;
+  background: var(--canvasDefault);
+  border: 1px solid var(--borderDefault);
+  border-radius: 6px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+  z-index: 1000;
+  min-width: 200px;
+}
+
+.dropdown-menu.hidden {
+  display: none;
+}
+
+.dropdown-item {
+  display: block;
+  width: 100%;
+  padding: 8px 16px;
+  text-align: left;
+  background: transparent;
+  border: none;
+  color: var(--fgDefault);
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  font-size: 14px;
+}
+
+.dropdown-item:hover {
+  background: var(--canvasSubtle);
+}
+
+.dropdown-item i {
+  margin-right: 8px;
+  width: 16px;
+  display: inline-block;
+}
+
+#newDropdownContainer {
+  position: relative;
+  display: inline-block;
+}
+
+#newDropdownMenu {
+  right: 0;
+  margin-top: 8px;
+}
