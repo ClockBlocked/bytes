@@ -925,8 +925,9 @@ body {
       this.elements.newFileDropdown.addClass('hide');
     }
   };
-    setupCodeMirror = function() {
-    if (!this.elements.codeMirrorContainer) return;
+  
+  setupCodeMirror = () => {
+    if (!this.elements.codeMirrorContainer.length) return;
     
     if (typeof CodeMirror === "undefined") {
       console.warn("CodeMirror not available, using fallback editor");
@@ -951,11 +952,7 @@ body {
       lineWrapping: this.state.wrapLines,
       foldGutter: true,
       gutters: ["CodeMirror-linenumbers", "CodeMirror-foldgutter", "CodeMirror-lint-markers"],
-      readOnly: "nocursor", 
-      inputStyle: "textarea",
-      spellcheck: false,
-      autocorrect: false,
-      autocapitalize: false,
+      readOnly: true,
       tabSize: this.state.tabSize,
       indentUnit: this.state.indentUnit,
       smartIndent: true,
@@ -990,8 +987,9 @@ body {
       },
     };
     
-    this.codeMirror = CodeMirror(this.elements.codeMirrorContainer, config);
+    this.codeMirror = CodeMirror(this.elements.codeMirrorContainer[0], config);
     
+    // Load saved font size
     const savedFontSize = localStorage.getItem("editor_fontsize");
     if (savedFontSize) {
       this.setCodeMirrorFontSize(parseInt(savedFontSize));
@@ -999,6 +997,7 @@ body {
     
     this.updateThemeIcon(isDark);
     
+    // Setup event listeners
     this.codeMirror.on("change", () => {
       this.updateStats();
       this.updateModifiedBadge();
@@ -1011,11 +1010,11 @@ body {
     });
     
     this.codeMirror.on("focus", () => {
-      this.elements.editorBody?.classList.add("focused");
+      this.elements.editorBody?.addClass("focused");
     });
     
     this.codeMirror.on("blur", () => {
-      this.elements.editorBody?.classList.remove("focused");
+      this.elements.editorBody?.removeClass("focused");
     });
     
     this.codeMirror.on("scroll", () => {
@@ -1028,7 +1027,6 @@ body {
       }
     });
   };
-
   
   setCodeMirrorMode = (langValue) => {
     if (!this.codeMirror) return;
@@ -1667,7 +1665,8 @@ body {
     this.elements.filePage?.addClass("hide");
   };
   
-  enterEditMode = function() {
+  
+  enterEditMode = () => {
     if (!this.currentFile && !this.fallbackEditor) {
       this.createNewStandaloneFile();
       return;
@@ -1676,58 +1675,61 @@ body {
     this.coderLoading(500);
     
     this.isEditing = true;
-    this.elements.editModeBtn?.classList.add("active");
-    this.elements.viewModeBtn?.classList.remove("active");
+    this.elements.editModeBtn?.addClass("active");
+    this.elements.viewModeBtn?.removeClass("active");
     
-    if (this.elements.editSaveLabel) {
-      this.elements.editSaveLabel.textContent = "Save";
+    if (this.elements.editSaveLabel.length) {
+      this.elements.editSaveLabel.text("Save");
     }
     
     if (this.codeMirror) {
       this.codeMirror.setOption("readOnly", false);
-      this.codeMirror.focus();
+//    this.codeMirror.focus();
     } else if (this.fallbackEditor) {
       this.fallbackEditor.readOnly = false;
-      this.fallbackEditor.focus();
+//    this.fallbackEditor.focus();
     }
     
+    // Dispatch event
     const event = new CustomEvent('editModeEntered', {
       detail: { filename: this.currentFile, timestamp: Date.now() }
     });
-    document.dispatchEvent(event);
+    $(document).trigger(event);
   };
-    exitEditMode = function() {
+  
+  exitEditMode = () => {
     if (!this.isEditing) return;
     
     this.coderLoading(500);
     
     this.isEditing = false;
-    this.elements.editModeBtn?.classList.remove("active");
-    this.elements.viewModeBtn?.classList.add("active");
+    this.elements.editModeBtn?.removeClass("active");
+    this.elements.viewModeBtn?.addClass("active");
     
-    if (this.elements.editSaveLabel) {
-      this.elements.editSaveLabel.textContent = "Edit";
+    if (this.elements.editSaveLabel.length) {
+      this.elements.editSaveLabel.text("Edit");
     }
     
     if (this.codeMirror) {
-      this.codeMirror.setOption("readOnly", "nocursor");
-      this.codeMirror.getInputField().blur();
+      this.codeMirror.setOption("readOnly", true);
     } else if (this.fallbackEditor) {
       this.fallbackEditor.readOnly = true;
     }
     
     this.hideCommitPopup();
     
+    // Auto-save if changes exist
     if (this.hasUnsavedChanges()) {
       this.saveChanges();
     }
     
+    // Dispatch event
     const event = new CustomEvent('editModeExited', {
       detail: { filename: this.currentFile, timestamp: Date.now() }
     });
-    document.dispatchEvent(event);
+    $(document).trigger(event);
   };
-
+  
   
   
   hasUnsavedChanges = () => {
