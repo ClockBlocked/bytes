@@ -732,12 +732,16 @@ function openRepository(repoId) {
             currentState.currentFile = null;
             window.filePageMode = 'view';
 
+            if (typeof updateBreadcrumb === 'function') {
+                updateBreadcrumb();
+            }
+
             currentState.files = await IndexedDBStorageManager.listFiles(repoId, "");
             renderFileList();
 
+
             $(document).trigger('repositoryChanged', { repository: repo });
 
-            updateBreadcrumb();
 
             const currentRepoName = document.getElementById("currentRepoName");
             const repoNameInViewer = document.getElementById("repoNameInViewer");
