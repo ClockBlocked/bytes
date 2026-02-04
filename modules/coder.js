@@ -297,7 +297,10 @@ class CodeViewEditor {
   return element && element.length ? element : $();
 };
 
-
+isMobileDevice = () => {
+  return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ||
+         (window.matchMedia && window.matchMedia('(max-width: 768px)').matches && 'ontouchstart' in window);
+};
   
   loadCodeMirrorDependencies = () => {
     return new Promise((resolve, reject) => {
@@ -953,6 +956,7 @@ body {
       foldGutter: true,
       gutters: ["CodeMirror-linenumbers", "CodeMirror-foldgutter", "CodeMirror-lint-markers"],
       readOnly: true,
+      inputStyle: this.isMobileDevice() ? "contenteditable" : "textarea",
       tabSize: this.state.tabSize,
       indentUnit: this.state.indentUnit,
       smartIndent: true,
@@ -1009,9 +1013,6 @@ body {
       this.updateSelectionInfo();
     });
     
-    this.codeMirror.on("focus", () => {
-      this.elements.editorBody?.addClass("focused");
-    });
     
     this.codeMirror.on("blur", () => {
       this.elements.editorBody?.removeClass("focused");
@@ -1026,6 +1027,17 @@ body {
         cm.foldCode(cm.getCursor());
       }
     });
+    
+    
+    
+    
+this.codeMirror.on("focus", () => {
+  if (!this.isEditing && this.isMobileDevice()) {
+    this.codeMirror.getInputField().blur();
+    return;
+  }
+  this.elements.editorBody?.addClass("focused");
+});    
   };
   
   setCodeMirrorMode = (langValue) => {
