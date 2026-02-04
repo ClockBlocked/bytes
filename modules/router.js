@@ -564,7 +564,6 @@ const SpaDom = {
         $el.removeClass('show').addClass('hide');
     }
 };
-
 $.fn.spaShow = function(speed = 400, easing = 'swing', callback) {
     return this.each(function() {
         const $this = $(this);
@@ -572,7 +571,6 @@ $.fn.spaShow = function(speed = 400, easing = 'swing', callback) {
             .animate({ opacity: 1 }, speed, easing, callback);
     });
 };
-
 $.fn.spaHide = function(speed = 400, easing = 'swing', callback) {
     return this.each(function() {
         const $this = $(this);
@@ -582,7 +580,6 @@ $.fn.spaHide = function(speed = 400, easing = 'swing', callback) {
         });
     });
 };
-
 $.fn.spaTransition = function(direction = 'forward', speed = 400) {
     return this.each(function() {
         const $this = $(this);
@@ -668,8 +665,7 @@ function initScrollBehavior() {
  *    [My Repositories] > [Create a File]
  */
 
-// Track the current mode for the file page
-window.filePageMode = window.filePageMode || 'view'; // 'view', 'edit', 'create', 'create-standalone'
+window.filePageMode = window.filePageMode || 'view';
 
 function updateBreadcrumb() {
     const breadcrumb = document.getElementById('pathBreadcrumb');
@@ -793,16 +789,12 @@ function updateBreadcrumb() {
     container.innerHTML = html;
     setupBreadcrumbListeners();
 }
-
-// Helper function to escape HTML (prevents XSS)
 function escapeHTMLForBreadcrumb(str) {
     if (!str) return '';
     const div = document.createElement('div');
     div.textContent = str;
     return div.innerHTML;
 }
-
-// Set up click listeners for breadcrumb navigation
 function setupBreadcrumbListeners() {
     // Handle [data-navigate] clicks (repo, explorer)
     document.querySelectorAll('#pathBreadcrumb [data-navigate]').forEach(element => {
@@ -1274,6 +1266,61 @@ function setupEventListeners() {
   });
 }
 
+
+
+$(function() {
+    PageRouter.init();
+});
+
+
+document.addEventListener('pageNavigationComplete', function(e) {
+    const detail = e.detail || {};
+    
+    switch (detail.to) {
+        case 'repo':
+            if (window.currentState) {
+                window.currentState.path = '';
+                window.currentState.currentFile = null;
+                window.currentState.repository = null;
+            }
+            window.filePageMode = 'view';
+            updateBreadcrumb();
+            break;
+            
+        case 'explorer':
+            window.filePageMode = 'view';
+            updateBreadcrumb();
+            break;
+            
+        case 'file':
+            updateBreadcrumb();
+            break;
+            
+        default:
+            updateBreadcrumb();
+    }
+});
+document.addEventListener('repositoryChanged', function(e) {
+  if (typeof updateBreadcrumb === 'function') {
+    updateBreadcrumb();
+  }
+});
+window.addEventListener('stateChanged', function() {
+  if (typeof updateBreadcrumb === 'function') {
+    updateBreadcrumb();
+  }
+});
+document.addEventListener('DOMContentLoaded', function() {
+  initScrollBehavior();
+  
+  setTimeout(function() {
+    if (typeof updateBreadcrumb === 'function') {
+      updateBreadcrumb();
+    }
+  }, 100);
+});
+
+
 window.showRepoSelector = function() {
     if (window.currentState) {
       window.currentState.path = '';
@@ -1282,7 +1329,6 @@ window.showRepoSelector = function() {
     }
     PageRouter.navigateTo('repo');
 };
-
 window.showExplorer = function() {
     if (!window.currentState || !window.currentState.repository) {
         console.warn('No repository selected');
@@ -1290,11 +1336,9 @@ window.showExplorer = function() {
     }
     PageRouter.navigateTo('explorer');
 };
-
 window.showFileViewer = function() {
     PageRouter.navigateTo('file');
 };
-
 window.showFileEditor = function() {
     PageRouter.navigateTo('file');
     setTimeout(function() {
@@ -1303,11 +1347,9 @@ window.showFileEditor = function() {
         }
     }, PageRouter.transitionDuration + 100);
 };
-
 window.navigateToPage = function(pageName) {
     PageRouter.navigateTo(pageName);
 };
-
 window.navigateToRoot = function() {
     if (!window.currentState) return;
     
@@ -1326,7 +1368,6 @@ window.navigateToRoot = function() {
         });
     }
 };
-
 window.navigateToPath = function(path) {
     if (!window.currentState) return;
     
@@ -1346,7 +1387,6 @@ window.navigateToPath = function(path) {
         });
     }
 };
-
 window.navigateToFolder = function(folderName) {
     if (!window.currentState) return;
 
@@ -1356,7 +1396,6 @@ window.navigateToFolder = function(folderName) {
 
     window.navigateToPath(newPath);
 };
-
 window.navigateBack = function() {
     if (!window.currentState) return;
 
@@ -1368,58 +1407,6 @@ window.navigateBack = function() {
         window.navigateToRoot();
     }
 };
-
-document.addEventListener('pageNavigationComplete', function(e) {
-  if (e.detail.to === 'explorer') {
-    if (typeof updateBreadcrumb === 'function') {
-      updateBreadcrumb();
-    }
-  } else if (e.detail.to === 'repo') {
-    if (window.currentState) {
-      window.currentState.path = '';
-      window.currentState.currentFile = null;
-      window.currentState.repository = null;
-    }
-    
-    const breadcrumb = document.getElementById('pathBreadcrumb');
-    if (breadcrumb) {
-      const container = breadcrumb.querySelector('.breadCrumbContainer');
-      if (container) {
-        container.innerHTML = '<span data-navigate="repo" class="breadCrumb current">Repositories</span>';
-      }
-    }
-  } else if (e.detail.to === 'file') {
-    if (typeof updateBreadcrumb === 'function') {
-      updateBreadcrumb();
-    }
-  }
-});
-
-document.addEventListener('repositoryChanged', function(e) {
-  if (typeof updateBreadcrumb === 'function') {
-    updateBreadcrumb();
-  }
-});
-
-document.addEventListener('DOMContentLoaded', function() {
-  initScrollBehavior();
-  
-  setTimeout(function() {
-    if (typeof updateBreadcrumb === 'function') {
-      updateBreadcrumb();
-    }
-  }, 100);
-});
-
-window.addEventListener('stateChanged', function() {
-  if (typeof updateBreadcrumb === 'function') {
-    updateBreadcrumb();
-  }
-});
-
-$(function() {
-    PageRouter.init();
-});
 
 window.refreshFileList = refreshFileList;
 window.PageRouter = PageRouter;
