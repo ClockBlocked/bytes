@@ -3537,3 +3537,7 @@ aside:hover .sidebar-title {
   right: 0;
   margin-top: 8px;
 }
+
+.hidden {
+  display: none !important;
+}
