@@ -645,6 +645,198 @@ function initScrollBehavior() {
   });
 }
 
+
+
+// ═══════════════════════════════════════════════════════════════════════════
+// BREADCRUMB SYSTEM - Complete Rewrite
+// ═══════════════════════════════════════════════════════════════════════════
+
+/**
+ * Breadcrumb Display Modes:
+ * 
+ * 1. REPO PAGE (no repository selected):
+ *    [My Repositories]
+ * 
+ * 2. EXPLORER PAGE (repository selected, browsing files):
+ *    [My Repositories] > [Repository_Name]
+ *    [My Repositories] > [Repository_Name] > [folder] > [subfolder]
+ * 
+ * 3. FILE PAGE (viewing/editing a file within a repository):
+ *    [My Repositories] > [Repository_Name] > [File]
+ * 
+ * 4. CREATE FILE PAGE (creating file WITHOUT a repository):
+ *    [My Repositories] > [Create a File]
+ */
+
+// Track the current mode for the file page
+window.filePageMode = window.filePageMode || 'view'; // 'view', 'edit', 'create', 'create-standalone'
+
+function updateBreadcrumb() {
+    const breadcrumb = document.getElementById('pathBreadcrumb');
+    if (!breadcrumb) return;
+
+    const container = breadcrumb.querySelector('.breadCrumbContainer');
+    if (!container) return;
+
+    // Get current state safely
+    const state = window.currentState || {};
+    const currentPage = window.PageRouter ? window.PageRouter.currentPage : null;
+
+    // SVG for the divider arrow
+    const dividerSVG = `
+        <div class="navDivider" aria-hidden="true">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16">
+                <path d="M6.22 13.72a.75.75 0 0 0 1.06 0l4.25-4.25a.75.75 0 0 0 0-1.06L7.28 4.22a.751.751 0 0 0-1.042.018.751.751 0 0 0-.018 1.042L9.94 8l-3.72 3.72a.75.75 0 0 0 0 1.06Z"/>
+            </svg>
+        </div>
+    `;
+
+    let html = '';
+
+    // ═══════════════════════════════════════════════════════════════════════
+    // ALWAYS START WITH "My Repositories"
+    // ═══════════════════════════════════════════════════════════════════════
+    const isOnRepoPage = currentPage === 'repo' || (!state.repository && currentPage !== 'file');
+    
+    html += `
+        <span data-navigate="repo" class="breadCrumb ${isOnRepoPage ? 'current' : ''}">
+            My Repositories
+        </span>
+    `;
+
+    // ═══════════════════════════════════════════════════════════════════════
+    // SCENARIO: On repo page with no repository - we're done
+    // ═══════════════════════════════════════════════════════════════════════
+    if (isOnRepoPage && !state.repository) {
+        container.innerHTML = html;
+        setupBreadcrumbListeners();
+        return;
+    }
+
+    // ═══════════════════════════════════════════════════════════════════════
+    // SCENARIO: Creating a file WITHOUT a repository (standalone)
+    // ═══════════════════════════════════════════════════════════════════════
+    if (currentPage === 'file' && !state.repository && window.filePageMode === 'create-standalone') {
+        html += dividerSVG;
+        html += `
+            <span class="breadCrumb current">
+                Create a File
+            </span>
+        `;
+        container.innerHTML = html;
+        setupBreadcrumbListeners();
+        return;
+    }
+
+    // ═══════════════════════════════════════════════════════════════════════
+    // ADD REPOSITORY NAME (if repository is selected)
+    // ═══════════════════════════════════════════════════════════════════════
+    if (state.repository) {
+        const repoName = typeof state.repository === 'object' 
+            ? state.repository.name 
+            : state.repository;
+
+        const isOnExplorerWithNoFile = currentPage === 'explorer' && !state.currentFile && !state.path;
+        
+        html += dividerSVG;
+        html += `
+            <span data-navigate="explorer" class="breadCrumb ${isOnExplorerWithNoFile ? 'current' : ''}">
+                ${escapeHTMLForBreadcrumb(repoName)}
+            </span>
+        `;
+    }
+
+    // ═══════════════════════════════════════════════════════════════════════
+    // ADD PATH SEGMENTS (if browsing folders in explorer)
+    // ═══════════════════════════════════════════════════════════════════════
+    if (state.path && currentPage === 'explorer') {
+        const segments = state.path.split('/').filter(s => s);
+        let currentPath = '';
+
+        segments.forEach((segment, index) => {
+            currentPath += (currentPath ? '/' : '') + segment;
+            const isLast = index === segments.length - 1;
+
+            html += dividerSVG;
+            html += `
+                <span 
+                    data-navigate-path="${escapeHTMLForBreadcrumb(currentPath)}"
+                    class="breadCrumb ${isLast ? 'current' : ''}">
+                    ${escapeHTMLForBreadcrumb(segment)}
+                </span>
+            `;
+        });
+    }
+
+    // ═══════════════════════════════════════════════════════════════════════
+    // ADD "File" or "Create a File" (if on file page WITH a repository)
+    // ═══════════════════════════════════════════════════════════════════════
+    if (currentPage === 'file' && state.repository) {
+        html += dividerSVG;
+        
+        // Determine the label based on mode
+        let fileLabel = 'File';
+        if (window.filePageMode === 'create') {
+            fileLabel = 'Create a File';
+        }
+        
+        html += `
+            <span class="breadCrumb current">
+                ${fileLabel}
+            </span>
+        `;
+    }
+
+    // ═══════════════════════════════════════════════════════════════════════
+    // RENDER THE BREADCRUMB
+    // ═══════════════════════════════════════════════════════════════════════
+    container.innerHTML = html;
+    setupBreadcrumbListeners();
+}
+
+// Helper function to escape HTML (prevents XSS)
+function escapeHTMLForBreadcrumb(str) {
+    if (!str) return '';
+    const div = document.createElement('div');
+    div.textContent = str;
+    return div.innerHTML;
+}
+
+// Set up click listeners for breadcrumb navigation
+function setupBreadcrumbListeners() {
+    // Handle [data-navigate] clicks (repo, explorer)
+    document.querySelectorAll('#pathBreadcrumb [data-navigate]').forEach(element => {
+        // Remove old listeners by cloning
+        const newElement = element.cloneNode(true);
+        element.parentNode.replaceChild(newElement, element);
+        
+        newElement.addEventListener('click', function(e) {
+            e.preventDefault();
+            const target = this.getAttribute('data-navigate');
+            if (window.PageRouter && window.PageRouter.navigateTo) {
+                window.PageRouter.navigateTo(target);
+            }
+        });
+    });
+
+    // Handle [data-navigate-path] clicks (folder navigation)
+    document.querySelectorAll('#pathBreadcrumb [data-navigate-path]').forEach(element => {
+        const newElement = element.cloneNode(true);
+        element.parentNode.replaceChild(newElement, element);
+        
+        newElement.addEventListener('click', function(e) {
+            e.preventDefault();
+            const path = this.getAttribute('data-navigate-path');
+            if (typeof window.navigateToPath === 'function') {
+                window.navigateToPath(path);
+            }
+        });
+    });
+}
+
+
+
+/**
 function updateBreadcrumb() {
   const breadcrumb = document.getElementById('pathBreadcrumb');
   if (!breadcrumb) return;
@@ -737,6 +929,7 @@ function setupBreadcrumbListeners() {
     });
   });
 }
+**/
 
 function updateEditorMode(editor, fileName) {
   if (!editor || !fileName) return;
