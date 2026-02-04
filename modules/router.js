@@ -659,90 +659,69 @@ function updateBreadcrumb() {
     const container = breadcrumb.querySelector('.breadCrumbContainer');
     if (!container) return;
 
-    const state = window.currentState || {};
-    const currentPage = window.PageRouter ? window.PageRouter.currentPage : null;
+    if (typeof currentState === 'undefined' || !currentState || !currentState.repository) {
+        container.innerHTML = '<span data-navigate="repo" class="breadCrumb current">Repositories</span>';
+        setupBreadcrumbListeners();
+        return;
+    }
 
-    const dividerSVG = `
+    let html = `
+        <span data-navigate="repo" class="breadCrumb">
+            Repositories
+        </span>
+    `;
+
+    const repoName = typeof currentState.repository === 'object' 
+        ? (currentState.repository.name || currentState.repository.id)
+        : currentState.repository;
+
+    html += `
         <div class="navDivider" aria-hidden="true">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16">
                 <path d="M6.22 13.72a.75.75 0 0 0 1.06 0l4.25-4.25a.75.75 0 0 0 0-1.06L7.28 4.22a.751.751 0 0 0-1.042.018.751.751 0 0 0-.018 1.042L9.94 8l-3.72 3.72a.75.75 0 0 0 0 1.06Z"/>
             </svg>
         </div>
-    `;
-
-    let html = '';
-
-    const isOnRepoPage = currentPage === 'repo' || (!state.repository && currentPage !== 'file');
-
-    html += `
-        <span data-navigate="repo" class="breadCrumb ${isOnRepoPage ? 'current' : ''}">
-            My Repositories
+        <span data-navigate="explorer" class="breadCrumb${!currentState.path && !currentState.currentFile ? ' current' : ''}">
+            ${repoName}
         </span>
     `;
 
-    if (isOnRepoPage && !state.repository) {
-        container.innerHTML = html;
-        setupBreadcrumbListeners();
-        return;
-    }
-
-    if (currentPage === 'file' && !state.repository && window.filePageMode === 'create-standalone') {
-        html += dividerSVG;
-        html += `
-            <span class="breadCrumb current">
-                Create a File
-            </span>
-        `;
-        container.innerHTML = html;
-        setupBreadcrumbListeners();
-        return;
-    }
-
-    if (state.repository) {
-        const repoName = typeof state.repository === 'object'
-            ? state.repository.name
-            : state.repository;
-
-        const isOnExplorerWithNoFile = currentPage === 'explorer' && !state.currentFile && !state.path;
-
-        html += dividerSVG;
-        html += `
-            <span data-navigate="explorer" class="breadCrumb ${isOnExplorerWithNoFile ? 'current' : ''}">
-                ${escapeHTMLForBreadcrumb(repoName)}
-            </span>
-        `;
-    }
-
-    if (state.path && currentPage === 'explorer') {
-        const segments = state.path.split('/').filter(s => s);
+    if (currentState.path) {
+        const segments = currentState.path.split('/').filter(Boolean);
         let currentPath = '';
 
         segments.forEach((segment, index) => {
             currentPath += (currentPath ? '/' : '') + segment;
-            const isLast = index === segments.length - 1;
+            const isLast = index === segments.length - 1 && !currentState.currentFile;
 
-            html += dividerSVG;
             html += `
-                <span
-                    data-navigate-path="${escapeHTMLForBreadcrumb(currentPath)}"
-                    class="breadCrumb ${isLast ? 'current' : ''}">
-                    ${escapeHTMLForBreadcrumb(segment)}
+                <div class="navDivider" aria-hidden="true">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16">
+                        <path d="M6.22 13.72a.75.75 0 0 0 1.06 0l4.25-4.25a.75.75 0 0 0 0-1.06L7.28 4.22a.751.751 0 0 0-1.042.018.751.751 0 0 0-.018 1.042L9.94 8l-3.72 3.72a.75.75 0 0 0 0 1.06Z"/>
+                    </svg>
+                </div>
+                <span 
+                    data-navigate-path="${currentPath}"
+                    class="breadCrumb${isLast ? ' current' : ''}">
+                    ${segment}
                 </span>
             `;
         });
     }
 
-    if (currentPage === 'file' && state.repository) {
-        html += dividerSVG;
-
-        let fileLabel = 'File';
-        if (window.filePageMode === 'create') {
-            fileLabel = 'Create a File';
-        }
+    if (currentState.currentFile) {
+        const fileName = typeof currentState.currentFile === 'object'
+            ? (currentState.currentFile.name || currentState.currentFile)
+            : currentState.currentFile;
 
         html += `
+            <div class="navDivider" aria-hidden="true">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16">
+                    <path d="M6.22 13.72a.75.75 0 0 0 1.06 0l4.25-4.25a.75.75 0 0 0 0-1.06L7.28 4.22a.751.751 0 0 0-1.042.018.751.751 0 0 0-.018 1.042L9.94 8l-3.72 3.72a.75.75 0 0 0 0 1.06Z"/>
+                </svg>
+            </div>
             <span class="breadCrumb current">
-                ${fileLabel}
+                ${fileName}
             </span>
         `;
     }
@@ -750,7 +729,6 @@ function updateBreadcrumb() {
     container.innerHTML = html;
     setupBreadcrumbListeners();
 }
-
 function setupBreadcrumbListeners() {
     document.querySelectorAll('#pathBreadcrumb [data-navigate]').forEach(element => {
         const newElement = element.cloneNode(true);
@@ -1127,20 +1105,25 @@ window.showRepoSelector = function() {
         window.currentState.path = '';
         window.currentState.currentFile = null;
         window.currentState.repository = null;
+        window.currentState.files = [];
     }
-    window.filePageMode = 'view';
+    
+    if (typeof updateBreadcrumb === 'function') {
+        updateBreadcrumb();
+    }
+    
     PageRouter.navigateTo('repo');
 };
-
 window.showExplorer = function() {
     if (!window.currentState || !window.currentState.repository) {
         console.warn('No repository selected');
         return;
     }
-    window.filePageMode = 'view';
+    
+    window.currentState.currentFile = null;
+    
     PageRouter.navigateTo('explorer');
 };
-
 window.showFileViewer = function() {
     window.filePageMode = 'view';
     PageRouter.navigateTo('file');
@@ -1243,32 +1226,24 @@ window.navigateBack = function() {
 
 document.addEventListener('pageNavigationComplete', function(e) {
     const detail = e.detail || {};
-
-    switch (detail.to) {
-        case 'repo':
-            if (window.currentState) {
-                window.currentState.path = '';
-                window.currentState.currentFile = null;
-                window.currentState.repository = null;
-            }
-            window.filePageMode = 'view';
-            updateBreadcrumb();
-            break;
-
-        case 'explorer':
-            window.filePageMode = 'view';
-            updateBreadcrumb();
-            break;
-
-        case 'file':
-            updateBreadcrumb();
-            break;
-
-        default:
-            updateBreadcrumb();
+    
+    if (detail.to === 'repo') {
+        if (window.currentState) {
+            window.currentState.path = '';
+            window.currentState.currentFile = null;
+            window.currentState.repository = null;
+            window.currentState.files = [];
+        }
+    } else if (detail.to === 'explorer') {
+        if (window.currentState) {
+            window.currentState.currentFile = null;
+        }
+    }
+    
+    if (typeof updateBreadcrumb === 'function') {
+        updateBreadcrumb();
     }
 });
-
 document.addEventListener('repositoryChanged', function(e) {
     if (typeof updateBreadcrumb === 'function') {
         updateBreadcrumb();
