@@ -482,8 +482,8 @@ const PageRouter = {
 
         this.updatePageTitle(pageName);
         
-        if (typeof updateBreadcrumb === 'function') {
-            updateBreadcrumb();
+        if (typeof window.breadCrumbs !== 'undefined' && window.breadCrumbs.update) {
+            window.breadCrumbs.update();
         }
 
         ProgressLoader.done();
@@ -656,39 +656,40 @@ function breadcrumbDivider() {
     return `<div class="navDivider" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><path d="M6.22 13.72a.75.75 0 0 0 1.06 0l4.25-4.25a.75.75 0 0 0 0-1.06L7.28 4.22a.751.751 0 0 0-1.042.018.751.751 0 0 0-.018 1.042L9.94 8l-3.72 3.72a.75.75 0 0 0 0 1.06Z"/></svg></div>`;
 }
 
-function updateBreadcrumb() {
-    const breadcrumb = document.getElementById('pathBreadcrumb');
-    if (!breadcrumb) return;
+function breadCrumbs() {
+  return {
+    default: `<span data-navigate="repo" class="breadCrumb current">Repositories</span>`,
+    
+    update() {
+      const breadcrumb = document.getElementById('pathBreadcrumb');
+      if (!breadcrumb) return;
 
-    const container = breadcrumb.querySelector('.breadCrumbContainer');
-    if (!container) return;
+      const container = breadcrumb.querySelector('.breadCrumbContainer');
+      if (!container) return;
 
-    const currentPage = PageRouter.currentPage;
+      const currentPage = PageRouter.currentPage;
 
-    // REPO PAGE or no repository selected => just "Repositories"
-    if (currentPage === 'repo' || typeof currentState === 'undefined' || !currentState || !currentState.repository) {
-        container.innerHTML = '<span data-navigate="repo" class="breadCrumb current">Repositories</span>';
-        setupBreadcrumbListeners();
+      if (currentPage === 'repo' || typeof currentState === 'undefined' || !currentState || !currentState.repository) {
+        container.innerHTML = this.default;
+        this.setupListeners();
         return;
-    }
+      }
 
-    const repoName = typeof currentState.repository === 'object'
+      const repoName = typeof currentState.repository === 'object'
         ? (currentState.repository.name || currentState.repository.id)
         : currentState.repository;
 
-    // EXPLORER PAGE => "RepoName > My Files"
-    if (currentPage === 'explorer') {
+      if (currentPage === 'explorer') {
         let html = '';
         html += `<span data-navigate="repo" class="breadCrumb">${escapeHTMLForBreadcrumb(repoName)}</span>`;
         html += breadcrumbDivider();
         html += `<span data-navigate="explorer" class="breadCrumb current">My Files</span>`;
         container.innerHTML = html;
-        setupBreadcrumbListeners();
+        this.setupListeners();
         return;
-    }
+      }
 
-    // FILE PAGE => "RepoName > My Files > FileName" or "RepoName > My Files > Create"
-    if (currentPage === 'file') {
+      if (currentPage === 'file') {
         const filePageMode = window.filePageMode || 'view';
         let html = '';
         html += `<span data-navigate="repo" class="breadCrumb">${escapeHTMLForBreadcrumb(repoName)}</span>`;
@@ -697,57 +698,64 @@ function updateBreadcrumb() {
         html += breadcrumbDivider();
 
         if (filePageMode === 'create' || filePageMode === 'create-standalone') {
-            html += `<span class="breadCrumb current">Create</span>`;
+          html += `<span class="breadCrumb current">Create</span>`;
         } else {
-            let fileName = '';
-            if (currentState.currentFile) {
-                fileName = typeof currentState.currentFile === 'object'
-                    ? (currentState.currentFile.name || '')
-                    : currentState.currentFile;
-            }
-            if (!fileName && window.coderViewEdit && window.coderViewEdit.currentFile) {
-                fileName = window.coderViewEdit.currentFile;
-            }
-            html += `<span class="breadCrumb current">${escapeHTMLForBreadcrumb(fileName || 'Untitled')}</span>`;
+          let fileName = '';
+          if (currentState.currentFile) {
+            fileName = typeof currentState.currentFile === 'object'
+              ? (currentState.currentFile.name || '')
+              : currentState.currentFile;
+          }
+          if (!fileName && window.coderViewEdit && window.coderViewEdit.currentFile) {
+            fileName = window.coderViewEdit.currentFile;
+          }
+          html += `<span class="breadCrumb current">${escapeHTMLForBreadcrumb(fileName || 'Untitled')}</span>`;
         }
 
         container.innerHTML = html;
-        setupBreadcrumbListeners();
+        this.setupListeners();
         return;
+      }
+
+      container.innerHTML = this.default;
+      this.setupListeners();
+    },
+
+    setupListeners() {
+      document.querySelectorAll('#pathBreadcrumb [data-navigate]').forEach(element => {
+        const newElement = element.cloneNode(true);
+        element.parentNode.replaceChild(newElement, element);
+
+        newElement.addEventListener('click', function(e) {
+          e.preventDefault();
+          const target = this.getAttribute('data-navigate');
+          if (window.PageRouter && window.PageRouter.navigateTo) {
+            window.PageRouter.navigateTo(target);
+          }
+        });
+      });
+
+      document.querySelectorAll('#pathBreadcrumb [data-navigate-path]').forEach(element => {
+        const newElement = element.cloneNode(true);
+        element.parentNode.replaceChild(newElement, element);
+
+        newElement.addEventListener('click', function(e) {
+          e.preventDefault();
+          const path = this.getAttribute('data-navigate-path');
+          if (typeof window.navigateToPath === 'function') {
+            window.navigateToPath(path);
+          }
+        });
+      });
     }
-
-    // FALLBACK for any other page
-    container.innerHTML = '<span data-navigate="repo" class="breadCrumb current">Repositories</span>';
-    setupBreadcrumbListeners();
+  };
 }
 
-function setupBreadcrumbListeners() {
-    document.querySelectorAll('#pathBreadcrumb [data-navigate]').forEach(element => {
-        const newElement = element.cloneNode(true);
-        element.parentNode.replaceChild(newElement, element);
+const breadCrumbsInstance = breadCrumbs();
 
-        newElement.addEventListener('click', function(e) {
-            e.preventDefault();
-            const target = this.getAttribute('data-navigate');
-            if (window.PageRouter && window.PageRouter.navigateTo) {
-                window.PageRouter.navigateTo(target);
-            }
-        });
-    });
+window.breadCrumbs = breadCrumbsInstance;
 
-    document.querySelectorAll('#pathBreadcrumb [data-navigate-path]').forEach(element => {
-        const newElement = element.cloneNode(true);
-        element.parentNode.replaceChild(newElement, element);
 
-        newElement.addEventListener('click', function(e) {
-            e.preventDefault();
-            const path = this.getAttribute('data-navigate-path');
-            if (typeof window.navigateToPath === 'function') {
-                window.navigateToPath(path);
-            }
-        });
-    });
-}
 
 function updateEditorMode(editor, fileName) {
     if (!editor || !fileName) return;
@@ -1100,8 +1108,8 @@ window.showRepoSelector = function() {
         window.currentState.files = [];
     }
     
-    if (typeof updateBreadcrumb === 'function') {
-        updateBreadcrumb();
+    if (typeof window.breadCrumbs !== 'undefined' && window.breadCrumbs.update) {
+        window.breadCrumbs.update();
     }
     
     PageRouter.navigateTo('repo');
@@ -1170,7 +1178,7 @@ window.navigateToRoot = function() {
         IndexedDBStorageManager.listFiles(window.currentState.repository.id, '').then(function(files) {
             window.currentState.files = files;
             if (typeof renderFileList === 'function') renderFileList();
-            if (typeof updateBreadcrumb === 'function') updateBreadcrumb();
+            if (typeof window.breadCrumbs !== 'undefined' && window.breadCrumbs.update) window.breadCrumbs.update();
             if (typeof updateStats === 'function') updateStats();
         });
     }
@@ -1189,7 +1197,7 @@ window.navigateToPath = function(path) {
         IndexedDBStorageManager.listFiles(window.currentState.repository.id, path).then(function(files) {
             window.currentState.files = files;
             if (typeof renderFileList === 'function') renderFileList();
-            if (typeof updateBreadcrumb === 'function') updateBreadcrumb();
+            if (typeof window.breadCrumbs !== 'undefined' && window.breadCrumbs.update) window.breadCrumbs.update();
         });
     }
 };
@@ -1232,13 +1240,13 @@ document.addEventListener('pageNavigationComplete', function(e) {
         }
     }
     
-    if (typeof updateBreadcrumb === 'function') {
-        updateBreadcrumb();
+    if (typeof window.breadCrumbs !== 'undefined' && window.breadCrumbs.update) {
+        window.breadCrumbs.update();
     }
 });
 document.addEventListener('repositoryChanged', function(e) {
-    if (typeof updateBreadcrumb === 'function') {
-        updateBreadcrumb();
+    if (typeof window.breadCrumbs !== 'undefined' && window.breadCrumbs.update) {
+        window.breadCrumbs.update();
     }
 });
 
@@ -1246,15 +1254,15 @@ document.addEventListener('DOMContentLoaded', function() {
     initScrollBehavior();
 
     setTimeout(function() {
-        if (typeof updateBreadcrumb === 'function') {
-            updateBreadcrumb();
+        if (typeof window.breadCrumbs !== 'undefined' && window.breadCrumbs.update) {
+            window.breadCrumbs.update();
         }
     }, 100);
 });
 
 window.addEventListener('stateChanged', function() {
-    if (typeof updateBreadcrumb === 'function') {
-        updateBreadcrumb();
+    if (typeof window.breadCrumbs !== 'undefined' && window.breadCrumbs.update) {
+        window.breadCrumbs.update();
     }
 });
 
@@ -1266,4 +1274,3 @@ window.refreshFileList = refreshFileList;
 window.PageRouter = PageRouter;
 window.ProgressLoader = ProgressLoader;
 window.LoadingProgress = ProgressLoader;
-window.updateBreadcrumb = updateBreadcrumb;

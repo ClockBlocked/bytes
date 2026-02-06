@@ -1366,7 +1366,9 @@ body {
     const detectedLang = this.detectLanguageFromExtension(filename);
     this.setLanguage(detectedLang);
     
-    this.updateBreadcrumbs(repoName, path);
+    if (typeof window.breadCrumbs !== 'undefined' && window.breadCrumbs.update) {
+      window.breadCrumbs.update();
+    }
     
     if (!this.codeMirror && !this.fallbackEditor) {
       this.setupCodeMirror();
@@ -1439,56 +1441,6 @@ body {
     }
   }.bind(this);
   
-  updateBreadcrumbs = function(repoName = null, path = '') {
-    const breadcrumb = this.elements.pathBreadcrumb;
-    if (!breadcrumb) return;
-    
-    let html = '';
-    
-    if (repoName) {
-      html += `
-        <a href="#" class="breadCrumb" data-action="show-repo-selector">Repositories</a>
-        <span class="navDivider">/</span>
-        <a href="#" class="breadCrumb" data-action="show-explorer">${repoName}</a>
-      `;
-      
-      if (path) {
-        const parts = path.split('/').filter(p => p);
-        let currentPath = '';
-        
-        parts.forEach((part, index) => {
-          currentPath += (currentPath ? '/' : '') + part;
-          const isLast = index === parts.length - 1;
-          html += `
-            <span class="navDivider">/</span>
-            <a href="#" class="breadCrumb ${isLast ? 'current' : ''}" data-path="${currentPath}">${part}</a>
-          `;
-        });
-      }
-    }
-    
-    if (!path || !repoName) {
-      html += `<span class="breadCrumb current">${this.currentFile || 'untitled.js'}</span>`;
-    }
-    
-    breadcrumb.innerHTML = html;
-    
-    breadcrumb.querySelectorAll('[data-action], [data-path]').forEach(el => {
-      el.addEventListener('click', (e) => {
-        e.preventDefault();
-        const action = el.getAttribute('data-action');
-        const path = el.getAttribute('data-path');
-        
-        if (action === 'show-repo-selector') {
-          window.showRepoSelector?.();
-        } else if (action === 'show-explorer') {
-          window.showExplorer?.();
-        } else if (path) {
-          window.navigateToPath?.(path);
-        }
-      });
-    });
-  }.bind(this);
   
   performSave = function(commitMessage) {
     this.coderLoading(1000);

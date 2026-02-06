@@ -26,33 +26,6 @@ function updateSelectedTags() {
 
 
 /**
-function updateBreadcrumb() {
-  console.log("updateBreadcrumb called");
-  console.log("updateBreadcrumb called");
-  const breadcrumb = document.getElementById('pathBreadcrumb');
-  if (!breadcrumb) return;
-  let html = `
-    <a href="#" onclick="showRepoSelector()" class="text-github-accent-fg hover:underline font-semibold">Repositories</a>
-    <span class="text-github-fg-muted">/</span>
-    <a href="#" onclick="navigateToRoot()" class="text-github-accent-fg hover:underline font-semibold">${currentState.repository}</a>
-  `;
-  if (currentState.path) {
-    const segments = currentState.path.split('/');
-    let currentPath = '';
-    segments.forEach((segment, index) => {
-      currentPath += (currentPath ? '/' : '') + segment;
-      html += `
-        <span class="text-github-fg-muted">/</span>
-        <a href="#" onclick="navigateToPath('${currentPath}')" class="text-github-accent-fg hover:underline font-semibold">${segment}</a>
-      `;
-    });
-  }
-  breadcrumb.innerHTML = html;
-}
-**/
-
-
-
 
 let lastScrollTop = 0;
 let scrollTimeout = null;
@@ -85,73 +58,6 @@ function initScrollBehavior() {
   });
 }
 
-function updateBreadcrumb() {
-  console.log("updateBreadcrumb called");
-  console.log("updateBreadcrumb called");
-  const breadcrumb = document.getElementById('pathBreadcrumb');
-  if (!breadcrumb) return;
-
-  const container = breadcrumb.querySelector('.breadCrumbContainer');
-  if (!container) return;
-
-  let html = `
-    <span data-navigate="repo" class="breadCrumb">
-      Repositories
-    </span>
-  `;
-
-  if (currentState.repository) {
-    html += `
-      <div class="navDivider" aria-hidden="true">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16">
-          <path d="M6.22 13.72a.75.75 0 0 0 1.06 0l4.25-4.25a.75.75 0 0 0 0-1.06L7.28 4.22a.751.751 0 0 0-1.042.018.751.751 0 0 0-.018 1.042L9.94 8l-3.72 3.72a.75.75 0 0 0 0 1.06Z"/>
-        </svg>
-      </div>
-      <span data-navigate="explorer" class="breadCrumb">
-        ${currentState.repository}
-      </span>
-    `;
-  }
-
-  if (currentState.path) {
-    const segments = currentState.path.split('/');
-    let currentPath = '';
-    
-    segments.forEach((segment, index) => {
-      currentPath += (currentPath ? '/' : '') + segment;
-      const isLast = index === segments.length - 1;
-      
-      html += `
-        <div class="navDivider" aria-hidden="true">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16">
-            <path d="M6.22 13.72a.75.75 0 0 0 1.06 0l4.25-4.25a.75.75 0 0 0 0-1.06L7.28 4.22a.751.751 0 0 0-1.042.018.751.751 0 0 0-.018 1.042L9.94 8l-3.72 3.72a.75.75 0 0 0 0 1.06Z"/>
-          </svg>
-        </div>
-        <span 
-           data-navigate-path="${currentPath}"
-           class="breadCrumb ${isLast ? 'current' : ''}">
-          ${segment}
-        </span>
-      `;
-    });
-  }
-
-  container.innerHTML = html;
-  
-  setupBreadcrumbListeners();
-}
-
-function setupBreadcrumbListeners() {
-  console.log("setupBreadcrumbListeners called");
-  console.log("setupBreadcrumbListeners called");
-document.querySelectorAll('[data-navigate-path]').forEach(element => {
-    element.addEventListener('click', function(e) {
-      e.preventDefault();
-      const path = this.getAttribute('data-navigate-path');
-      navigateToPath(path);
-    });
-  });
-}
 
 window.navigateToRoot = function() {
   if (!window.currentState) return;
@@ -166,7 +72,7 @@ window.navigateToRoot = function() {
     LocalStorageManager.listFiles(window.currentState.repository, '').then(function(files) {
       window.currentState.files = files;
       if (typeof renderFileList === 'function') renderFileList();
-      if (typeof updateBreadcrumb === 'function') updateBreadcrumb();
+      if (typeof window.breadCrumbs !== 'undefined' && window.breadCrumbs.update) window.breadCrumbs.update();
       if (typeof updateStats === 'function') updateStats();
     });
   }
@@ -187,15 +93,15 @@ window.navigateToPath = function(path) {
     LocalStorageManager.listFiles(window.currentState.repository, pathPrefix).then(function(files) {
       window.currentState.files = files;
       if (typeof renderFileList === 'function') renderFileList();
-      if (typeof updateBreadcrumb === 'function') updateBreadcrumb();
+      if (typeof window.breadCrumbs !== 'undefined' && window.breadCrumbs.update) window.breadCrumbs.update();
     });
   }
 };
 
 document.addEventListener('pageNavigationComplete', function(e) {
   if (e.detail.to === 'explorer') {
-    if (typeof updateBreadcrumb === 'function') {
-      updateBreadcrumb();
+    if (typeof window.breadCrumbs !== 'undefined' && window.breadCrumbs.update) {
+      window.breadCrumbs.update();
     }
   } else if (e.detail.to === 'repo') {
     const breadcrumb = document.getElementById('pathBreadcrumb');
@@ -209,8 +115,8 @@ document.addEventListener('pageNavigationComplete', function(e) {
 });
 
 document.addEventListener('repositoryChanged', function(e) {
-  if (typeof updateBreadcrumb === 'function') {
-    updateBreadcrumb();
+  if (typeof window.breadCrumbs !== 'undefined' && window.breadCrumbs.update) {
+    window.breadCrumbs.update();
   }
 });
 
@@ -218,15 +124,15 @@ document.addEventListener('DOMContentLoaded', function() {
   initScrollBehavior();
   
   setTimeout(function() {
-    if (typeof updateBreadcrumb === 'function') {
-      updateBreadcrumb();
+    if (typeof window.breadCrumbs !== 'undefined' && window.breadCrumbs.update) {
+      window.breadCrumbs.update();
     }
   }, 100);
 });
 
 window.addEventListener('stateChanged', function() {
-  if (typeof updateBreadcrumb === 'function') {
-    updateBreadcrumb();
+  if (typeof window.breadCrumbs !== 'undefined' && window.breadCrumbs.update) {
+    window.breadCrumbs.update();
   }
 });
 

@@ -359,7 +359,7 @@ window.navigateToRoot = function() {
         LocalStorageManager.listFiles(window.currentState.repository, '').then(function(files) {
             window.currentState.files = files;
             if (typeof renderFileList === 'function') renderFileList();
-            if (typeof updateBreadcrumb === 'function') updateBreadcrumb();
+            if (typeof window.breadCrumbs !== 'undefined' && window.breadCrumbs.update) window.breadCrumbs.update();
             if (typeof updateStats === 'function') updateStats();
         });
     }
@@ -375,7 +375,7 @@ window.navigateToPath = function(path) {
         LocalStorageManager.listFiles(window.currentState.repository, pathPrefix).then(function(files) {
             window.currentState.files = files;
             if (typeof renderFileList === 'function') renderFileList();
-            if (typeof updateBreadcrumb === 'function') updateBreadcrumb();
+            if (typeof window.breadCrumbs !== 'undefined' && window.breadCrumbs.update) window.breadCrumbs.update();
         });
     }
 };

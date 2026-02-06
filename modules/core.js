@@ -523,7 +523,7 @@ function openRecentFile(repoId, filePath, fileName) {
 
             currentState.files = await IndexedDBStorageManager.listFiles(repoId, currentState.path);
             renderFileList();
-            updateBreadcrumb();
+            window.breadCrumbs.update();
 
             const currentRepoName = document.getElementById("currentRepoName");
             const repoNameInViewer = document.getElementById("repoNameInViewer");
@@ -732,8 +732,8 @@ function openRepository(repoId) {
             currentState.currentFile = null;
             window.filePageMode = 'view';
 
-            if (typeof updateBreadcrumb === 'function') {
-                updateBreadcrumb();
+            if (typeof window.breadCrumbs !== 'undefined' && window.breadCrumbs.update) {
+                window.breadCrumbs.update();
             }
 
             currentState.files = await IndexedDBStorageManager.listFiles(repoId, "");
