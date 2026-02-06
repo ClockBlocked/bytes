@@ -769,8 +769,14 @@ function openRepository(repoId) {
 
 function showCreateFileModal() {
     window.filePageMode = 'create';
-    const modal = document.getElementById("createFileModal");
-    if (modal) modal.classList.remove("hidden");
+    if (window.currentState && window.currentState.repository) {
+        if (window.PageRouter) {
+            PageRouter.navigateTo('file');
+        }
+    } else {
+        const modal = document.getElementById("createFileModal");
+        if (modal) modal.classList.remove("hidden");
+    }
 }
 
 function hideCreateFileModal() {
