@@ -538,7 +538,7 @@ function openRecentFile(repoId, filePath, fileName) {
       // Load files for current path
       currentState.files = await IndexedDBStorageManager.listFiles(repoId, currentState.path);
       renderFileList();
-      window.breadCrumbs.update();
+      updateBreadcrumb();
       
       // Update UI
       const currentRepoName = document.getElementById("currentRepoName");
@@ -762,7 +762,7 @@ function openRepository(repoId) {
       // Load files
       currentState.files = await IndexedDBStorageManager.listFiles(repoId, "");
       renderFileList();
-      window.breadCrumbs.update();
+      updateBreadcrumb();
       
       // Update UI
       const currentRepoName = document.getElementById("currentRepoName");
