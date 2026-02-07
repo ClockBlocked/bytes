@@ -3270,11 +3270,15 @@ aside:hover .sidebar-title {
 }
 
 .editorContainer[data-fullscreen="true"] .navbar,
-.editorContainer[data-fullscreen="true"] .breadCrumbsWrapper,
-.editorContainer[data-fullscreen="true"] .coderHeaderWrapper,
-.editorContainer[data-fullscreen="true"] .coderToolBarWrapper {
+.editorContainer[data-fullscreen="true"] .breadCrumbsWrapper {
   position: absolute;
   top: 0;
+}
+.editorContainer[data-fullscreen="true"] .coderHeaderWrapper,
+.editorContainer[data-fullscreen="true"] .coderToolBarWrapper {
+  position: fixed;
+  top: 2rem;
+  z-index: 10000;
 }
 
 .dropdown-menu {
