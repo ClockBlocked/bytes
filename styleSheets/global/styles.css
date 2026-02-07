@@ -3404,6 +3404,11 @@ aside:hover .sidebar-title {
   overflow: hidden;
 }
 
+
+.topBox {
+  position: relative;
+  height: var(--breadcrumbs);
+}
 .breadCrumbsWrapper {
   position: sticky;
   top: 0;
