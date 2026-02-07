@@ -148,6 +148,9 @@
     --color-bg-badge-danger: rgba(248, 81, 73, 0.15);
     --color-bg-badge-info: rgba(47, 129, 247, 0.15);
     
+    --color-button: #55677b;
+    --color-button-border: #5f748a;
+    
     --color-text-primary: #A5ABB2;
     --color-text-secondary: hsl(215, 13%, 55%);
     --color-text-muted: #768390;
@@ -652,9 +655,9 @@ textarea:focus-visible {
     display: flex;
     align-items: center;
     justify-content: center;
-    background: var(--color-bg-canvas-subtle);
+    background: var(--color-button);
     color: var(--color-text-primary);
-    border: 0.0625rem solid var(--color-bg-canvas-overlay);
+    border: 0.0625rem solid var(--color-button-border);
     border-radius: var(--radius-md);
     padding: 0.5rem 1rem;
     font-family: var(--font-text);
@@ -664,8 +667,8 @@ textarea:focus-visible {
     gap: 0.5rem;
 }
 .navbar-button:hover {
-    background: var(--color-bg-canvas-subtle);
-    border-color: var(--color-border-canvas);
+    background: var(--color-button-border);
+    border-color: var(--color-button);
 }
 .navbar-button:focus-visible {
     outline: 0.125rem solid var(--color-accent-fg);
@@ -679,14 +682,14 @@ textarea:focus-visible {
     padding: 0.5rem 1rem;
 }
 .navbar-button-search {
-    background: var(--color-bg-canvas-subtle);
-    border-color: var(--color-bg-canvas-overlay);
+    background: var(--color-button);
+    border-color: var(--color-button-border);
     min-width: 12rem;
     justify-content: flex-start;
 }
 .navbar-button-search:hover {
-    background: var(--color-bg-canvas-subtle);
-    border-color: var(--color-border-primary);
+    background: var(--color-button-border);
+    border-color: var(--color-button);
 }
 .navbar-button-icon {
     font-size: var(--text-md);
@@ -813,7 +816,7 @@ textarea:focus-visible {
 .fileNameContainer {
     display: flex;
     align-items: center;
-    background-color: var(--color-bg-canvas-subtle);
+    background-color: var--color-bg-canvas-subtle);
     border: 1px solid var(--color-border-primary);
     border-radius: var(--radius-md);
     padding: 0;
