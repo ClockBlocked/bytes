@@ -438,6 +438,7 @@ isMobileDevice = () => {
       symbolsEmpty: "#symbolsEmpty",
       symbolsSearch: "#symbolsSearch",
       symbolsPanelClose: "#symbolsPanelClose",
+      symbolsBackdrop: "#symbolsBackdrop",
     };
  
 /**   
@@ -607,15 +608,27 @@ Object.entries(elementSelectors).forEach(([key, selector]) => {
 
 
 
+
   injectSymbolsPanel = () => {
     const existing = $('#symbolsPanel');
     if (existing.length) existing.remove();
 
-    const editorContainer = $('.editorContainer');
-    if (editorContainer.length) {
-      editorContainer.append(AppAssets.templates.symbolsPanel());
+    const existingBackdrop = $('#symbolsBackdrop');
+    if (existingBackdrop.length) existingBackdrop.remove();
+
+    const editorBody = $('#editorBody');
+    if (editorBody.length) {
+      editorBody.append('<div id="symbolsBackdrop" class="symbolsBackdrop hide"></div>');
+      editorBody.append(AppAssets.templates.symbolsPanel());
     } else {
-      $('body').append(AppAssets.templates.symbolsPanel());
+      const editorContainer = $('.editorContainer');
+      if (editorContainer.length) {
+        editorContainer.append('<div id="symbolsBackdrop" class="symbolsBackdrop hide"></div>');
+        editorContainer.append(AppAssets.templates.symbolsPanel());
+      } else {
+        $('body').append('<div id="symbolsBackdrop" class="symbolsBackdrop hide"></div>');
+        $('body').append(AppAssets.templates.symbolsPanel());
+      }
     }
 
     this.elements.symbolsPanel = $('#symbolsPanel');
@@ -623,15 +636,22 @@ Object.entries(elementSelectors).forEach(([key, selector]) => {
     this.elements.symbolsEmpty = $('#symbolsEmpty');
     this.elements.symbolsSearch = $('#symbolsSearch');
     this.elements.symbolsPanelClose = $('#symbolsPanelClose');
+    this.elements.symbolsBackdrop = $('#symbolsBackdrop');
 
     this.bindEvent(this.elements.symbolsPanelClose, 'click', () => this.closeSymbolsPanel());
+
+    this.elements.symbolsBackdrop.on('click', () => this.closeSymbolsPanel());
 
     this.elements.symbolsSearch.on('input', () => {
       this.filterSymbols(this.elements.symbolsSearch.val());
     });
+
+    this._symbolsFading = false;
   };
 
   toggleSymbolsPanel = () => {
+    if (this._symbolsFading) return;
+
     if (!this.elements.symbolsPanel || !this.elements.symbolsPanel.length) return;
 
     const isHidden = this.elements.symbolsPanel.hasClass('hide');
@@ -645,18 +665,67 @@ Object.entries(elementSelectors).forEach(([key, selector]) => {
 
   openSymbolsPanel = () => {
     if (!this.elements.symbolsPanel || !this.elements.symbolsPanel.length) return;
+    if (this._symbolsFading) return;
 
-    this.elements.symbolsPanel.removeClass('hide');
+    this.elements.symbolsPanel.removeClass('hide fadingOut');
+    this.elements.symbolsBackdrop?.removeClass('hide fadingOut');
     this.elements.symbolsBtn?.addClass('active');
     this.parseAndDisplaySymbols();
-    this.elements.symbolsSearch.val('').trigger('focus');
+    this.elements.symbolsSearch.val('');
+
+    setTimeout(() => {
+      this.elements.symbolsSearch.trigger('focus');
+    }, 50);
   };
 
-  closeSymbolsPanel = () => {
+  closeSymbolsPanel = (callback) => {
     if (!this.elements.symbolsPanel || !this.elements.symbolsPanel.length) return;
+    if (this._symbolsFading) return;
 
-    this.elements.symbolsPanel.addClass('hide');
+    this._symbolsFading = true;
+
+    this.elements.symbolsPanel.addClass('fadingOut');
+    this.elements.symbolsBackdrop?.addClass('fadingOut');
     this.elements.symbolsBtn?.removeClass('active');
+
+    setTimeout(() => {
+      this.elements.symbolsPanel.addClass('hide').removeClass('fadingOut');
+      this.elements.symbolsBackdrop?.addClass('hide').removeClass('fadingOut');
+      this._symbolsFading = false;
+
+      if (typeof callback === 'function') {
+        callback();
+      }
+    }, 200);
+  };
+
+  goToLine = (lineNumber) => {
+    if (!this.codeMirror) return;
+
+    const line = lineNumber - 1;
+
+    const jumpAndHighlight = () => {
+      this.codeMirror.setCursor({ line: line, ch: 0 });
+      this.codeMirror.scrollIntoView({ line: line, ch: 0 }, 200);
+      this.codeMirror.focus();
+
+      this.codeMirror.addLineClass(line, 'background', 'symbolHighlightLine');
+      setTimeout(() => {
+        this.codeMirror.removeLineClass(line, 'background', 'symbolHighlightLine');
+      }, 1500);
+    };
+
+    const panelVisible = this.elements.symbolsPanel &&
+                         !this.elements.symbolsPanel.hasClass('hide') &&
+                         !this.elements.symbolsPanel.hasClass('fadingOut');
+
+    if (panelVisible) {
+      this.closeSymbolsPanel(() => {
+        jumpAndHighlight();
+      });
+    } else {
+      jumpAndHighlight();
+    }
   };
 
   parseSymbols = (code, language) => {
@@ -924,20 +993,6 @@ Object.entries(elementSelectors).forEach(([key, selector]) => {
       .replace(/'/g, '&#039;');
   };
 
-  goToLine = (lineNumber) => {
-    if (!this.codeMirror) return;
-
-    const line = lineNumber - 1;
-    this.codeMirror.setCursor({ line: line, ch: 0 });
-    this.codeMirror.scrollIntoView({ line: line, ch: 0 }, 200);
-    this.codeMirror.focus();
-
-    this.codeMirror.addLineClass(line, 'background', 'symbolHighlightLine');
-    setTimeout(() => {
-      this.codeMirror.removeLineClass(line, 'background', 'symbolHighlightLine');
-    }, 1500);
-  };
-
   filterSymbols = (query) => {
     if (!this._currentSymbols) return;
 
@@ -955,7 +1010,6 @@ Object.entries(elementSelectors).forEach(([key, selector]) => {
 
     this.renderSymbolsList(filtered);
   };
-
 
 
 
@@ -2746,7 +2800,7 @@ enterEditMode = () => {
     this.elements.languageDropdown?.remove();
     this.elements.moreOptionsDropdown?.remove();
     this.elements.symbolsPanel?.remove();
-    
+    this.elements.symbolsBackdrop?.remove();
     this.isInitialized = false;
   };
 }
