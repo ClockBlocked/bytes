@@ -454,6 +454,8 @@ textarea:focus-visible {
   pointer-events: auto;
   position: relative;
   z-index: 10;
+  
+  height: auto;
 }
 
 .pages.hide {
@@ -463,6 +465,8 @@ textarea:focus-visible {
   pointer-events: none;
   position: absolute;
   z-index: 1;
+  
+  height: 0;
 }
 
 .hidden {
