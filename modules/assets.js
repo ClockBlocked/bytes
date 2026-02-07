@@ -340,6 +340,16 @@ icons: {
     d="M224 448c7.7 0 14-6.3 14-14l0-420c0-7.7-6.3-14-14-14s-14 6.3-14 14l0 420c0 7.7 6.3 14 14 14z"
   />
 </svg>
+`,
+
+    symbols: () => `
+  <svg class="buttonIcon"
+        viewBox="0 0 16 16"
+        fill="currentColor"
+        width="14"
+        height="14">
+  <path d="M1.75 1a.75.75 0 0 0-.75.75v3c0 .414.336.75.75.75h3a.75.75 0 0 0 .75-.75v-3A.75.75 0 0 0 4.75 1Zm.25 3V2.5h2V4Zm3.5-2.25a.75.75 0 0 1 .75-.75h6.5a.75.75 0 0 1 0 1.5h-6.5a.75.75 0 0 1-.75-.75Zm.75 3.25a.75.75 0 0 0 0 1.5h6.5a.75.75 0 0 0 0-1.5Zm-4.5 2.5a.75.75 0 0 0-.75.75v3c0 .414.336.75.75.75h3a.75.75 0 0 0 .75-.75v-3a.75.75 0 0 0-.75-.75ZM2 12.5V11h2v1.5Zm3.5-1.75a.75.75 0 0 1 .75-.75h6.5a.75.75 0 0 1 0 1.5h-6.5a.75.75 0 0 1-.75-.75Z"/>
+  </svg>
 `
 },
 
@@ -460,6 +470,16 @@ templates: {
     </div>
 
     <div class="separator"></div>
+  
+    <div class="toolbarGroup">
+      <button id="symbolsBtn" class="headerButton" title="Symbols (Ctrl+Shift+O)">
+        ${AppAssets.icons.symbols()}
+        <span>Symbols</span>
+      </button>
+    </div>
+
+    <div class="separator"></div>
+    
 
     <div class="toolbarGroup">
       <button id="copyBtn" class="headerButton" title="Copy Code">${AppAssets.icons.copy()}</button>
@@ -711,6 +731,46 @@ moreOptionsDropdown: () => `
       Toggle Word Wrap
     </button>
   </div>
-</div>`
+</div>`,
+
+
+  symbolsPanel: () => `
+<div id="symbolsPanel" class="symbolsPanel hide">
+  <div class="symbolsPanelHeader">
+    <div class="symbolsPanelTitle">
+      <svg viewBox="0 0 16 16" fill="currentColor" width="14" height="14">
+        <path d="M1.75 1a.75.75 0 0 0-.75.75v3c0 .414.336.75.75.75h3a.75.75 0 0 0 .75-.75v-3A.75.75 0 0 0 4.75 1Zm.25 3V2.5h2V4Zm3.5-2.25a.75.75 0 0 1 .75-.75h6.5a.75.75 0 0 1 0 1.5h-6.5a.75.75 0 0 1-.75-.75Zm.75 3.25a.75.75 0 0 0 0 1.5h6.5a.75.75 0 0 0 0-1.5Zm-4.5 2.5a.75.75 0 0 0-.75.75v3c0 .414.336.75.75.75h3a.75.75 0 0 0 .75-.75v-3a.75.75 0 0 0-.75-.75ZM2 12.5V11h2v1.5Zm3.5-1.75a.75.75 0 0 1 .75-.75h6.5a.75.75 0 0 1 0 1.5h-6.5a.75.75 0 0 1-.75-.75Z"/>
+      </svg>
+      <span>Symbols</span>
+    </div>
+    <div class="symbolsPanelActions">
+      <input
+        type="text"
+        id="symbolsSearch"
+        class="symbolsSearchInput"
+        placeholder="Filter symbols..."
+        spellcheck="false"
+        autocomplete="off"
+      />
+      <button id="symbolsPanelClose" class="symbolsPanelCloseBtn" title="Close symbols panel">
+        <svg viewBox="0 0 16 16" fill="currentColor" width="14" height="14">
+          <path d="M3.72 3.72a.75.75 0 0 1 1.06 0L8 6.94l3.22-3.22a.749.749 0 0 1 1.275.326.749.749 0 0 1-.215.734L9.06 8l3.22 3.22a.749.749 0 0 1-.326 1.275.749.749 0 0 1-.734-.215L8 9.06l-3.22 3.22a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042L6.94 8 3.72 4.78a.75.75 0 0 1 0-1.06Z"/>
+        </svg>
+      </button>
+    </div>
+  </div>
+  <div class="symbolsPanelBody">
+    <div id="symbolsList" class="symbolsList">
+      <!-- Symbols will be injected here -->
+    </div>
+    <div id="symbolsEmpty" class="symbolsEmpty hide">
+      <svg viewBox="0 0 16 16" fill="currentColor" width="32" height="32" opacity="0.3">
+        <path d="M1.75 1a.75.75 0 0 0-.75.75v3c0 .414.336.75.75.75h3a.75.75 0 0 0 .75-.75v-3A.75.75 0 0 0 4.75 1Zm.25 3V2.5h2V4Zm3.5-2.25a.75.75 0 0 1 .75-.75h6.5a.75.75 0 0 1 0 1.5h-6.5a.75.75 0 0 1-.75-.75Zm.75 3.25a.75.75 0 0 0 0 1.5h6.5a.75.75 0 0 0 0-1.5Zm-4.5 2.5a.75.75 0 0 0-.75.75v3c0 .414.336.75.75.75h3a.75.75 0 0 0 .75-.75v-3a.75.75 0 0 0-.75-.75ZM2 12.5V11h2v1.5Zm3.5-1.75a.75.75 0 0 1 .75-.75h6.5a.75.75 0 0 1 0 1.5h-6.5a.75.75 0 0 1-.75-.75Z"/>
+      </svg>
+      <span>No symbols found</span>
+    </div>
+  </div>
+</div>
+`
   }
 };
