@@ -850,9 +850,9 @@ textarea:focus-visible {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: var(--canvasOverlay);
+  background: var(--canvasButtonBG);
   color: var(--fgDefault);
-  border: 0.0625rem solid var(--borderDefault);
+  border: 0.0625rem solid var(--canvasButtonBorder);
   border-radius: var(--radiusMd);
   padding: 0.5rem 1rem;
   font-family: var(--fontText);
@@ -862,8 +862,8 @@ textarea:focus-visible {
   gap: 0.5rem;
 }
 .navbar-button:hover {
-  background: var(--canvasSubtle);
-  border-color: var(--borderDefault);
+  background: var(--canvasButtonHover);
+  border-color: var(--canvasButtonBorder);
 }
 .navbar-button:focus-visible {
   outline: 0.125rem solid var(--accentFg);
@@ -877,8 +877,8 @@ textarea:focus-visible {
   padding: 0.5rem 1rem;
 }
 .navbar-button-search {
-  background: var(--canvasOverlay);
-  border-color: var(--borderDefault);
+  background: var(--canvasButtonBG);
+  border-color: var(--canvasButtonBorder);
   min-width: 12rem;
   justify-content: flex-start;
 }
@@ -3393,7 +3393,7 @@ aside:hover .sidebar-title {
   bottom: 2rem; left: 1rem; right: 1rem;
   height: 50px;
   background: var(--canvas);
-  border: 1px solid var(--borderDefault);
+  border: 1px solid var(--canvasBorder);
   border-radius: 10px;
   padding: 0.75rem 1rem;
   z-index: 99999;
