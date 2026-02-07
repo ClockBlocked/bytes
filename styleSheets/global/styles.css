@@ -652,9 +652,9 @@ textarea:focus-visible {
     display: flex;
     align-items: center;
     justify-content: center;
-    background: var(--color-bg-canvas);
+    background: var(--color-bg-btn-primary);
     color: var(--color-text-primary);
-    border: 0.0625rem solid var(--color-border-canvas);
+    border: 0.0625rem solid var(--color-bg-btn-primary-hover);
     border-radius: var(--radius-md);
     padding: 0.5rem 1rem;
     font-family: var(--font-text);
@@ -679,8 +679,8 @@ textarea:focus-visible {
     padding: 0.5rem 1rem;
 }
 .navbar-button-search {
-    background: var(--color-bg-canvas);
-    border-color: var(--color-border-canvas);
+    background: var(--color-bg-btn-primary);
+    border-color: var(--color-bg-btn-tertiary-hover);
     min-width: 12rem;
     justify-content: flex-start;
 }
