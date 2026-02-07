@@ -147,6 +147,16 @@
   --editor-bg: hsl(0, 0%, 15%);
   
   
+--canvas: #404e5d;
+--canvasBorder: #36414e;
+--canvasText: #e1e7f0;
+--canvasTextHover: #ffffff;
+--canvasTextAccent: #6dd0ff;
+--canvasButtonBG: #4a5a6d;
+--canvasButtonBorder: #596c84;
+--canvasButtonHover: #55687e;
+--canvasButtonText: #ffffff;
+--canvasButtonTextHover: #ffffff;  
   
   --canvasDefault: #22272e;
   --canvasOverlay: #2d333b;
@@ -3382,11 +3392,11 @@ aside:hover .sidebar-title {
   position: fixed;
   bottom: 2rem; left: 1rem; right: 1rem;
   height: 50px;
-  background: var(--canvasOverlay);
+  background: var(--canvas);
   border: 1px solid var(--borderDefault);
   border-radius: 10px;
   padding: 0.75rem 1rem;
-  z-index: 999;
+  z-index: 99999;
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
@@ -3488,9 +3498,6 @@ aside:hover .sidebar-title {
   top: 0;
 }
 
-.pages button {
-  background: var(--btnDefault) !important;
-}
 .dropdown-menu {
   position: absolute;
   background: var(--canvasDefault);
