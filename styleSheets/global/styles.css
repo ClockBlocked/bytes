@@ -3396,7 +3396,7 @@ aside:hover .sidebar-title {
   border: 1px solid var(--canvasBorder);
   border-radius: 10px;
   padding: 0.75rem 1rem;
-  z-index: 50;
+  z-index: 60;
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
@@ -3445,7 +3445,7 @@ aside:hover .sidebar-title {
   background: var(--accent);
   color: var(--accent-foreground);
   border-bottom: 0.0625rem solid var(--borderDefault);
-  z-index: 50;
+  z-index: 60;
   border-top-left-radius: 10px;
   border-top-right-radius: 10px;
   overflow: hidden;
@@ -3471,7 +3471,7 @@ aside:hover .sidebar-title {
   background: var(--accent);
   color: var(--accent-foreground);
   border-bottom: 0.0625rem solid var(--borderDefault);
-  z-index: 50;
+  z-index: 60;
   overflow: hidden;
   overflow-x: auto;
   backdrop-filter: blur(8px);
