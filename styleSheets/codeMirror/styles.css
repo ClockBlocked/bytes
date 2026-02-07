@@ -2,23 +2,80 @@
 /*  S Y M B O L S   P A N E L                    */
 /* ============================================= */
 
+/* ---- Keyframes ---- */
+
+@keyframes symbolsFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes symbolsFadeOut {
+  from {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+}
+
+/* ---- Panel Base ---- */
+
 .symbolsPanel {
   position: absolute;
   top: 0;
   right: 0;
+  bottom: 0;
   width: 280px;
-  height: 100%;
   background: var(--color-canvas-default, #0d1117);
   border-left: 1px solid var(--color-border-default, #30363d);
   display: flex;
   flex-direction: column;
-  z-index: 50;
-  box-shadow: -4px 0 12px rgba(0, 0, 0, 0.3);
-  transition: transform 0.2s ease, opacity 0.2s ease;
+  z-index: 55;
+  box-shadow: -4px 0 16px rgba(0, 0, 0, 0.35);
+  opacity: 1;
+  transform: translateY(0);
+  animation: symbolsFadeIn 0.25s ease forwards;
+  pointer-events: auto;
 }
 
+/* Hidden state — plays the fade-out, then display:none is applied via JS class swap */
 .symbolsPanel.hide {
   display: none;
+}
+
+/* Fade-out animation class — applied briefly before adding .hide */
+.symbolsPanel.fadingOut {
+  animation: symbolsFadeOut 0.2s ease forwards;
+  pointer-events: none;
+}
+
+/* ---- Backdrop overlay for mobile ---- */
+
+.symbolsBackdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 54;
+  opacity: 1;
+  transition: opacity 0.2s ease;
+  pointer-events: auto;
+}
+
+.symbolsBackdrop.hide {
+  display: none;
+}
+
+.symbolsBackdrop.fadingOut {
+  opacity: 0;
+  pointer-events: none;
 }
 
 /* ---- Header ---- */
@@ -104,6 +161,7 @@
   overflow-y: auto;
   overflow-x: hidden;
   padding: 4px 0;
+  -webkit-overflow-scrolling: touch;
 }
 
 .symbolsPanelBody::-webkit-scrollbar {
@@ -177,7 +235,7 @@
   align-items: center;
   gap: 8px;
   width: 100%;
-  padding: 4px 12px 4px 8px;
+  padding: 6px 12px 6px 8px;
   font-size: 13px;
   font-family: 'SF Mono', 'Fira Code', 'Cascadia Code', 'JetBrains Mono', Consolas, monospace;
   color: var(--color-fg-default, #e6edf3);
@@ -209,8 +267,8 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 20px;
-  height: 20px;
+  width: 22px;
+  height: 22px;
   font-size: 11px;
   font-weight: 700;
   border-radius: 4px;
@@ -353,12 +411,83 @@
   color: var(--color-accent-fg, #2f81f7);
 }
 
-/* ---- Responsive ---- */
+/* ============================================= */
+/*  M O B I L E   O V E R R I D E S              */
+/* ============================================= */
 
-@media (max-width: 600px) {
+@media (max-width: 768px) {
   .symbolsPanel {
+    position: absolute;
+    inset: 0;
     width: 100%;
+    height: 100%;
     border-left: none;
-    border-top: 1px solid var(--color-border-default, #30363d);
+    border-radius: 0;
+    box-shadow: none;
+    animation: symbolsFadeIn 0.2s ease forwards;
+  }
+
+  .symbolsPanel.fadingOut {
+    animation: symbolsFadeOut 0.2s ease forwards;
+  }
+
+  .symbolsPanelHeader {
+    padding: 14px 16px;
+    gap: 10px;
+  }
+
+  .symbolsPanelTitle {
+    font-size: 15px;
+  }
+
+  .symbolsSearchInput {
+    height: 36px;
+    font-size: 14px;
+    padding: 0 12px;
+    border-radius: 8px;
+  }
+
+  .symbolsPanelCloseBtn {
+    width: 36px;
+    height: 36px;
+  }
+
+  .symbolsPanelCloseBtn svg {
+    width: 16px;
+    height: 16px;
+  }
+
+  .symbolItem {
+    padding: 10px 16px 10px 12px;
+    font-size: 14px;
+    gap: 10px;
+  }
+
+  .symbolIcon {
+    width: 26px;
+    height: 26px;
+    font-size: 12px;
+    border-radius: 6px;
+  }
+
+  .symbolLine {
+    font-size: 12px;
+  }
+
+  .symbolsGroupHeader {
+    padding: 8px 16px 6px;
+    font-size: 12px;
+  }
+
+  .symbolsGroupCount {
+    font-size: 11px;
+    padding: 0 8px;
+    line-height: 20px;
+  }
+
+  .symbolsEmpty {
+    padding: 60px 24px;
+    font-size: 14px;
+    gap: 16px;
   }
 }
