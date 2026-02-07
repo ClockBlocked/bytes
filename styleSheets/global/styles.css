@@ -2843,8 +2843,8 @@ aside:hover .sidebar-title {
     position: sticky;
     top: 0;
     height: var(--header);
-    background: var(--color-accent-primary);
-    color: var(--color-accent-foreground);
+    background: var(--color-bg-tertiary);
+    color: var(--color-text-primary);
     border-bottom: 0.0625rem solid var(--color-border-primary);
     z-index: 60;
     border-top-left-radius: 10px;
@@ -2867,8 +2867,8 @@ aside:hover .sidebar-title {
     position: sticky;
     top: var(--header);
     height: var(--toolbar);
-    background: var(--color-accent-primary);
-    color: var(--color-accent-foreground);
+    background: var(--color-bg-tertiary);
+    color: var(--color-text-primary);
     border-bottom: 0.0625rem solid var(--color-border-primary);
     z-index: 60;
     overflow: hidden;
