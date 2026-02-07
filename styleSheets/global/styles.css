@@ -112,7 +112,7 @@
 
 /** Important Heights **/
   --topNAV: 4.75rem;
-  --breadcrumbs: 5.15rem;
+  --breadcrumbs: 3.5rem;
   --header: 3.75rem;
   --toolbar: 3.15rem;
   --total-sticky-height: calc(
