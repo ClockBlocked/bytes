@@ -268,6 +268,9 @@ class CodeViewEditor {
       this.injectPopover();
       this.injectNewFileDropdown();
       this.injectMoreOptionsDropdown();
+
+      this.injectSymbolsPanel();
+      
       this.injectLanguageDropdown();
       this.cacheElements();
       this.bindElementEvents();
@@ -427,6 +430,14 @@ isMobileDevice = () => {
       autoCloseBracketsBtn: "#autoCloseBracketsBtn",
       lineNumbersBtn: "#lineNumbersBtn",
       matchBracketsBtn: "#matchBracketsBtn",
+      
+
+      symbolsBtn: "#symbolsBtn",
+      symbolsPanel: "#symbolsPanel",
+      symbolsList: "#symbolsList",
+      symbolsEmpty: "#symbolsEmpty",
+      symbolsSearch: "#symbolsSearch",
+      symbolsPanelClose: "#symbolsPanelClose",
     };
  
 /**   
@@ -456,7 +467,7 @@ Object.entries(elementSelectors).forEach(([key, selector]) => {
 
     this.populateLanguageDropdown();
   };
-  
+
   bindElementEvents = () => {
     this.bindEvent(this.elements.editModeBtn, "click", () => this.enterEditMode());
     this.bindEvent(this.elements.viewModeBtn, "click", () => this.exitEditMode());
@@ -478,6 +489,10 @@ Object.entries(elementSelectors).forEach(([key, selector]) => {
     this.bindEvent(this.elements.headerScrollLeft, "click", () => this.scrollHeader('left'));
     this.bindEvent(this.elements.headerScrollRight, "click", () => this.scrollHeader('right'));
     this.bindEvent(this.elements.headerScrollContainer, "scroll", () => this.updateHeaderScrollButtons());
+    
+    
+
+    this.bindEvent(this.elements.symbolsBtn, "click", () => this.toggleSymbolsPanel());
     
     if (this.elements.newFileWithRepo.length) {
       this.bindEvent(this.elements.newFileWithRepo, "click", () => this.handleNewFileWithRepo());
@@ -588,7 +603,362 @@ Object.entries(elementSelectors).forEach(([key, selector]) => {
       }, 100);
     });
   };
-  
+
+
+
+
+  injectSymbolsPanel = () => {
+    const existing = $('#symbolsPanel');
+    if (existing.length) existing.remove();
+
+    const editorContainer = $('.editorContainer');
+    if (editorContainer.length) {
+      editorContainer.append(AppAssets.templates.symbolsPanel());
+    } else {
+      $('body').append(AppAssets.templates.symbolsPanel());
+    }
+
+    this.elements.symbolsPanel = $('#symbolsPanel');
+    this.elements.symbolsList = $('#symbolsList');
+    this.elements.symbolsEmpty = $('#symbolsEmpty');
+    this.elements.symbolsSearch = $('#symbolsSearch');
+    this.elements.symbolsPanelClose = $('#symbolsPanelClose');
+
+    this.bindEvent(this.elements.symbolsPanelClose, 'click', () => this.closeSymbolsPanel());
+
+    this.elements.symbolsSearch.on('input', () => {
+      this.filterSymbols(this.elements.symbolsSearch.val());
+    });
+  };
+
+  toggleSymbolsPanel = () => {
+    if (!this.elements.symbolsPanel || !this.elements.symbolsPanel.length) return;
+
+    const isHidden = this.elements.symbolsPanel.hasClass('hide');
+
+    if (isHidden) {
+      this.openSymbolsPanel();
+    } else {
+      this.closeSymbolsPanel();
+    }
+  };
+
+  openSymbolsPanel = () => {
+    if (!this.elements.symbolsPanel || !this.elements.symbolsPanel.length) return;
+
+    this.elements.symbolsPanel.removeClass('hide');
+    this.elements.symbolsBtn?.addClass('active');
+    this.parseAndDisplaySymbols();
+    this.elements.symbolsSearch.val('').trigger('focus');
+  };
+
+  closeSymbolsPanel = () => {
+    if (!this.elements.symbolsPanel || !this.elements.symbolsPanel.length) return;
+
+    this.elements.symbolsPanel.addClass('hide');
+    this.elements.symbolsBtn?.removeClass('active');
+  };
+
+  parseSymbols = (code, language) => {
+    const symbols = [];
+    if (!code || typeof code !== 'string') return symbols;
+
+    const lines = code.split('\n');
+
+    const patterns = {
+      javascript: [
+        { regex: /^[ \t]*(?:export\s+)?(?:async\s+)?function\s+(\w+)\s*\(/,                  type: 'function',  icon: 'ƒ' },
+        { regex: /^[ \t]*(?:export\s+)?(?:default\s+)?class\s+(\w+)/,                         type: 'class',     icon: '◆' },
+        { regex: /^[ \t]*(?:const|let|var)\s+(\w+)\s*=\s*(?:async\s+)?(?:\([^)]*\)|(\w+))\s*=>/, type: 'function',  icon: 'ƒ' },
+        { regex: /^[ \t]*(?:const|let|var)\s+(\w+)\s*=\s*function/,                           type: 'function',  icon: 'ƒ' },
+        { regex: /^[ \t]*(\w+)\s*\([^)]*\)\s*\{/,                                             type: 'method',    icon: 'μ' },
+        { regex: /^[ \t]*(get|set)\s+(\w+)\s*\(/,                                             type: 'property',  icon: '◇', nameIndex: 2 },
+        { regex: /^[ \t]*static\s+(?:async\s+)?(\w+)\s*\(/,                                   type: 'method',    icon: 'μ' },
+        { regex: /^[ \t]*(?:export\s+)?(?:const|let|var)\s+(\w+)\s*=\s*\{/,                   type: 'object',    icon: '{}' },
+        { regex: /^[ \t]*(?:export\s+)?(?:const|let|var)\s+(\w+)\s*=\s*\[/,                   type: 'array',     icon: '[]' },
+        { regex: /^[ \t]*(?:export\s+)?(?:const|let|var)\s+([\w_$]+)\s*=/,                    type: 'variable',  icon: 'V' },
+      ],
+      typescript: [
+        { regex: /^[ \t]*(?:export\s+)?(?:async\s+)?function\s+(\w+)/,                        type: 'function',  icon: 'ƒ' },
+        { regex: /^[ \t]*(?:export\s+)?(?:default\s+)?class\s+(\w+)/,                         type: 'class',     icon: '◆' },
+        { regex: /^[ \t]*(?:export\s+)?interface\s+(\w+)/,                                    type: 'interface', icon: 'I' },
+        { regex: /^[ \t]*(?:export\s+)?type\s+(\w+)/,                                        type: 'type',      icon: 'T' },
+        { regex: /^[ \t]*(?:export\s+)?enum\s+(\w+)/,                                        type: 'enum',      icon: 'E' },
+        { regex: /^[ \t]*(?:const|let|var)\s+(\w+)\s*=\s*(?:async\s+)?(?:\([^)]*\)|(\w+))\s*=>/, type: 'function',  icon: 'ƒ' },
+        { regex: /^[ \t]*(?:export\s+)?(?:const|let|var)\s+([\w_$]+)\s*[:=]/,                 type: 'variable',  icon: 'V' },
+      ],
+      python: [
+        { regex: /^[ \t]*(?:async\s+)?def\s+(\w+)\s*\(/,                                     type: 'function',  icon: 'ƒ' },
+        { regex: /^[ \t]*class\s+(\w+)/,                                                      type: 'class',     icon: '◆' },
+        { regex: /^(\w+)\s*=\s*/,                                                             type: 'variable',  icon: 'V' },
+      ],
+      html: [
+        { regex: /^[ \t]*<([\w-]+)\s+id=["']([^"']+)["']/,                                   type: 'element',   icon: '#', nameIndex: 2 },
+        { regex: /^[ \t]*<([\w-]+)\s+class=["']([^"']+)["']/,                                type: 'element',   icon: '.', nameIndex: 2 },
+        { regex: /^[ \t]*<!--\s*(.+?)\s*-->/,                                                 type: 'comment',   icon: '//' },
+      ],
+      css: [
+        { regex: /^[ \t]*(\.[\w-]+)\s*\{/,                                                   type: 'class',     icon: '.' },
+        { regex: /^[ \t]*(#[\w-]+)\s*\{/,                                                    type: 'id',        icon: '#' },
+        { regex: /^[ \t]*([\w-]+)\s*\{/,                                                     type: 'element',   icon: '<>' },
+        { regex: /^[ \t]*(@media[^{]+)\{/,                                                   type: 'media',     icon: '@' },
+        { regex: /^[ \t]*(@keyframes\s+[\w-]+)/,                                              type: 'keyframe',  icon: '~' },
+        { regex: /^[ \t]*(--[\w-]+)\s*:/,                                                     type: 'variable',  icon: 'V' },
+      ],
+      php: [
+        { regex: /^[ \t]*(?:public|private|protected|static)?\s*function\s+(\w+)\s*\(/,       type: 'function',  icon: 'ƒ' },
+        { regex: /^[ \t]*class\s+(\w+)/,                                                      type: 'class',     icon: '◆' },
+        { regex: /^[ \t]*(?:const|define)\s*\(?\s*['"]?(\w+)/,                                type: 'constant',  icon: 'C' },
+        { regex: /^[ \t]*\$(\w+)\s*=/,                                                       type: 'variable',  icon: '$' },
+      ],
+      json: [
+        { regex: /^[ \t]*"(\w+)"\s*:/,                                                       type: 'key',       icon: 'K' },
+      ],
+      yaml: [
+        { regex: /^([\w][\w.-]*)\s*:/,                                                       type: 'key',       icon: 'K' },
+      ],
+      sql: [
+        { regex: /^[ \t]*CREATE\s+TABLE\s+(?:IF\s+NOT\s+EXISTS\s+)?[`"']?(\w+)/i,            type: 'table',     icon: 'T' },
+        { regex: /^[ \t]*CREATE\s+(?:OR\s+REPLACE\s+)?(?:FUNCTION|PROCEDURE)\s+[`"']?(\w+)/i, type: 'function',  icon: 'ƒ' },
+        { regex: /^[ \t]*CREATE\s+(?:OR\s+REPLACE\s+)?VIEW\s+[`"']?(\w+)/i,                  type: 'view',      icon: 'V' },
+      ],
+      markdown: [
+        { regex: /^(#{1,6})\s+(.+)/,                                                         type: 'heading',   icon: 'H', nameIndex: 2, metaIndex: 1 },
+      ],
+    };
+
+    const langAliases = {
+      javascript: 'javascript',
+      typescript: 'typescript',
+      python: 'python',
+      html: 'html',
+      css: 'css',
+      php: 'php',
+      json: 'json',
+      yaml: 'yaml',
+      sql: 'sql',
+      markdown: 'markdown',
+      jsx: 'javascript',
+      tsx: 'typescript',
+      scss: 'css',
+      less: 'css',
+    };
+
+    const lang = langAliases[language] || 'javascript';
+    const langPatterns = patterns[lang] || patterns.javascript;
+
+    let insideBlockComment = false;
+
+    for (let i = 0; i < lines.length; i++) {
+      const line = lines[i];
+
+      if (['javascript', 'typescript', 'css', 'php'].includes(lang)) {
+        if (insideBlockComment) {
+          if (line.includes('*/')) {
+            insideBlockComment = false;
+          }
+          continue;
+        }
+        if (/\/\*/.test(line) && !/\*\//.test(line)) {
+          insideBlockComment = true;
+          continue;
+        }
+      }
+
+      const trimmed = line.trim();
+      if (!trimmed || (trimmed.startsWith('//') && lang !== 'html' && lang !== 'markdown')) {
+        continue;
+      }
+      if (trimmed.startsWith('#') && lang === 'python') {
+        continue;
+      }
+
+      for (const pattern of langPatterns) {
+        const match = line.match(pattern.regex);
+        if (match) {
+          const nameIdx = pattern.nameIndex || 1;
+          const name = match[nameIdx];
+
+          if (!name) continue;
+
+          let meta = '';
+          if (pattern.metaIndex && match[pattern.metaIndex]) {
+            meta = match[pattern.metaIndex];
+          }
+
+          let symbolName = name;
+          if (pattern.type === 'property' && match[2]) {
+            symbolName = match[2];
+          }
+
+          symbols.push({
+            name: symbolName,
+            type: pattern.type,
+            icon: pattern.icon,
+            line: i + 1,
+            lineText: trimmed,
+            meta: meta,
+          });
+          break;
+        }
+      }
+    }
+
+    return symbols;
+  };
+
+  parseAndDisplaySymbols = () => {
+    let content = '';
+    if (this.codeMirror) {
+      content = this.codeMirror.getValue();
+    } else if (this.fallbackEditor) {
+      content = $(this.fallbackEditor).val() || '';
+    }
+
+    const symbols = this.parseSymbols(content, this.currentLanguage);
+    this._currentSymbols = symbols;
+    this.renderSymbolsList(symbols);
+  };
+
+  renderSymbolsList = (symbols) => {
+    const listEl = this.elements.symbolsList;
+    const emptyEl = this.elements.symbolsEmpty;
+
+    if (!listEl || !listEl.length) return;
+
+    if (!symbols || symbols.length === 0) {
+      listEl.html('');
+      emptyEl?.removeClass('hide');
+      return;
+    }
+
+    emptyEl?.addClass('hide');
+
+    const groups = {};
+    symbols.forEach(sym => {
+      const group = sym.type;
+      if (!groups[group]) groups[group] = [];
+      groups[group].push(sym);
+    });
+
+    const typeOrder = [
+      'class', 'interface', 'type', 'enum',
+      'function', 'method', 'property',
+      'variable', 'constant', 'object', 'array',
+      'element', 'id', 'media', 'keyframe',
+      'table', 'view',
+      'heading', 'key', 'comment',
+    ];
+
+    const typeColors = {
+      'function': 'symbol-function',
+      'class': 'symbol-class',
+      'interface': 'symbol-interface',
+      'type': 'symbol-type',
+      'enum': 'symbol-enum',
+      'method': 'symbol-method',
+      'property': 'symbol-property',
+      'variable': 'symbol-variable',
+      'constant': 'symbol-constant',
+      'object': 'symbol-object',
+      'array': 'symbol-array',
+      'element': 'symbol-element',
+      'id': 'symbol-id',
+      'media': 'symbol-media',
+      'keyframe': 'symbol-keyframe',
+      'table': 'symbol-table',
+      'view': 'symbol-view',
+      'heading': 'symbol-heading',
+      'key': 'symbol-key',
+      'comment': 'symbol-comment',
+    };
+
+    const sortedTypes = Object.keys(groups).sort((a, b) => {
+      const ai = typeOrder.indexOf(a);
+      const bi = typeOrder.indexOf(b);
+      return (ai === -1 ? 999 : ai) - (bi === -1 ? 999 : bi);
+    });
+
+    let html = '';
+
+    sortedTypes.forEach(type => {
+      const items = groups[type];
+      const label = type.charAt(0).toUpperCase() + type.slice(1) + (items.length > 1 ? 's' : '');
+
+      html += `<div class="symbolsGroup">`;
+      html += `<div class="symbolsGroupHeader">`;
+      html += `<span class="symbolsGroupLabel">${label}</span>`;
+      html += `<span class="symbolsGroupCount">${items.length}</span>`;
+      html += `</div>`;
+
+      items.forEach(sym => {
+        const colorClass = typeColors[sym.type] || 'symbol-default';
+        const indent = sym.type === 'heading' && sym.meta ? `padding-left: ${(sym.meta.length - 1) * 12 + 8}px;` : '';
+
+        html += `<button class="symbolItem ${colorClass}" data-line="${sym.line}" title="Line ${sym.line}: ${this.escapeHtml(sym.lineText)}" style="${indent}">`;
+        html += `<span class="symbolIcon">${sym.icon}</span>`;
+        html += `<span class="symbolName">${this.escapeHtml(sym.name)}</span>`;
+        html += `<span class="symbolLine">:${sym.line}</span>`;
+        html += `</button>`;
+      });
+
+      html += `</div>`;
+    });
+
+    listEl.html(html);
+
+    listEl.find('.symbolItem').on('click', (e) => {
+      const line = parseInt($(e.currentTarget).data('line'), 10);
+      if (isNaN(line)) return;
+      this.goToLine(line);
+    });
+  };
+
+  escapeHtml = (str) => {
+    if (!str) return '';
+    return str
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#039;');
+  };
+
+  goToLine = (lineNumber) => {
+    if (!this.codeMirror) return;
+
+    const line = lineNumber - 1;
+    this.codeMirror.setCursor({ line: line, ch: 0 });
+    this.codeMirror.scrollIntoView({ line: line, ch: 0 }, 200);
+    this.codeMirror.focus();
+
+    this.codeMirror.addLineClass(line, 'background', 'symbolHighlightLine');
+    setTimeout(() => {
+      this.codeMirror.removeLineClass(line, 'background', 'symbolHighlightLine');
+    }, 1500);
+  };
+
+  filterSymbols = (query) => {
+    if (!this._currentSymbols) return;
+
+    const q = (query || '').toLowerCase().trim();
+
+    if (!q) {
+      this.renderSymbolsList(this._currentSymbols);
+      return;
+    }
+
+    const filtered = this._currentSymbols.filter(sym => {
+      return sym.name.toLowerCase().includes(q) ||
+             sym.type.toLowerCase().includes(q);
+    });
+
+    this.renderSymbolsList(filtered);
+  };
+
+
+
+
   showMoreOptionsDropdown = (e) => {
   /**
     if (!this.elements.moreOptionsDropdown.length) {
@@ -2375,6 +2745,7 @@ enterEditMode = () => {
     this.elements.newFileDropdown?.remove();
     this.elements.languageDropdown?.remove();
     this.elements.moreOptionsDropdown?.remove();
+    this.elements.symbolsPanel?.remove();
     
     this.isInitialized = false;
   };
