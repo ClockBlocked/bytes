@@ -96,14 +96,26 @@
     --toolbar: 3.15rem;
     --total-sticky-height: calc(var(--top-nav) + var(--breadcrumbs) + var(--header) + var(--toolbar));
 }
+
+
+
+
+
+
+
+
+
+
+
+
 [data-theme="dark"] {
     --color-bg-primary: hsl(216, 18%, 13%);
     --color-bg-secondary: hsl(217, 17%, 16%);
     --color-bg-tertiary: hsl(215, 14%, 22%);
-    --color-bg-sidebar: hsl(216, 18%, 11%);
+    --color-bg-sidebar: #3f485a;
     --color-bg-canvas: #404e5d;
     --color-bg-canvas-default: #22272e;
-    --color-bg-canvas-overlay: #2d333b;
+    --color-bg-canvas-overlay: #212830;
     --color-bg-canvas-inset: #1c2128;
     --color-bg-canvas-subtle: #2d333b;
     --color-bg-input: #1c2128;
@@ -136,7 +148,7 @@
     --color-bg-badge-danger: rgba(248, 81, 73, 0.15);
     --color-bg-badge-info: rgba(47, 129, 247, 0.15);
     
-    --color-text-primary: hsl(210, 14%, 83%);
+    --color-text-primary: #A5ABB2;
     --color-text-secondary: hsl(215, 13%, 55%);
     --color-text-muted: #768390;
     --color-text-subtle: #545d68;
@@ -157,7 +169,7 @@
     --color-text-badge-danger: #f85149;
     --color-text-badge-info: #2f81f7;
     
-    --color-border-primary: hsl(215, 14%, 25%);
+    --color-border-primary: #3D444E;
     --color-border-muted: #373e47;
     --color-border-subtle: #636e7b;
     --color-border-input: #444c56;
