@@ -990,6 +990,376 @@ body {
     padding-top: 0;
   }
 }
+
+
+
+
+
+
+
+
+/* ================================================
+   ENHANCED ANIMATIONS & SEARCH
+   ================================================ */
+
+/* -----------------------------------------------
+   PANEL ANIMATIONS — Refined
+   Panel opens first, then content fades in
+   ----------------------------------------------- */
+.mega-panel {
+  position: fixed;
+  top: var(--menu-height);
+  left: 0;
+  right: 0;
+  height: 0;
+  overflow: hidden;
+  background: var(--menu-panel-bg);
+  border-bottom: 1px solid transparent;
+  z-index: calc(var(--menu-z) - 1);
+  will-change: height, opacity;
+  transition:
+    height 350ms cubic-bezier(0.4, 0, 0.2, 1),
+    height 350ms linear(0, 0.264 3.7%, 0.49 7.4%, 0.692 11.3%, 0.864 15.3%, 0.937 17.3%, 1.005 19.4%, 1.065 21.5%, 1.12 23.7%, 1.167 25.9%, 1.206 28.1%, 1.24 30.4%, 1.267 32.8%, 1.283 34.6%, 1.296 36.4%, 1.305 38.3%, 1.311 40.2%, 1.314 42.2%, 1.313 44.2%, 1.309 46.4%, 1.301 48.6%, 1.282 52.5%, 1.252 56.9%, 1.217 61.3%, 1.105 74.4%, 1.074 78.6%, 1.048 82.5%, 1.026 86.9%, 1.011 91.1%, 1.002 95.4%, 1),
+    opacity 300ms ease,
+    border-color 0s linear 350ms;
+  opacity: 0;
+}
+
+.mega-panel.open {
+  height: var(--menu-panel-max);
+  opacity: 1;
+  border-bottom-color: var(--menu-panel-border);
+  transition:
+    height 350ms cubic-bezier(0.4, 0, 0.2, 1),
+    height 350ms linear(0, 0.264 3.7%, 0.49 7.4%, 0.692 11.3%, 0.864 15.3%, 0.937 17.3%, 1.005 19.4%, 1.065 21.5%, 1.12 23.7%, 1.167 25.9%, 1.206 28.1%, 1.24 30.4%, 1.267 32.8%, 1.283 34.6%, 1.296 36.4%, 1.305 38.3%, 1.311 40.2%, 1.314 42.2%, 1.313 44.2%, 1.309 46.4%, 1.301 48.6%, 1.282 52.5%, 1.252 56.9%, 1.217 61.3%, 1.105 74.4%, 1.074 78.6%, 1.048 82.5%, 1.026 86.9%, 1.011 91.1%, 1.002 95.4%, 1),
+    opacity 300ms ease,
+    border-color 0s linear 0s;
+}
+
+/* Content fades in AFTER panel opens */
+.mega-panel-inner {
+  opacity: 0;
+  transform: translateY(-12px);
+  transition: 
+    opacity 200ms ease,
+    transform 200ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.mega-panel.open .mega-panel-inner {
+  opacity: 1;
+  transform: translateY(0);
+  transition: 
+    opacity 280ms ease 180ms,
+    transform 280ms cubic-bezier(0.16, 1, 0.3, 1) 180ms;
+}
+
+/* SWAPPING MODE: fast content swap when panel stays open */
+.mega-panel.swapping .mega-panel-inner {
+  opacity: 0;
+  transform: scale(0.98) translateY(-4px);
+  transition: 
+    opacity 140ms ease,
+    transform 140ms ease;
+}
+
+.mega-panel.open.swapping .mega-panel-inner {
+  opacity: 1;
+  transform: scale(1) translateY(0);
+  transition: 
+    opacity 180ms ease 80ms,
+    transform 180ms cubic-bezier(0.16, 1, 0.3, 1) 80ms;
+}
+
+/* Navbar expands when panel opens */
+body.mega-menu-open .mega-nav {
+  height: 45px;
+  transition: height 350ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* -----------------------------------------------
+   SEARCH PANEL — Apple + GitHub Fusion
+   ----------------------------------------------- */
+#panelSearch .mega-panel-inner {
+  max-width: 720px;
+  margin: 0 auto;
+}
+
+.search-container {
+  position: relative;
+}
+
+/* Search Input */
+.search-input-wrapper {
+  position: relative;
+  margin-bottom: 24px;
+  opacity: 0;
+  transform: scale(0.94) translateY(-8px);
+  animation: searchInputReveal 400ms cubic-bezier(0.16, 1, 0.3, 1) 200ms forwards;
+}
+
+@keyframes searchInputReveal {
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+.search-input {
+  width: 100%;
+  height: 56px;
+  padding: 0 24px 0 60px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 2px solid rgba(255, 255, 255, 0.08);
+  border-radius: 28px;
+  font-size: 17px;
+  font-weight: 400;
+  color: var(--color-text, #adbac7);
+  font-family: var(--font-text);
+  transition: all 280ms cubic-bezier(0.4, 0, 0.2, 1);
+  outline: none;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.search-input::placeholder {
+  color: var(--color-text-muted, #636e7b);
+  font-weight: 400;
+}
+
+.search-input:focus {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: var(--color-primary, #539bf5);
+  box-shadow: 
+    0 0 0 4px rgba(83, 155, 245, 0.12),
+    0 8px 24px rgba(0, 0, 0, 0.12);
+  transform: translateY(-1px);
+}
+
+.search-icon {
+  position: absolute;
+  left: 22px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--color-text-muted, #636e7b);
+  font-size: 20px;
+  pointer-events: none;
+  transition: color 200ms ease;
+}
+
+.search-input:focus ~ .search-icon {
+  color: var(--color-primary, #539bf5);
+}
+
+.search-clear {
+  position: absolute;
+  right: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.08);
+  border: none;
+  color: var(--color-text-muted);
+  cursor: pointer;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  transition: all 150ms ease;
+}
+
+.search-input:not(:placeholder-shown) ~ .search-clear {
+  display: flex;
+}
+
+.search-clear:hover {
+  background: rgba(255, 255, 255, 0.12);
+  color: var(--color-text);
+}
+
+/* Search Results Container */
+.search-results {
+  max-height: 280px;
+  overflow-y: auto;
+  padding-right: 4px;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.1) transparent;
+}
+
+.search-results::-webkit-scrollbar {
+  width: 6px;
+}
+
+.search-results::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.search-results::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 3px;
+}
+
+.search-results::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.15);
+}
+
+/* Search Result Item */
+.search-result-item {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 12px 16px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 12px;
+  margin-bottom: 8px;
+  cursor: pointer;
+  transition: all 220ms cubic-bezier(0.4, 0, 0.2, 1);
+  opacity: 0;
+  transform: translateX(-12px);
+  animation: searchResultSlide 300ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.search-result-item:nth-child(1) { animation-delay: 80ms; }
+.search-result-item:nth-child(2) { animation-delay: 130ms; }
+.search-result-item:nth-child(3) { animation-delay: 180ms; }
+.search-result-item:nth-child(4) { animation-delay: 230ms; }
+.search-result-item:nth-child(5) { animation-delay: 280ms; }
+.search-result-item:nth-child(6) { animation-delay: 330ms; }
+.search-result-item:nth-child(7) { animation-delay: 380ms; }
+.search-result-item:nth-child(8) { animation-delay: 430ms; }
+
+@keyframes searchResultSlide {
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.search-result-item:hover {
+  background: rgba(83, 155, 245, 0.1);
+  border-color: rgba(83, 155, 245, 0.3);
+  transform: translateX(4px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.search-result-item:active {
+  transform: translateX(2px) scale(0.99);
+}
+
+.search-result-icon {
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(83, 155, 245, 0.12);
+  border-radius: 10px;
+  font-size: 18px;
+  flex-shrink: 0;
+  color: var(--color-primary, #539bf5);
+}
+
+.search-result-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.search-result-name {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--color-text, #adbac7);
+  margin-bottom: 2px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.search-result-name mark {
+  background: rgba(83, 155, 245, 0.25);
+  color: var(--color-primary, #539bf5);
+  padding: 1px 4px;
+  border-radius: 3px;
+  font-weight: 700;
+}
+
+.search-result-path {
+  font-size: 12px;
+  color: var(--color-text-muted, #636e7b);
+  font-family: var(--font-mono, monospace);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.search-result-type {
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--color-text-muted, #636e7b);
+  padding: 4px 8px;
+  background: rgba(255, 255, 255, 0.04);
+  border-radius: 6px;
+  flex-shrink: 0;
+}
+
+/* Empty State */
+.search-empty {
+  text-align: center;
+  padding: 48px 24px;
+  color: var(--color-text-muted, #636e7b);
+  font-size: 14px;
+}
+
+.search-empty-icon {
+  font-size: 48px;
+  opacity: 0.3;
+  margin-bottom: 16px;
+}
+
+/* Loading State */
+.search-loading {
+  text-align: center;
+  padding: 32px;
+  color: var(--color-text-muted);
+}
+
+.search-loading-spinner {
+  width: 32px;
+  height: 32px;
+  border: 3px solid rgba(83, 155, 245, 0.2);
+  border-top-color: var(--color-primary);
+  border-radius: 50%;
+  animation: searchSpin 800ms linear infinite;
+  margin: 0 auto 12px;
+}
+
+@keyframes searchSpin {
+  to { transform: rotate(360deg); }
+}
+
+/* Light theme adjustments */
+[data-theme="light"] .search-input {
+  background: rgba(0, 0, 0, 0.04);
+  border-color: rgba(0, 0, 0, 0.1);
+}
+
+[data-theme="light"] .search-input:focus {
+  background: rgba(0, 0, 0, 0.06);
+  box-shadow: 
+    0 0 0 4px rgba(9, 105, 218, 0.12),
+    0 8px 24px rgba(0, 0, 0, 0.08);
+}
+
+[data-theme="light"] .search-result-item {
+  background: rgba(0, 0, 0, 0.02);
+  border-color: rgba(0, 0, 0, 0.08);
+}
+
+[data-theme="light"] .search-result-item:hover {
+  background: rgba(9, 105, 218, 0.06);
+  border-color: rgba(9, 105, 218, 0.2);
+}
 </style>
 
 
@@ -1038,9 +1408,9 @@ body {
         Files
       </button>
 
-      <button class="mega-item" data-action="search" role="menuitem" aria-haspopup="false">
-        Search
-      </button>
+<button class="mega-item" data-panel="panelSearch" role="menuitem" aria-haspopup="true" aria-expanded="false">
+  Search
+</button>
 
       <button class="mega-item" data-panel="panelStats" role="menuitem" aria-haspopup="true" aria-expanded="false">
         Stats
@@ -1268,6 +1638,37 @@ body {
       </div>
     </div>
 
+  </div>
+</div>
+
+<!-- SEARCH PANEL -->
+<div id="panelSearch" class="mega-panel" role="region" aria-label="Search panel">
+  <div class="mega-panel-inner">
+    <div class="search-container">
+      
+      <div class="search-input-wrapper">
+        <input 
+          type="text" 
+          id="megaSearchInput" 
+          class="search-input" 
+          placeholder="Search files and content..." 
+          autocomplete="off"
+          spellcheck="false"
+        />
+        <i class="fas fa-search search-icon"></i>
+        <button id="megaSearchClear" class="search-clear" aria-label="Clear search">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+
+      <div id="megaSearchResults" class="search-results">
+        <div class="search-empty">
+          <div class="search-empty-icon">🔍</div>
+          Start typing to search files...
+        </div>
+      </div>
+
+    </div>
   </div>
 </div>
 
@@ -1516,39 +1917,31 @@ body {
 
 <script>
 /* ================================================
-   MEGA MENU CONTROLLER
-   Top navbar with horizontally scrollable bold items,
-   soft scroll arrows, and slide-down panel drawers.
+   MEGA MENU CONTROLLER — Enhanced Edition
    ================================================ */
 
 (function () {
   "use strict";
 
-  /* -------------------------------------------
-     CONFIGURATION
-     ------------------------------------------- */
+  /* STATE */
+  let activePanel = null;
+  let isPanelOpen = false;
+  let isAnimating = false;
+  let searchTimeout = null;
+
+  /* CONFIG */
   const SCROLL_STEP = 180;
   const SCROLL_CHECK_DEBOUNCE = 50;
+  const SEARCH_DELAY = 300;
 
-  /* -------------------------------------------
-     STATE
-     ------------------------------------------- */
-  let activePanel = null;
-  let isAnimating = false;
-
-  /* -------------------------------------------
-     DOM REFERENCES (set on init)
-     ------------------------------------------- */
-  let track = null;
-  let arrowLeft = null;
-  let arrowRight = null;
-  let overlay = null;
+  /* DOM REFS */
+  let track, arrowLeft, arrowRight, overlay;
   let allItems = [];
   let allPanels = [];
 
-  /* -------------------------------------------
+  /* ============================================
      INIT
-     ------------------------------------------- */
+     ============================================ */
   function init() {
     track = document.getElementById("megaTrack");
     arrowLeft = document.getElementById("megaArrowLeft");
@@ -1558,232 +1951,242 @@ body {
     allPanels = Array.from(document.querySelectorAll(".mega-panel"));
 
     if (!track || !arrowLeft || !arrowRight) {
-      console.warn("Mega-menu: missing DOM elements, aborting init.");
+      console.warn("Mega-menu: missing DOM elements");
       return;
     }
 
-    /* -- arrow clicks -- */
-    arrowLeft.addEventListener("click", function () {
-      scrollTrack(-SCROLL_STEP);
-    });
-
-    arrowRight.addEventListener("click", function () {
-      scrollTrack(SCROLL_STEP);
-    });
-
-    /* -- update arrow states on scroll -- */
-    let scrollTimer = null;
-    track.addEventListener("scroll", function () {
-      clearTimeout(scrollTimer);
-      scrollTimer = setTimeout(updateArrows, SCROLL_CHECK_DEBOUNCE);
-    });
-
-    /* -- initial arrow state -- */
-    updateArrows();
-
-    /* -- recalc on resize -- */
-    window.addEventListener("resize", function () {
-      updateArrows();
-    });
-
-    /* -- menu item clicks -- */
-    allItems.forEach(function (item) {
-      item.addEventListener("click", function () {
-        var panelId = item.getAttribute("data-panel");
-        if (!panelId) {
-          /* If no panel, treat as a direct action button */
-          handleDirectAction(item);
-          return;
-        }
-        togglePanel(panelId, item);
-      });
-    });
-
-    /* -- overlay click to close -- */
-    if (overlay) {
-      overlay.addEventListener("click", function () {
-        closeAllPanels();
-      });
-    }
-
-    /* -- ESC key to close -- */
-    document.addEventListener("keydown", function (e) {
-      if (e.key === "Escape" && activePanel) {
-        closeAllPanels();
-      }
-    });
-
-    /* -- delegate clicks inside panels (data-action buttons) -- */
-    document.addEventListener("click", function (e) {
-      var actionBtn = e.target.closest("[data-menu-action]");
-      if (actionBtn) {
-        handlePanelAction(actionBtn.getAttribute("data-menu-action"));
-        closeAllPanels();
-      }
-    });
-
-    /* -- touch swipe support for the track -- */
+    setupArrows();
+    setupMenuItems();
+    setupOverlay();
+    setupKeyboard();
+    setupSearch();
     initTouchScroll();
-
-    /* -- sync stats on init -- */
     syncStats();
 
     console.log("✅ Mega-menu initialized");
   }
 
-  /* -------------------------------------------
-     SCROLL HELPERS
-     ------------------------------------------- */
+  /* ============================================
+     ARROW SCROLL CONTROLS
+     ============================================ */
+  function setupArrows() {
+    arrowLeft.addEventListener("click", () => scrollTrack(-SCROLL_STEP));
+    arrowRight.addEventListener("click", () => scrollTrack(SCROLL_STEP));
+
+    let scrollTimer;
+    track.addEventListener("scroll", () => {
+      clearTimeout(scrollTimer);
+      scrollTimer = setTimeout(updateArrows, SCROLL_CHECK_DEBOUNCE);
+    });
+
+    updateArrows();
+    window.addEventListener("resize", updateArrows);
+  }
+
   function scrollTrack(delta) {
-    if (!track) return;
     track.scrollBy({ left: delta, behavior: "smooth" });
   }
 
   function updateArrows() {
-    if (!track || !arrowLeft || !arrowRight) return;
+    const scrollLeft = Math.round(track.scrollLeft);
+    const maxScroll = track.scrollWidth - track.clientWidth;
 
-    var scrollLeft = Math.round(track.scrollLeft);
-    var maxScroll = track.scrollWidth - track.clientWidth;
+    arrowLeft.classList.toggle("disabled", scrollLeft <= 1);
+    arrowLeft.setAttribute("aria-disabled", scrollLeft <= 1);
 
-    /* left arrow */
-    if (scrollLeft <= 1) {
-      arrowLeft.classList.add("disabled");
-      arrowLeft.setAttribute("aria-disabled", "true");
-    } else {
-      arrowLeft.classList.remove("disabled");
-      arrowLeft.setAttribute("aria-disabled", "false");
-    }
-
-    /* right arrow */
-    if (scrollLeft >= maxScroll - 1) {
-      arrowRight.classList.add("disabled");
-      arrowRight.setAttribute("aria-disabled", "true");
-    } else {
-      arrowRight.classList.remove("disabled");
-      arrowRight.setAttribute("aria-disabled", "false");
-    }
+    arrowRight.classList.toggle("disabled", scrollLeft >= maxScroll - 1);
+    arrowRight.setAttribute("aria-disabled", scrollLeft >= maxScroll - 1);
   }
 
-  /* -------------------------------------------
-     PANEL TOGGLE
-     ------------------------------------------- */
+  /* ============================================
+     MENU ITEMS
+     ============================================ */
+  function setupMenuItems() {
+    allItems.forEach((item) => {
+      item.addEventListener("click", () => {
+        const panelId = item.getAttribute("data-panel");
+        const action = item.getAttribute("data-action");
+
+        if (action) {
+          handleDirectAction(action);
+        } else if (panelId) {
+          togglePanel(panelId, item);
+        }
+      });
+    });
+  }
+
   function togglePanel(panelId, triggerItem) {
     if (isAnimating) return;
 
-    var targetPanel = document.getElementById(panelId);
+    const targetPanel = document.getElementById(panelId);
     if (!targetPanel) return;
 
-    /* If clicking the already-open panel, close it */
-    if (activePanel === panelId) {
+    // Clicking the same open panel → close
+    if (activePanel === panelId && isPanelOpen) {
       closeAllPanels();
       return;
     }
 
+    // Panel already open → swap content
+    if (isPanelOpen && activePanel !== panelId) {
+      swapPanelContent(panelId, triggerItem);
+      return;
+    }
+
+    // Otherwise → full open animation
+    openPanel(panelId, triggerItem);
+  }
+
+  function openPanel(panelId, triggerItem) {
     isAnimating = true;
 
-    /* Close any currently open panel first (instant) */
-    allPanels.forEach(function (p) {
-      p.classList.remove("open");
-    });
-    allItems.forEach(function (i) {
+    const targetPanel = document.getElementById(panelId);
+
+    // Close all
+    allPanels.forEach((p) => p.classList.remove("open", "swapping"));
+    allItems.forEach((i) => {
       i.classList.remove("active");
       i.setAttribute("aria-expanded", "false");
     });
 
-    /* Open target panel */
+    // Open target
     targetPanel.classList.add("open");
     triggerItem.classList.add("active");
     triggerItem.setAttribute("aria-expanded", "true");
     activePanel = panelId;
+    isPanelOpen = true;
 
-    /* Show overlay */
-    if (overlay) {
-      overlay.classList.add("active");
+    // Show overlay & blur
+    if (overlay) overlay.classList.add("active");
+    blurMainContent();
+    document.body.classList.add("mega-menu-open");
+
+    // If search panel, focus input
+    if (panelId === "panelSearch") {
+      setTimeout(() => {
+        const input = document.getElementById("megaSearchInput");
+        if (input) input.focus();
+      }, 400);
     }
 
-    /* Blur main content */
-    var mainArea = document.getElementById("mainArea");
-    if (mainArea) {
-      mainArea.style.filter = "blur(4px) brightness(0.85)";
-      mainArea.style.transition =
-        "filter " +
-        "var(--menu-transition-speed, 350ms)" +
-        " " +
-        "var(--menu-transition-ease, ease)";
-      mainArea.style.pointerEvents = "none";
-    }
-
-    setTimeout(function () {
+    setTimeout(() => {
       isAnimating = false;
-    }, 380);
-    
-    
-    document.body.classList.add('mega-menu-open');
+    }, 450);
+  }
+
+  function swapPanelContent(newPanelId, triggerItem) {
+    isAnimating = true;
+
+    const currentPanel = document.getElementById(activePanel);
+    const newPanel = document.getElementById(newPanelId);
+
+    // Add swapping class for fast fade
+    currentPanel.classList.add("swapping");
+
+    setTimeout(() => {
+      // Switch panels
+      currentPanel.classList.remove("open", "swapping");
+      newPanel.classList.add("open", "swapping");
+
+      // Update active item
+      allItems.forEach((i) => {
+        i.classList.remove("active");
+        i.setAttribute("aria-expanded", "false");
+      });
+      triggerItem.classList.add("active");
+      triggerItem.setAttribute("aria-expanded", "true");
+
+      activePanel = newPanelId;
+
+      // If switching to search, focus input
+      if (newPanelId === "panelSearch") {
+        setTimeout(() => {
+          const input = document.getElementById("megaSearchInput");
+          if (input) input.focus();
+        }, 260);
+      }
+
+      // Remove swapping class
+      setTimeout(() => {
+        newPanel.classList.remove("swapping");
+        isAnimating = false;
+      }, 260);
+    }, 140);
   }
 
   function closeAllPanels() {
     if (isAnimating) return;
     isAnimating = true;
 
-    allPanels.forEach(function (p) {
-      p.classList.remove("open");
-    });
-    allItems.forEach(function (i) {
+    allPanels.forEach((p) => p.classList.remove("open", "swapping"));
+    allItems.forEach((i) => {
       i.classList.remove("active");
       i.setAttribute("aria-expanded", "false");
     });
+
     activePanel = null;
+    isPanelOpen = false;
 
-    if (overlay) {
-      overlay.classList.remove("active");
+    if (overlay) overlay.classList.remove("active");
+    unblurMainContent();
+    document.body.classList.remove("mega-menu-open");
+
+    setTimeout(() => {
+      isAnimating = false;
+    }, 400);
+  }
+
+  function blurMainContent() {
+    const mainArea = document.getElementById("mainArea");
+    if (mainArea) {
+      mainArea.style.filter = "blur(4px) brightness(0.85)";
+      mainArea.style.transition = "filter 350ms cubic-bezier(0.4, 0, 0.2, 1)";
+      mainArea.style.pointerEvents = "none";
     }
+  }
 
-    /* Unblur main content */
-    var mainArea = document.getElementById("mainArea");
+  function unblurMainContent() {
+    const mainArea = document.getElementById("mainArea");
     if (mainArea) {
       mainArea.style.filter = "";
       mainArea.style.pointerEvents = "";
     }
-
-    /* Return focus to the nav */
-    var nav = document.querySelector(".mega-nav");
-    if (nav) nav.focus();
-
-    setTimeout(function () {
-      isAnimating = false;
-    }, 380);
-    
-    
-    
-    document.body.classList.remove('mega-menu-open');
   }
 
-  /* -------------------------------------------
-     DIRECT ACTION (items without a panel)
-     ------------------------------------------- */
-  function handleDirectAction(item) {
-    var action = item.getAttribute("data-action");
-    if (!action) return;
-
+  /* ============================================
+     DIRECT ACTIONS (items without panels)
+     ============================================ */
+  function handleDirectAction(action) {
     closeAllPanels();
 
     switch (action) {
       case "search":
-        if (typeof showSearchModal === "function") showSearchModal();
+        // Open search panel
+        const searchBtn = document.querySelector('[data-panel="panelSearch"]');
+        if (searchBtn) {
+          setTimeout(() => togglePanel("panelSearch", searchBtn), 100);
+        }
         break;
       default:
         console.log("Direct action:", action);
     }
   }
 
-  /* -------------------------------------------
-     PANEL ACTIONS (data-menu-action delegates)
-     ------------------------------------------- */
-  function handlePanelAction(action) {
-    console.log("🎯 Panel action:", action);
+  /* ============================================
+     PANEL ACTIONS (delegated clicks)
+     ============================================ */
+  document.addEventListener("click", (e) => {
+    const actionBtn = e.target.closest("[data-menu-action]");
+    if (!actionBtn) return;
 
+    const action = actionBtn.getAttribute("data-menu-action");
+    handlePanelAction(action);
+    closeAllPanels();
+  });
+
+  function handlePanelAction(action) {
     switch (action) {
-      /* Navigation */
       case "go-repos":
         navigateToPage("repo");
         break;
@@ -1794,8 +2197,6 @@ body {
       case "go-code":
         navigateToPage("explorer");
         break;
-
-      /* File actions */
       case "new-file":
         showModal("createFileModal");
         break;
@@ -1806,38 +2207,26 @@ body {
         if (typeof showImportModal === "function") showImportModal();
         break;
       case "new-folder":
-        if (typeof showCreateFolderModal === "function") {
-          showCreateFolderModal();
-        }
+        if (typeof showCreateFolderModal === "function") showCreateFolderModal();
         break;
-
-      /* Tools */
       case "toggle-theme":
         toggleThemeHelper();
         break;
       case "help":
         if (typeof showHelp === "function") showHelp();
         break;
-      case "settings":
-        console.log("Settings requested");
-        break;
-
       default:
-        console.warn("Unknown panel action:", action);
+        console.log("Panel action:", action);
     }
   }
 
-  /* -------------------------------------------
-     NAVIGATION HELPER
-     ------------------------------------------- */
   function navigateToPage(pageName) {
-    var pages = document.querySelectorAll(".pages");
-    pages.forEach(function (p) {
+    document.querySelectorAll(".pages").forEach((p) => {
       p.classList.remove("show");
       p.classList.add("hide");
     });
 
-    var target = document.querySelector('[data-page="' + pageName + '"]');
+    const target = document.querySelector(`[data-page="${pageName}"]`);
     if (target) {
       target.classList.remove("hide");
       target.classList.add("show");
@@ -1845,94 +2234,282 @@ body {
   }
 
   function showModal(modalId) {
-    var modal = document.getElementById(modalId);
+    const modal = document.getElementById(modalId);
     if (!modal) return;
     modal.classList.remove("hidden");
     modal.style.display = "flex";
   }
 
-  /* -------------------------------------------
+  /* ============================================
+     OVERLAY & KEYBOARD
+     ============================================ */
+  function setupOverlay() {
+    if (overlay) {
+      overlay.addEventListener("click", closeAllPanels);
+    }
+  }
+
+  function setupKeyboard() {
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape" && isPanelOpen) {
+        closeAllPanels();
+      }
+    });
+  }
+
+  /* ============================================
+     SEARCH FUNCTIONALITY
+     ============================================ */
+  function setupSearch() {
+    const input = document.getElementById("megaSearchInput");
+    const clearBtn = document.getElementById("megaSearchClear");
+
+    if (!input) return;
+
+    input.addEventListener("input", (e) => {
+      clearTimeout(searchTimeout);
+      searchTimeout = setTimeout(() => performSearch(e.target.value), SEARCH_DELAY);
+    });
+
+    input.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") {
+        e.preventDefault();
+        clearTimeout(searchTimeout);
+        performSearch(e.target.value);
+      }
+    });
+
+    if (clearBtn) {
+      clearBtn.addEventListener("click", () => {
+        input.value = "";
+        input.focus();
+        performSearch("");
+      });
+    }
+  }
+
+  function performSearch(query) {
+    const container = document.getElementById("megaSearchResults");
+    if (!container) return;
+
+    if (!query.trim()) {
+      container.innerHTML = `
+        <div class="search-empty">
+          <div class="search-empty-icon">🔍</div>
+          Start typing to search files...
+        </div>
+      `;
+      return;
+    }
+
+    try {
+      const currentRepo = localStorage.getItem("currentRepository");
+      if (!currentRepo) {
+        container.innerHTML = `
+          <div class="search-empty">
+            <div class="search-empty-icon">📁</div>
+            No repository selected
+          </div>
+        `;
+        return;
+      }
+
+      const repoData = JSON.parse(localStorage.getItem(`repo_${currentRepo}`) || "{}");
+      const files = repoData.files || {};
+      const results = [];
+
+      // Search file paths and content
+      Object.keys(files).forEach((path) => {
+        const file = files[path];
+        const lowerQuery = query.toLowerCase();
+        const lowerPath = path.toLowerCase();
+        const pathMatch = lowerPath.includes(lowerQuery);
+        const contentMatch = file.content && file.content.toLowerCase().includes(lowerQuery);
+
+        if (pathMatch || contentMatch) {
+          results.push({
+            path,
+            name: path.split("/").pop(),
+            type: pathMatch ? "path" : "content",
+            file,
+          });
+        }
+      });
+
+      displaySearchResults(results, query);
+    } catch (e) {
+      console.error("Search error:", e);
+      container.innerHTML = `
+        <div class="search-empty">
+          <div class="search-empty-icon">⚠️</div>
+          Search error occurred
+        </div>
+      `;
+    }
+  }
+
+  function displaySearchResults(results, query) {
+    const container = document.getElementById("megaSearchResults");
+
+    if (results.length === 0) {
+      container.innerHTML = `
+        <div class="search-empty">
+          <div class="search-empty-icon">🤷</div>
+          No results found for "<strong>${escapeHtml(query)}</strong>"
+        </div>
+      `;
+      return;
+    }
+
+    const html = results
+      .map(
+        (result, index) => `
+        <div class="search-result-item" data-file-path="${escapeHtml(result.path)}">
+          <div class="search-result-icon">${getFileIcon(result.name)}</div>
+          <div class="search-result-content">
+            <div class="search-result-name">${highlightMatch(escapeHtml(result.name), query)}</div>
+            <div class="search-result-path">${escapeHtml(result.path)}</div>
+          </div>
+          <span class="search-result-type">${result.type}</span>
+        </div>
+      `
+      )
+      .join("");
+
+    container.innerHTML = html;
+
+    // Add click handlers
+    container.querySelectorAll(".search-result-item").forEach((item) => {
+      item.addEventListener("click", function () {
+        const filePath = this.getAttribute("data-file-path");
+        openSearchResult(filePath);
+        closeAllPanels();
+      });
+    });
+  }
+
+  function openSearchResult(filePath) {
+    // Integrate with your existing file opening logic
+    navigateToPage("file");
+    if (typeof loadFileEditor === "function") {
+      loadFileEditor(filePath);
+    }
+    console.log("Opening file:", filePath);
+  }
+
+  function highlightMatch(text, query) {
+    const regex = new RegExp(`(${escapeRegex(query)})`, "gi");
+    return text.replace(regex, "<mark>$1</mark>");
+  }
+
+  function getFileIcon(filename) {
+    const ext = filename.split(".").pop().toLowerCase();
+    const icons = {
+      js: "📜",
+      jsx: "⚛️",
+      ts: "📘",
+      tsx: "⚛️",
+      html: "🌐",
+      css: "🎨",
+      scss: "🎨",
+      json: "📋",
+      md: "📝",
+      txt: "📄",
+      py: "🐍",
+      java: "☕",
+      php: "🐘",
+      rb: "💎",
+      go: "🐹",
+      rs: "🦀",
+      c: "🔧",
+      cpp: "🔧",
+      svg: "🎨",
+      png: "🖼️",
+      jpg: "🖼️",
+      gif: "🖼️",
+    };
+    return icons[ext] || "📄";
+  }
+
+  function escapeHtml(text) {
+    const div = document.createElement("div");
+    div.textContent = text;
+    return div.innerHTML;
+  }
+
+  function escapeRegex(text) {
+    return text.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  }
+
+  /* ============================================
      THEME TOGGLE
-     ------------------------------------------- */
+     ============================================ */
   function toggleThemeHelper() {
-    var html = document.documentElement;
-    var current = html.getAttribute("data-theme");
-    var next = current === "dark" ? "light" : "dark";
+    const html = document.documentElement;
+    const current = html.getAttribute("data-theme");
+    const next = current === "dark" ? "light" : "dark";
     html.setAttribute("data-theme", next);
 
     try {
       localStorage.setItem("theme", next);
-    } catch (e) {
-      /* noop */
-    }
+    } catch (e) {}
 
-    /* Sync any existing theme icons */
-    var icons = document.querySelectorAll(
-      "#themeIcon, #sidebarThemeIcon, #menuThemeIcon, .mega-theme-icon"
-    );
-    icons.forEach(function (icon) {
+    const icons = document.querySelectorAll(".mega-theme-icon, #themeIcon, #sidebarThemeIcon");
+    icons.forEach((icon) => {
       icon.className = next === "dark" ? "fas fa-moon" : "fas fa-sun";
     });
 
-    var labels = document.querySelectorAll(".mega-theme-label");
-    labels.forEach(function (lbl) {
+    const labels = document.querySelectorAll(".mega-theme-label");
+    labels.forEach((lbl) => {
       lbl.textContent = next === "dark" ? "Dark Mode" : "Light Mode";
     });
   }
 
-  /* -------------------------------------------
+  /* ============================================
      STATS SYNC
-     ------------------------------------------- */
+     ============================================ */
   function syncStats() {
     try {
-      var repos = JSON.parse(localStorage.getItem("repositories") || "[]");
-      var currentRepo = localStorage.getItem("currentRepository");
-      var repoData = currentRepo
-        ? JSON.parse(localStorage.getItem("repo_" + currentRepo) || "{}")
-        : {};
-      var files = repoData.files || {};
-      var fileCount = Object.keys(files).length;
+      const repos = JSON.parse(localStorage.getItem("repositories") || "[]");
+      const currentRepo = localStorage.getItem("currentRepository");
+      const repoData = currentRepo ? JSON.parse(localStorage.getItem(`repo_${currentRepo}`) || "{}") : {};
+      const files = repoData.files || {};
+      const fileCount = Object.keys(files).length;
 
-      var commitCount = 0;
-      Object.values(files).forEach(function (f) {
+      let commitCount = 0;
+      Object.values(files).forEach((f) => {
         commitCount += f.commits ? f.commits.length : 0;
       });
 
-      var storageBytes = 0;
-      try {
-        storageBytes = new Blob([JSON.stringify(files)]).size;
-      } catch (e) {
-        /* noop */
-      }
-      var storageKB = Math.round(storageBytes / 1024);
+      const storageBytes = new Blob([JSON.stringify(files)]).size;
+      const storageKB = Math.round(storageBytes / 1024);
 
       setTextById("megaStatFiles", fileCount);
       setTextById("megaStatCommits", commitCount);
-      setTextById("megaStatStorage", storageKB + " KB");
+      setTextById("megaStatStorage", `${storageKB} KB`);
       setTextById("megaStatBranches", "1");
       setTextById("megaRepoCount", repos.length);
+      setTextById("megaProfileFiles", fileCount);
     } catch (e) {
       console.warn("Stats sync error:", e);
     }
   }
 
   function setTextById(id, text) {
-    var el = document.getElementById(id);
+    const el = document.getElementById(id);
     if (el) el.textContent = text;
   }
 
-  /* -------------------------------------------
-     TOUCH SCROLL (passive)
-     ------------------------------------------- */
+  /* ============================================
+     TOUCH SCROLL
+     ============================================ */
   function initTouchScroll() {
-    if (!track) return;
-
-    var startX = 0;
-    var scrollStart = 0;
+    let startX = 0;
+    let scrollStart = 0;
 
     track.addEventListener(
       "touchstart",
-      function (e) {
+      (e) => {
         startX = e.touches[0].clientX;
         scrollStart = track.scrollLeft;
       },
@@ -1941,35 +2518,29 @@ body {
 
     track.addEventListener(
       "touchmove",
-      function (e) {
-        var dx = startX - e.touches[0].clientX;
+      (e) => {
+        const dx = startX - e.touches[0].clientX;
         track.scrollLeft = scrollStart + dx;
       },
       { passive: true }
     );
 
-    track.addEventListener(
-      "touchend",
-      function () {
-        updateArrows();
-      },
-      { passive: true }
-    );
+    track.addEventListener("touchend", updateArrows, { passive: true });
   }
 
-  /* -------------------------------------------
+  /* ============================================
      BOOT
-     ------------------------------------------- */
+     ============================================ */
   if (document.readyState === "loading") {
     document.addEventListener("DOMContentLoaded", init);
   } else {
     init();
   }
 
-  /* Expose for external use */
+  /* Expose API */
   window.megaMenu = {
     close: closeAllPanels,
-    syncStats: syncStats,
+    syncStats,
     toggleTheme: toggleThemeHelper,
   };
 })();
