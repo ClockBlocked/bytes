@@ -112,6 +112,20 @@
 }
 
 [data-theme="dark"] {
+  
+--button: #2b2b2b;
+--buttonBorder: #414141;
+--buttonText: #a0a0a0;
+
+--body: #1e1e1e;
+--bodyText: #cecece;
+--bodyMutedText: #a0a0a0;
+
+--card: #303030;
+-cardBorder: #444444;
+--cardText: #a0a0a0;
+  
+  
   --color-bg: #22272e;
   --color-bg-secondary: #2d333b;
   --color-bg-tertiary: #373e47;
@@ -217,8 +231,13 @@ body,
 }
 
 body {
-  background-color: var(--color-bg);
-  color: var(--color-text);
+ /* background-color: var(--color-bg); 
+   color: var(--color-text);
+*/
+ 
+  background: var(--body);
+  color: var(--bodyText);
+  
   font-family: var(--font-text);
   font-size: var(--text-md);
   font-weight: var(--weight-normal);
@@ -554,9 +573,17 @@ textarea:focus-visible {
   display: flex;
   align-items: center;
   justify-content: center;
+  
+  /*
   background: var(--color-button-bg);
   color: var(--color-button-text);
   border: 0.0625rem solid var(--color-border);
+*/
+
+  background: var(--button);
+  border: 1px solid var(--buttonBorder);
+  color: var(--buttonText);
+  
   border-radius: var(--radius-md);
   padding: 0.5rem 1rem;
   font-family: var(--font-text);
@@ -3166,8 +3193,15 @@ aside:hover .sidebar-title {
   left: 1rem;
   right: 1rem;
   height: 50px;
+  
+  /*
   background: var(--color-text-muted);
   border: 1px solid var(--color-text-muted);
+  */
+  
+  background: var(--card);
+  border: 1px solid var(--cardBorder);
+  
   border-radius: 10px;
   z-index: 60;
   backdrop-filter: blur(8px);
