@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+    <meta charset="UTF-8">
+    <title>Progressive Web Apps 「 S E T U P 」</title>
+       <link rel="stylesheet" href="https://dev.wuaze.com/styleSheets/svg.css" />
+
+ <!-- CSS HS -->
+  <link rel="stylesheet" href="https://preline.co/assets/css/main.min.css?v=3.0.1">
+
+<meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Progressive Web Apps Guide - Getting Started</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel='stylesheet' href='https://dev.wuaze.com/styleSheets/fonts.css'><link rel="stylesheet" href="./style.css">
+
+  </head>
+    
+  <body>
+  <link
+      rel="stylesheet"
+      type="text/css"
+      href="https://cdn.jsdelivr.net/npm/@phosphor-icons/web@2.1.1/src/duotone/style.css"
+    />
+
+
+
+
+
+<div class="progress-indicator"></div>
+
+<header class="header">
+  <div class="header-content">
+    <a href="#" class="logo">
+    </a>
+
+    <div class="breadcrumbWrap">
+      <ol class="flex items-center whitespace-nowrap">
+        <li class="breadcrumb">
+          <a class="flex items-center text-sm text-gray-500 focus:outline-hidden dark:text-neutral-500" href="#">
+            <svg class="breadcrumbIcon shrink-0 me-3 size-4" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+              <polyline points="9 22 9 12 15 12 15 22"></polyline>
+            </svg>
+            Home
+          </a>
+
+          <svg class="caret shrink-0 mx-2 size-4 text-gray-400 dark:text-neutral-600" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="m9 18 6-6-6-6"></path>
+          </svg>
+        </li>
+
+        <li class="breadcrumb">
+          <a class="flex items-center text-sm text-gray-500 focus:outline-hidden dark:text-neutral-500" href="#">
+            <svg class="breadcrumbIcon shrink-0 me-3 size-4" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect width="7" height="7" x="14" y="3" rx="1"></rect>
+              <path d="M10 21V8a1 1 0 0 0-1-1H4a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-5a1 1 0 0 0-1-1H3"></path>
+            </svg>
+            Guides
+            <svg class="caret shrink-0 mx-2 size-4 text-gray-400 dark:text-neutral-600" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="m9 18 6-6-6-6"></path>
+            </svg>
+          </a>
+        </li>
+
+        <li class="breadcrumb text-sm font-semibold text-gray-200 truncate dark:text-neutral-500" aria-current="page">
+          PWAs
+        </li>
+      </ol>
+    </div>
+
+    <nav>
+      <ul class="nav-links">
+        <li><a href="#intro">Introduction</a></li>
+        <li><a href="#benefits">Benefits</a></li>
+        <li><a href="#requirements">Requirements</a></li>
+        <li><a href="#knowledge">Prerequisites</a></li>
+        <li><a href="#considerations">Considerations</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <section class="hero">
+    <div class="container">
+      <div class="hero-content">
+
+        <div class="badgeWrap">
+          <div class="hero-badge">
+            <i class="fas fa-rocket"></i>
+            Build the Future of Web Apps
+          </div>
+        </div>
+
+        <h1 class="hero-title">Progressive Web Apps</h1>
+        <p class="hero-subtitle">
+          Master the art of building web applications that work like native apps.
+          Fast, reliable, and engaging experiences for every device.
+        </p>
+        <div class="hero-cta">
+          <a href="#intro" class="btn btn-primary">
+            <i class="fas fa-play"></i>
+            Start Learning
+          </a>
+          <a href="#benefits" class="btn btn-secondary">
+            <i class="fas fa-lightbulb"></i>
+            Download ZIP
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="intro" class="content-section">
+    <div class="container">
+      <div class="card fade-in">
+        <h2 class="card-title">Introduction to PWAs</h2>
+        <p class="card-description">
+          Progressive Web Apps represent the next evolution of web applications, combining the best of web and native app experiences.
+        </p>
+      </div>
+
+      <div class="cards-grid">
+        
+<div class="cardWrapper">
+<svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <!--! Font Awesome Pro 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2024 Fonticons, Inc. -->
+  <path
+    d="M352 256c0 22.2-1.2 43.6-3.3 64l-185.3 0c-2.2-20.4-3.3-41.8-3.3-64s1.2-43.6 3.3-64l185.3 0c2.2 20.4 3.3 41.8 3.3 64zm28.8-64l123.1 0c5.3 20.5 8.1 41.9 8.1 64s-2.8 43.5-8.1 64l-123.1 0c2.1-20.6 3.2-42 3.2-64s-1.1-43.4-3.2-64zm112.6-32l-116.7 0c-10-63.9-29.8-117.4-55.3-151.6c78.3 20.7 142 77.5 171.9 151.6zm-149.1 0l-176.6 0c6.1-36.4 15.5-68.6 27-94.7c10.5-23.6 22.2-40.7 33.5-51.5C239.4 3.2 248.7 0 256 0s16.6 3.2 27.8 13.8c11.3 10.8 23 27.9 33.5 51.5c11.6 26 20.9 58.2 27 94.7zm-209 0L18.6 160C48.6 85.9 112.2 29.1 190.6 8.4C165.1 42.6 145.3 96.1 135.3 160zM8.1 192l123.1 0c-2.1 20.6-3.2 42-3.2 64s1.1 43.4 3.2 64L8.1 320C2.8 299.5 0 278.1 0 256s2.8-43.5 8.1-64zM194.7 446.6c-11.6-26-20.9-58.2-27-94.6l176.6 0c-6.1 36.4-15.5 68.6-27 94.6c-10.5 23.6-22.2 40.7-33.5 51.5C272.6 508.8 263.3 512 256 512s-16.6-3.2-27.8-13.8c-11.3-10.8-23-27.9-33.5-51.5zM135.3 352c10 63.9 29.8 117.4 55.3 151.6C112.2 482.9 48.6 426.1 18.6 352l116.7 0zm358.1 0c-30 74.1-93.6 130.9-171.9 151.6c25.5-34.2 45.2-87.7 55.3-151.6l116.7 0z"
+  />
+</svg>
+
+    </svg> 
+  
+        <div class="card card-blue fade-in">               
+          <h3 class="card-title">Web-Based Foundation</h3>
+          <p class="card-description">
+            Built using standard web technologies like HTML, CSS, and JavaScript, PWAs run in web browsers but feel like native applications with smooth interactions and responsive design.
+          </p>
+        </div>
+</div>
+        
+        
+        <div class="card card-green fade-in">
+          <div class="card-icon">
+            <i class="fas fa-sync"></i>
+          </div>
+          <h3 class="card-title">Progressive Enhancement</h3>
+          <p class="card-description">
+            PWAs work for every user, regardless of browser choice, because they're built with progressive enhancement as a core principle. Enhanced features activate when supported.
+          </p>
+        </div>
+
+        <div class="card card-purple fade-in">
+          <div class="card-icon">
+            <i class="fas fa-shield-alt"></i>
+          </div>
+          <h3 class="card-title">Secure by Default</h3>
+          <p class="card-description">
+            Served over HTTPS to prevent tampering and ensure content hasn't been compromised. This security foundation enables powerful native-like features safely.
+          </p>
+        </div>
+
+        <div class="card card-orange fade-in">
+          <div class="card-icon">
+            <i class="fas fa-bolt"></i>
+          </div>
+          <h3 class="card-title">App-Like Experience</h3>
+          <p class="card-description">
+            Feel like native apps with app-style interactions, navigation patterns, and the ability to work offline. Users can install them directly from the browser.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="benefits" class="content-section">
+    <div class="container">
+      <div class="section-header fade-in">
+        <h2 class="section-title">Why Choose PWAs?</h2>
+        <p class="section-subtitle">
+          Progressive Web Apps offer compelling advantages for both developers and users, bridging the gap between web and native experiences.
+        </p>
+      </div>
+
+      <div class="feature-list">
+        <div class="feature-item feature-blue fade-in">
+          <div class="feature-icon">
+            <i class="fas fa-download"></i>
+          </div>
+          <div class="feature-content">
+            <h4>Installable</h4>
+            <p>Users can install PWAs directly from the browser without app stores, creating app-like shortcuts on their home screens.</p>
+          </div>
+        </div>
+
+        <div class="feature-item feature-green fade-in">
+          <div class="feature-icon">
+            <i class="fas fa-wifi"></i>
+          </div>
+          <div class="feature-content">
+            <h4>Offline Functionality</h4>
+            <p>Service workers enable offline functionality, caching resources and data for seamless experiences without internet connectivity.</p>
+          </div>
+        </div>
+
+        <div class="feature-item feature-purple fade-in">
+          <div class="feature-icon">
+            <i class="fas fa-bell"></i>
+          </div>
+          <div class="feature-content">
+            <h4>Push Notifications</h4>
+            <p>Engage users with timely, relevant push notifications that work even when the app isn't actively being used.</p>
+          </div>
+        </div>
+
+        <div class="feature-item feature-orange fade-in">
+          <div class="feature-icon">
+            <i class="fas fa-tachometer-alt"></i>
+          </div>
+          <div class="feature-content">
+            <h4>Fast Performance</h4>
+            <p>Optimized loading with service worker caching, instant navigation, and smooth 60fps interactions rivaling native apps.</p>
+          </div>
+        </div>
+
+        <div class="feature-item feature-blue fade-in">
+          <div class="feature-icon">
+            <i class="fas fa-mobile-alt"></i>
+          </div>
+          <div class="feature-content">
+            <h4>Responsive Design</h4>
+            <p>Single codebase that works seamlessly across desktop, tablet, and mobile devices with adaptive layouts.</p>
+          </div>
+        </div>
+
+        <div class="feature-item feature-green fade-in">
+          <div class="feature-icon">
+            <i class="fas fa-coins"></i>
+          </div>
+          <div class="feature-content">
+            <h4>Cost Effective</h4>
+            <p>Lower development and maintenance costs compared to separate native apps for multiple platforms.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="requirements" class="content-section">
+    <div class="container">
+      <div class="section-header fade-in">
+        <h2 class="section-title">What You'll Need</h2>
+        <p class="section-subtitle">
+          Essential tools and setup requirements to start building Progressive Web Apps effectively.
+        </p>
+      </div>
+
+      <div class="cards-grid">
+        <div class="card card-blue fade-in">
+          <div class="card-icon">
+            <i class="fas fa-code"></i>
+          </div>
+          <h3 class="card-title">Development Environment</h3>
+          <p class="card-description">
+            A modern code editor (VS Code, Sublime, or similar), local development server, and browser developer tools for debugging and testing PWA features.
+          </p>
+        </div>
+
+        <div class="card card-green fade-in">
+          <div class="card-icon">
+            <i class="fas fa-server"></i>
+          </div>
+          <h3 class="card-title">HTTPS Server</h3>
+          <p class="card-description">
+            PWAs require HTTPS for security. You'll need SSL certificates for production, though localhost works for development and testing phases.
+          </p>
+        </div>
+
+        <div class="card card-purple fade-in">
+          <div class="card-icon">
+            <i class="fas fa-browser"></i>
+          </div>
+          <div class="card-title">Modern Browser</h3>
+            <p class="card-description">
+              Chrome, Firefox, Safari, or Edge with PWA support for testing. Chrome DevTools provides excellent PWA debugging capabilities.
+            </p>
+          </div>
+
+          <div class="card card-orange fade-in">
+            <div class="card-icon">
+              <i class="fas fa-tools"></i>
+            </div>
+            <h3 class="card-title">Build Tools (Optional)</h3>
+            <p class="card-description">
+              While not required, tools like Webpack, Workbox, or PWA Builder can streamline development and automate service worker generation.
+            </p>
+          </div>
+        </div>
+      </div>
+  </section>
+
+  <section id="knowledge" class="content-section">
+    <div class="container">
+      <div class="section-header fade-in">
+        <h2 class="section-title">Prerequisites</h2>
+        <p class="section-subtitle">
+          Foundation knowledge that will help you succeed in building Progressive Web Apps.
+        </p>
+      </div>
+
+      <div class="feature-list">
+        <div class="feature-item feature-blue fade-in">
+          <div class="feature-icon">
+            <i class="fab fa-html5"></i>
+          </div>
+          <div class="feature-content">
+            <h4>HTML & CSS Fundamentals</h4>
+            <p>Solid understanding of semantic HTML5 and modern CSS, including Flexbox, Grid, and responsive design principles.</p>
+          </div>
+        </div>
+
+        <div class="feature-item feature-green fade-in">
+          <div class="feature-icon">
+            <i class="fab fa-js"></i>
+          </div>
+          <div class="feature-content">
+            <h4>JavaScript Proficiency</h4>
+            <p>ES6+ JavaScript knowledge including Promises, async/await, modules, and familiarity with browser APIs.</p>
+          </div>
+        </div>
+
+        <div class="feature-item feature-purple fade-in">
+          <div class="feature-icon">
+            <i class="fas fa-network-wired"></i>
+          </div>
+          <div class="feature-content">
+            <h4>Web APIs & Fetch</h4>
+            <p>Understanding of web APIs, HTTP requests, and the Fetch API for handling network operations and data retrieval.</p>
+          </div>
+        </div>
+
+        <div class="feature-item feature-orange fade-in">
+          <div class="feature-icon">
+            <i class="fas fa-file-code"></i>
+          </div>
+          <div class="feature-content">
+            <h4>JSON & Data Handling</h4>
+            <p>Experience working with JSON data structures, parsing, and manipulating data for dynamic web applications.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="considerations" class="content-section">
+    <div class="container">
+      <div class="section-header fade-in">
+        <h2 class="section-title">Important Considerations</h2>
+        <p class="section-subtitle">
+          Key factors to consider when planning and developing your Progressive Web App project.
+        </p>
+      </div>
+
+      <div class="cards-grid">
+        <div class="card card-blue fade-in">
+          <div class="card-icon">
+            <i class="fas fa-users"></i>
+          </div>
+          <h3 class="card-title">Browser Support</h3>
+          <p class="card-description">
+            While PWA features are widely supported, some capabilities vary across browsers and platforms. Plan progressive enhancement strategies for consistent experiences.
+          </p>
+        </div>
+
+        <div class="card card-green fade-in">
+          <div class="card-icon">
+            <i class="fas fa-database"></i>
+          </div>
+          <h3 class="card-title">Storage Limitations</h3>
+          <p class="card-description">
+            Browser storage has quotas and can be cleared by users. Design your caching strategy thoughtfully and handle storage quota exceeded scenarios gracefully.
+          </p>
+        </div>
+
+        <div class="card card-purple fade-in">
+          <div class="card-icon">
+            <i class="fas fa-eye"></i>
+          </div>
+          <h3 class="card-title">App Store Policies</h3>
+          <p class="card-description">
+            If distributing through app stores, review platform-specific requirements and policies for PWAs, as they may differ from traditional native app guidelines.
+          </p>
+        </div>
+
+        <div class="card card-orange fade-in">
+          <div class="card-icon">
+            <i class="fas fa-chart-line"></i>
+          </div>
+          <h3 class="card-title">Performance Monitoring</h3>
+          <p class="card-description">
+            Implement analytics and performance monitoring from the start. PWAs should be fast, but regular monitoring ensures they stay optimized as they grow.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+
+
+
+<script>
+  fetch("https://dev.wuaze.com/icons/duoLight.svg")
+    .then((response) => response.text())
+    .then((svg) => {
+      const div = document.createElement("div");
+      div.style.display = "none";
+      div.innerHTML = svg;
+      document.body.appendChild(div);
+    });
+</script>
+    <script  src="./script.js"></script>
+
+  </body>
+  
+</html>
