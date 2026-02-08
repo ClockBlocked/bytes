@@ -291,15 +291,16 @@ html {
    CSS CUSTOM PROPERTIES (scoped to mega-menu)
    ----------------------------------------------- */
 :root {
-  --menu-height: 40px;
+  --menu-height: 3.35rem;
+  --menu-height-active: 3.75rem;
   --menu-z: 9000;
   --menu-bg: var(--card, #303030);
   --menu-border: var(--cardBorder, #444444);
   --menu-item-color: #9ca3af;
   --menu-item-hover: var(--color-primary, #539bf5);
   --menu-item-active: #e5e7eb;
-  --menu-arrow-size: 32px;
-  --menu-panel-max: 420px;
+  --menu-arrow-size: 2.85rem;
+  --menu-panel-max: 20rem;
   --menu-panel-bg: var(--color-bg-secondary, #2d333b);
   --menu-panel-border: var(--color-border, #444c56);
   --menu-transition-speed: 350ms;
@@ -515,28 +516,35 @@ html {
   top: var(--menu-height);
   left: 0;
   right: 0;
-  max-height: 0;
+  height: 0;
   overflow: hidden;
   background: var(--menu-panel-bg);
   border-bottom: 1px solid transparent;
   z-index: calc(var(--menu-z) - 1);
-  will-change: max-height, opacity;
+  will-change: height, opacity;
   transition:
-    max-height var(--menu-transition-speed) var(--menu-transition-ease),
+    height var(--menu-transition-speed) var(--menu-transition-ease),
     opacity var(--menu-transition-speed) var(--menu-transition-ease),
     border-color 0s linear var(--menu-transition-speed);
   opacity: 0;
 }
 
 .mega-panel.open {
-  max-height: var(--menu-panel-max);
+  height: var(--menu-panel-max);
   opacity: 1;
   border-bottom-color: var(--menu-panel-border);
   transition:
-    max-height var(--menu-transition-speed) var(--menu-transition-ease),
+    height var(--menu-transition-speed) var(--menu-transition-ease),
     opacity var(--menu-transition-speed) var(--menu-transition-ease),
     border-color 0s linear 0s;
 }
+
+
+.mega-nav:has(.mega-panel.open) {
+    height: 45px;
+    transition: height 0.35s ease;
+}
+
 
 .mega-panel-inner {
   padding: 20px 24px;
