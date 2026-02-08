@@ -283,1053 +283,703 @@ html {
 
 <style>
 /* ================================================
-   FLOATING NAVBAR & POPOVER MENU SYSTEM
-   Premium Glass Morphism Design with Fluid Animations
+   MEGA MENU — TOP NAV WITH SLIDE-DOWN PANELS
+   Mobile-first · Uses existing CSS variables
    ================================================ */
 
+/* -----------------------------------------------
+   CSS CUSTOM PROPERTIES (scoped to mega-menu)
+   ----------------------------------------------- */
 :root {
-  /* Color Palette */
-  --nav-bg: rgba(34, 39, 46, 0.7);
-  --nav-border: rgba(68, 76, 86, 0.5);
-  --nav-item-hover: rgba(83, 155, 245, 0.1);
-  --nav-item-active: rgba(83, 155, 245, 0.2);
-  --nav-primary: #539bf5;
-  --nav-success: #57ab5a;
-  --nav-warning: #c69026;
-  --nav-danger: #e5534b;
-  --nav-info: #4184e4;
-  
-  /* Shadows */
-  --nav-shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.1),
-                   0 1px 3px rgba(0, 0, 0, 0.06);
-  --nav-shadow-md: 0 4px 16px rgba(0, 0, 0, 0.15),
-                   0 2px 6px rgba(0, 0, 0, 0.08);
-  --nav-shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.2),
-                   0 4px 12px rgba(0, 0, 0, 0.1);
-  --nav-shadow-xl: 0 20px 60px rgba(0, 0, 0, 0.3),
-                   0 8px 24px rgba(0, 0, 0, 0.15);
-  
-  /* Backdrop Blur */
-  --blur-sm: blur(8px);
-  --blur-md: blur(12px);
-  --blur-lg: blur(16px);
-  
-  /* Timing */
-  --timing-fast: 150ms;
-  --timing-base: 300ms;
-  --timing-slow: 500ms;
-  
-  /* Z-index Layers */
-  --z-navbar: 1000;
-  --z-menu: 1001;
-  --z-overlay: 999;
+  --menu-height: 40px;
+  --menu-z: 9000;
+  --menu-bg: var(--card, #303030);
+  --menu-border: var(--cardBorder, #444444);
+  --menu-item-color: #9ca3af;
+  --menu-item-hover: var(--color-primary, #539bf5);
+  --menu-item-active: #e5e7eb;
+  --menu-arrow-size: 32px;
+  --menu-panel-max: 420px;
+  --menu-panel-bg: var(--color-bg-secondary, #2d333b);
+  --menu-panel-border: var(--color-border, #444c56);
+  --menu-transition-speed: 350ms;
+  --menu-transition-ease: cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* ================================================
-   ANIMATION KEYFRAMES
-   ================================================ */
-
-@keyframes menuOpen {
-  0% {
-    opacity: 0;
-    transform: translateY(20px) scale(0.95);
-  }
-  60% {
-    transform: translateY(-5px) scale(1.02);
-  }
-  80% {
-    transform: translateY(2px) scale(0.98);
-  }
-  100% {
-    opacity: 1;
-    transform: translateY(0) scale(1);
-  }
-}
-
-@keyframes menuClose {
-  0% {
-    opacity: 1;
-    transform: translateY(0) scale(1);
-  }
-  100% {
-    opacity: 0;
-    transform: translateY(20px) scale(0.95);
-  }
-}
-
-@keyframes overlayFadeIn {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
-}
-
-@keyframes overlayFadeOut {
-  from {
-    opacity: 1;
-  }
-  to {
-    opacity: 0;
-  }
-}
-
-@keyframes contentBlur {
-  from {
-    transform: scale(1);
-    filter: blur(0);
-    opacity: 1;
-  }
-  to {
-    transform: scale(0.98);
-    filter: blur(8px);
-    opacity: 0.6;
-  }
-}
-
-@keyframes contentUnblur {
-  from {
-    transform: scale(0.98);
-    filter: blur(8px);
-    opacity: 0.6;
-  }
-  to {
-    transform: scale(1);
-    filter: blur(0);
-    opacity: 1;
-  }
-}
-
-@keyframes ripple {
-  from {
-    transform: scale(0);
-    opacity: 0.6;
-  }
-  to {
-    transform: scale(2.5);
-    opacity: 0;
-  }
-}
-
-@keyframes slideUpFade {
-  from {
-    opacity: 0;
-    transform: translateY(10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-/* ================================================
-   FLOATING NAVBAR BASE
-   ================================================ */
-
-.floating-navbar {
+/* -----------------------------------------------
+   OVERLAY (blur behind open panel)
+   ----------------------------------------------- */
+.mega-overlay {
   position: fixed;
-  bottom: 24px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 90%;
-  max-width: 800px;
-  z-index: var(--z-navbar);
+  inset: 0;
+  z-index: calc(var(--menu-z) - 1);
+  background: rgba(0, 0, 0, 0.25);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  opacity: 0;
+  visibility: hidden;
   pointer-events: none;
+  transition:
+    opacity var(--menu-transition-speed) var(--menu-transition-ease),
+    visibility 0s linear var(--menu-transition-speed);
 }
 
-.floating-nav-main {
-  background: var(--nav-bg);
-  backdrop-filter: var(--blur-md) saturate(180%);
-  -webkit-backdrop-filter: var(--blur-md) saturate(180%);
-  border: 1px solid var(--nav-border);
-  border-radius: 24px;
-  padding: 12px 16px;
-  box-shadow: var(--nav-shadow-lg);
-  display: flex;
-  justify-content: space-around;
-  align-items: center;
-  gap: 8px;
+.mega-overlay.active {
+  opacity: 1;
+  visibility: visible;
   pointer-events: auto;
-  transition: all var(--timing-base) cubic-bezier(0.34, 1.56, 0.64, 1);
+  transition:
+    opacity var(--menu-transition-speed) var(--menu-transition-ease),
+    visibility 0s linear 0s;
 }
 
-.floating-navbar.menu-active .floating-nav-main {
-  border-bottom-left-radius: 0;
-  border-bottom-right-radius: 0;
-  box-shadow: none;
-}
-
-/* ================================================
-   NAVIGATION ITEMS
-   ================================================ */
-
-.nav-item {
-  position: relative;
+/* -----------------------------------------------
+   TOP NAVBAR SHELL
+   ----------------------------------------------- */
+.mega-nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: var(--menu-height);
+  background: var(--menu-bg);
+  border-bottom: 1px solid var(--menu-border);
+  z-index: var(--menu-z);
   display: flex;
-  flex-direction: column;
+  align-items: center;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+/* -----------------------------------------------
+   SCROLL ARROWS
+   ----------------------------------------------- */
+.mega-arrow {
+  flex-shrink: 0;
+  width: var(--menu-arrow-size);
+  height: 100%;
+  display: flex;
   align-items: center;
   justify-content: center;
-  gap: 4px;
-  padding: 12px 16px;
   background: transparent;
   border: none;
-  border-radius: 16px;
-  color: #adbac7;
+  color: var(--menu-item-color);
   cursor: pointer;
-  transition: all var(--timing-fast) ease;
-  overflow: hidden;
-  flex: 1;
-  min-width: 0;
-  outline: none;
+  padding: 0;
+  transition: color 200ms ease, opacity 200ms ease;
+  position: relative;
+  z-index: 2;
 }
 
-.nav-item i {
-  font-size: 20px;
-  transition: all var(--timing-fast) ease;
+.mega-arrow:hover:not(.disabled) {
+  color: var(--menu-item-hover);
 }
 
-.nav-label {
-  font-size: 11px;
-  font-weight: 500;
-  letter-spacing: 0.3px;
-  text-transform: uppercase;
-  white-space: nowrap;
-  transition: all var(--timing-fast) ease;
-}
-
-.nav-item:hover {
-  background: var(--nav-item-hover);
-  color: var(--nav-primary);
-  transform: translateY(-2px);
-}
-
-.nav-item:active {
-  transform: translateY(0);
-}
-
-.nav-item-primary {
-  background: linear-gradient(135deg, var(--nav-primary), #4184e4);
-  color: white;
-  box-shadow: 0 4px 12px rgba(83, 155, 245, 0.3);
-}
-
-.nav-item-primary:hover {
-  background: linear-gradient(135deg, #4184e4, var(--nav-primary));
-  transform: translateY(-3px);
-  box-shadow: 0 6px 16px rgba(83, 155, 245, 0.4);
-}
-
-.nav-item.active {
-  background: var(--nav-item-active);
-  color: var(--nav-primary);
-}
-
-/* Ripple Effect */
-.ripple-container {
-  position: absolute;
-  inset: 0;
-  overflow: hidden;
-  border-radius: inherit;
+.mega-arrow.disabled {
+  color: var(--color-text-muted, #636e7b);
+  opacity: 0.3;
+  cursor: default;
   pointer-events: none;
 }
 
-.ripple {
-  position: absolute;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.3);
-  animation: ripple 600ms ease-out;
-  pointer-events: none;
-}
-
-/* ================================================
-   FLOATING OVERLAY
-   ================================================ */
-
-.floating-nav-overlay {
-  position: fixed;
-  inset: 0;
-  background: rgba(0, 0, 0, 0.6);
-  backdrop-filter: var(--blur-sm);
-  -webkit-backdrop-filter: var(--blur-sm);
-  z-index: var(--z-overlay);
-  opacity: 0;
-  visibility: hidden;
-  transition: all var(--timing-base) ease;
-}
-
-.floating-nav-overlay.active {
-  opacity: 1;
-  visibility: visible;
-  animation: overlayFadeIn var(--timing-base) ease;
-}
-
-.floating-nav-overlay.closing {
-  animation: overlayFadeOut var(--timing-base) ease;
-}
-
-/* ================================================
-   POPOVER MENU
-   ================================================ */
-
-.floating-nav-menu {
-  position: fixed;
-  bottom: 24px;
-  left: 50%;
-  transform: translateX(-50%) translateY(20px) scale(0.95);
-  width: 90%;
-  max-width: 900px;
-  max-height: 70vh;
-  background: rgba(34, 39, 46, 0.95);
-  backdrop-filter: var(--blur-lg) saturate(180%);
-  -webkit-backdrop-filter: var(--blur-lg) saturate(180%);
-  border: 1px solid var(--nav-border);
-  border-radius: 24px 24px 0 0;
-  box-shadow: var(--nav-shadow-xl);
-  z-index: var(--z-menu);
-  opacity: 0;
-  visibility: hidden;
-  pointer-events: none;
-  will-change: transform, opacity;
-  transition: none;
-}
-
-.floating-nav-menu.active {
-  opacity: 1;
-  visibility: visible;
-  pointer-events: auto;
-  animation: menuOpen var(--timing-slow) linear(
-    0, -0.001 2.6%, -0.004 4.9%, -0.01 7.1%, -0.02 9.4%, 
-    -0.043 13.6%, -0.105 22.4%, -0.117 24.5%, -0.124 26.4%, 
-    -0.128 28.5%, -0.126 30.5%, -0.118 32.3%, -0.104 34.1%, 
-    -0.09 35.3%, -0.072 36.5%, -0.027 38.8%, 0.034 41%, 
-    0.108 43.1%, 0.197 45.1%, 0.299 47%, 0.407 48.7%, 
-    0.652 52.2%, 0.741 53.7%, 0.817 55.2%, 0.9 57.1%, 
-    0.97 59.1%, 1.027 61.2%, 1.071 63.4%, 1.099 65.5%, 
-    1.11 66.6%, 1.118 67.7%, 1.124 68.8%, 1.127 70%, 
-    1.128 71.3%, 1.127 72.6%, 1.12 74.8%, 1.108 77.2%, 
-    1.043 86.5%, 1.019 90.7%, 1.01 93%, 1.004 95.2%, 
-    1.001 97.4%, 1
-  );
-  transform: translateX(-50%) translateY(0) scale(1);
-}
-
-.floating-nav-menu.closing {
-  animation: menuClose var(--timing-base) cubic-bezier(0.34, 1.56, 0.64, 1);
-}
-
-/* Menu Container */
-.menu-container {
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-  overflow: hidden;
-}
-
-/* Menu Header */
-.menu-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 20px 24px;
-  border-bottom: 1px solid var(--nav-border);
-  background: rgba(45, 51, 59, 0.5);
-  backdrop-filter: var(--blur-sm);
-  -webkit-backdrop-filter: var(--blur-sm);
+.mega-arrow svg {
+  width: 16px;
+  height: 16px;
+  fill: currentColor;
   flex-shrink: 0;
 }
 
-.menu-title {
-  font-size: 18px;
-  font-weight: 600;
-  color: #adbac7;
-  margin: 0;
+/* Left arrow fade gradient */
+.mega-arrow-left {
+  background: linear-gradient(to right, var(--menu-bg) 60%, transparent);
 }
 
-.menu-close {
+.mega-arrow-right {
+  background: linear-gradient(to left, var(--menu-bg) 60%, transparent);
+}
+
+/* -----------------------------------------------
+   SCROLLABLE TRACK (holds menu items)
+   ----------------------------------------------- */
+.mega-track {
+  flex: 1;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scroll-behavior: smooth;
+  display: flex;
+  align-items: center;
+  height: 100%;
+  min-width: 0;
+
+  /* Hide scrollbar everywhere */
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.mega-track::-webkit-scrollbar {
+  display: none;
+  width: 0;
+  height: 0;
+}
+
+.mega-items {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  height: 100%;
+  min-width: max-content;
+  padding: 0 4px;
+}
+
+/* -----------------------------------------------
+   MENU ITEMS
+   ----------------------------------------------- */
+.mega-item {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  padding: 0 20px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: color 200ms ease, background-color 200ms ease;
+
+  /* Bold h3-style text */
+  font-family: var(--font-head, "WF Visual Sans", sans-serif);
+  font-size: 14px;
+  font-weight: var(--weight-bold, 700);
+  letter-spacing: 0.01em;
+  line-height: 1;
+
+  /* Default: light grey */
+  color: var(--menu-item-color);
+}
+
+.mega-item:hover {
+  color: var(--menu-item-hover);
+  background: rgba(83, 155, 245, 0.06);
+}
+
+.mega-item:active {
+  background: rgba(83, 155, 245, 0.1);
+}
+
+/* Active state: very light gray */
+.mega-item.active {
+  color: var(--menu-item-active);
+  background: rgba(255, 255, 255, 0.04);
+}
+
+/* Active indicator underline */
+.mega-item.active::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 12px;
+  right: 12px;
+  height: 2px;
+  background: var(--menu-item-hover);
+  border-radius: 2px 2px 0 0;
+  animation: megaUnderline 200ms var(--menu-transition-ease) both;
+}
+
+@keyframes megaUnderline {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+
+/* Optional badge on menu items */
+.mega-item .mega-badge {
+  margin-left: 8px;
+  padding: 1px 6px;
+  font-size: 10px;
+  font-weight: 600;
+  line-height: 1.5;
+  border-radius: 10px;
+  background: var(--color-primary, #539bf5);
+  color: #fff;
+}
+
+/* -----------------------------------------------
+   DROPDOWN PANELS
+   ----------------------------------------------- */
+.mega-panel {
+  position: fixed;
+  top: var(--menu-height);
+  left: 0;
+  right: 0;
+  max-height: 0;
+  overflow: hidden;
+  background: var(--menu-panel-bg);
+  border-bottom: 1px solid transparent;
+  z-index: calc(var(--menu-z) - 1);
+  will-change: max-height, opacity;
+  transition:
+    max-height var(--menu-transition-speed) var(--menu-transition-ease),
+    opacity var(--menu-transition-speed) var(--menu-transition-ease),
+    border-color 0s linear var(--menu-transition-speed);
+  opacity: 0;
+}
+
+.mega-panel.open {
+  max-height: var(--menu-panel-max);
+  opacity: 1;
+  border-bottom-color: var(--menu-panel-border);
+  transition:
+    max-height var(--menu-transition-speed) var(--menu-transition-ease),
+    opacity var(--menu-transition-speed) var(--menu-transition-ease),
+    border-color 0s linear 0s;
+}
+
+.mega-panel-inner {
+  padding: 20px 24px;
+  opacity: 0;
+  transform: translateY(-8px);
+  transition:
+    opacity 250ms ease 50ms,
+    transform 250ms var(--menu-transition-ease) 50ms;
+}
+
+.mega-panel.open .mega-panel-inner {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* -----------------------------------------------
+   PANEL LAYOUTS — shared helpers
+   ----------------------------------------------- */
+.panel-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 12px;
+}
+
+.panel-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.panel-section-title {
+  font-family: var(--font-head, sans-serif);
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--color-text-muted, #636e7b);
+  margin-bottom: 10px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid var(--menu-panel-border);
+}
+
+/* -----------------------------------------------
+   PANEL CARD (reusable clickable block)
+   ----------------------------------------------- */
+.panel-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 14px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid transparent;
+  border-radius: var(--radius-md, 0.5rem);
+  cursor: pointer;
+  transition: all 200ms ease;
+  text-align: left;
+  width: 100%;
+  color: var(--color-text, #adbac7);
+  font-size: 13px;
+}
+
+.panel-card:hover {
+  background: rgba(83, 155, 245, 0.06);
+  border-color: var(--menu-panel-border);
+  transform: translateX(2px);
+}
+
+.panel-card:active {
+  transform: translateX(0);
+  background: rgba(83, 155, 245, 0.1);
+}
+
+.panel-card-icon {
   width: 36px;
   height: 36px;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: transparent;
-  border: 1px solid var(--nav-border);
-  border-radius: 8px;
-  color: #adbac7;
-  cursor: pointer;
-  transition: all var(--timing-fast) ease;
-}
-
-.menu-close:hover {
-  background: rgba(229, 83, 75, 0.1);
-  border-color: var(--nav-danger);
-  color: var(--nav-danger);
-  transform: rotate(90deg);
-}
-
-/* Menu Content */
-.menu-content {
-  flex: 1;
-  overflow-y: auto;
-  padding: 24px;
-  scroll-behavior: smooth;
-}
-
-.menu-content::-webkit-scrollbar {
-  width: 8px;
-}
-
-.menu-content::-webkit-scrollbar-track {
-  background: rgba(45, 51, 59, 0.3);
-  border-radius: 4px;
-}
-
-.menu-content::-webkit-scrollbar-thumb {
-  background: rgba(83, 155, 245, 0.3);
-  border-radius: 4px;
-}
-
-.menu-content::-webkit-scrollbar-thumb:hover {
-  background: rgba(83, 155, 245, 0.5);
-}
-
-/* ================================================
-   MENU SECTIONS
-   ================================================ */
-
-.menu-section {
-  margin-bottom: 32px;
-  animation: slideUpFade var(--timing-base) ease;
-  animation-fill-mode: both;
-}
-
-.menu-section:nth-child(1) { animation-delay: 50ms; }
-.menu-section:nth-child(2) { animation-delay: 100ms; }
-.menu-section:nth-child(3) { animation-delay: 150ms; }
-.menu-section:nth-child(4) { animation-delay: 200ms; }
-.menu-section:nth-child(5) { animation-delay: 250ms; }
-.menu-section:nth-child(6) { animation-delay: 300ms; }
-
-.section-title {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  font-size: 14px;
-  font-weight: 600;
-  color: #768390;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  margin-bottom: 16px;
-}
-
-.section-icon {
+  border-radius: var(--radius-md, 0.5rem);
+  flex-shrink: 0;
   font-size: 16px;
-  color: var(--nav-primary);
 }
 
-.section-action {
-  margin-left: auto;
-  padding: 4px 8px;
-  background: transparent;
-  border: 1px solid var(--nav-border);
-  border-radius: 6px;
-  color: #768390;
-  font-size: 12px;
-  cursor: pointer;
-  transition: all var(--timing-fast) ease;
+.panel-card-icon.blue {
+  background: rgba(83, 155, 245, 0.12);
+  color: var(--color-primary, #539bf5);
 }
 
-.section-action:hover {
-  background: var(--nav-item-hover);
-  color: var(--nav-primary);
-  border-color: var(--nav-primary);
+.panel-card-icon.green {
+  background: rgba(87, 171, 90, 0.12);
+  color: var(--color-success, #57ab5a);
 }
 
-/* ================================================
-   PROFILE SECTION
-   ================================================ */
-
-.profile-card {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  padding: 20px;
-  background: linear-gradient(135deg, rgba(83, 155, 245, 0.1), rgba(65, 132, 228, 0.05));
-  border: 1px solid rgba(83, 155, 245, 0.2);
-  border-radius: 16px;
-  transition: all var(--timing-base) ease;
+.panel-card-icon.orange {
+  background: rgba(198, 144, 38, 0.12);
+  color: var(--color-warning, #c69026);
 }
 
-.profile-card:hover {
-  background: linear-gradient(135deg, rgba(83, 155, 245, 0.15), rgba(65, 132, 228, 0.08));
-  border-color: rgba(83, 155, 245, 0.3);
-  transform: translateY(-2px);
-  box-shadow: var(--nav-shadow-md);
+.panel-card-icon.red {
+  background: rgba(229, 83, 75, 0.12);
+  color: var(--color-danger, #e5534b);
 }
 
-.profile-avatar {
-  width: 64px;
-  height: 64px;
-  border-radius: 50%;
-  border: 3px solid var(--nav-primary);
-  box-shadow: 0 0 20px rgba(83, 155, 245, 0.3);
+.panel-card-icon.purple {
+  background: rgba(130, 80, 223, 0.12);
+  color: #8250df;
 }
 
-.profile-info {
+.panel-card-body {
   flex: 1;
+  min-width: 0;
 }
 
-.profile-name {
-  font-size: 18px;
+.panel-card-title {
+  font-size: 13px;
   font-weight: 600;
-  color: #adbac7;
-  margin: 0 0 4px 0;
+  color: var(--color-text, #adbac7);
+  margin: 0 0 2px 0;
+  line-height: 1.3;
 }
 
-.profile-username {
-  font-size: 14px;
-  color: #768390;
-  margin: 0 0 8px 0;
-}
-
-.profile-note {
-  font-size: 12px;
-  color: #636e7b;
+.panel-card-desc {
+  font-size: 11px;
+  color: var(--color-text-muted, #636e7b);
   margin: 0;
-  font-style: italic;
+  line-height: 1.3;
 }
 
-/* ================================================
-   MENU GRID (Navigation & Quick Actions)
-   ================================================ */
-
-.menu-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-  gap: 12px;
-}
-
-.menu-card {
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  padding: 20px;
-  background: rgba(45, 51, 59, 0.5);
-  border: 1px solid var(--nav-border);
-  border-radius: 12px;
-  cursor: pointer;
-  transition: all var(--timing-base) cubic-bezier(0.34, 1.56, 0.64, 1);
-  overflow: hidden;
-}
-
-.menu-card::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(135deg, rgba(83, 155, 245, 0.05), transparent);
+.panel-card-chevron {
+  color: var(--color-text-muted, #636e7b);
+  font-size: 12px;
   opacity: 0;
-  transition: opacity var(--timing-base) ease;
+  transition: opacity 200ms ease;
 }
 
-.menu-card:hover {
-  background: rgba(45, 51, 59, 0.7);
-  border-color: var(--nav-primary);
-  transform: translateY(-4px);
-  box-shadow: var(--nav-shadow-md);
-}
-
-.menu-card:hover::before {
+.panel-card:hover .panel-card-chevron {
   opacity: 1;
 }
 
-.card-icon {
-  width: 48px;
-  height: 48px;
+/* -----------------------------------------------
+   PANEL — STATS ROW
+   ----------------------------------------------- */
+.stats-row {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+}
+
+.stat-block {
   display: flex;
   align-items: center;
-  justify-content: center;
-  background: rgba(83, 155, 245, 0.1);
-  border-radius: 12px;
-  margin-bottom: 12px;
-  transition: all var(--timing-base) ease;
+  gap: 10px;
+  padding: 10px 12px;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.04);
+  border-radius: var(--radius-md, 0.5rem);
+  transition: background 200ms ease;
 }
 
-.card-icon i {
-  font-size: 24px;
-  color: var(--nav-primary);
+.stat-block:hover {
+  background: rgba(255, 255, 255, 0.04);
 }
 
-.menu-card:hover .card-icon {
-  transform: scale(1.1) rotate(5deg);
-  background: rgba(83, 155, 245, 0.2);
-}
-
-.card-icon-success {
-  background: rgba(87, 171, 90, 0.1);
-}
-
-.card-icon-success i {
-  color: var(--nav-success);
-}
-
-.card-icon-primary {
-  background: rgba(65, 132, 228, 0.1);
-}
-
-.card-icon-primary i {
-  color: var(--nav-info);
-}
-
-.card-icon-info {
-  background: rgba(83, 155, 245, 0.1);
-}
-
-.card-icon-info i {
-  color: var(--nav-primary);
-}
-
-.card-icon-warning {
-  background: rgba(198, 144, 38, 0.1);
-}
-
-.card-icon-warning i {
-  color: var(--nav-warning);
-}
-
-.card-content {
-  flex: 1;
-  position: relative;
-}
-
-.card-title {
-  font-size: 15px;
-  font-weight: 600;
-  color: #adbac7;
-  margin: 0 0 4px 0;
-}
-
-.card-description {
-  font-size: 12px;
-  color: #768390;
-  margin: 0;
-}
-
-.card-badge {
-  position: absolute;
-  top: 0;
-  right: 0;
-  padding: 2px 8px;
-  background: var(--nav-primary);
-  color: white;
-  font-size: 11px;
-  font-weight: 600;
-  border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(83, 155, 245, 0.3);
-}
-
-/* ================================================
-   RECENT FILES LIST
-   ================================================ */
-
-.recent-files-list {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.recent-file-item {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 12px 16px;
-  background: rgba(45, 51, 59, 0.3);
-  border: 1px solid transparent;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: all var(--timing-fast) ease;
-}
-
-.recent-file-item:hover {
-  background: rgba(45, 51, 59, 0.5);
-  border-color: var(--nav-border);
-  transform: translateX(4px);
-}
-
-.file-icon {
+.stat-block-icon {
   width: 32px;
   height: 32px;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: rgba(83, 155, 245, 0.1);
-  border-radius: 6px;
+  border-radius: 8px;
+  font-size: 14px;
   flex-shrink: 0;
 }
 
-.file-icon i {
-  font-size: 16px;
-  color: var(--nav-primary);
-}
-
-.file-info {
-  flex: 1;
-  min-width: 0;
-}
-
-.file-name {
-  font-size: 13px;
-  font-weight: 500;
-  color: #adbac7;
+.stat-block-value {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--color-text, #adbac7);
+  line-height: 1;
   margin: 0 0 2px 0;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  font-family: var(--font-head, sans-serif);
 }
 
-.file-meta {
-  font-size: 11px;
-  color: #636e7b;
+.stat-block-label {
+  font-size: 10px;
+  color: var(--color-text-muted, #636e7b);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
   margin: 0;
 }
 
-.file-action {
-  color: #768390;
-  font-size: 12px;
-  opacity: 0;
-  transition: opacity var(--timing-fast) ease;
+/* -----------------------------------------------
+   PANEL — TOOL LIST (settings, help, etc.)
+   ----------------------------------------------- */
+.tool-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 14px;
+  background: transparent;
+  border: none;
+  border-radius: var(--radius-md, 0.5rem);
+  cursor: pointer;
+  width: 100%;
+  text-align: left;
+  color: var(--color-text, #adbac7);
+  font-size: 13px;
+  transition: all 150ms ease;
 }
 
-.recent-file-item:hover .file-action {
+.tool-row:hover {
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.tool-row-icon {
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 6px;
+  background: rgba(83, 155, 245, 0.08);
+  color: var(--color-primary, #539bf5);
+  font-size: 13px;
+  flex-shrink: 0;
+}
+
+.tool-row-text {
+  flex: 1;
+  font-weight: 500;
+}
+
+.tool-row-hint {
+  font-size: 11px;
+  color: var(--color-text-muted, #636e7b);
+  font-family: var(--font-mono, monospace);
+}
+
+.tool-row-chevron {
+  font-size: 11px;
+  color: var(--color-text-muted, #636e7b);
+  opacity: 0;
+  transition: opacity 150ms ease;
+}
+
+.tool-row:hover .tool-row-chevron {
   opacity: 1;
 }
 
-/* ================================================
-   STATISTICS GRID
-   ================================================ */
-
-.stats-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-  gap: 12px;
-}
-
-.stat-card {
+/* -----------------------------------------------
+   PANEL — PROFILE
+   ----------------------------------------------- */
+.profile-banner {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 16px;
   padding: 16px;
-  background: rgba(45, 51, 59, 0.3);
-  border: 1px solid var(--nav-border);
-  border-radius: 12px;
-  transition: all var(--timing-base) ease;
+  background: linear-gradient(135deg, rgba(83, 155, 245, 0.08), rgba(83, 155, 245, 0.02));
+  border: 1px solid rgba(83, 155, 245, 0.15);
+  border-radius: var(--radius-lg, 0.75rem);
 }
 
-.stat-card:hover {
-  background: rgba(45, 51, 59, 0.5);
-  border-color: var(--nav-primary);
-  transform: translateY(-2px);
-  box-shadow: var(--nav-shadow-sm);
-}
-
-.stat-icon {
-  width: 40px;
-  height: 40px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 10px;
+.profile-banner-avatar {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  border: 2px solid var(--color-primary, #539bf5);
   flex-shrink: 0;
+  object-fit: cover;
 }
 
-.stat-icon i {
-  font-size: 20px;
-}
-
-.stat-icon-files {
-  background: linear-gradient(135deg, rgba(83, 155, 245, 0.2), rgba(83, 155, 245, 0.05));
-}
-
-.stat-icon-files i {
-  color: var(--nav-primary);
-}
-
-.stat-icon-commits {
-  background: linear-gradient(135deg, rgba(87, 171, 90, 0.2), rgba(87, 171, 90, 0.05));
-}
-
-.stat-icon-commits i {
-  color: var(--nav-success);
-}
-
-.stat-icon-storage {
-  background: linear-gradient(135deg, rgba(198, 144, 38, 0.2), rgba(198, 144, 38, 0.05));
-}
-
-.stat-icon-storage i {
-  color: var(--nav-warning);
-}
-
-.stat-icon-branches {
-  background: linear-gradient(135deg, rgba(229, 83, 75, 0.2), rgba(229, 83, 75, 0.05));
-}
-
-.stat-icon-branches i {
-  color: var(--nav-danger);
-}
-
-.stat-content {
-  flex: 1;
-}
-
-.stat-value {
-  font-size: 20px;
-  font-weight: 700;
-  color: #adbac7;
-  margin: 0 0 2px 0;
-}
-
-.stat-label {
-  font-size: 11px;
-  color: #768390;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  margin: 0;
-}
-
-/* ================================================
-   TOOLS LIST
-   ================================================ */
-
-.tool-list {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.tool-item {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 14px 16px;
-  background: rgba(45, 51, 59, 0.3);
-  border: 1px solid transparent;
-  border-radius: 10px;
-  cursor: pointer;
-  transition: all var(--timing-fast) ease;
-}
-
-.tool-item:hover {
-  background: rgba(45, 51, 59, 0.5);
-  border-color: var(--nav-border);
-  transform: translateX(4px);
-}
-
-.tool-icon {
-  width: 36px;
-  height: 36px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: rgba(83, 155, 245, 0.1);
-  border-radius: 8px;
-  flex-shrink: 0;
-}
-
-.tool-icon i {
+.profile-banner-name {
   font-size: 16px;
-  color: var(--nav-primary);
-}
-
-.tool-content {
-  flex: 1;
-  min-width: 0;
-}
-
-.tool-title {
-  font-size: 14px;
   font-weight: 600;
-  color: #adbac7;
+  color: var(--color-text, #adbac7);
   margin: 0 0 2px 0;
 }
 
-.tool-description {
+.profile-banner-role {
   font-size: 12px;
-  color: #768390;
+  color: var(--color-text-secondary, #768390);
   margin: 0;
 }
 
-.tool-action {
-  color: #768390;
-  font-size: 12px;
-  transition: all var(--timing-fast) ease;
+/* -----------------------------------------------
+   BODY OFFSET (push content below fixed navbar)
+   ----------------------------------------------- */
+body {
+  padding-top: var(--menu-height);
 }
 
-.tool-item:hover .tool-action {
-  color: var(--nav-primary);
-  transform: translateX(2px);
+/* Hide the OLD bottom navbar and sidebars */
+.navbar {
+  display: none !important;
 }
 
-/* ================================================
-   CONTENT BLUR STATES
-   ================================================ */
-
-#mainArea.menu-active {
-  animation: contentBlur var(--timing-base) ease forwards;
+#leftSidebar,
+#rightSidebar {
+  display: none !important;
 }
 
-#mainArea.menu-closing {
-  animation: contentUnblur var(--timing-base) ease forwards;
+#overlay {
+  display: none !important;
 }
 
-.navbar.menu-active {
-  animation: contentBlur var(--timing-base) ease forwards;
+/* Remove the old sidebar margins on #mainArea */
+#mainArea {
+  margin-left: 0 !important;
+  margin-right: 0 !important;
 }
 
-.navbar.menu-closing {
-  animation: contentUnblur var(--timing-base) ease forwards;
-}
+/* -----------------------------------------------
+   RESPONSIVE — MOBILE FIRST
+   ----------------------------------------------- */
 
-.breadCrumbsWrapper.menu-active {
-  animation: contentBlur var(--timing-base) ease forwards;
-}
+/* Small phones (320px+) — base styles above handle this */
 
-.breadCrumbsWrapper.menu-closing {
-  animation: contentUnblur var(--timing-base) ease forwards;
-}
+/* Larger phones (480px+) */
+@media (min-width: 480px) {
+  .mega-item {
+    padding: 0 24px;
+    font-size: 14px;
+  }
 
-/* ================================================
-   RESPONSIVE DESIGN
-   ================================================ */
+  .stats-row {
+    grid-template-columns: repeat(4, 1fr);
+  }
 
-@media (max-width: 768px) {
-  .floating-navbar {
-    width: 95%;
-    max-width: none;
-    bottom: 16px;
-  }
-  
-  .floating-nav-main {
-    padding: 10px 12px;
-    border-radius: 20px;
-  }
-  
-  .nav-item {
-    padding: 10px 12px;
-    min-width: 60px;
-  }
-  
-  .nav-item i {
-    font-size: 18px;
-  }
-  
-  .nav-label {
-    font-size: 10px;
-  }
-  
-  .floating-nav-menu {
-    width: 95%;
-    max-height: 75vh;
-    bottom: 16px;
-  }
-  
-  .menu-content {
-    padding: 16px;
-  }
-  
-  .menu-grid {
-    grid-template-columns: 1fr;
-  }
-  
-  .stats-grid {
+  .panel-grid {
     grid-template-columns: repeat(2, 1fr);
   }
 }
 
-@media (max-width: 480px) {
-  .nav-label {
-    display: none;
+/* Tablets (768px+) */
+@media (min-width: 768px) {
+  .mega-item {
+    padding: 0 28px;
+    font-size: 15px;
   }
-  
-  .nav-item {
-    padding: 12px;
+
+  .panel-grid {
+    grid-template-columns: repeat(3, 1fr);
   }
-  
-  .profile-card {
-    flex-direction: column;
-    text-align: center;
-  }
-  
-  .stats-grid {
-    grid-template-columns: 1fr;
+
+  .mega-panel-inner {
+    padding: 24px 32px;
   }
 }
 
-/* ================================================
-   ACCESSIBILITY
-   ================================================ */
+/* Desktop (1024px+) */
+@media (min-width: 1024px) {
+  .mega-item {
+    padding: 0 32px;
+  }
 
-.nav-item:focus-visible,
-.menu-close:focus-visible,
-.menu-card:focus-visible,
-.tool-item:focus-visible {
-  outline: 2px solid var(--nav-primary);
-  outline-offset: 2px;
+  .panel-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+
+  .mega-panel-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 28px 40px;
+  }
+}
+
+/* -----------------------------------------------
+   ACCESSIBILITY
+   ----------------------------------------------- */
+.mega-item:focus-visible,
+.panel-card:focus-visible,
+.tool-row:focus-visible,
+.mega-arrow:focus-visible {
+  outline: 2px solid var(--color-primary, #539bf5);
+  outline-offset: -2px;
 }
 
 @media (prefers-reduced-motion: reduce) {
-  *,
-  *::before,
-  *::after {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
+  .mega-panel,
+  .mega-panel-inner,
+  .mega-overlay,
+  .mega-item::after {
     transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
   }
 }
 
-/* ================================================
-   PRINT STYLES
-   ================================================ */
-
-@media print {
-  .floating-navbar,
-  .floating-nav-overlay {
-    display: none;
-  }
-}
-
-/* ================================================
-   LIGHT THEME SUPPORT
-   ================================================ */
-
+/* -----------------------------------------------
+   LIGHT THEME OVERRIDES
+   ----------------------------------------------- */
 [data-theme="light"] {
-  --nav-bg: rgba(255, 255, 255, 0.7);
-  --nav-border: rgba(208, 215, 222, 0.5);
-  --nav-item-hover: rgba(83, 155, 245, 0.08);
-  --nav-item-active: rgba(83, 155, 245, 0.15);
+  --menu-bg: #ffffff;
+  --menu-border: #d0d7de;
+  --menu-item-color: #656d76;
+  --menu-item-hover: #0969da;
+  --menu-item-active: #1f2328;
+  --menu-panel-bg: #ffffff;
+  --menu-panel-border: #d0d7de;
 }
 
-[data-theme="light"] .floating-nav-menu {
-  background: rgba(255, 255, 255, 0.95);
+[data-theme="light"] .mega-overlay {
+  background: rgba(0, 0, 0, 0.12);
 }
 
-[data-theme="light"] .menu-title,
-[data-theme="light"] .profile-name,
-[data-theme="light"] .card-title,
-[data-theme="light"] .tool-title,
-[data-theme="light"] .stat-value {
-  color: #24292f;
+[data-theme="light"] .mega-arrow-left {
+  background: linear-gradient(to right, #ffffff 60%, transparent);
 }
 
-[data-theme="light"] .nav-item {
-  color: #57606a;
+[data-theme="light"] .mega-arrow-right {
+  background: linear-gradient(to left, #ffffff 60%, transparent);
 }
 
-[data-theme="light"] .section-title,
-[data-theme="light"] .profile-username,
-[data-theme="light"] .card-description,
-[data-theme="light"] .tool-description,
-[data-theme="light"] .stat-label {
-  color: #656d76;
+[data-theme="light"] .panel-card:hover {
+  background: rgba(9, 105, 218, 0.04);
+}
+
+[data-theme="light"] .stat-block {
+  background: rgba(0, 0, 0, 0.02);
+  border-color: rgba(0, 0, 0, 0.06);
+}
+
+[data-theme="light"] .tool-row:hover {
+  background: rgba(0, 0, 0, 0.04);
+}
+
+[data-theme="light"] .profile-banner {
+  background: linear-gradient(135deg, rgba(9, 105, 218, 0.06), rgba(9, 105, 218, 0.02));
+  border-color: rgba(9, 105, 218, 0.15);
+}
+
+/* -----------------------------------------------
+   PRINT — hide nav entirely
+   ----------------------------------------------- */
+@media print {
+  .mega-nav,
+  .mega-overlay,
+  .mega-panel {
+    display: none !important;
+  }
+
+  body {
+    padding-top: 0;
+  }
 }
 </style>
 
@@ -1350,108 +1000,267 @@ html {
 <!-------
          Top NAVBar
                   ----------->
-<nav class="navbar" aria-label="Main navigation">
-  <div class="navbar-inner">
-    
-    <!-- Left Section -->
-    <div class="navbar-section navbar-left">
-      <button 
-        id="leftSidebarTrigger" 
-        class="navbar-button navbar-button-icon"
-        aria-label="Toggle left sidebar menu"
-        data-action="toggle-sidebar"
-        data-target="left"
-      >
-        <i class="fas fa-bars"></i>
-      </button>
-      
-      <a href="#" class="navbar-brand" aria-label="GitDev homepage">
-        <i class="fab fa-github navbar-brand-icon"></i>
-        <span class="navbar-brand-text">GitDev</span>
-      </a>
-    </div>
+<!-- ====================================================
+     MEGA MENU — place right after <body>
+     ==================================================== -->
+<div id="megaOverlay" class="mega-overlay" aria-hidden="true"></div>
 
-    <!-- Center Section (Search Button) -->
-    <div class="navbar-section navbar-center">
-      <button 
-        onclick="showSearchModal()" 
-        class="navbar-button navbar-button-search"
-        aria-label="Search files"
-        data-action="open-search"
-        data-tooltip="Search files (Ctrl+K)"
-      >
-        <i class="fas fa-search navbar-button-icon"></i>
-        <span class="navbar-button-label">Search</span>
-        <kbd class="navbar-button-shortcut" aria-hidden="true">Ctrl+K</kbd>
-      </button>
-    </div>
+<nav class="mega-nav" role="navigation" aria-label="Main navigation">
 
-    <!-- Right Section -->
-    <div class="navbar-section navbar-right">
-
-
-<!--      <button 
-        class="navbar-button navbar-button-with-text"
-        data-action="show-create-file"
-        aria-label="Create new file"
-      >
-        <i class="fas fa-plus"></i>
-        <span class="navbar-button-text">New</span>
-      </button>
--->
-
-<div class="relative inline-block" id="newDropdownContainer">
-  <button class="navbar-button" id="newDropdownButton">
-    New
-    <svg class="chevron" width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
-      <path d="M4.427 7.427l3.396 3.396a.25.25 0 0 0 .354 0l3.396-3.396A.25.25 0 0 0 10.896 2H4.604a.25.25 0 0 0-.177.427Z"/>
-    </svg>
+  <!-- Left scroll arrow -->
+  <button
+    id="megaArrowLeft"
+    class="mega-arrow mega-arrow-left disabled"
+    aria-label="Scroll menu left"
+    aria-disabled="true"
+  >
+    <svg viewBox="0 0 16 16"><path d="M9.78 12.78a.75.75 0 0 1-1.06 0L4.47 8.53a.75.75 0 0 1 0-1.06l4.25-4.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042L6.06 8l3.72 3.72a.75.75 0 0 1 0 1.06Z"/></svg>
   </button>
-  <div id="newDropdownMenu" class="dropdown-menu hidden absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-github-canvas-default border border-github-border-default z-50">
-    <div class="py-1">
-      <button data-action="show-create-repo" class="dropdown-item block w-full text-left px-4 py-2 text-sm text-github-fg-default hover:bg-github-canvas-subtle">
-        <i class="fas fa-folder mr-2"></i>
-        Repository
+
+  <!-- Scrollable track -->
+  <div id="megaTrack" class="mega-track" role="menubar">
+    <div class="mega-items">
+
+      <button class="mega-item" data-panel="panelNavigate" role="menuitem" aria-haspopup="true" aria-expanded="false">
+        Navigate
       </button>
-      <button data-action="show-create-file" class="dropdown-item block w-full text-left px-4 py-2 text-sm text-github-fg-default hover:bg-github-canvas-subtle">
-        <i class="fas fa-file mr-2"></i>
-        File
+
+      <button class="mega-item" data-panel="panelFiles" role="menuitem" aria-haspopup="true" aria-expanded="false">
+        Files
       </button>
-      <button data-action="show-upload-modal" class="dropdown-item block w-full text-left px-4 py-2 text-sm text-github-fg-default hover:bg-github-canvas-subtle">
-        <i class="fas fa-upload mr-2"></i>
-        Upload
+
+      <button class="mega-item" data-action="search" role="menuitem" aria-haspopup="false">
+        Search
       </button>
-      <button data-action="show-create-folder" class="dropdown-item block w-full text-left px-4 py-2 text-sm text-github-fg-default hover:bg-github-canvas-subtle">
-        <i class="fas fa-folder-plus mr-2"></i>
-        Folder
+
+      <button class="mega-item" data-panel="panelStats" role="menuitem" aria-haspopup="true" aria-expanded="false">
+        Stats
       </button>
+
+      <button class="mega-item" data-panel="panelTools" role="menuitem" aria-haspopup="true" aria-expanded="false">
+        Tools
+      </button>
+
+      <button class="mega-item" data-panel="panelProfile" role="menuitem" aria-haspopup="true" aria-expanded="false">
+        Profile
+      </button>
+
+    </div>
+  </div>
+
+  <!-- Right scroll arrow -->
+  <button
+    id="megaArrowRight"
+    class="mega-arrow mega-arrow-right"
+    aria-label="Scroll menu right"
+    aria-disabled="false"
+  >
+    <svg viewBox="0 0 16 16"><path d="M6.22 3.22a.75.75 0 0 1 1.06 0l4.25 4.25a.75.75 0 0 1 0 1.06l-4.25 4.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042L9.94 8 6.22 4.28a.75.75 0 0 1 0-1.06Z"/></svg>
+  </button>
+
+</nav>
+
+<!-- =============================================
+     PANELS (slide down beneath the nav)
+     ============================================= -->
+
+<!-- NAVIGATE -->
+<div id="panelNavigate" class="mega-panel" role="region" aria-label="Navigation panel">
+  <div class="mega-panel-inner">
+    <div class="panel-section-title">Go To</div>
+    <div class="panel-grid">
+
+      <button class="panel-card" data-menu-action="go-repos">
+        <div class="panel-card-icon blue"><i class="fas fa-layer-group"></i></div>
+        <div class="panel-card-body">
+          <div class="panel-card-title">Repositories</div>
+          <div class="panel-card-desc">Browse your repos</div>
+        </div>
+        <span class="panel-card-chevron"><i class="fas fa-chevron-right"></i></span>
+      </button>
+
+      <button class="panel-card" data-menu-action="go-root">
+        <div class="panel-card-icon green"><i class="fas fa-home"></i></div>
+        <div class="panel-card-body">
+          <div class="panel-card-title">Root</div>
+          <div class="panel-card-desc">Go to root directory</div>
+        </div>
+        <span class="panel-card-chevron"><i class="fas fa-chevron-right"></i></span>
+      </button>
+
+      <button class="panel-card" data-menu-action="go-code">
+        <div class="panel-card-icon purple"><i class="fas fa-code"></i></div>
+        <div class="panel-card-body">
+          <div class="panel-card-title">Code</div>
+          <div class="panel-card-desc">File explorer view</div>
+        </div>
+        <span class="panel-card-chevron"><i class="fas fa-chevron-right"></i></span>
+      </button>
+
+      <button class="panel-card" data-menu-action="go-repos">
+        <div class="panel-card-icon orange"><i class="fas fa-code-branch"></i></div>
+        <div class="panel-card-body">
+          <div class="panel-card-title">Branches</div>
+          <div class="panel-card-desc">Manage branches</div>
+        </div>
+        <span class="panel-card-chevron"><i class="fas fa-chevron-right"></i></span>
+      </button>
+
     </div>
   </div>
 </div>
 
+<!-- FILES -->
+<div id="panelFiles" class="mega-panel" role="region" aria-label="File actions panel">
+  <div class="mega-panel-inner">
+    <div class="panel-section-title">Quick Actions</div>
+    <div class="panel-grid">
 
-      <button 
-        class="navbar-button navbar-button-icon"
-        data-action="toggle-theme"
-        aria-label="Toggle dark/light theme"
-        id="themeToggle"
-      >
-        <i id="themeIcon" class="fas fa-moon"></i>
+      <button class="panel-card" data-menu-action="new-file">
+        <div class="panel-card-icon green"><i class="fas fa-file-circle-plus"></i></div>
+        <div class="panel-card-body">
+          <div class="panel-card-title">New File</div>
+          <div class="panel-card-desc">Create a new file</div>
+        </div>
+        <span class="panel-card-chevron"><i class="fas fa-chevron-right"></i></span>
       </button>
-      
-      <button 
-        id="rightSidebarTrigger" 
-        class="navbar-button navbar-button-icon"
-        aria-label="Toggle right sidebar menu"
-        data-action="toggle-sidebar"
-        data-target="right"
-      >
-        <i class="fas fa-ellipsis-v"></i>
+
+      <button class="panel-card" data-menu-action="upload">
+        <div class="panel-card-icon blue"><i class="fas fa-upload"></i></div>
+        <div class="panel-card-body">
+          <div class="panel-card-title">Upload</div>
+          <div class="panel-card-desc">Upload files</div>
+        </div>
+        <span class="panel-card-chevron"><i class="fas fa-chevron-right"></i></span>
       </button>
+
+      <button class="panel-card" data-menu-action="import">
+        <div class="panel-card-icon purple"><i class="fas fa-download"></i></div>
+        <div class="panel-card-body">
+          <div class="panel-card-title">Import</div>
+          <div class="panel-card-desc">Import from URL</div>
+        </div>
+        <span class="panel-card-chevron"><i class="fas fa-chevron-right"></i></span>
+      </button>
+
+      <button class="panel-card" data-menu-action="new-folder">
+        <div class="panel-card-icon orange"><i class="fas fa-folder-plus"></i></div>
+        <div class="panel-card-body">
+          <div class="panel-card-title">New Folder</div>
+          <div class="panel-card-desc">Create a folder</div>
+        </div>
+        <span class="panel-card-chevron"><i class="fas fa-chevron-right"></i></span>
+      </button>
+
     </div>
-    
   </div>
-</nav>
+</div>
+
+<!-- STATS -->
+<div id="panelStats" class="mega-panel" role="region" aria-label="Statistics panel">
+  <div class="mega-panel-inner">
+    <div class="panel-section-title">Overview</div>
+    <div class="stats-row">
+
+      <div class="stat-block">
+        <div class="stat-block-icon panel-card-icon blue"><i class="fas fa-file"></i></div>
+        <div>
+          <div class="stat-block-value" id="megaStatFiles">0</div>
+          <div class="stat-block-label">Files</div>
+        </div>
+      </div>
+
+      <div class="stat-block">
+        <div class="stat-block-icon panel-card-icon green"><i class="fas fa-code-commit"></i></div>
+        <div>
+          <div class="stat-block-value" id="megaStatCommits">0</div>
+          <div class="stat-block-label">Commits</div>
+        </div>
+      </div>
+
+      <div class="stat-block">
+        <div class="stat-block-icon panel-card-icon orange"><i class="fas fa-database"></i></div>
+        <div>
+          <div class="stat-block-value" id="megaStatStorage">0 KB</div>
+          <div class="stat-block-label">Storage</div>
+        </div>
+      </div>
+
+      <div class="stat-block">
+        <div class="stat-block-icon panel-card-icon red"><i class="fas fa-code-branch"></i></div>
+        <div>
+          <div class="stat-block-value" id="megaStatBranches">1</div>
+          <div class="stat-block-label">Branches</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- TOOLS -->
+<div id="panelTools" class="mega-panel" role="region" aria-label="Tools panel">
+  <div class="mega-panel-inner">
+    <div class="panel-section-title">Settings & Tools</div>
+
+    <button class="tool-row" data-menu-action="toggle-theme">
+      <div class="tool-row-icon"><i class="fas fa-moon mega-theme-icon"></i></div>
+      <span class="tool-row-text mega-theme-label">Dark Mode</span>
+      <span class="tool-row-hint"></span>
+      <span class="tool-row-chevron"><i class="fas fa-chevron-right"></i></span>
+    </button>
+
+    <button class="tool-row" data-menu-action="help">
+      <div class="tool-row-icon"><i class="fas fa-question-circle"></i></div>
+      <span class="tool-row-text">Help & Docs</span>
+      <span class="tool-row-hint"></span>
+      <span class="tool-row-chevron"><i class="fas fa-chevron-right"></i></span>
+    </button>
+
+    <button class="tool-row" data-menu-action="settings">
+      <div class="tool-row-icon"><i class="fas fa-cog"></i></div>
+      <span class="tool-row-text">Preferences</span>
+      <span class="tool-row-hint"></span>
+      <span class="tool-row-chevron"><i class="fas fa-chevron-right"></i></span>
+    </button>
+
+  </div>
+</div>
+
+<!-- PROFILE -->
+<div id="panelProfile" class="mega-panel" role="region" aria-label="Profile panel">
+  <div class="mega-panel-inner">
+
+    <div class="profile-banner">
+      <img src="https://dev.wuaze.com/banner.png" alt="Profile" class="profile-banner-avatar" />
+      <div>
+        <div class="profile-banner-name">GitDev</div>
+        <div class="profile-banner-role">GitHub File Manager</div>
+      </div>
+    </div>
+
+    <div style="margin-top: 16px;">
+      <div class="panel-section-title">Repository</div>
+      <div class="stats-row">
+        <div class="stat-block">
+          <div class="stat-block-icon panel-card-icon blue"><i class="fas fa-layer-group"></i></div>
+          <div>
+            <div class="stat-block-value" id="megaRepoCount">0</div>
+            <div class="stat-block-label">Repos</div>
+          </div>
+        </div>
+        <div class="stat-block">
+          <div class="stat-block-icon panel-card-icon green"><i class="fas fa-file"></i></div>
+          <div>
+            <div class="stat-block-value" id="megaProfileFiles">0</div>
+            <div class="stat-block-label">Files</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
 
 <div class="topBox">
     <!-- B R E A D C R U M B S -->
@@ -1696,827 +1505,458 @@ html {
 ===================================================-->
 
 
-  <!-- NEW FLOATING NAVBAR -->
-  <div id="floatingNavOverlay" class="floating-nav-overlay" aria-hidden="true"></div>
-  
-  <nav id="floatingNavbar" class="floating-navbar" role="navigation" aria-label="Main floating navigation">
-    <div class="floating-nav-main">
-      <button class="nav-item" data-nav-action="home" aria-label="Home">
-        <i class="fas fa-home"></i>
-        <span class="nav-label">Home</span>
-        <div class="ripple-container"></div>
-      </button>
-      
-      <button class="nav-item" data-nav-action="code" aria-label="Code">
-        <i class="fas fa-code"></i>
-        <span class="nav-label">Code</span>
-        <div class="ripple-container"></div>
-      </button>
-      
-      <button class="nav-item nav-item-primary" id="menuToggleBtn" data-nav-action="menu" aria-label="Toggle menu" aria-expanded="false">
-        <i class="fas fa-th"></i>
-        <span class="nav-label">Menu</span>
-        <div class="ripple-container"></div>
-      </button>
-      
-      <button class="nav-item" data-nav-action="search" aria-label="Search">
-        <i class="fas fa-search"></i>
-        <span class="nav-label">Search</span>
-        <div class="ripple-container"></div>
-      </button>
-      
-      <button class="nav-item" data-nav-action="settings" aria-label="Settings">
-        <i class="fas fa-cog"></i>
-        <span class="nav-label">Settings</span>
-        <div class="ripple-container"></div>
-      </button>
-    </div>
-    
-    <div class="floating-nav-menu" id="floatingNavMenu" role="dialog" aria-labelledby="menuTitle" aria-modal="true">
-      <div class="menu-container">
-        <div class="menu-header">
-          <h2 id="menuTitle" class="menu-title">Navigation & Tools</h2>
-          <button class="menu-close" id="menuCloseBtn" aria-label="Close menu">
-            <i class="fas fa-times"></i>
-          </button>
-        </div>
-        
-        <div class="menu-content">
-          <!-- Profile Section -->
-          <section class="menu-section profile-section">
-            <div class="profile-card">
-              <img src="https://dev.wuaze.com/banner.png" alt="Profile" class="profile-avatar" />
-              <div class="profile-info">
-                <h3 class="profile-name">GitDev</h3>
-                <p class="profile-username">GitHub File Manager</p>
-                <p class="profile-note">Files stored in your GitHub repository</p>
-              </div>
-            </div>
-          </section>
-
-          <!-- Navigation Grid -->
-          <section class="menu-section">
-            <h3 class="section-title">
-              <i class="fas fa-compass section-icon"></i>
-              Navigation
-            </h3>
-            <div class="menu-grid">
-              <button class="menu-card" data-action="show-repo-selector">
-                <div class="card-icon">
-                  <i class="fas fa-folder"></i>
-                </div>
-                <div class="card-content">
-                  <h4 class="card-title">Repositories</h4>
-                  <p class="card-description">Browse your repos</p>
-                  <span class="card-badge" id="menuRepoCount">0</span>
-                </div>
-              </button>
-              
-              <button class="menu-card" data-action="navigate-root">
-                <div class="card-icon">
-                  <i class="fas fa-home"></i>
-                </div>
-                <div class="card-content">
-                  <h4 class="card-title">Root</h4>
-                  <p class="card-description">Go to root directory</p>
-                </div>
-              </button>
-              
-              <button class="menu-card" data-action="show-branches">
-                <div class="card-icon">
-                  <i class="fas fa-code-branch"></i>
-                </div>
-                <div class="card-content">
-                  <h4 class="card-title">Branches</h4>
-                  <p class="card-description">Manage branches</p>
-                  <span class="card-badge" id="menuBranchCount">1</span>
-                </div>
-              </button>
-              
-              <button class="menu-card" data-action="show-pull-requests">
-                <div class="card-icon">
-                  <i class="fas fa-code-pull-request"></i>
-                </div>
-                <div class="card-content">
-                  <h4 class="card-title">Pull Requests</h4>
-                  <p class="card-description">View PRs</p>
-                  <span class="card-badge">0</span>
-                </div>
-              </button>
-            </div>
-          </section>
-
-          <!-- Quick Actions -->
-          <section class="menu-section">
-            <h3 class="section-title">
-              <i class="fas fa-bolt section-icon"></i>
-              Quick Actions
-            </h3>
-            <div class="menu-grid">
-              <button class="menu-card" data-action="create-file">
-                <div class="card-icon card-icon-success">
-                  <i class="fas fa-file-plus"></i>
-                </div>
-                <div class="card-content">
-                  <h4 class="card-title">New File</h4>
-                  <p class="card-description">Create a new file</p>
-                </div>
-              </button>
-              
-              <button class="menu-card" data-action="show-upload-modal">
-                <div class="card-icon card-icon-primary">
-                  <i class="fas fa-upload"></i>
-                </div>
-                <div class="card-content">
-                  <h4 class="card-title">Upload</h4>
-                  <p class="card-description">Upload files</p>
-                </div>
-              </button>
-              
-              <button class="menu-card" data-action="show-import-modal">
-                <div class="card-icon card-icon-info">
-                  <i class="fas fa-download"></i>
-                </div>
-                <div class="card-content">
-                  <h4 class="card-title">Import</h4>
-                  <p class="card-description">Import from URL</p>
-                </div>
-              </button>
-              
-              <button class="menu-card" data-action="show-create-folder">
-                <div class="card-icon card-icon-warning">
-                  <i class="fas fa-folder-plus"></i>
-                </div>
-                <div class="card-content">
-                  <h4 class="card-title">New Folder</h4>
-                  <p class="card-description">Create folder</p>
-                </div>
-              </button>
-            </div>
-          </section>
-
-          <!-- Recent Files -->
-          <section class="menu-section">
-            <h3 class="section-title">
-              <i class="fas fa-clock section-icon"></i>
-              Recent Files
-              <button class="section-action" onclick="refreshRecentFiles()">
-                <i class="fas fa-sync-alt"></i>
-              </button>
-            </h3>
-            <div class="recent-files-list" id="menuRecentFiles">
-              <!-- Recent files will be populated here -->
-            </div>
-          </section>
-
-          <!-- Statistics -->
-          <section class="menu-section">
-            <h3 class="section-title">
-              <i class="fas fa-chart-bar section-icon"></i>
-              Statistics
-            </h3>
-            <div class="stats-grid">
-              <div class="stat-card">
-                <div class="stat-icon stat-icon-files">
-                  <i class="fas fa-file"></i>
-                </div>
-                <div class="stat-content">
-                  <div class="stat-value" id="menuStatsFiles">0</div>
-                  <div class="stat-label">Files</div>
-                </div>
-              </div>
-              
-              <div class="stat-card">
-                <div class="stat-icon stat-icon-commits">
-                  <i class="fas fa-code-commit"></i>
-                </div>
-                <div class="stat-content">
-                  <div class="stat-value" id="menuStatsCommits">0</div>
-                  <div class="stat-label">Commits</div>
-                </div>
-              </div>
-              
-              <div class="stat-card">
-                <div class="stat-icon stat-icon-storage">
-                  <i class="fas fa-database"></i>
-                </div>
-                <div class="stat-content">
-                  <div class="stat-value" id="menuStatsStorage">0 KB</div>
-                  <div class="stat-label">Storage</div>
-                </div>
-              </div>
-              
-              <div class="stat-card">
-                <div class="stat-icon stat-icon-branches">
-                  <i class="fas fa-code-branch"></i>
-                </div>
-                <div class="stat-content">
-                  <div class="stat-value" id="menuStatsBranches">1</div>
-                  <div class="stat-label">Branches</div>
-                </div>
-              </div>
-            </div>
-          </section>
-
-          <!-- Tools & Settings -->
-          <section class="menu-section">
-            <h3 class="section-title">
-              <i class="fas fa-tools section-icon"></i>
-              Tools & Settings
-            </h3>
-            <div class="tool-list">
-              <button class="tool-item" onclick="toggleTheme()">
-                <div class="tool-icon">
-                  <i id="menuThemeIcon" class="fas fa-moon"></i>
-                </div>
-                <div class="tool-content">
-                  <div class="tool-title">Theme</div>
-                  <div class="tool-description">Toggle dark/light mode</div>
-                </div>
-                <div class="tool-action">
-                  <i class="fas fa-chevron-right"></i>
-                </div>
-              </button>
-              
-              <button class="tool-item" onclick="showHelp()">
-                <div class="tool-icon">
-                  <i class="fas fa-question-circle"></i>
-                </div>
-                <div class="tool-content">
-                  <div class="tool-title">Help</div>
-                  <div class="tool-description">Documentation & support</div>
-                </div>
-                <div class="tool-action">
-                  <i class="fas fa-chevron-right"></i>
-                </div>
-              </button>
-              
-              <button class="tool-item" onclick="showSettings()">
-                <div class="tool-icon">
-                  <i class="fas fa-cog"></i>
-                </div>
-                <div class="tool-content">
-                  <div class="tool-title">Settings</div>
-                  <div class="tool-description">Configure preferences</div>
-                </div>
-                <div class="tool-action">
-                  <i class="fas fa-chevron-right"></i>
-                </div>
-              </button>
-            </div>
-          </section>
-        </div>
-      </div>
-    </div>
-  </nav>
-
-
-
 <script>
 /* ================================================
-   FLOATING NAVBAR & POPOVER MENU CONTROLLER
-   Premium Interactions with Fluid Animations
+   MEGA MENU CONTROLLER
+   Top navbar with horizontally scrollable bold items,
+   soft scroll arrows, and slide-down panel drawers.
    ================================================ */
 
-class FloatingNavController {
-  constructor() {
-    this.navbar = document.getElementById('floatingNavbar');
-    this.menu = document.getElementById('floatingNavMenu');
-    this.overlay = document.getElementById('floatingNavOverlay');
-    this.menuToggleBtn = document.getElementById('menuToggleBtn');
-    this.menuCloseBtn = document.getElementById('menuCloseBtn');
-    this.mainArea = document.getElementById('mainArea');
-    this.topNavbar = document.querySelector('.navbar');
-    this.breadcrumbs = document.getElementById('breadCrumbsWrapper');
-    
-    this.isMenuOpen = false;
-    this.isAnimating = false;
-    
-    this.init();
-  }
-  
-  init() {
-    // Bind events
-    this.menuToggleBtn?.addEventListener('click', () => this.toggleMenu());
-    this.menuCloseBtn?.addEventListener('click', () => this.closeMenu());
-    this.overlay?.addEventListener('click', () => this.closeMenu());
-    
-    // Escape key to close
-    document.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape' && this.isMenuOpen) {
-        this.closeMenu();
-      }
-    });
-    
-    // Ripple effects for nav items
-    this.initRippleEffects();
-    
-    // Initialize menu actions
-    this.initMenuActions();
-    
-    // Update stats on initialization
-    this.updateStats();
-    
-    // Populate recent files
-    this.populateRecentFiles();
-    
-    // Focus trap in menu
-    this.initFocusTrap();
-    
-    console.log('✨ Floating Nav Controller initialized');
-  }
-  
-  toggleMenu() {
-    if (this.isAnimating) return;
-    
-    if (this.isMenuOpen) {
-      this.closeMenu();
-    } else {
-      this.openMenu();
-    }
-  }
-  
-  openMenu() {
-    if (this.isAnimating || this.isMenuOpen) return;
-    
-    this.isAnimating = true;
-    this.isMenuOpen = true;
-    
-    // Add active states
-    this.navbar.classList.add('menu-active');
-    this.overlay.classList.add('active');
-    this.menu.classList.add('active');
-    this.mainArea.classList.add('menu-active');
-    this.topNavbar.classList.add('menu-active');
-    this.breadcrumbs?.classList.add('menu-active');
-    
-    // Update ARIA
-    this.menuToggleBtn.setAttribute('aria-expanded', 'true');
-    this.menu.setAttribute('aria-hidden', 'false');
-    
-    // Focus first focusable element in menu
-    setTimeout(() => {
-      const firstFocusable = this.menu.querySelector('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])');
-      firstFocusable?.focus();
-    }, 100);
-    
-    // Reset animation flag after animation completes
-    setTimeout(() => {
-      this.isAnimating = false;
-    }, 500);
-    
-    // Update stats when menu opens
-    this.updateStats();
-    this.populateRecentFiles();
-    
-    console.log('📂 Menu opened');
-  }
-  
-  closeMenu() {
-    if (this.isAnimating || !this.isMenuOpen) return;
-    
-    this.isAnimating = true;
-    this.isMenuOpen = false;
-    
-    // Add closing states
-    this.overlay.classList.add('closing');
-    this.menu.classList.add('closing');
-    this.mainArea.classList.add('menu-closing');
-    this.topNavbar.classList.add('menu-closing');
-    this.breadcrumbs?.classList.add('menu-closing');
-    
-    // Update ARIA
-    this.menuToggleBtn.setAttribute('aria-expanded', 'false');
-    this.menu.setAttribute('aria-hidden', 'true');
-    
-    // Return focus to toggle button
-    this.menuToggleBtn.focus();
-    
-    // Remove classes after animation
-    setTimeout(() => {
-      this.navbar.classList.remove('menu-active');
-      this.overlay.classList.remove('active', 'closing');
-      this.menu.classList.remove('active', 'closing');
-      this.mainArea.classList.remove('menu-active', 'menu-closing');
-      this.topNavbar.classList.remove('menu-active', 'menu-closing');
-      this.breadcrumbs?.classList.remove('menu-active', 'menu-closing');
-      
-      this.isAnimating = false;
-    }, 300);
-    
-    console.log('📁 Menu closed');
-  }
-  
-  initRippleEffects() {
-    const navItems = this.navbar.querySelectorAll('.nav-item');
-    
-    navItems.forEach(item => {
-      item.addEventListener('click', (e) => {
-        const container = item.querySelector('.ripple-container');
-        if (!container) return;
-        
-        const ripple = document.createElement('span');
-        ripple.classList.add('ripple');
-        
-        const rect = item.getBoundingClientRect();
-        const size = Math.max(rect.width, rect.height);
-        const x = e.clientX - rect.left - size / 2;
-        const y = e.clientY - rect.top - size / 2;
-        
-        ripple.style.width = ripple.style.height = `${size}px`;
-        ripple.style.left = `${x}px`;
-        ripple.style.top = `${y}px`;
-        
-        container.appendChild(ripple);
-        
-        setTimeout(() => ripple.remove(), 600);
-      });
-    });
-  }
-  
-  initMenuActions() {
-    // Get all action buttons in menu
-    const actionButtons = this.menu.querySelectorAll('[data-action]');
-    
-    actionButtons.forEach(button => {
-      button.addEventListener('click', () => {
-        const action = button.getAttribute('data-action');
-        this.handleMenuAction(action);
-      });
-    });
-    
-    // Navigation item actions
-    const navItems = this.navbar.querySelectorAll('[data-nav-action]');
-    navItems.forEach(item => {
-      item.addEventListener('click', () => {
-        const action = item.getAttribute('data-nav-action');
-        this.handleNavAction(action);
-      });
-    });
-  }
-  
-  handleMenuAction(action) {
-    console.log(`🎯 Menu action: ${action}`);
-    
-    // Close menu first for most actions
-    const actionsToKeepMenuOpen = ['refresh-stats'];
-    if (!actionsToKeepMenuOpen.includes(action)) {
-      this.closeMenu();
-    }
-    
-    // Route to existing functions
-    switch(action) {
-      case 'show-repo-selector':
-        this.navigateToPage('repo');
-        break;
-      case 'navigate-root':
-        this.navigateToRoot();
-        break;
-      case 'create-file':
-        this.showCreateFileModal();
-        break;
-      case 'show-upload-modal':
-        if (typeof showUploadModal === 'function') {
-          showUploadModal();
-        }
-        break;
-      case 'show-import-modal':
-        if (typeof showImportModal === 'function') {
-          showImportModal();
-        }
-        break;
-      case 'show-create-folder':
-        this.showCreateFolderModal();
-        break;
-      case 'show-branches':
-        this.showBranches();
-        break;
-      case 'show-pull-requests':
-        this.showPullRequests();
-        break;
-      default:
-        console.warn(`Unknown action: ${action}`);
-    }
-  }
-  
-  handleNavAction(action) {
-    console.log(`🧭 Nav action: ${action}`);
-    
-    switch(action) {
-      case 'home':
-        this.navigateToPage('repo');
-        break;
-      case 'code':
-        this.navigateToPage('explorer');
-        break;
-      case 'menu':
-        this.toggleMenu();
-        break;
-      case 'search':
-        if (typeof showSearchModal === 'function') {
-          showSearchModal();
-        }
-        break;
-      case 'settings':
-        this.showSettings();
-        break;
-      default:
-        console.warn(`Unknown nav action: ${action}`);
-    }
-  }
-  
-  navigateToPage(page) {
-    // Hide all pages
-    const pages = document.querySelectorAll('.pages');
-    pages.forEach(p => {
-      p.style.display = 'none';
-    });
-    
-    // Show target page
-    const targetPage = document.querySelector(`[data-page="${page}"]`);
-    if (targetPage) {
-      targetPage.style.display = 'block';
-      console.log(`📄 Navigated to ${page}`);
-    }
-  }
-  
-  navigateToRoot() {
-    // Logic to navigate to root directory
-    console.log('🏠 Navigating to root...');
-    this.navigateToPage('explorer');
-    // Call your existing root navigation function if it exists
-    if (typeof navigateToRoot === 'function') {
-      navigateToRoot();
-    }
-  }
-  
-  showCreateFileModal() {
-    const modal = document.getElementById('createFileModal');
-    if (modal) {
-      modal.classList.remove('hidden');
-      modal.classList.add('flex');
-    }
-  }
-  
-  showCreateFolderModal() {
-    console.log('📁 Create folder modal would open here');
-    // Implement folder creation modal
-  }
-  
-  showBranches() {
-    console.log('🌿 Branches view would open here');
-    // Implement branches view
-  }
-  
-  showPullRequests() {
-    console.log('🔀 Pull requests view would open here');
-    // Implement PR view
-  }
-  
-  showSettings() {
-    console.log('⚙️ Settings would open here');
-    // Implement settings panel
-  }
-  
-  updateStats() {
-    // Get stats from localStorage or your data source
-    const stats = this.getStats();
-    
-    // Update menu stats
-    document.getElementById('menuRepoCount').textContent = stats.repos;
-    document.getElementById('menuBranchCount').textContent = stats.branches;
-    document.getElementById('menuStatsFiles').textContent = stats.files;
-    document.getElementById('menuStatsCommits').textContent = stats.commits;
-    document.getElementById('menuStatsStorage').textContent = stats.storage;
-    document.getElementById('menuStatsBranches').textContent = stats.branches;
-    
-    console.log('📊 Stats updated', stats);
-  }
-  
-  getStats() {
-    // Replace with your actual data retrieval logic
-    try {
-      const repos = JSON.parse(localStorage.getItem('repositories') || '[]');
-      const currentRepo = localStorage.getItem('currentRepository');
-      const repoData = currentRepo ? JSON.parse(localStorage.getItem(`repo_${currentRepo}`) || '{}') : {};
-      const files = repoData.files || {};
-      
-      const fileCount = Object.keys(files).length;
-      const commitCount = Object.values(files).reduce((sum, file) => {
-        return sum + (file.commits ? file.commits.length : 0);
-      }, 0);
-      
-      const storageUsed = new Blob([JSON.stringify(files)]).size;
-      const storageKB = Math.round(storageUsed / 1024);
-      
-      return {
-        repos: repos.length,
-        files: fileCount,
-        commits: commitCount,
-        storage: `${storageKB} KB`,
-        branches: 1 // Adjust based on your branch implementation
-      };
-    } catch (error) {
-      console.error('Error getting stats:', error);
-      return {
-        repos: 0,
-        files: 0,
-        commits: 0,
-        storage: '0 KB',
-        branches: 1
-      };
-    }
-  }
-  
-  populateRecentFiles() {
-    const container = document.getElementById('menuRecentFiles');
-    if (!container) return;
-    
-    const recentFiles = this.getRecentFiles();
-    
-    if (recentFiles.length === 0) {
-      container.innerHTML = `
-        <div style="text-align: center; padding: 20px; color: #636e7b;">
-          <i class="fas fa-file" style="font-size: 32px; margin-bottom: 8px; opacity: 0.3;"></i>
-          <p style="margin: 0; font-size: 13px;">No recent files</p>
-        </div>
-      `;
+(function () {
+  "use strict";
+
+  /* -------------------------------------------
+     CONFIGURATION
+     ------------------------------------------- */
+  const SCROLL_STEP = 180;
+  const SCROLL_CHECK_DEBOUNCE = 50;
+
+  /* -------------------------------------------
+     STATE
+     ------------------------------------------- */
+  let activePanel = null;
+  let isAnimating = false;
+
+  /* -------------------------------------------
+     DOM REFERENCES (set on init)
+     ------------------------------------------- */
+  let track = null;
+  let arrowLeft = null;
+  let arrowRight = null;
+  let overlay = null;
+  let allItems = [];
+  let allPanels = [];
+
+  /* -------------------------------------------
+     INIT
+     ------------------------------------------- */
+  function init() {
+    track = document.getElementById("megaTrack");
+    arrowLeft = document.getElementById("megaArrowLeft");
+    arrowRight = document.getElementById("megaArrowRight");
+    overlay = document.getElementById("megaOverlay");
+    allItems = Array.from(document.querySelectorAll(".mega-item"));
+    allPanels = Array.from(document.querySelectorAll(".mega-panel"));
+
+    if (!track || !arrowLeft || !arrowRight) {
+      console.warn("Mega-menu: missing DOM elements, aborting init.");
       return;
     }
-    
-    container.innerHTML = recentFiles.map(file => {
-      const icon = this.getFileIcon(file.name);
-      const timeAgo = this.getTimeAgo(file.lastModified);
-      
-      return `
-        <div class="recent-file-item" data-file-path="${file.path}">
-          <div class="file-icon">
-            <i class="${icon}"></i>
-          </div>
-          <div class="file-info">
-            <div class="file-name">${file.name}</div>
-            <div class="file-meta">${timeAgo}</div>
-          </div>
-          <div class="file-action">
-            <i class="fas fa-chevron-right"></i>
-          </div>
-        </div>
-      `;
-    }).join('');
-    
-    // Add click handlers
-    container.querySelectorAll('.recent-file-item').forEach(item => {
-      item.addEventListener('click', () => {
-        const path = item.getAttribute('data-file-path');
-        this.openFile(path);
-        this.closeMenu();
+
+    /* -- arrow clicks -- */
+    arrowLeft.addEventListener("click", function () {
+      scrollTrack(-SCROLL_STEP);
+    });
+
+    arrowRight.addEventListener("click", function () {
+      scrollTrack(SCROLL_STEP);
+    });
+
+    /* -- update arrow states on scroll -- */
+    let scrollTimer = null;
+    track.addEventListener("scroll", function () {
+      clearTimeout(scrollTimer);
+      scrollTimer = setTimeout(updateArrows, SCROLL_CHECK_DEBOUNCE);
+    });
+
+    /* -- initial arrow state -- */
+    updateArrows();
+
+    /* -- recalc on resize -- */
+    window.addEventListener("resize", function () {
+      updateArrows();
+    });
+
+    /* -- menu item clicks -- */
+    allItems.forEach(function (item) {
+      item.addEventListener("click", function () {
+        var panelId = item.getAttribute("data-panel");
+        if (!panelId) {
+          /* If no panel, treat as a direct action button */
+          handleDirectAction(item);
+          return;
+        }
+        togglePanel(panelId, item);
       });
     });
-  }
-  
-  getRecentFiles() {
-    // Replace with your actual recent files logic
-    try {
-      const currentRepo = localStorage.getItem('currentRepository');
-      if (!currentRepo) return [];
-      
-      const repoData = JSON.parse(localStorage.getItem(`repo_${currentRepo}`) || '{}');
-      const files = repoData.files || {};
-      
-      return Object.entries(files)
-        .map(([path, data]) => ({
-          name: path.split('/').pop(),
-          path: path,
-          lastModified: data.lastModified || Date.now()
-        }))
-        .sort((a, b) => b.lastModified - a.lastModified)
-        .slice(0, 5);
-    } catch (error) {
-      console.error('Error getting recent files:', error);
-      return [];
+
+    /* -- overlay click to close -- */
+    if (overlay) {
+      overlay.addEventListener("click", function () {
+        closeAllPanels();
+      });
     }
-  }
-  
-  getFileIcon(filename) {
-    const ext = filename.split('.').pop().toLowerCase();
-    const iconMap = {
-      js: 'fab fa-js-square',
-      html: 'fab fa-html5',
-      css: 'fab fa-css3-alt',
-      json: 'fas fa-file-code',
-      md: 'fab fa-markdown',
-      py: 'fab fa-python',
-      php: 'fab fa-php',
-      sql: 'fas fa-database',
-      yaml: 'fas fa-file-code',
-      yml: 'fas fa-file-code',
-    };
-    
-    return iconMap[ext] || 'fas fa-file';
-  }
-  
-  getTimeAgo(timestamp) {
-    const seconds = Math.floor((Date.now() - timestamp) / 1000);
-    
-    if (seconds < 60) return 'Just now';
-    if (seconds < 3600) return `${Math.floor(seconds / 60)}m ago`;
-    if (seconds < 86400) return `${Math.floor(seconds / 3600)}h ago`;
-    if (seconds < 604800) return `${Math.floor(seconds / 86400)}d ago`;
-    return `${Math.floor(seconds / 604800)}w ago`;
-  }
-  
-  openFile(path) {
-    console.log(`📄 Opening file: ${path}`);
-    // Implement file opening logic
-    // Call your existing file opening function
-    if (typeof openFile === 'function') {
-      openFile(path);
-    }
-  }
-  
-  initFocusTrap() {
-    this.menu.addEventListener('keydown', (e) => {
-      if (!this.isMenuOpen) return;
-      
-      if (e.key === 'Tab') {
-        const focusableElements = this.menu.querySelectorAll(
-          'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
-        );
-        const firstElement = focusableElements[0];
-        const lastElement = focusableElements[focusableElements.length - 1];
-        
-        if (e.shiftKey) {
-          if (document.activeElement === firstElement) {
-            lastElement.focus();
-            e.preventDefault();
-          }
-        } else {
-          if (document.activeElement === lastElement) {
-            firstElement.focus();
-            e.preventDefault();
-          }
-        }
+
+    /* -- ESC key to close -- */
+    document.addEventListener("keydown", function (e) {
+      if (e.key === "Escape" && activePanel) {
+        closeAllPanels();
       }
     });
+
+    /* -- delegate clicks inside panels (data-action buttons) -- */
+    document.addEventListener("click", function (e) {
+      var actionBtn = e.target.closest("[data-menu-action]");
+      if (actionBtn) {
+        handlePanelAction(actionBtn.getAttribute("data-menu-action"));
+        closeAllPanels();
+      }
+    });
+
+    /* -- touch swipe support for the track -- */
+    initTouchScroll();
+
+    /* -- sync stats on init -- */
+    syncStats();
+
+    console.log("✅ Mega-menu initialized");
   }
-}
 
-// Utility function to sync theme icon
-function syncThemeIcon() {
-  const theme = document.documentElement.getAttribute('data-theme');
-  const isDark = theme === 'dark';
-  
-  // Update all theme icons
-  const themeIcons = document.querySelectorAll('#themeIcon, #menuThemeIcon, #sidebarThemeIcon');
-  themeIcons.forEach(icon => {
-    icon.className = isDark ? 'fas fa-moon' : 'fas fa-sun';
-  });
-}
-
-// Helper function for theme toggle (if not already exists)
-function toggleTheme() {
-  const html = document.documentElement;
-  const currentTheme = html.getAttribute('data-theme');
-  const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
-  
-  html.setAttribute('data-theme', newTheme);
-  localStorage.setItem('theme', newTheme);
-  
-  syncThemeIcon();
-  
-  console.log(`🎨 Theme changed to ${newTheme}`);
-}
-
-// Helper function for help modal (if not already exists)
-function showHelp() {
-  alert('Help & Documentation\n\nKeyboard Shortcuts:\n- Ctrl/Cmd + K: Search\n- Escape: Close menu/modal\n\nFor more information, visit the documentation.');
-}
-
-// Helper function to refresh recent files
-function refreshRecentFiles() {
-  if (window.floatingNav) {
-    window.floatingNav.populateRecentFiles();
-    console.log('🔄 Recent files refreshed');
+  /* -------------------------------------------
+     SCROLL HELPERS
+     ------------------------------------------- */
+  function scrollTrack(delta) {
+    if (!track) return;
+    track.scrollBy({ left: delta, behavior: "smooth" });
   }
-}
 
-// Initialize when DOM is ready
-if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', initFloatingNav);
-} else {
-  initFloatingNav();
-}
+  function updateArrows() {
+    if (!track || !arrowLeft || !arrowRight) return;
 
-function initFloatingNav() {
-  window.floatingNav = new FloatingNavController();
-  syncThemeIcon();
-}
+    var scrollLeft = Math.round(track.scrollLeft);
+    var maxScroll = track.scrollWidth - track.clientWidth;
 
-// Export for external use
-window.FloatingNavController = FloatingNavController;
-window.toggleTheme = toggleTheme;
-window.showHelp = showHelp;
-window.refreshRecentFiles = refreshRecentFiles;
+    /* left arrow */
+    if (scrollLeft <= 1) {
+      arrowLeft.classList.add("disabled");
+      arrowLeft.setAttribute("aria-disabled", "true");
+    } else {
+      arrowLeft.classList.remove("disabled");
+      arrowLeft.setAttribute("aria-disabled", "false");
+    }
+
+    /* right arrow */
+    if (scrollLeft >= maxScroll - 1) {
+      arrowRight.classList.add("disabled");
+      arrowRight.setAttribute("aria-disabled", "true");
+    } else {
+      arrowRight.classList.remove("disabled");
+      arrowRight.setAttribute("aria-disabled", "false");
+    }
+  }
+
+  /* -------------------------------------------
+     PANEL TOGGLE
+     ------------------------------------------- */
+  function togglePanel(panelId, triggerItem) {
+    if (isAnimating) return;
+
+    var targetPanel = document.getElementById(panelId);
+    if (!targetPanel) return;
+
+    /* If clicking the already-open panel, close it */
+    if (activePanel === panelId) {
+      closeAllPanels();
+      return;
+    }
+
+    isAnimating = true;
+
+    /* Close any currently open panel first (instant) */
+    allPanels.forEach(function (p) {
+      p.classList.remove("open");
+    });
+    allItems.forEach(function (i) {
+      i.classList.remove("active");
+      i.setAttribute("aria-expanded", "false");
+    });
+
+    /* Open target panel */
+    targetPanel.classList.add("open");
+    triggerItem.classList.add("active");
+    triggerItem.setAttribute("aria-expanded", "true");
+    activePanel = panelId;
+
+    /* Show overlay */
+    if (overlay) {
+      overlay.classList.add("active");
+    }
+
+    /* Blur main content */
+    var mainArea = document.getElementById("mainArea");
+    if (mainArea) {
+      mainArea.style.filter = "blur(4px) brightness(0.85)";
+      mainArea.style.transition =
+        "filter " +
+        "var(--menu-transition-speed, 350ms)" +
+        " " +
+        "var(--menu-transition-ease, ease)";
+      mainArea.style.pointerEvents = "none";
+    }
+
+    setTimeout(function () {
+      isAnimating = false;
+    }, 380);
+  }
+
+  function closeAllPanels() {
+    if (isAnimating) return;
+    isAnimating = true;
+
+    allPanels.forEach(function (p) {
+      p.classList.remove("open");
+    });
+    allItems.forEach(function (i) {
+      i.classList.remove("active");
+      i.setAttribute("aria-expanded", "false");
+    });
+    activePanel = null;
+
+    if (overlay) {
+      overlay.classList.remove("active");
+    }
+
+    /* Unblur main content */
+    var mainArea = document.getElementById("mainArea");
+    if (mainArea) {
+      mainArea.style.filter = "";
+      mainArea.style.pointerEvents = "";
+    }
+
+    /* Return focus to the nav */
+    var nav = document.querySelector(".mega-nav");
+    if (nav) nav.focus();
+
+    setTimeout(function () {
+      isAnimating = false;
+    }, 380);
+  }
+
+  /* -------------------------------------------
+     DIRECT ACTION (items without a panel)
+     ------------------------------------------- */
+  function handleDirectAction(item) {
+    var action = item.getAttribute("data-action");
+    if (!action) return;
+
+    closeAllPanels();
+
+    switch (action) {
+      case "search":
+        if (typeof showSearchModal === "function") showSearchModal();
+        break;
+      default:
+        console.log("Direct action:", action);
+    }
+  }
+
+  /* -------------------------------------------
+     PANEL ACTIONS (data-menu-action delegates)
+     ------------------------------------------- */
+  function handlePanelAction(action) {
+    console.log("🎯 Panel action:", action);
+
+    switch (action) {
+      /* Navigation */
+      case "go-repos":
+        navigateToPage("repo");
+        break;
+      case "go-root":
+        navigateToPage("explorer");
+        if (typeof navigateToRoot === "function") navigateToRoot();
+        break;
+      case "go-code":
+        navigateToPage("explorer");
+        break;
+
+      /* File actions */
+      case "new-file":
+        showModal("createFileModal");
+        break;
+      case "upload":
+        if (typeof showUploadModal === "function") showUploadModal();
+        break;
+      case "import":
+        if (typeof showImportModal === "function") showImportModal();
+        break;
+      case "new-folder":
+        if (typeof showCreateFolderModal === "function") {
+          showCreateFolderModal();
+        }
+        break;
+
+      /* Tools */
+      case "toggle-theme":
+        toggleThemeHelper();
+        break;
+      case "help":
+        if (typeof showHelp === "function") showHelp();
+        break;
+      case "settings":
+        console.log("Settings requested");
+        break;
+
+      default:
+        console.warn("Unknown panel action:", action);
+    }
+  }
+
+  /* -------------------------------------------
+     NAVIGATION HELPER
+     ------------------------------------------- */
+  function navigateToPage(pageName) {
+    var pages = document.querySelectorAll(".pages");
+    pages.forEach(function (p) {
+      p.classList.remove("show");
+      p.classList.add("hide");
+    });
+
+    var target = document.querySelector('[data-page="' + pageName + '"]');
+    if (target) {
+      target.classList.remove("hide");
+      target.classList.add("show");
+    }
+  }
+
+  function showModal(modalId) {
+    var modal = document.getElementById(modalId);
+    if (!modal) return;
+    modal.classList.remove("hidden");
+    modal.style.display = "flex";
+  }
+
+  /* -------------------------------------------
+     THEME TOGGLE
+     ------------------------------------------- */
+  function toggleThemeHelper() {
+    var html = document.documentElement;
+    var current = html.getAttribute("data-theme");
+    var next = current === "dark" ? "light" : "dark";
+    html.setAttribute("data-theme", next);
+
+    try {
+      localStorage.setItem("theme", next);
+    } catch (e) {
+      /* noop */
+    }
+
+    /* Sync any existing theme icons */
+    var icons = document.querySelectorAll(
+      "#themeIcon, #sidebarThemeIcon, #menuThemeIcon, .mega-theme-icon"
+    );
+    icons.forEach(function (icon) {
+      icon.className = next === "dark" ? "fas fa-moon" : "fas fa-sun";
+    });
+
+    var labels = document.querySelectorAll(".mega-theme-label");
+    labels.forEach(function (lbl) {
+      lbl.textContent = next === "dark" ? "Dark Mode" : "Light Mode";
+    });
+  }
+
+  /* -------------------------------------------
+     STATS SYNC
+     ------------------------------------------- */
+  function syncStats() {
+    try {
+      var repos = JSON.parse(localStorage.getItem("repositories") || "[]");
+      var currentRepo = localStorage.getItem("currentRepository");
+      var repoData = currentRepo
+        ? JSON.parse(localStorage.getItem("repo_" + currentRepo) || "{}")
+        : {};
+      var files = repoData.files || {};
+      var fileCount = Object.keys(files).length;
+
+      var commitCount = 0;
+      Object.values(files).forEach(function (f) {
+        commitCount += f.commits ? f.commits.length : 0;
+      });
+
+      var storageBytes = 0;
+      try {
+        storageBytes = new Blob([JSON.stringify(files)]).size;
+      } catch (e) {
+        /* noop */
+      }
+      var storageKB = Math.round(storageBytes / 1024);
+
+      setTextById("megaStatFiles", fileCount);
+      setTextById("megaStatCommits", commitCount);
+      setTextById("megaStatStorage", storageKB + " KB");
+      setTextById("megaStatBranches", "1");
+      setTextById("megaRepoCount", repos.length);
+    } catch (e) {
+      console.warn("Stats sync error:", e);
+    }
+  }
+
+  function setTextById(id, text) {
+    var el = document.getElementById(id);
+    if (el) el.textContent = text;
+  }
+
+  /* -------------------------------------------
+     TOUCH SCROLL (passive)
+     ------------------------------------------- */
+  function initTouchScroll() {
+    if (!track) return;
+
+    var startX = 0;
+    var scrollStart = 0;
+
+    track.addEventListener(
+      "touchstart",
+      function (e) {
+        startX = e.touches[0].clientX;
+        scrollStart = track.scrollLeft;
+      },
+      { passive: true }
+    );
+
+    track.addEventListener(
+      "touchmove",
+      function (e) {
+        var dx = startX - e.touches[0].clientX;
+        track.scrollLeft = scrollStart + dx;
+      },
+      { passive: true }
+    );
+
+    track.addEventListener(
+      "touchend",
+      function () {
+        updateArrows();
+      },
+      { passive: true }
+    );
+  }
+
+  /* -------------------------------------------
+     BOOT
+     ------------------------------------------- */
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", init);
+  } else {
+    init();
+  }
+
+  /* Expose for external use */
+  window.megaMenu = {
+    close: closeAllPanels,
+    syncStats: syncStats,
+    toggleTheme: toggleThemeHelper,
+  };
+})();
 </script>
 
 
@@ -2649,328 +2089,7 @@ window.refreshRecentFiles = refreshRecentFiles;
      Left & Right Sidebars
                       ------->
 <div id="overlay" class="fixed inset-0 bg-black"></div>
-  <aside id="leftSidebar" class="sidebar left-sidebar">
-    <div class="p-4 h-full overflow-y-auto">
-      <!-- User Profile -->
-      <div class="profile-section">
-        <img src="https://dev.wuaze.com/banner.png" alt="Profile" class="profile-avatar" />
-        <div class="profile-info">
-          <h3 class="profile-name">GitDev</h3>
-          <span class="profile-username">GitHub File Manager</span>
-        </div>
-        <!-- Files are stored directly in your GitHub repository -->
-      </div>
 
-      <!-- Quick Actions -->
-      <div class="mb-6">
-        <span class="sidebar-title">Quick Actions</span>
-        <div class="space-y-1">
-          <button data-action="create-file" class="sidebar-link">
-            <i class="fas fa-file mr-2"></i>
-            New File
-          </button>
-          <button data-action="show-repo-selector" data-spa-navigate="repo" href="#repo"class="sidebar-link">
-            <i class="fas fa-folder mr-2"></i>
-            Browse Repositories
-          </button>
-          <button data-action="navigate-root" class="sidebar-link">
-            <i class="fas fa-home mr-2"></i>
-            Go to Root
-          </button>
-        </div>
-      </div>
-
-      <!-- Repository List -->
-      <div class="mb-6">
-        <div class="flex items-center justify-between mb-2">
-          <span class="sidebar-title">Repositories</span>
-          <span id="repoCount" class="text-xs text-github-fg-muted">0</span>
-        </div>
-        <div id="repoListSidebar" class="space-y-1">
-          <!-- Repositories will be populated here -->
-        </div>
-      </div>
-
-      <!-- Navigation Links -->
-      <div>
-        <span class="sidebar-title">Navigation</span>
-        <div class="space-y-1">
-          <a href="#" data-navigate="repo" class="sidebar-link">
-            <i class="fas fa-code mr-2"></i>
-            Code
-          </a>
-          <a href="#" class="sidebar-link">
-            <i class="fas fa-exclamation-circle mr-2"></i>
-            Issues
-            <span class="ml-auto bg-github-canvas-subtle text-github-fg-default text-xs px-1.5 py-0.5 rounded-full">0</span>
-          </a>
-          <a href="#" class="sidebar-link">
-            <i class="fas fa-code-branch mr-2"></i>
-            Pull Requests
-            <span class="ml-auto bg-github-canvas-subtle text-github-fg-default text-xs px-1.5 py-0.5 rounded-full">0</span>
-          </a>
-          <a href="#" class="sidebar-link">
-            <i class="fas fa-chart-bar mr-2"></i>
-            Insights
-          </a>
-        </div>
-      </div>
-
-      <!-- File Stats -->
-      <div class="mt-6 pt-4 border-t border-github-border-muted">
-        <div class="flex items-center justify-between text-sm">
-          <span class="text-github-fg-muted">Files:</span>
-          <span id="totalFilesCount" class="font-medium">0</span>
-        </div>
-        <div class="flex items-center justify-between text-sm mt-1">
-          <span class="text-github-fg-muted">Storage:</span>
-          <span id="totalStorage" class="font-medium">0 KB</span>
-        </div>
-      </div>
-    </div>
-  </aside>
-  <aside id="rightSidebar" class="sidebar right-sidebar">
-    <div class="p-4 h-full overflow-y-auto">
-      <!-- Recent Files -->
-      <div class="mb-6">
-        <div class="flex items-center justify-between mb-2">
-          <span class="sidebar-title">Recent Files</span>
-          <button onclick="refreshRecentFiles()" class="text-xs text-github-accent-fg hover:underline">
-            Refresh
-          </button>
-        </div>
-        <div id="recentFilesList" class="space-y-2">
-          <!-- Recent files will be populated here -->
-        </div>
-      </div>
-
-      <!-- Current Repository Info -->
-      <div id="currentRepoInfo" class="mb-6 hidden">
-        <span class="sidebar-title">Current Repository</span>
-        <div class="p-3 bg-github-canvas-subtle rounded-md mt-2">
-          <h4 id="currentRepoNameSidebar" class="font-semibold text-github-fg-default mb-1"></h4>
-          <p id="currentRepoDesc" class="text-xs text-github-fg-muted mb-2"></p>
-          <div class="flex items-center justify-between text-xs">
-            <span class="text-github-fg-muted">Branch:</span>
-            <span id="currentRepoBranch" class="font-medium">main</span>
-          </div>
-        </div>
-      </div>
-
-      <!-- Quick Stats -->
-      <div class="mb-6">
-        <span class="sidebar-title">Quick Stats</span>
-        <div class="grid grid-cols-2 gap-2 mt-2">
-          <div class="p-3 bg-github-canvas-subtle rounded-md text-center">
-            <div class="text-lg font-semibold text-github-accent-fg" id="statsFiles">0</div>
-            <div class="text-xs text-github-fg-muted">Files</div>
-          </div>
-          <div class="p-3 bg-github-canvas-subtle rounded-md text-center">
-            <div class="text-lg font-semibold text-github-success-fg" id="statsCommits">0</div>
-            <div class="text-xs text-github-fg-muted">Commits</div>
-          </div>
-          <div class="p-3 bg-github-canvas-subtle rounded-md text-center">
-            <div class="text-lg font-semibold text-github-warning-fg" id="statsBranches">1</div>
-            <div class="text-xs text-github-fg-muted">Branches</div>
-          </div>
-          <div class="p-3 bg-github-canvas-subtle rounded-md text-center">
-            <div class="text-lg font-semibold text-github-danger-fg" id="statsIssues">0</div>
-            <div class="text-xs text-github-fg-muted">Issues</div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Language Distribution -->
-      <div id="languageStatsSidebar" class="hidden">
-        <span class="sidebar-title">Languages</span>
-        <div id="languageStatsList" class="space-y-2 mt-2">
-          <!-- Language stats will be populated here -->
-        </div>
-      </div>
-
-      <!-- Quick Actions Footer -->
-      <div class="mt-auto pt-4 border-t border-github-border-muted">
-        <div class="space-y-2">
-          <button onclick="toggleTheme()" class="sidebar-link w-full text-left">
-            <i id="sidebarThemeIcon" class="fas fa-moon mr-2"></i>
-            Toggle Theme
-          </button>
-          <button onclick="showHelp()" class="sidebar-link w-full text-left">
-            <i class="fas fa-question-circle mr-2"></i>
-            Help & Documentation
-          </button>
-        </div>
-      </div>
-    </div>
-  </aside>
-
-<!--
-<script>
-// Sticky Header Manager - Enhanced version
-class StickyHeaderManager {
-  constructor() {
-    this.navbar = document.querySelector('.navbar');
-    this.breadcrumbs = document.querySelector('.breadCrumbsWrapper');
-    this.coderHeader = document.querySelector('.coderHeaderWrapper');
-    this.toolbar = document.querySelector('.coderToolBarWrapper');
-    this.mainArea = document.getElementById('mainArea');
-    this.filePage = document.querySelector('[data-page="file"]');
-    
-    this.lastScrollTop = 0;
-    this.isCoderHeaderVisible = false;
-    this.threshold = 50; // Scroll threshold for showing coder header
-    
-    this.init();
-  }
-
-  init() {
-    if (!this.coderHeader || !this.breadcrumbs) return;
-    
-    // Initial setup
-    this.calculatePositions();
-    
-    // Set initial state
-    this.setInitialState();
-    
-    // Add scroll listener to main area
-    if (this.mainArea) {
-      this.mainArea.addEventListener('scroll', this.handleScroll.bind(this));
-    } else {
-      window.addEventListener('scroll', this.handleScroll.bind(this));
-    }
-    
-    // Recalculate on resize
-    window.addEventListener('resize', this.calculatePositions.bind(this));
-    
-    // Reinitialize when switching to file view
-    this.setupPageObserver();
-  }
-
-  setInitialState() {
-    // Initially, breadcrumbs are visible, coder header is hidden
-    this.breadcrumbs.classList.remove('hidden');
-    this.isCoderHeaderVisible = false;
-  }
-
-  calculatePositions() {
-    // Get the position where coder header should appear
-    if (this.filePage) {
-      const filePageRect = this.filePage.getBoundingClientRect();
-      this.coderHeaderStart = filePageRect.top + window.scrollY;
-    }
-  }
-
-  handleScroll() {
-    const scrollTop = this.mainArea ? this.mainArea.scrollTop : window.scrollY;
-    const scrollDirection = scrollTop > this.lastScrollTop ? 'down' : 'up';
-    
-    // Check if we're in the file page
-    const isInFilePage = this.filePage && 
-      scrollTop >= this.coderHeaderStart - this.threshold;
-    
-    if (isInFilePage && !this.isCoderHeaderVisible) {
-      // Show coder header and hide breadcrumbs
-      this.showCoderHeader();
-    } else if (!isInFilePage && this.isCoderHeaderVisible) {
-      // Hide coder header and show breadcrumbs
-      this.hideCoderHeader();
-    }
-    
-    // Optional: Hide coder header on scroll up when at top
-    if (scrollDirection === 'up' && scrollTop <= this.threshold) {
-      this.hideCoderHeader();
-    }
-    
-    this.lastScrollTop = scrollTop;
-  }
-
-  showCoderHeader() {
-    this.isCoderHeaderVisible = true;
-    
-    // Add slight delay for smooth transition
-    setTimeout(() => {
-      this.breadcrumbs.classList.add('hidden');
-      
-      // Force reflow for smooth animation
-      this.breadcrumbs.offsetHeight;
-      
-      // Update positions
-      if (this.coderHeader) {
-        this.coderHeader.style.top = `${this.navbar.offsetHeight}px`;
-      }
-      if (this.toolbar) {
-        this.toolbar.style.top = `${this.navbar.offsetHeight + this.coderHeader.offsetHeight}px`;
-      }
-    }, 10);
-  }
-
-  hideCoderHeader() {
-    this.isCoderHeaderVisible = false;
-    
-    // Add slight delay for smooth transition
-    setTimeout(() => {
-      this.breadcrumbs.classList.remove('hidden');
-      
-      // Force reflow for smooth animation
-      this.breadcrumbs.offsetHeight;
-      
-      // Update positions
-      if (this.coderHeader) {
-        this.coderHeader.style.top = `${this.navbar.offsetHeight + this.breadcrumbs.offsetHeight}px`;
-      }
-      if (this.toolbar) {
-        this.toolbar.style.top = `${this.navbar.offsetHeight + this.breadcrumbs.offsetHeight + this.coderHeader.offsetHeight}px`;
-      }
-    }, 10);
-  }
-
-  setupPageObserver() {
-    const observer = new MutationObserver((mutations) => {
-      mutations.forEach((mutation) => {
-        if (mutation.type === 'childList') {
-          mutation.addedNodes.forEach((node) => {
-            if (node.nodeType === 1 && node.matches && node.matches('[data-page="file"]')) {
-              setTimeout(() => {
-                this.calculatePositions();
-                this.setInitialState();
-              }, 100);
-            }
-          });
-        }
-      });
-    });
-    
-    const pagesContainer = document.getElementById('mainArea') || document.body;
-    observer.observe(pagesContainer, { childList: true, subtree: true });
-  }
-
-  // Public method to manually trigger header visibility
-  toggleCoderHeader(show) {
-    if (show) {
-      this.showCoderHeader();
-    } else {
-      this.hideCoderHeader();
-    }
-  }
-}
-
-// Initialize when DOM is loaded
-document.addEventListener('DOMContentLoaded', () => {
-  // Initialize sticky header manager
-  window.stickyHeaderManager = new StickyHeaderManager();
-  
-  // Also initialize when switching pages via SPA navigation
-  document.addEventListener('spa:navigate', () => {
-    setTimeout(() => {
-      if (window.stickyHeaderManager) {
-        window.stickyHeaderManager.calculatePositions();
-        window.stickyHeaderManager.setInitialState();
-      }
-    }, 200);
-  });
-});
-</script>
--->
 
 <script type="module" src="modules/index.js">
 /**
@@ -2979,441 +2098,6 @@ document.addEventListener('DOMContentLoaded', () => {
 </script>
 
 
-
-<script id="sidebars">
-const SidebarManager = {
-  state: {
-    isLeftSidebarOpen: false,
-    isRightSidebarOpen: false,
-    isDarkTheme: true,
-    currentRepository: null,
-    recentFiles: [],
-    repositories: []
-  },
-
-  init() {
-    this.setupEventListeners();
-    this.loadData();
-    this.checkWindowSize();
-    this.setupAutoRefresh();
-    this.updateRecentFiles();
-    this.updateRepositoryList();
-    this.updateStats();
-  },
-
-  setupEventListeners() {
-    const leftSidebarTrigger = document.getElementById('leftSidebarTrigger');
-    const rightSidebarTrigger = document.getElementById('rightSidebarTrigger');
-    const overlay = document.getElementById('overlay');
-    const body = document.body;
-
-    if (leftSidebarTrigger) {
-      leftSidebarTrigger.addEventListener('click', (e) => {
-        e.stopPropagation();
-        this.toggleLeftSidebar();
-      });
-    }
-
-    if (rightSidebarTrigger) {
-      rightSidebarTrigger.addEventListener('click', (e) => {
-        e.stopPropagation();
-        this.toggleRightSidebar();
-      });
-    }
-
-    if (overlay) {
-      overlay.addEventListener('click', () => {
-        if (this.state.isLeftSidebarOpen) {
-          this.closeLeftSidebar();
-        }
-        if (this.state.isRightSidebarOpen) {
-          this.closeRightSidebar();
-        }
-      });
-    }
-
-    // Close sidebar with Escape key
-    document.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape') {
-        if (this.state.isLeftSidebarOpen) this.closeLeftSidebar();
-        if (this.state.isRightSidebarOpen) this.closeRightSidebar();
-      }
-    });
-
-    document.addEventListener('click', (e) => {
-      if (window.innerWidth > 1200) return;
-      
-      const leftSidebar = document.getElementById('leftSidebar');
-      const rightSidebar = document.getElementById('rightSidebar');
-      const leftTrigger = document.getElementById('leftSidebarTrigger');
-      const rightTrigger = document.getElementById('rightSidebarTrigger');
-      
-      const isClickOnLeftTrigger = e.target === leftTrigger || leftTrigger.contains(e.target);
-      const isClickOnRightTrigger = e.target === rightTrigger || rightTrigger.contains(e.target);
-      const isClickInLeftSidebar = leftSidebar && leftSidebar.contains(e.target);
-      const isClickInRightSidebar = rightSidebar && rightSidebar.contains(e.target);
-      
-      if (this.state.isLeftSidebarOpen && !isClickInLeftSidebar && !isClickOnLeftTrigger) {
-        this.closeLeftSidebar();
-      }
-      
-      if (this.state.isRightSidebarOpen && !isClickInRightSidebar && !isClickOnRightTrigger) {
-        this.closeRightSidebar();
-      }
-    });
-
-    window.addEventListener('resize', () => {
-      this.checkWindowSize();
-    });
-  },
-
-  loadData() {
-    try {
-      this.state.recentFiles = JSON.parse(localStorage.getItem('gitcodr_recent_files') || '[]');
-      this.state.repositories = JSON.parse(localStorage.getItem('gitcodr_repositories') || '[]');
-    } catch (e) {
-      this.state.recentFiles = [];
-      this.state.repositories = [];
-    }
-  },
-
-  toggleLeftSidebar() {
-    if (window.innerWidth <= 1200) {
-      if (this.state.isLeftSidebarOpen) {
-        this.closeLeftSidebar();
-      } else {
-        this.openLeftSidebar();
-      }
-    }
-  },
-
-  toggleRightSidebar() {
-    if (window.innerWidth <= 1200) {
-      if (this.state.isRightSidebarOpen) {
-        this.closeRightSidebar();
-      } else {
-        this.openRightSidebar();
-      }
-    }
-  },
-
-  openLeftSidebar() {
-    const leftSidebar = document.getElementById('leftSidebar');
-    const overlay = document.getElementById('overlay');
-    const body = document.body;
-    
-    this.closeRightSidebar();
-    
-    this.state.isLeftSidebarOpen = true;
-    leftSidebar.classList.add('open');
-    overlay.classList.add('active');
-    body.classList.add('sidebar-open');
-  },
-
-  openRightSidebar() {
-    const rightSidebar = document.getElementById('rightSidebar');
-    const overlay = document.getElementById('overlay');
-    const body = document.body;
-    
-    this.closeLeftSidebar();
-    
-    this.state.isRightSidebarOpen = true;
-    rightSidebar.classList.add('open');
-    overlay.classList.add('active');
-    body.classList.add('sidebar-open');
-  },
-
-  closeLeftSidebar() {
-    const leftSidebar = document.getElementById('leftSidebar');
-    const overlay = document.getElementById('overlay');
-    const body = document.body;
-    
-    this.state.isLeftSidebarOpen = false;
-    leftSidebar.classList.remove('open');
-    
-    if (!this.state.isRightSidebarOpen) {
-      overlay.classList.remove('active');
-      body.classList.remove('sidebar-open');
-    }
-  },
-
-  closeRightSidebar() {
-    const rightSidebar = document.getElementById('rightSidebar');
-    const overlay = document.getElementById('overlay');
-    const body = document.body;
-    
-    this.state.isRightSidebarOpen = false;
-    rightSidebar.classList.remove('open');
-    
-    if (!this.state.isLeftSidebarOpen) {
-      overlay.classList.remove('active');
-      body.classList.remove('sidebar-open');
-    }
-  },
-
-  checkWindowSize() {
-    const leftSidebar = document.getElementById('leftSidebar');
-    const rightSidebar = document.getElementById('rightSidebar');
-    const overlay = document.getElementById('overlay');
-    const mainContentWrapper = document.getElementById('mainArea');
-    const body = document.body;
-    
-    if (window.innerWidth <= 1200) {
-      leftSidebar.classList.remove('open');
-      rightSidebar.classList.remove('open');
-      this.state.isLeftSidebarOpen = false;
-      this.state.isRightSidebarOpen = false;
-      overlay.classList.remove('active');
-      body.classList.remove('sidebar-open');
-      
-      if (mainContentWrapper) {
-        mainContentWrapper.style.marginLeft = '0';
-        mainContentWrapper.style.marginRight = '0';
-      }
-    } else {
-      leftSidebar.classList.remove('open');
-      rightSidebar.classList.remove('open');
-      this.state.isLeftSidebarOpen = false;
-      this.state.isRightSidebarOpen = false;
-      overlay.classList.remove('active');
-      body.classList.remove('sidebar-open');
-      
-      if (mainContentWrapper) {
-        mainContentWrapper.style.marginLeft = 'var(--sidebar-width)';
-        mainContentWrapper.style.marginRight = 'var(--sidebar-width)';
-      }
-    }
-  },
-
-  toggleTheme() {
-    const html = document.documentElement;
-    const themeIcons = document.querySelectorAll('#themeIcon, #sidebarThemeIcon');
-    
-    this.state.isDarkTheme = !this.state.isDarkTheme;
-    
-    if (this.state.isDarkTheme) {
-      html.setAttribute('data-theme', 'dark');
-      themeIcons.forEach(icon => {
-        icon.className = 'fas fa-moon';
-      });
-    } else {
-      html.setAttribute('data-theme', 'light');
-      themeIcons.forEach(icon => {
-        icon.className = 'fas fa-sun';
-      });
-    }
-    
-    localStorage.setItem('gitcodr_theme', this.state.isDarkTheme ? 'dark' : 'light');
-  },
-
-  updateRecentFiles() {
-    const recentFilesList = document.getElementById('recentFilesList');
-    if (!recentFilesList) return;
-    
-    this.loadData();
-    
-    if (this.state.recentFiles.length === 0) {
-      recentFilesList.innerHTML = '<div class="text-center py-4 text-github-fg-muted text-sm"><i class="fas fa-file text-lg mb-2 block"></i>No recent files</div>';
-    } else {
-      recentFilesList.innerHTML = this.state.recentFiles.slice(0, 5).map(file => `<div class="recent-file-item" onclick="SidebarManager.openRecentFile('${file.repoName}', '${file.filePath}', '${file.fileName}')"><i class="fas fa-file recent-file-icon"></i><div class="flex-1 min-w-0"><div class="text-sm text-github-fg-default truncate">${file.fileName}</div><div class="text-xs text-github-fg-muted truncate">${file.repoName}</div></div><div class="text-xs text-github-fg-muted">${this.formatTimeAgo(file.timestamp)}</div></div>`).join('');
-    }
-  },
-
-  updateRepositoryList() {
-    const repoListSidebar = document.getElementById('repoListSidebar');
-    const repoCount = document.getElementById('repoCount');
-    
-    if (!repoListSidebar) return;
-    
-    this.loadData();
-    
-    if (this.state.repositories.length === 0) {
-      repoListSidebar.innerHTML = '<div class="text-center py-2 text-sm text-github-fg-muted">No repositories yet</div>';
-    } else {
-      repoListSidebar.innerHTML = this.state.repositories.map(repo => `<div class="repo-item ${this.state.currentRepository === repo.name ? 'active' : ''}" onclick="SidebarManager.selectRepository('${repo.name}')"><i class="fas fa-folder repo-icon ${repo.visibility === 'public' ? 'public' : ''}"></i><span class="flex-1 truncate">${repo.name}</span><span class="text-xs text-github-fg-muted">${this.formatDate(repo.created)}</span></div>`).join('');
-    }
-    
-    if (repoCount) {
-      repoCount.textContent = this.state.repositories.length.toString();
-    }
-  },
-
-  updateStats() {
-    const totalFilesCount = document.getElementById('totalFilesCount');
-    const totalStorage = document.getElementById('totalStorage');
-    const currentRepoNameSidebar = document.getElementById('currentRepoNameSidebar');
-    const currentRepoDesc = document.getElementById('currentRepoDesc');
-    const currentRepoInfo = document.getElementById('currentRepoInfo');
-    const statsFiles = document.getElementById('statsFiles');
-    const statsCommits = document.getElementById('statsCommits');
-    const statsBranches = document.getElementById('statsBranches');
-    const statsIssues = document.getElementById('statsIssues');
-    
-    let totalFiles = 0;
-    let totalSize = 0;
-    
-    this.state.repositories.forEach(repo => {
-      try {
-        const repoData = JSON.parse(localStorage.getItem(`gitcodr_repo_${repo.name}`) || '{}');
-        const fileCount = Object.keys(repoData).length;
-        totalFiles += fileCount;
-        
-        Object.values(repoData).forEach(file => {
-          totalSize += file.size || 0;
-        });
-      } catch (e) {
-        console.warn(`Error processing repo ${repo.name}:`, e);
-      }
-    });
-    
-    if (totalFilesCount) totalFilesCount.textContent = totalFiles.toString();
-    if (totalStorage) totalStorage.textContent = this.formatFileSize(totalSize);
-    if (statsFiles) statsFiles.textContent = totalFiles.toString();
-    if (statsCommits) statsCommits.textContent = Math.floor(totalFiles * 1.5).toString();
-    if (statsBranches) statsBranches.textContent = this.state.repositories.length.toString();
-    if (statsIssues) statsIssues.textContent = '0';
-    
-    if (this.state.currentRepository) {
-      const repo = this.state.repositories.find(r => r.name === this.state.currentRepository);
-      if (repo) {
-        if (currentRepoNameSidebar) currentRepoNameSidebar.textContent = repo.name;
-        if (currentRepoDesc) currentRepoDesc.textContent = repo.description || 'No description';
-        if (currentRepoInfo) currentRepoInfo.classList.remove('hidden');
-      }
-    } else {
-      if (currentRepoInfo) currentRepoInfo.classList.add('hidden');
-    }
-  },
-
-  selectRepository(repoName) {
-    this.state.currentRepository = repoName;
-    this.updateRepositoryList();
-    this.updateStats();
-    
-    if (typeof openRepository === 'function') {
-      openRepository(repoName);
-    }
-    
-    if (window.innerWidth <= 1200) {
-      this.closeLeftSidebar();
-    }
-  },
-
-  openRecentFile(repoName, filePath, fileName) {
-    this.state.currentRepository = repoName;
-    this.updateRepositoryList();
-    this.updateStats();
-    
-    if (typeof openRecentFile === 'function') {
-      openRecentFile(repoName, filePath, fileName);
-    }
-    
-    if (window.innerWidth <= 1200) {
-      this.closeRightSidebar();
-    }
-  },
-
-  refreshRecentFiles() {
-    this.loadData();
-    this.updateRecentFiles();
-  },
-
-  addToRecentFiles(fileName, repoName, filePath) {
-    const existingIndex = this.state.recentFiles.findIndex(f => f.filePath === filePath && f.repoName === repoName);
-    
-    if (existingIndex !== -1) {
-      this.state.recentFiles.splice(existingIndex, 1);
-    }
-    
-    this.state.recentFiles.unshift({
-      fileName,
-      repoName,
-      filePath,
-      timestamp: Date.now()
-    });
-    
-    if (this.state.recentFiles.length > 10) {
-      this.state.recentFiles = this.state.recentFiles.slice(0, 10);
-    }
-    
-    localStorage.setItem('gitcodr_recent_files', JSON.stringify(this.state.recentFiles));
-    this.updateRecentFiles();
-  },
-
-  setupAutoRefresh() {
-    setInterval(() => {
-      this.loadData();
-      this.updateRecentFiles();
-      this.updateRepositoryList();
-      this.updateStats();
-    }, 30000);
-  },
-
-  formatDate(timestamp) {
-    if (!timestamp) return '';
-    const date = new Date(timestamp);
-    return date.toLocaleDateString();
-  },
-
-  formatTimeAgo(timestamp) {
-    if (!timestamp) return '';
-    const now = new Date();
-    const date = new Date(timestamp);
-    const diff = now - date;
-    
-    if (diff < 60000) return 'now';
-    if (diff < 3600000) return Math.floor(diff / 60000) + 'm';
-    if (diff < 86400000) return Math.floor(diff / 3600000) + 'h';
-    if (diff < 604800000) return Math.floor(diff / 86400000) + 'd';
-    return Math.floor(diff / 604800000) + 'w';
-  },
-
-  formatFileSize(bytes) {
-    if (typeof bytes !== 'number') return '0 KB';
-    const sizes = ['Bytes', 'KB', 'MB', 'GB'];
-    if (bytes === 0) return '0 Bytes';
-    const i = parseInt(Math.floor(Math.log(bytes) / Math.log(1024)));
-    return Math.round(bytes / Math.pow(1024, i) * 100) / 100 + ' ' + sizes[i];
-  },
-
-  updateAll() {
-    this.loadData();
-    this.updateRecentFiles();
-    this.updateRepositoryList();
-    this.updateStats();
-  },
-
-  setCurrentRepository(repoName) {
-    this.state.currentRepository = repoName;
-    this.updateRepositoryList();
-    this.updateStats();
-  }
-};
-
-document.addEventListener('DOMContentLoaded', () => {
-  SidebarManager.init();
-  
-  const savedTheme = localStorage.getItem('gitcodr_theme');
-  if (savedTheme === 'light') {
-    SidebarManager.state.isDarkTheme = false;
-    SidebarManager.toggleTheme();
-  }
-});
-
-function updateSidebarAfterFileOperation(repoName, fileName, filePath) {
-  if (SidebarManager) {
-    SidebarManager.addToRecentFiles(fileName, repoName, filePath);
-    SidebarManager.updateStats();
-  }
-}
-
-function updateSidebarAfterRepoOperation() {
-  if (SidebarManager) {
-    SidebarManager.updateRepositoryList();
-    SidebarManager.updateStats();
-  }
-}
-</script>
 
 
 <script id="serviceWorker">
