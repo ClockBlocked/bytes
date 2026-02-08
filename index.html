@@ -281,7 +281,1057 @@ html {
 </head>
 <body>
 
+<style>
+/* ================================================
+   FLOATING NAVBAR & POPOVER MENU SYSTEM
+   Premium Glass Morphism Design with Fluid Animations
+   ================================================ */
 
+:root {
+  /* Color Palette */
+  --nav-bg: rgba(34, 39, 46, 0.7);
+  --nav-border: rgba(68, 76, 86, 0.5);
+  --nav-item-hover: rgba(83, 155, 245, 0.1);
+  --nav-item-active: rgba(83, 155, 245, 0.2);
+  --nav-primary: #539bf5;
+  --nav-success: #57ab5a;
+  --nav-warning: #c69026;
+  --nav-danger: #e5534b;
+  --nav-info: #4184e4;
+  
+  /* Shadows */
+  --nav-shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.1),
+                   0 1px 3px rgba(0, 0, 0, 0.06);
+  --nav-shadow-md: 0 4px 16px rgba(0, 0, 0, 0.15),
+                   0 2px 6px rgba(0, 0, 0, 0.08);
+  --nav-shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.2),
+                   0 4px 12px rgba(0, 0, 0, 0.1);
+  --nav-shadow-xl: 0 20px 60px rgba(0, 0, 0, 0.3),
+                   0 8px 24px rgba(0, 0, 0, 0.15);
+  
+  /* Backdrop Blur */
+  --blur-sm: blur(8px);
+  --blur-md: blur(12px);
+  --blur-lg: blur(16px);
+  
+  /* Timing */
+  --timing-fast: 150ms;
+  --timing-base: 300ms;
+  --timing-slow: 500ms;
+  
+  /* Z-index Layers */
+  --z-navbar: 1000;
+  --z-menu: 1001;
+  --z-overlay: 999;
+}
+
+/* ================================================
+   ANIMATION KEYFRAMES
+   ================================================ */
+
+@keyframes menuOpen {
+  0% {
+    opacity: 0;
+    transform: translateY(20px) scale(0.95);
+  }
+  60% {
+    transform: translateY(-5px) scale(1.02);
+  }
+  80% {
+    transform: translateY(2px) scale(0.98);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes menuClose {
+  0% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(20px) scale(0.95);
+  }
+}
+
+@keyframes overlayFadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes overlayFadeOut {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes contentBlur {
+  from {
+    transform: scale(1);
+    filter: blur(0);
+    opacity: 1;
+  }
+  to {
+    transform: scale(0.98);
+    filter: blur(8px);
+    opacity: 0.6;
+  }
+}
+
+@keyframes contentUnblur {
+  from {
+    transform: scale(0.98);
+    filter: blur(8px);
+    opacity: 0.6;
+  }
+  to {
+    transform: scale(1);
+    filter: blur(0);
+    opacity: 1;
+  }
+}
+
+@keyframes ripple {
+  from {
+    transform: scale(0);
+    opacity: 0.6;
+  }
+  to {
+    transform: scale(2.5);
+    opacity: 0;
+  }
+}
+
+@keyframes slideUpFade {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ================================================
+   FLOATING NAVBAR BASE
+   ================================================ */
+
+.floating-navbar {
+  position: fixed;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 90%;
+  max-width: 800px;
+  z-index: var(--z-navbar);
+  pointer-events: none;
+}
+
+.floating-nav-main {
+  background: var(--nav-bg);
+  backdrop-filter: var(--blur-md) saturate(180%);
+  -webkit-backdrop-filter: var(--blur-md) saturate(180%);
+  border: 1px solid var(--nav-border);
+  border-radius: 24px;
+  padding: 12px 16px;
+  box-shadow: var(--nav-shadow-lg);
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  gap: 8px;
+  pointer-events: auto;
+  transition: all var(--timing-base) cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.floating-navbar.menu-active .floating-nav-main {
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+  box-shadow: none;
+}
+
+/* ================================================
+   NAVIGATION ITEMS
+   ================================================ */
+
+.nav-item {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  padding: 12px 16px;
+  background: transparent;
+  border: none;
+  border-radius: 16px;
+  color: #adbac7;
+  cursor: pointer;
+  transition: all var(--timing-fast) ease;
+  overflow: hidden;
+  flex: 1;
+  min-width: 0;
+  outline: none;
+}
+
+.nav-item i {
+  font-size: 20px;
+  transition: all var(--timing-fast) ease;
+}
+
+.nav-label {
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.3px;
+  text-transform: uppercase;
+  white-space: nowrap;
+  transition: all var(--timing-fast) ease;
+}
+
+.nav-item:hover {
+  background: var(--nav-item-hover);
+  color: var(--nav-primary);
+  transform: translateY(-2px);
+}
+
+.nav-item:active {
+  transform: translateY(0);
+}
+
+.nav-item-primary {
+  background: linear-gradient(135deg, var(--nav-primary), #4184e4);
+  color: white;
+  box-shadow: 0 4px 12px rgba(83, 155, 245, 0.3);
+}
+
+.nav-item-primary:hover {
+  background: linear-gradient(135deg, #4184e4, var(--nav-primary));
+  transform: translateY(-3px);
+  box-shadow: 0 6px 16px rgba(83, 155, 245, 0.4);
+}
+
+.nav-item.active {
+  background: var(--nav-item-active);
+  color: var(--nav-primary);
+}
+
+/* Ripple Effect */
+.ripple-container {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  border-radius: inherit;
+  pointer-events: none;
+}
+
+.ripple {
+  position: absolute;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.3);
+  animation: ripple 600ms ease-out;
+  pointer-events: none;
+}
+
+/* ================================================
+   FLOATING OVERLAY
+   ================================================ */
+
+.floating-nav-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: var(--blur-sm);
+  -webkit-backdrop-filter: var(--blur-sm);
+  z-index: var(--z-overlay);
+  opacity: 0;
+  visibility: hidden;
+  transition: all var(--timing-base) ease;
+}
+
+.floating-nav-overlay.active {
+  opacity: 1;
+  visibility: visible;
+  animation: overlayFadeIn var(--timing-base) ease;
+}
+
+.floating-nav-overlay.closing {
+  animation: overlayFadeOut var(--timing-base) ease;
+}
+
+/* ================================================
+   POPOVER MENU
+   ================================================ */
+
+.floating-nav-menu {
+  position: fixed;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%) translateY(20px) scale(0.95);
+  width: 90%;
+  max-width: 900px;
+  max-height: 70vh;
+  background: rgba(34, 39, 46, 0.95);
+  backdrop-filter: var(--blur-lg) saturate(180%);
+  -webkit-backdrop-filter: var(--blur-lg) saturate(180%);
+  border: 1px solid var(--nav-border);
+  border-radius: 24px 24px 0 0;
+  box-shadow: var(--nav-shadow-xl);
+  z-index: var(--z-menu);
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  will-change: transform, opacity;
+  transition: none;
+}
+
+.floating-nav-menu.active {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  animation: menuOpen var(--timing-slow) linear(
+    0, -0.001 2.6%, -0.004 4.9%, -0.01 7.1%, -0.02 9.4%, 
+    -0.043 13.6%, -0.105 22.4%, -0.117 24.5%, -0.124 26.4%, 
+    -0.128 28.5%, -0.126 30.5%, -0.118 32.3%, -0.104 34.1%, 
+    -0.09 35.3%, -0.072 36.5%, -0.027 38.8%, 0.034 41%, 
+    0.108 43.1%, 0.197 45.1%, 0.299 47%, 0.407 48.7%, 
+    0.652 52.2%, 0.741 53.7%, 0.817 55.2%, 0.9 57.1%, 
+    0.97 59.1%, 1.027 61.2%, 1.071 63.4%, 1.099 65.5%, 
+    1.11 66.6%, 1.118 67.7%, 1.124 68.8%, 1.127 70%, 
+    1.128 71.3%, 1.127 72.6%, 1.12 74.8%, 1.108 77.2%, 
+    1.043 86.5%, 1.019 90.7%, 1.01 93%, 1.004 95.2%, 
+    1.001 97.4%, 1
+  );
+  transform: translateX(-50%) translateY(0) scale(1);
+}
+
+.floating-nav-menu.closing {
+  animation: menuClose var(--timing-base) cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* Menu Container */
+.menu-container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+}
+
+/* Menu Header */
+.menu-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 24px;
+  border-bottom: 1px solid var(--nav-border);
+  background: rgba(45, 51, 59, 0.5);
+  backdrop-filter: var(--blur-sm);
+  -webkit-backdrop-filter: var(--blur-sm);
+  flex-shrink: 0;
+}
+
+.menu-title {
+  font-size: 18px;
+  font-weight: 600;
+  color: #adbac7;
+  margin: 0;
+}
+
+.menu-close {
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: 1px solid var(--nav-border);
+  border-radius: 8px;
+  color: #adbac7;
+  cursor: pointer;
+  transition: all var(--timing-fast) ease;
+}
+
+.menu-close:hover {
+  background: rgba(229, 83, 75, 0.1);
+  border-color: var(--nav-danger);
+  color: var(--nav-danger);
+  transform: rotate(90deg);
+}
+
+/* Menu Content */
+.menu-content {
+  flex: 1;
+  overflow-y: auto;
+  padding: 24px;
+  scroll-behavior: smooth;
+}
+
+.menu-content::-webkit-scrollbar {
+  width: 8px;
+}
+
+.menu-content::-webkit-scrollbar-track {
+  background: rgba(45, 51, 59, 0.3);
+  border-radius: 4px;
+}
+
+.menu-content::-webkit-scrollbar-thumb {
+  background: rgba(83, 155, 245, 0.3);
+  border-radius: 4px;
+}
+
+.menu-content::-webkit-scrollbar-thumb:hover {
+  background: rgba(83, 155, 245, 0.5);
+}
+
+/* ================================================
+   MENU SECTIONS
+   ================================================ */
+
+.menu-section {
+  margin-bottom: 32px;
+  animation: slideUpFade var(--timing-base) ease;
+  animation-fill-mode: both;
+}
+
+.menu-section:nth-child(1) { animation-delay: 50ms; }
+.menu-section:nth-child(2) { animation-delay: 100ms; }
+.menu-section:nth-child(3) { animation-delay: 150ms; }
+.menu-section:nth-child(4) { animation-delay: 200ms; }
+.menu-section:nth-child(5) { animation-delay: 250ms; }
+.menu-section:nth-child(6) { animation-delay: 300ms; }
+
+.section-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #768390;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 16px;
+}
+
+.section-icon {
+  font-size: 16px;
+  color: var(--nav-primary);
+}
+
+.section-action {
+  margin-left: auto;
+  padding: 4px 8px;
+  background: transparent;
+  border: 1px solid var(--nav-border);
+  border-radius: 6px;
+  color: #768390;
+  font-size: 12px;
+  cursor: pointer;
+  transition: all var(--timing-fast) ease;
+}
+
+.section-action:hover {
+  background: var(--nav-item-hover);
+  color: var(--nav-primary);
+  border-color: var(--nav-primary);
+}
+
+/* ================================================
+   PROFILE SECTION
+   ================================================ */
+
+.profile-card {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 20px;
+  background: linear-gradient(135deg, rgba(83, 155, 245, 0.1), rgba(65, 132, 228, 0.05));
+  border: 1px solid rgba(83, 155, 245, 0.2);
+  border-radius: 16px;
+  transition: all var(--timing-base) ease;
+}
+
+.profile-card:hover {
+  background: linear-gradient(135deg, rgba(83, 155, 245, 0.15), rgba(65, 132, 228, 0.08));
+  border-color: rgba(83, 155, 245, 0.3);
+  transform: translateY(-2px);
+  box-shadow: var(--nav-shadow-md);
+}
+
+.profile-avatar {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  border: 3px solid var(--nav-primary);
+  box-shadow: 0 0 20px rgba(83, 155, 245, 0.3);
+}
+
+.profile-info {
+  flex: 1;
+}
+
+.profile-name {
+  font-size: 18px;
+  font-weight: 600;
+  color: #adbac7;
+  margin: 0 0 4px 0;
+}
+
+.profile-username {
+  font-size: 14px;
+  color: #768390;
+  margin: 0 0 8px 0;
+}
+
+.profile-note {
+  font-size: 12px;
+  color: #636e7b;
+  margin: 0;
+  font-style: italic;
+}
+
+/* ================================================
+   MENU GRID (Navigation & Quick Actions)
+   ================================================ */
+
+.menu-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 12px;
+}
+
+.menu-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+  background: rgba(45, 51, 59, 0.5);
+  border: 1px solid var(--nav-border);
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all var(--timing-base) cubic-bezier(0.34, 1.56, 0.64, 1);
+  overflow: hidden;
+}
+
+.menu-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(83, 155, 245, 0.05), transparent);
+  opacity: 0;
+  transition: opacity var(--timing-base) ease;
+}
+
+.menu-card:hover {
+  background: rgba(45, 51, 59, 0.7);
+  border-color: var(--nav-primary);
+  transform: translateY(-4px);
+  box-shadow: var(--nav-shadow-md);
+}
+
+.menu-card:hover::before {
+  opacity: 1;
+}
+
+.card-icon {
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(83, 155, 245, 0.1);
+  border-radius: 12px;
+  margin-bottom: 12px;
+  transition: all var(--timing-base) ease;
+}
+
+.card-icon i {
+  font-size: 24px;
+  color: var(--nav-primary);
+}
+
+.menu-card:hover .card-icon {
+  transform: scale(1.1) rotate(5deg);
+  background: rgba(83, 155, 245, 0.2);
+}
+
+.card-icon-success {
+  background: rgba(87, 171, 90, 0.1);
+}
+
+.card-icon-success i {
+  color: var(--nav-success);
+}
+
+.card-icon-primary {
+  background: rgba(65, 132, 228, 0.1);
+}
+
+.card-icon-primary i {
+  color: var(--nav-info);
+}
+
+.card-icon-info {
+  background: rgba(83, 155, 245, 0.1);
+}
+
+.card-icon-info i {
+  color: var(--nav-primary);
+}
+
+.card-icon-warning {
+  background: rgba(198, 144, 38, 0.1);
+}
+
+.card-icon-warning i {
+  color: var(--nav-warning);
+}
+
+.card-content {
+  flex: 1;
+  position: relative;
+}
+
+.card-title {
+  font-size: 15px;
+  font-weight: 600;
+  color: #adbac7;
+  margin: 0 0 4px 0;
+}
+
+.card-description {
+  font-size: 12px;
+  color: #768390;
+  margin: 0;
+}
+
+.card-badge {
+  position: absolute;
+  top: 0;
+  right: 0;
+  padding: 2px 8px;
+  background: var(--nav-primary);
+  color: white;
+  font-size: 11px;
+  font-weight: 600;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(83, 155, 245, 0.3);
+}
+
+/* ================================================
+   RECENT FILES LIST
+   ================================================ */
+
+.recent-files-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.recent-file-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  background: rgba(45, 51, 59, 0.3);
+  border: 1px solid transparent;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all var(--timing-fast) ease;
+}
+
+.recent-file-item:hover {
+  background: rgba(45, 51, 59, 0.5);
+  border-color: var(--nav-border);
+  transform: translateX(4px);
+}
+
+.file-icon {
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(83, 155, 245, 0.1);
+  border-radius: 6px;
+  flex-shrink: 0;
+}
+
+.file-icon i {
+  font-size: 16px;
+  color: var(--nav-primary);
+}
+
+.file-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.file-name {
+  font-size: 13px;
+  font-weight: 500;
+  color: #adbac7;
+  margin: 0 0 2px 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.file-meta {
+  font-size: 11px;
+  color: #636e7b;
+  margin: 0;
+}
+
+.file-action {
+  color: #768390;
+  font-size: 12px;
+  opacity: 0;
+  transition: opacity var(--timing-fast) ease;
+}
+
+.recent-file-item:hover .file-action {
+  opacity: 1;
+}
+
+/* ================================================
+   STATISTICS GRID
+   ================================================ */
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 12px;
+}
+
+.stat-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px;
+  background: rgba(45, 51, 59, 0.3);
+  border: 1px solid var(--nav-border);
+  border-radius: 12px;
+  transition: all var(--timing-base) ease;
+}
+
+.stat-card:hover {
+  background: rgba(45, 51, 59, 0.5);
+  border-color: var(--nav-primary);
+  transform: translateY(-2px);
+  box-shadow: var(--nav-shadow-sm);
+}
+
+.stat-icon {
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 10px;
+  flex-shrink: 0;
+}
+
+.stat-icon i {
+  font-size: 20px;
+}
+
+.stat-icon-files {
+  background: linear-gradient(135deg, rgba(83, 155, 245, 0.2), rgba(83, 155, 245, 0.05));
+}
+
+.stat-icon-files i {
+  color: var(--nav-primary);
+}
+
+.stat-icon-commits {
+  background: linear-gradient(135deg, rgba(87, 171, 90, 0.2), rgba(87, 171, 90, 0.05));
+}
+
+.stat-icon-commits i {
+  color: var(--nav-success);
+}
+
+.stat-icon-storage {
+  background: linear-gradient(135deg, rgba(198, 144, 38, 0.2), rgba(198, 144, 38, 0.05));
+}
+
+.stat-icon-storage i {
+  color: var(--nav-warning);
+}
+
+.stat-icon-branches {
+  background: linear-gradient(135deg, rgba(229, 83, 75, 0.2), rgba(229, 83, 75, 0.05));
+}
+
+.stat-icon-branches i {
+  color: var(--nav-danger);
+}
+
+.stat-content {
+  flex: 1;
+}
+
+.stat-value {
+  font-size: 20px;
+  font-weight: 700;
+  color: #adbac7;
+  margin: 0 0 2px 0;
+}
+
+.stat-label {
+  font-size: 11px;
+  color: #768390;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin: 0;
+}
+
+/* ================================================
+   TOOLS LIST
+   ================================================ */
+
+.tool-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.tool-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 16px;
+  background: rgba(45, 51, 59, 0.3);
+  border: 1px solid transparent;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all var(--timing-fast) ease;
+}
+
+.tool-item:hover {
+  background: rgba(45, 51, 59, 0.5);
+  border-color: var(--nav-border);
+  transform: translateX(4px);
+}
+
+.tool-icon {
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(83, 155, 245, 0.1);
+  border-radius: 8px;
+  flex-shrink: 0;
+}
+
+.tool-icon i {
+  font-size: 16px;
+  color: var(--nav-primary);
+}
+
+.tool-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.tool-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: #adbac7;
+  margin: 0 0 2px 0;
+}
+
+.tool-description {
+  font-size: 12px;
+  color: #768390;
+  margin: 0;
+}
+
+.tool-action {
+  color: #768390;
+  font-size: 12px;
+  transition: all var(--timing-fast) ease;
+}
+
+.tool-item:hover .tool-action {
+  color: var(--nav-primary);
+  transform: translateX(2px);
+}
+
+/* ================================================
+   CONTENT BLUR STATES
+   ================================================ */
+
+#mainArea.menu-active {
+  animation: contentBlur var(--timing-base) ease forwards;
+}
+
+#mainArea.menu-closing {
+  animation: contentUnblur var(--timing-base) ease forwards;
+}
+
+.navbar.menu-active {
+  animation: contentBlur var(--timing-base) ease forwards;
+}
+
+.navbar.menu-closing {
+  animation: contentUnblur var(--timing-base) ease forwards;
+}
+
+.breadCrumbsWrapper.menu-active {
+  animation: contentBlur var(--timing-base) ease forwards;
+}
+
+.breadCrumbsWrapper.menu-closing {
+  animation: contentUnblur var(--timing-base) ease forwards;
+}
+
+/* ================================================
+   RESPONSIVE DESIGN
+   ================================================ */
+
+@media (max-width: 768px) {
+  .floating-navbar {
+    width: 95%;
+    max-width: none;
+    bottom: 16px;
+  }
+  
+  .floating-nav-main {
+    padding: 10px 12px;
+    border-radius: 20px;
+  }
+  
+  .nav-item {
+    padding: 10px 12px;
+    min-width: 60px;
+  }
+  
+  .nav-item i {
+    font-size: 18px;
+  }
+  
+  .nav-label {
+    font-size: 10px;
+  }
+  
+  .floating-nav-menu {
+    width: 95%;
+    max-height: 75vh;
+    bottom: 16px;
+  }
+  
+  .menu-content {
+    padding: 16px;
+  }
+  
+  .menu-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 480px) {
+  .nav-label {
+    display: none;
+  }
+  
+  .nav-item {
+    padding: 12px;
+  }
+  
+  .profile-card {
+    flex-direction: column;
+    text-align: center;
+  }
+  
+  .stats-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ================================================
+   ACCESSIBILITY
+   ================================================ */
+
+.nav-item:focus-visible,
+.menu-close:focus-visible,
+.menu-card:focus-visible,
+.tool-item:focus-visible {
+  outline: 2px solid var(--nav-primary);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* ================================================
+   PRINT STYLES
+   ================================================ */
+
+@media print {
+  .floating-navbar,
+  .floating-nav-overlay {
+    display: none;
+  }
+}
+
+/* ================================================
+   LIGHT THEME SUPPORT
+   ================================================ */
+
+[data-theme="light"] {
+  --nav-bg: rgba(255, 255, 255, 0.7);
+  --nav-border: rgba(208, 215, 222, 0.5);
+  --nav-item-hover: rgba(83, 155, 245, 0.08);
+  --nav-item-active: rgba(83, 155, 245, 0.15);
+}
+
+[data-theme="light"] .floating-nav-menu {
+  background: rgba(255, 255, 255, 0.95);
+}
+
+[data-theme="light"] .menu-title,
+[data-theme="light"] .profile-name,
+[data-theme="light"] .card-title,
+[data-theme="light"] .tool-title,
+[data-theme="light"] .stat-value {
+  color: #24292f;
+}
+
+[data-theme="light"] .nav-item {
+  color: #57606a;
+}
+
+[data-theme="light"] .section-title,
+[data-theme="light"] .profile-username,
+[data-theme="light"] .card-description,
+[data-theme="light"] .tool-description,
+[data-theme="light"] .stat-label {
+  color: #656d76;
+}
+</style>
 
 
 
@@ -646,6 +1696,828 @@ html {
 ===================================================-->
 
 
+  <!-- NEW FLOATING NAVBAR -->
+  <div id="floatingNavOverlay" class="floating-nav-overlay" aria-hidden="true"></div>
+  
+  <nav id="floatingNavbar" class="floating-navbar" role="navigation" aria-label="Main floating navigation">
+    <div class="floating-nav-main">
+      <button class="nav-item" data-nav-action="home" aria-label="Home">
+        <i class="fas fa-home"></i>
+        <span class="nav-label">Home</span>
+        <div class="ripple-container"></div>
+      </button>
+      
+      <button class="nav-item" data-nav-action="code" aria-label="Code">
+        <i class="fas fa-code"></i>
+        <span class="nav-label">Code</span>
+        <div class="ripple-container"></div>
+      </button>
+      
+      <button class="nav-item nav-item-primary" id="menuToggleBtn" data-nav-action="menu" aria-label="Toggle menu" aria-expanded="false">
+        <i class="fas fa-th"></i>
+        <span class="nav-label">Menu</span>
+        <div class="ripple-container"></div>
+      </button>
+      
+      <button class="nav-item" data-nav-action="search" aria-label="Search">
+        <i class="fas fa-search"></i>
+        <span class="nav-label">Search</span>
+        <div class="ripple-container"></div>
+      </button>
+      
+      <button class="nav-item" data-nav-action="settings" aria-label="Settings">
+        <i class="fas fa-cog"></i>
+        <span class="nav-label">Settings</span>
+        <div class="ripple-container"></div>
+      </button>
+    </div>
+    
+    <div class="floating-nav-menu" id="floatingNavMenu" role="dialog" aria-labelledby="menuTitle" aria-modal="true">
+      <div class="menu-container">
+        <div class="menu-header">
+          <h2 id="menuTitle" class="menu-title">Navigation & Tools</h2>
+          <button class="menu-close" id="menuCloseBtn" aria-label="Close menu">
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+        
+        <div class="menu-content">
+          <!-- Profile Section -->
+          <section class="menu-section profile-section">
+            <div class="profile-card">
+              <img src="https://dev.wuaze.com/banner.png" alt="Profile" class="profile-avatar" />
+              <div class="profile-info">
+                <h3 class="profile-name">GitDev</h3>
+                <p class="profile-username">GitHub File Manager</p>
+                <p class="profile-note">Files stored in your GitHub repository</p>
+              </div>
+            </div>
+          </section>
+
+          <!-- Navigation Grid -->
+          <section class="menu-section">
+            <h3 class="section-title">
+              <i class="fas fa-compass section-icon"></i>
+              Navigation
+            </h3>
+            <div class="menu-grid">
+              <button class="menu-card" data-action="show-repo-selector">
+                <div class="card-icon">
+                  <i class="fas fa-folder"></i>
+                </div>
+                <div class="card-content">
+                  <h4 class="card-title">Repositories</h4>
+                  <p class="card-description">Browse your repos</p>
+                  <span class="card-badge" id="menuRepoCount">0</span>
+                </div>
+              </button>
+              
+              <button class="menu-card" data-action="navigate-root">
+                <div class="card-icon">
+                  <i class="fas fa-home"></i>
+                </div>
+                <div class="card-content">
+                  <h4 class="card-title">Root</h4>
+                  <p class="card-description">Go to root directory</p>
+                </div>
+              </button>
+              
+              <button class="menu-card" data-action="show-branches">
+                <div class="card-icon">
+                  <i class="fas fa-code-branch"></i>
+                </div>
+                <div class="card-content">
+                  <h4 class="card-title">Branches</h4>
+                  <p class="card-description">Manage branches</p>
+                  <span class="card-badge" id="menuBranchCount">1</span>
+                </div>
+              </button>
+              
+              <button class="menu-card" data-action="show-pull-requests">
+                <div class="card-icon">
+                  <i class="fas fa-code-pull-request"></i>
+                </div>
+                <div class="card-content">
+                  <h4 class="card-title">Pull Requests</h4>
+                  <p class="card-description">View PRs</p>
+                  <span class="card-badge">0</span>
+                </div>
+              </button>
+            </div>
+          </section>
+
+          <!-- Quick Actions -->
+          <section class="menu-section">
+            <h3 class="section-title">
+              <i class="fas fa-bolt section-icon"></i>
+              Quick Actions
+            </h3>
+            <div class="menu-grid">
+              <button class="menu-card" data-action="create-file">
+                <div class="card-icon card-icon-success">
+                  <i class="fas fa-file-plus"></i>
+                </div>
+                <div class="card-content">
+                  <h4 class="card-title">New File</h4>
+                  <p class="card-description">Create a new file</p>
+                </div>
+              </button>
+              
+              <button class="menu-card" data-action="show-upload-modal">
+                <div class="card-icon card-icon-primary">
+                  <i class="fas fa-upload"></i>
+                </div>
+                <div class="card-content">
+                  <h4 class="card-title">Upload</h4>
+                  <p class="card-description">Upload files</p>
+                </div>
+              </button>
+              
+              <button class="menu-card" data-action="show-import-modal">
+                <div class="card-icon card-icon-info">
+                  <i class="fas fa-download"></i>
+                </div>
+                <div class="card-content">
+                  <h4 class="card-title">Import</h4>
+                  <p class="card-description">Import from URL</p>
+                </div>
+              </button>
+              
+              <button class="menu-card" data-action="show-create-folder">
+                <div class="card-icon card-icon-warning">
+                  <i class="fas fa-folder-plus"></i>
+                </div>
+                <div class="card-content">
+                  <h4 class="card-title">New Folder</h4>
+                  <p class="card-description">Create folder</p>
+                </div>
+              </button>
+            </div>
+          </section>
+
+          <!-- Recent Files -->
+          <section class="menu-section">
+            <h3 class="section-title">
+              <i class="fas fa-clock section-icon"></i>
+              Recent Files
+              <button class="section-action" onclick="refreshRecentFiles()">
+                <i class="fas fa-sync-alt"></i>
+              </button>
+            </h3>
+            <div class="recent-files-list" id="menuRecentFiles">
+              <!-- Recent files will be populated here -->
+            </div>
+          </section>
+
+          <!-- Statistics -->
+          <section class="menu-section">
+            <h3 class="section-title">
+              <i class="fas fa-chart-bar section-icon"></i>
+              Statistics
+            </h3>
+            <div class="stats-grid">
+              <div class="stat-card">
+                <div class="stat-icon stat-icon-files">
+                  <i class="fas fa-file"></i>
+                </div>
+                <div class="stat-content">
+                  <div class="stat-value" id="menuStatsFiles">0</div>
+                  <div class="stat-label">Files</div>
+                </div>
+              </div>
+              
+              <div class="stat-card">
+                <div class="stat-icon stat-icon-commits">
+                  <i class="fas fa-code-commit"></i>
+                </div>
+                <div class="stat-content">
+                  <div class="stat-value" id="menuStatsCommits">0</div>
+                  <div class="stat-label">Commits</div>
+                </div>
+              </div>
+              
+              <div class="stat-card">
+                <div class="stat-icon stat-icon-storage">
+                  <i class="fas fa-database"></i>
+                </div>
+                <div class="stat-content">
+                  <div class="stat-value" id="menuStatsStorage">0 KB</div>
+                  <div class="stat-label">Storage</div>
+                </div>
+              </div>
+              
+              <div class="stat-card">
+                <div class="stat-icon stat-icon-branches">
+                  <i class="fas fa-code-branch"></i>
+                </div>
+                <div class="stat-content">
+                  <div class="stat-value" id="menuStatsBranches">1</div>
+                  <div class="stat-label">Branches</div>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <!-- Tools & Settings -->
+          <section class="menu-section">
+            <h3 class="section-title">
+              <i class="fas fa-tools section-icon"></i>
+              Tools & Settings
+            </h3>
+            <div class="tool-list">
+              <button class="tool-item" onclick="toggleTheme()">
+                <div class="tool-icon">
+                  <i id="menuThemeIcon" class="fas fa-moon"></i>
+                </div>
+                <div class="tool-content">
+                  <div class="tool-title">Theme</div>
+                  <div class="tool-description">Toggle dark/light mode</div>
+                </div>
+                <div class="tool-action">
+                  <i class="fas fa-chevron-right"></i>
+                </div>
+              </button>
+              
+              <button class="tool-item" onclick="showHelp()">
+                <div class="tool-icon">
+                  <i class="fas fa-question-circle"></i>
+                </div>
+                <div class="tool-content">
+                  <div class="tool-title">Help</div>
+                  <div class="tool-description">Documentation & support</div>
+                </div>
+                <div class="tool-action">
+                  <i class="fas fa-chevron-right"></i>
+                </div>
+              </button>
+              
+              <button class="tool-item" onclick="showSettings()">
+                <div class="tool-icon">
+                  <i class="fas fa-cog"></i>
+                </div>
+                <div class="tool-content">
+                  <div class="tool-title">Settings</div>
+                  <div class="tool-description">Configure preferences</div>
+                </div>
+                <div class="tool-action">
+                  <i class="fas fa-chevron-right"></i>
+                </div>
+              </button>
+            </div>
+          </section>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+
+
+<script>
+/* ================================================
+   FLOATING NAVBAR & POPOVER MENU CONTROLLER
+   Premium Interactions with Fluid Animations
+   ================================================ */
+
+class FloatingNavController {
+  constructor() {
+    this.navbar = document.getElementById('floatingNavbar');
+    this.menu = document.getElementById('floatingNavMenu');
+    this.overlay = document.getElementById('floatingNavOverlay');
+    this.menuToggleBtn = document.getElementById('menuToggleBtn');
+    this.menuCloseBtn = document.getElementById('menuCloseBtn');
+    this.mainArea = document.getElementById('mainArea');
+    this.topNavbar = document.querySelector('.navbar');
+    this.breadcrumbs = document.getElementById('breadCrumbsWrapper');
+    
+    this.isMenuOpen = false;
+    this.isAnimating = false;
+    
+    this.init();
+  }
+  
+  init() {
+    // Bind events
+    this.menuToggleBtn?.addEventListener('click', () => this.toggleMenu());
+    this.menuCloseBtn?.addEventListener('click', () => this.closeMenu());
+    this.overlay?.addEventListener('click', () => this.closeMenu());
+    
+    // Escape key to close
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && this.isMenuOpen) {
+        this.closeMenu();
+      }
+    });
+    
+    // Ripple effects for nav items
+    this.initRippleEffects();
+    
+    // Initialize menu actions
+    this.initMenuActions();
+    
+    // Update stats on initialization
+    this.updateStats();
+    
+    // Populate recent files
+    this.populateRecentFiles();
+    
+    // Focus trap in menu
+    this.initFocusTrap();
+    
+    console.log('✨ Floating Nav Controller initialized');
+  }
+  
+  toggleMenu() {
+    if (this.isAnimating) return;
+    
+    if (this.isMenuOpen) {
+      this.closeMenu();
+    } else {
+      this.openMenu();
+    }
+  }
+  
+  openMenu() {
+    if (this.isAnimating || this.isMenuOpen) return;
+    
+    this.isAnimating = true;
+    this.isMenuOpen = true;
+    
+    // Add active states
+    this.navbar.classList.add('menu-active');
+    this.overlay.classList.add('active');
+    this.menu.classList.add('active');
+    this.mainArea.classList.add('menu-active');
+    this.topNavbar.classList.add('menu-active');
+    this.breadcrumbs?.classList.add('menu-active');
+    
+    // Update ARIA
+    this.menuToggleBtn.setAttribute('aria-expanded', 'true');
+    this.menu.setAttribute('aria-hidden', 'false');
+    
+    // Focus first focusable element in menu
+    setTimeout(() => {
+      const firstFocusable = this.menu.querySelector('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])');
+      firstFocusable?.focus();
+    }, 100);
+    
+    // Reset animation flag after animation completes
+    setTimeout(() => {
+      this.isAnimating = false;
+    }, 500);
+    
+    // Update stats when menu opens
+    this.updateStats();
+    this.populateRecentFiles();
+    
+    console.log('📂 Menu opened');
+  }
+  
+  closeMenu() {
+    if (this.isAnimating || !this.isMenuOpen) return;
+    
+    this.isAnimating = true;
+    this.isMenuOpen = false;
+    
+    // Add closing states
+    this.overlay.classList.add('closing');
+    this.menu.classList.add('closing');
+    this.mainArea.classList.add('menu-closing');
+    this.topNavbar.classList.add('menu-closing');
+    this.breadcrumbs?.classList.add('menu-closing');
+    
+    // Update ARIA
+    this.menuToggleBtn.setAttribute('aria-expanded', 'false');
+    this.menu.setAttribute('aria-hidden', 'true');
+    
+    // Return focus to toggle button
+    this.menuToggleBtn.focus();
+    
+    // Remove classes after animation
+    setTimeout(() => {
+      this.navbar.classList.remove('menu-active');
+      this.overlay.classList.remove('active', 'closing');
+      this.menu.classList.remove('active', 'closing');
+      this.mainArea.classList.remove('menu-active', 'menu-closing');
+      this.topNavbar.classList.remove('menu-active', 'menu-closing');
+      this.breadcrumbs?.classList.remove('menu-active', 'menu-closing');
+      
+      this.isAnimating = false;
+    }, 300);
+    
+    console.log('📁 Menu closed');
+  }
+  
+  initRippleEffects() {
+    const navItems = this.navbar.querySelectorAll('.nav-item');
+    
+    navItems.forEach(item => {
+      item.addEventListener('click', (e) => {
+        const container = item.querySelector('.ripple-container');
+        if (!container) return;
+        
+        const ripple = document.createElement('span');
+        ripple.classList.add('ripple');
+        
+        const rect = item.getBoundingClientRect();
+        const size = Math.max(rect.width, rect.height);
+        const x = e.clientX - rect.left - size / 2;
+        const y = e.clientY - rect.top - size / 2;
+        
+        ripple.style.width = ripple.style.height = `${size}px`;
+        ripple.style.left = `${x}px`;
+        ripple.style.top = `${y}px`;
+        
+        container.appendChild(ripple);
+        
+        setTimeout(() => ripple.remove(), 600);
+      });
+    });
+  }
+  
+  initMenuActions() {
+    // Get all action buttons in menu
+    const actionButtons = this.menu.querySelectorAll('[data-action]');
+    
+    actionButtons.forEach(button => {
+      button.addEventListener('click', () => {
+        const action = button.getAttribute('data-action');
+        this.handleMenuAction(action);
+      });
+    });
+    
+    // Navigation item actions
+    const navItems = this.navbar.querySelectorAll('[data-nav-action]');
+    navItems.forEach(item => {
+      item.addEventListener('click', () => {
+        const action = item.getAttribute('data-nav-action');
+        this.handleNavAction(action);
+      });
+    });
+  }
+  
+  handleMenuAction(action) {
+    console.log(`🎯 Menu action: ${action}`);
+    
+    // Close menu first for most actions
+    const actionsToKeepMenuOpen = ['refresh-stats'];
+    if (!actionsToKeepMenuOpen.includes(action)) {
+      this.closeMenu();
+    }
+    
+    // Route to existing functions
+    switch(action) {
+      case 'show-repo-selector':
+        this.navigateToPage('repo');
+        break;
+      case 'navigate-root':
+        this.navigateToRoot();
+        break;
+      case 'create-file':
+        this.showCreateFileModal();
+        break;
+      case 'show-upload-modal':
+        if (typeof showUploadModal === 'function') {
+          showUploadModal();
+        }
+        break;
+      case 'show-import-modal':
+        if (typeof showImportModal === 'function') {
+          showImportModal();
+        }
+        break;
+      case 'show-create-folder':
+        this.showCreateFolderModal();
+        break;
+      case 'show-branches':
+        this.showBranches();
+        break;
+      case 'show-pull-requests':
+        this.showPullRequests();
+        break;
+      default:
+        console.warn(`Unknown action: ${action}`);
+    }
+  }
+  
+  handleNavAction(action) {
+    console.log(`🧭 Nav action: ${action}`);
+    
+    switch(action) {
+      case 'home':
+        this.navigateToPage('repo');
+        break;
+      case 'code':
+        this.navigateToPage('explorer');
+        break;
+      case 'menu':
+        this.toggleMenu();
+        break;
+      case 'search':
+        if (typeof showSearchModal === 'function') {
+          showSearchModal();
+        }
+        break;
+      case 'settings':
+        this.showSettings();
+        break;
+      default:
+        console.warn(`Unknown nav action: ${action}`);
+    }
+  }
+  
+  navigateToPage(page) {
+    // Hide all pages
+    const pages = document.querySelectorAll('.pages');
+    pages.forEach(p => {
+      p.style.display = 'none';
+    });
+    
+    // Show target page
+    const targetPage = document.querySelector(`[data-page="${page}"]`);
+    if (targetPage) {
+      targetPage.style.display = 'block';
+      console.log(`📄 Navigated to ${page}`);
+    }
+  }
+  
+  navigateToRoot() {
+    // Logic to navigate to root directory
+    console.log('🏠 Navigating to root...');
+    this.navigateToPage('explorer');
+    // Call your existing root navigation function if it exists
+    if (typeof navigateToRoot === 'function') {
+      navigateToRoot();
+    }
+  }
+  
+  showCreateFileModal() {
+    const modal = document.getElementById('createFileModal');
+    if (modal) {
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+    }
+  }
+  
+  showCreateFolderModal() {
+    console.log('📁 Create folder modal would open here');
+    // Implement folder creation modal
+  }
+  
+  showBranches() {
+    console.log('🌿 Branches view would open here');
+    // Implement branches view
+  }
+  
+  showPullRequests() {
+    console.log('🔀 Pull requests view would open here');
+    // Implement PR view
+  }
+  
+  showSettings() {
+    console.log('⚙️ Settings would open here');
+    // Implement settings panel
+  }
+  
+  updateStats() {
+    // Get stats from localStorage or your data source
+    const stats = this.getStats();
+    
+    // Update menu stats
+    document.getElementById('menuRepoCount').textContent = stats.repos;
+    document.getElementById('menuBranchCount').textContent = stats.branches;
+    document.getElementById('menuStatsFiles').textContent = stats.files;
+    document.getElementById('menuStatsCommits').textContent = stats.commits;
+    document.getElementById('menuStatsStorage').textContent = stats.storage;
+    document.getElementById('menuStatsBranches').textContent = stats.branches;
+    
+    console.log('📊 Stats updated', stats);
+  }
+  
+  getStats() {
+    // Replace with your actual data retrieval logic
+    try {
+      const repos = JSON.parse(localStorage.getItem('repositories') || '[]');
+      const currentRepo = localStorage.getItem('currentRepository');
+      const repoData = currentRepo ? JSON.parse(localStorage.getItem(`repo_${currentRepo}`) || '{}') : {};
+      const files = repoData.files || {};
+      
+      const fileCount = Object.keys(files).length;
+      const commitCount = Object.values(files).reduce((sum, file) => {
+        return sum + (file.commits ? file.commits.length : 0);
+      }, 0);
+      
+      const storageUsed = new Blob([JSON.stringify(files)]).size;
+      const storageKB = Math.round(storageUsed / 1024);
+      
+      return {
+        repos: repos.length,
+        files: fileCount,
+        commits: commitCount,
+        storage: `${storageKB} KB`,
+        branches: 1 // Adjust based on your branch implementation
+      };
+    } catch (error) {
+      console.error('Error getting stats:', error);
+      return {
+        repos: 0,
+        files: 0,
+        commits: 0,
+        storage: '0 KB',
+        branches: 1
+      };
+    }
+  }
+  
+  populateRecentFiles() {
+    const container = document.getElementById('menuRecentFiles');
+    if (!container) return;
+    
+    const recentFiles = this.getRecentFiles();
+    
+    if (recentFiles.length === 0) {
+      container.innerHTML = `
+        <div style="text-align: center; padding: 20px; color: #636e7b;">
+          <i class="fas fa-file" style="font-size: 32px; margin-bottom: 8px; opacity: 0.3;"></i>
+          <p style="margin: 0; font-size: 13px;">No recent files</p>
+        </div>
+      `;
+      return;
+    }
+    
+    container.innerHTML = recentFiles.map(file => {
+      const icon = this.getFileIcon(file.name);
+      const timeAgo = this.getTimeAgo(file.lastModified);
+      
+      return `
+        <div class="recent-file-item" data-file-path="${file.path}">
+          <div class="file-icon">
+            <i class="${icon}"></i>
+          </div>
+          <div class="file-info">
+            <div class="file-name">${file.name}</div>
+            <div class="file-meta">${timeAgo}</div>
+          </div>
+          <div class="file-action">
+            <i class="fas fa-chevron-right"></i>
+          </div>
+        </div>
+      `;
+    }).join('');
+    
+    // Add click handlers
+    container.querySelectorAll('.recent-file-item').forEach(item => {
+      item.addEventListener('click', () => {
+        const path = item.getAttribute('data-file-path');
+        this.openFile(path);
+        this.closeMenu();
+      });
+    });
+  }
+  
+  getRecentFiles() {
+    // Replace with your actual recent files logic
+    try {
+      const currentRepo = localStorage.getItem('currentRepository');
+      if (!currentRepo) return [];
+      
+      const repoData = JSON.parse(localStorage.getItem(`repo_${currentRepo}`) || '{}');
+      const files = repoData.files || {};
+      
+      return Object.entries(files)
+        .map(([path, data]) => ({
+          name: path.split('/').pop(),
+          path: path,
+          lastModified: data.lastModified || Date.now()
+        }))
+        .sort((a, b) => b.lastModified - a.lastModified)
+        .slice(0, 5);
+    } catch (error) {
+      console.error('Error getting recent files:', error);
+      return [];
+    }
+  }
+  
+  getFileIcon(filename) {
+    const ext = filename.split('.').pop().toLowerCase();
+    const iconMap = {
+      js: 'fab fa-js-square',
+      html: 'fab fa-html5',
+      css: 'fab fa-css3-alt',
+      json: 'fas fa-file-code',
+      md: 'fab fa-markdown',
+      py: 'fab fa-python',
+      php: 'fab fa-php',
+      sql: 'fas fa-database',
+      yaml: 'fas fa-file-code',
+      yml: 'fas fa-file-code',
+    };
+    
+    return iconMap[ext] || 'fas fa-file';
+  }
+  
+  getTimeAgo(timestamp) {
+    const seconds = Math.floor((Date.now() - timestamp) / 1000);
+    
+    if (seconds < 60) return 'Just now';
+    if (seconds < 3600) return `${Math.floor(seconds / 60)}m ago`;
+    if (seconds < 86400) return `${Math.floor(seconds / 3600)}h ago`;
+    if (seconds < 604800) return `${Math.floor(seconds / 86400)}d ago`;
+    return `${Math.floor(seconds / 604800)}w ago`;
+  }
+  
+  openFile(path) {
+    console.log(`📄 Opening file: ${path}`);
+    // Implement file opening logic
+    // Call your existing file opening function
+    if (typeof openFile === 'function') {
+      openFile(path);
+    }
+  }
+  
+  initFocusTrap() {
+    this.menu.addEventListener('keydown', (e) => {
+      if (!this.isMenuOpen) return;
+      
+      if (e.key === 'Tab') {
+        const focusableElements = this.menu.querySelectorAll(
+          'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+        );
+        const firstElement = focusableElements[0];
+        const lastElement = focusableElements[focusableElements.length - 1];
+        
+        if (e.shiftKey) {
+          if (document.activeElement === firstElement) {
+            lastElement.focus();
+            e.preventDefault();
+          }
+        } else {
+          if (document.activeElement === lastElement) {
+            firstElement.focus();
+            e.preventDefault();
+          }
+        }
+      }
+    });
+  }
+}
+
+// Utility function to sync theme icon
+function syncThemeIcon() {
+  const theme = document.documentElement.getAttribute('data-theme');
+  const isDark = theme === 'dark';
+  
+  // Update all theme icons
+  const themeIcons = document.querySelectorAll('#themeIcon, #menuThemeIcon, #sidebarThemeIcon');
+  themeIcons.forEach(icon => {
+    icon.className = isDark ? 'fas fa-moon' : 'fas fa-sun';
+  });
+}
+
+// Helper function for theme toggle (if not already exists)
+function toggleTheme() {
+  const html = document.documentElement;
+  const currentTheme = html.getAttribute('data-theme');
+  const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+  
+  html.setAttribute('data-theme', newTheme);
+  localStorage.setItem('theme', newTheme);
+  
+  syncThemeIcon();
+  
+  console.log(`🎨 Theme changed to ${newTheme}`);
+}
+
+// Helper function for help modal (if not already exists)
+function showHelp() {
+  alert('Help & Documentation\n\nKeyboard Shortcuts:\n- Ctrl/Cmd + K: Search\n- Escape: Close menu/modal\n\nFor more information, visit the documentation.');
+}
+
+// Helper function to refresh recent files
+function refreshRecentFiles() {
+  if (window.floatingNav) {
+    window.floatingNav.populateRecentFiles();
+    console.log('🔄 Recent files refreshed');
+  }
+}
+
+// Initialize when DOM is ready
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', initFloatingNav);
+} else {
+  initFloatingNav();
+}
+
+function initFloatingNav() {
+  window.floatingNav = new FloatingNavController();
+  syncThemeIcon();
+}
+
+// Export for external use
+window.FloatingNavController = FloatingNavController;
+window.toggleTheme = toggleTheme;
+window.showHelp = showHelp;
+window.refreshRecentFiles = refreshRecentFiles;
+</script>
 
 
 
