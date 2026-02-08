@@ -2097,6 +2097,440 @@ body {
  */
 </script>
 
+<script id="sidebars">
+const SidebarManager = {
+  state: {
+    isLeftSidebarOpen: false,
+    isRightSidebarOpen: false,
+    isDarkTheme: true,
+    currentRepository: null,
+    recentFiles: [],
+    repositories: []
+  },
+
+  init() {
+    this.setupEventListeners();
+    this.loadData();
+    this.checkWindowSize();
+    this.setupAutoRefresh();
+    this.updateRecentFiles();
+    this.updateRepositoryList();
+    this.updateStats();
+  },
+
+  setupEventListeners() {
+    const leftSidebarTrigger = document.getElementById('leftSidebarTrigger');
+    const rightSidebarTrigger = document.getElementById('rightSidebarTrigger');
+    const overlay = document.getElementById('overlay');
+    const body = document.body;
+
+    if (leftSidebarTrigger) {
+      leftSidebarTrigger.addEventListener('click', (e) => {
+        e.stopPropagation();
+        this.toggleLeftSidebar();
+      });
+    }
+
+    if (rightSidebarTrigger) {
+      rightSidebarTrigger.addEventListener('click', (e) => {
+        e.stopPropagation();
+        this.toggleRightSidebar();
+      });
+    }
+
+    if (overlay) {
+      overlay.addEventListener('click', () => {
+        if (this.state.isLeftSidebarOpen) {
+          this.closeLeftSidebar();
+        }
+        if (this.state.isRightSidebarOpen) {
+          this.closeRightSidebar();
+        }
+      });
+    }
+
+    // Close sidebar with Escape key
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        if (this.state.isLeftSidebarOpen) this.closeLeftSidebar();
+        if (this.state.isRightSidebarOpen) this.closeRightSidebar();
+      }
+    });
+
+    document.addEventListener('click', (e) => {
+      if (window.innerWidth > 1200) return;
+      
+      const leftSidebar = document.getElementById('leftSidebar');
+      const rightSidebar = document.getElementById('rightSidebar');
+      const leftTrigger = document.getElementById('leftSidebarTrigger');
+      const rightTrigger = document.getElementById('rightSidebarTrigger');
+      
+      const isClickOnLeftTrigger = e.target === leftTrigger || leftTrigger.contains(e.target);
+      const isClickOnRightTrigger = e.target === rightTrigger || rightTrigger.contains(e.target);
+      const isClickInLeftSidebar = leftSidebar && leftSidebar.contains(e.target);
+      const isClickInRightSidebar = rightSidebar && rightSidebar.contains(e.target);
+      
+      if (this.state.isLeftSidebarOpen && !isClickInLeftSidebar && !isClickOnLeftTrigger) {
+        this.closeLeftSidebar();
+      }
+      
+      if (this.state.isRightSidebarOpen && !isClickInRightSidebar && !isClickOnRightTrigger) {
+        this.closeRightSidebar();
+      }
+    });
+
+    window.addEventListener('resize', () => {
+      this.checkWindowSize();
+    });
+  },
+
+  loadData() {
+    try {
+      this.state.recentFiles = JSON.parse(localStorage.getItem('gitcodr_recent_files') || '[]');
+      this.state.repositories = JSON.parse(localStorage.getItem('gitcodr_repositories') || '[]');
+    } catch (e) {
+      this.state.recentFiles = [];
+      this.state.repositories = [];
+    }
+  },
+
+  toggleLeftSidebar() {
+    if (window.innerWidth <= 1200) {
+      if (this.state.isLeftSidebarOpen) {
+        this.closeLeftSidebar();
+      } else {
+        this.openLeftSidebar();
+      }
+    }
+  },
+
+  toggleRightSidebar() {
+    if (window.innerWidth <= 1200) {
+      if (this.state.isRightSidebarOpen) {
+        this.closeRightSidebar();
+      } else {
+        this.openRightSidebar();
+      }
+    }
+  },
+
+  openLeftSidebar() {
+    const leftSidebar = document.getElementById('leftSidebar');
+    const overlay = document.getElementById('overlay');
+    const body = document.body;
+    
+    this.closeRightSidebar();
+    
+    this.state.isLeftSidebarOpen = true;
+    leftSidebar.classList.add('open');
+    overlay.classList.add('active');
+    body.classList.add('sidebar-open');
+  },
+
+  openRightSidebar() {
+    const rightSidebar = document.getElementById('rightSidebar');
+    const overlay = document.getElementById('overlay');
+    const body = document.body;
+    
+    this.closeLeftSidebar();
+    
+    this.state.isRightSidebarOpen = true;
+    rightSidebar.classList.add('open');
+    overlay.classList.add('active');
+    body.classList.add('sidebar-open');
+  },
+
+  closeLeftSidebar() {
+    const leftSidebar = document.getElementById('leftSidebar');
+    const overlay = document.getElementById('overlay');
+    const body = document.body;
+    
+    this.state.isLeftSidebarOpen = false;
+    leftSidebar.classList.remove('open');
+    
+    if (!this.state.isRightSidebarOpen) {
+      overlay.classList.remove('active');
+      body.classList.remove('sidebar-open');
+    }
+  },
+
+  closeRightSidebar() {
+    const rightSidebar = document.getElementById('rightSidebar');
+    const overlay = document.getElementById('overlay');
+    const body = document.body;
+    
+    this.state.isRightSidebarOpen = false;
+    rightSidebar.classList.remove('open');
+    
+    if (!this.state.isLeftSidebarOpen) {
+      overlay.classList.remove('active');
+      body.classList.remove('sidebar-open');
+    }
+  },
+
+  checkWindowSize() {
+    const leftSidebar = document.getElementById('leftSidebar');
+    const rightSidebar = document.getElementById('rightSidebar');
+    const overlay = document.getElementById('overlay');
+    const mainContentWrapper = document.getElementById('mainArea');
+    const body = document.body;
+    
+    if (window.innerWidth <= 1200) {
+      leftSidebar.classList.remove('open');
+      rightSidebar.classList.remove('open');
+      this.state.isLeftSidebarOpen = false;
+      this.state.isRightSidebarOpen = false;
+      overlay.classList.remove('active');
+      body.classList.remove('sidebar-open');
+      
+      if (mainContentWrapper) {
+        mainContentWrapper.style.marginLeft = '0';
+        mainContentWrapper.style.marginRight = '0';
+      }
+    } else {
+      leftSidebar.classList.remove('open');
+      rightSidebar.classList.remove('open');
+      this.state.isLeftSidebarOpen = false;
+      this.state.isRightSidebarOpen = false;
+      overlay.classList.remove('active');
+      body.classList.remove('sidebar-open');
+      
+      if (mainContentWrapper) {
+        mainContentWrapper.style.marginLeft = 'var(--sidebar-width)';
+        mainContentWrapper.style.marginRight = 'var(--sidebar-width)';
+      }
+    }
+  },
+
+  toggleTheme() {
+    const html = document.documentElement;
+    const themeIcons = document.querySelectorAll('#themeIcon, #sidebarThemeIcon');
+    
+    this.state.isDarkTheme = !this.state.isDarkTheme;
+    
+    if (this.state.isDarkTheme) {
+      html.setAttribute('data-theme', 'dark');
+      themeIcons.forEach(icon => {
+        icon.className = 'fas fa-moon';
+      });
+    } else {
+      html.setAttribute('data-theme', 'light');
+      themeIcons.forEach(icon => {
+        icon.className = 'fas fa-sun';
+      });
+    }
+    
+    localStorage.setItem('gitcodr_theme', this.state.isDarkTheme ? 'dark' : 'light');
+  },
+
+  updateRecentFiles() {
+    const recentFilesList = document.getElementById('recentFilesList');
+    if (!recentFilesList) return;
+    
+    this.loadData();
+    
+    if (this.state.recentFiles.length === 0) {
+      recentFilesList.innerHTML = '<div class="text-center py-4 text-github-fg-muted text-sm"><i class="fas fa-file text-lg mb-2 block"></i>No recent files</div>';
+    } else {
+      recentFilesList.innerHTML = this.state.recentFiles.slice(0, 5).map(file => `<div class="recent-file-item" onclick="SidebarManager.openRecentFile('${file.repoName}', '${file.filePath}', '${file.fileName}')"><i class="fas fa-file recent-file-icon"></i><div class="flex-1 min-w-0"><div class="text-sm text-github-fg-default truncate">${file.fileName}</div><div class="text-xs text-github-fg-muted truncate">${file.repoName}</div></div><div class="text-xs text-github-fg-muted">${this.formatTimeAgo(file.timestamp)}</div></div>`).join('');
+    }
+  },
+
+  updateRepositoryList() {
+    const repoListSidebar = document.getElementById('repoListSidebar');
+    const repoCount = document.getElementById('repoCount');
+    
+    if (!repoListSidebar) return;
+    
+    this.loadData();
+    
+    if (this.state.repositories.length === 0) {
+      repoListSidebar.innerHTML = '<div class="text-center py-2 text-sm text-github-fg-muted">No repositories yet</div>';
+    } else {
+      repoListSidebar.innerHTML = this.state.repositories.map(repo => `<div class="repo-item ${this.state.currentRepository === repo.name ? 'active' : ''}" onclick="SidebarManager.selectRepository('${repo.name}')"><i class="fas fa-folder repo-icon ${repo.visibility === 'public' ? 'public' : ''}"></i><span class="flex-1 truncate">${repo.name}</span><span class="text-xs text-github-fg-muted">${this.formatDate(repo.created)}</span></div>`).join('');
+    }
+    
+    if (repoCount) {
+      repoCount.textContent = this.state.repositories.length.toString();
+    }
+  },
+
+  updateStats() {
+    const totalFilesCount = document.getElementById('totalFilesCount');
+    const totalStorage = document.getElementById('totalStorage');
+    const currentRepoNameSidebar = document.getElementById('currentRepoNameSidebar');
+    const currentRepoDesc = document.getElementById('currentRepoDesc');
+    const currentRepoInfo = document.getElementById('currentRepoInfo');
+    const statsFiles = document.getElementById('statsFiles');
+    const statsCommits = document.getElementById('statsCommits');
+    const statsBranches = document.getElementById('statsBranches');
+    const statsIssues = document.getElementById('statsIssues');
+    
+    let totalFiles = 0;
+    let totalSize = 0;
+    
+    this.state.repositories.forEach(repo => {
+      try {
+        const repoData = JSON.parse(localStorage.getItem(`gitcodr_repo_${repo.name}`) || '{}');
+        const fileCount = Object.keys(repoData).length;
+        totalFiles += fileCount;
+        
+        Object.values(repoData).forEach(file => {
+          totalSize += file.size || 0;
+        });
+      } catch (e) {
+        console.warn(`Error processing repo ${repo.name}:`, e);
+      }
+    });
+    
+    if (totalFilesCount) totalFilesCount.textContent = totalFiles.toString();
+    if (totalStorage) totalStorage.textContent = this.formatFileSize(totalSize);
+    if (statsFiles) statsFiles.textContent = totalFiles.toString();
+    if (statsCommits) statsCommits.textContent = Math.floor(totalFiles * 1.5).toString();
+    if (statsBranches) statsBranches.textContent = this.state.repositories.length.toString();
+    if (statsIssues) statsIssues.textContent = '0';
+    
+    if (this.state.currentRepository) {
+      const repo = this.state.repositories.find(r => r.name === this.state.currentRepository);
+      if (repo) {
+        if (currentRepoNameSidebar) currentRepoNameSidebar.textContent = repo.name;
+        if (currentRepoDesc) currentRepoDesc.textContent = repo.description || 'No description';
+        if (currentRepoInfo) currentRepoInfo.classList.remove('hidden');
+      }
+    } else {
+      if (currentRepoInfo) currentRepoInfo.classList.add('hidden');
+    }
+  },
+
+  selectRepository(repoName) {
+    this.state.currentRepository = repoName;
+    this.updateRepositoryList();
+    this.updateStats();
+    
+    if (typeof openRepository === 'function') {
+      openRepository(repoName);
+    }
+    
+    if (window.innerWidth <= 1200) {
+      this.closeLeftSidebar();
+    }
+  },
+
+  openRecentFile(repoName, filePath, fileName) {
+    this.state.currentRepository = repoName;
+    this.updateRepositoryList();
+    this.updateStats();
+    
+    if (typeof openRecentFile === 'function') {
+      openRecentFile(repoName, filePath, fileName);
+    }
+    
+    if (window.innerWidth <= 1200) {
+      this.closeRightSidebar();
+    }
+  },
+
+  refreshRecentFiles() {
+    this.loadData();
+    this.updateRecentFiles();
+  },
+
+  addToRecentFiles(fileName, repoName, filePath) {
+    const existingIndex = this.state.recentFiles.findIndex(f => f.filePath === filePath && f.repoName === repoName);
+    
+    if (existingIndex !== -1) {
+      this.state.recentFiles.splice(existingIndex, 1);
+    }
+    
+    this.state.recentFiles.unshift({
+      fileName,
+      repoName,
+      filePath,
+      timestamp: Date.now()
+    });
+    
+    if (this.state.recentFiles.length > 10) {
+      this.state.recentFiles = this.state.recentFiles.slice(0, 10);
+    }
+    
+    localStorage.setItem('gitcodr_recent_files', JSON.stringify(this.state.recentFiles));
+    this.updateRecentFiles();
+  },
+
+  setupAutoRefresh() {
+    setInterval(() => {
+      this.loadData();
+      this.updateRecentFiles();
+      this.updateRepositoryList();
+      this.updateStats();
+    }, 30000);
+  },
+
+  formatDate(timestamp) {
+    if (!timestamp) return '';
+    const date = new Date(timestamp);
+    return date.toLocaleDateString();
+  },
+
+  formatTimeAgo(timestamp) {
+    if (!timestamp) return '';
+    const now = new Date();
+    const date = new Date(timestamp);
+    const diff = now - date;
+    
+    if (diff < 60000) return 'now';
+    if (diff < 3600000) return Math.floor(diff / 60000) + 'm';
+    if (diff < 86400000) return Math.floor(diff / 3600000) + 'h';
+    if (diff < 604800000) return Math.floor(diff / 86400000) + 'd';
+    return Math.floor(diff / 604800000) + 'w';
+  },
+
+  formatFileSize(bytes) {
+    if (typeof bytes !== 'number') return '0 KB';
+    const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+    if (bytes === 0) return '0 Bytes';
+    const i = parseInt(Math.floor(Math.log(bytes) / Math.log(1024)));
+    return Math.round(bytes / Math.pow(1024, i) * 100) / 100 + ' ' + sizes[i];
+  },
+
+  updateAll() {
+    this.loadData();
+    this.updateRecentFiles();
+    this.updateRepositoryList();
+    this.updateStats();
+  },
+
+  setCurrentRepository(repoName) {
+    this.state.currentRepository = repoName;
+    this.updateRepositoryList();
+    this.updateStats();
+  }
+};
+
+document.addEventListener('DOMContentLoaded', () => {
+  SidebarManager.init();
+  
+  const savedTheme = localStorage.getItem('gitcodr_theme');
+  if (savedTheme === 'light') {
+    SidebarManager.state.isDarkTheme = false;
+    SidebarManager.toggleTheme();
+  }
+});
+
+function updateSidebarAfterFileOperation(repoName, fileName, filePath) {
+  if (SidebarManager) {
+    SidebarManager.addToRecentFiles(fileName, repoName, filePath);
+    SidebarManager.updateStats();
+  }
+}
+
+function updateSidebarAfterRepoOperation() {
+  if (SidebarManager) {
+    SidebarManager.updateRepositoryList();
+    SidebarManager.updateStats();
+  }
+}
+</script>
 
 
 
