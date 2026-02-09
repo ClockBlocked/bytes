@@ -281,1088 +281,279 @@ html {
 </head>
 <body>
 
+
 <style>
-/* ================================================
-   MEGA MENU — TOP NAV WITH SLIDE-DOWN PANELS
-   Mobile-first · Uses existing CSS variables
-   ================================================ */
-
-/* -----------------------------------------------
-   CSS CUSTOM PROPERTIES (scoped to mega-menu)
-   ----------------------------------------------- */
-:root {
-  --menu-height: 3.35rem;
-  --menu-height-active: 3.75rem;
-  --menu-z: 9000;
-  --menu-bg: var(--card, #303030);
-  --menu-border: var(--cardBorder, #444444);
-  --menu-item-color: #9ca3af;
-  --menu-item-hover: var(--color-primary, #539bf5);
-  --menu-item-active: #e5e7eb;
-  --menu-arrow-size: 2.85rem;
-  --menu-panel-max: 20rem;
-  --menu-panel-bg: var(--color-bg-secondary, #2d333b);
-  --menu-panel-border: var(--color-border, #444c56);
-  --menu-transition-speed: 350ms;
-  --menu-transition-ease: cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-/* -----------------------------------------------
-   OVERLAY (blur behind open panel)
-   ----------------------------------------------- */
-.mega-overlay {
-  position: fixed;
-  inset: 0;
-  z-index: calc(var(--menu-z) - 1);
-  background: rgba(0, 0, 0, 0.25);
-  backdrop-filter: blur(6px);
-  -webkit-backdrop-filter: blur(6px);
-  opacity: 0;
-  visibility: hidden;
-  pointer-events: none;
-  transition:
-    opacity var(--menu-transition-speed) var(--menu-transition-ease),
-    visibility 0s linear var(--menu-transition-speed);
-}
-
-.mega-overlay.active {
-  opacity: 1;
-  visibility: visible;
-  pointer-events: auto;
-  transition:
-    opacity var(--menu-transition-speed) var(--menu-transition-ease),
-    visibility 0s linear 0s;
-}
-
-/* -----------------------------------------------
-   TOP NAVBAR SHELL
-   ----------------------------------------------- */
-.mega-nav {
+/* Renamed classes to match new structure */
+.navbar {
   position: fixed;
   top: 0;
   left: 0;
   right: 0;
-  height: var(--menu-height);
-  background: var(--menu-bg);
-  border-bottom: 1px solid var(--menu-border);
-  z-index: var(--menu-z);
+  height: var(--navbar-height, 3.35rem);
+  background: var(--navbar-bg, #303030);
+  border-bottom: 1px solid var(--navbar-border, #444);
+  z-index: 9000;
   display: flex;
   align-items: center;
-  user-select: none;
-  -webkit-user-select: none;
 }
 
-/* -----------------------------------------------
-   SCROLL ARROWS
-   ----------------------------------------------- */
-.mega-arrow {
-  flex-shrink: 0;
-  width: var(--menu-arrow-size);
+.navbar__container {
+  display: flex;
+  align-items: center;
+  width: 100%;
   height: 100%;
+}
+
+.navbar__arrow {
+  flex-shrink: 0;
+  width: 2.85rem;
+  height: 100%;
+  background: transparent;
+  border: none;
+  color: var(--navbar-arrow-color, #9ca3af);
+  cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: transparent;
-  border: none;
-  color: var(--menu-item-color);
-  cursor: pointer;
-  padding: 0;
-  transition: color 200ms ease, opacity 200ms ease;
-  position: relative;
-  z-index: 2;
 }
 
-.mega-arrow:hover:not(.disabled) {
-  color: var(--menu-item-hover);
+.navbar__arrow:not(:disabled):hover {
+  color: var(--navbar-arrow-hover, #539bf5);
 }
 
-.mega-arrow.disabled {
-  color: var(--color-text-muted, #636e7b);
+.navbar__arrow:disabled {
   opacity: 0.3;
-  cursor: default;
-  pointer-events: none;
+  cursor: not-allowed;
 }
 
-.mega-arrow svg {
-  width: 16px;
-  height: 16px;
-  fill: currentColor;
-  flex-shrink: 0;
-}
-
-/* Left arrow fade gradient */
-.mega-arrow-left {
-  background: linear-gradient(to right, var(--menu-bg) 60%, transparent);
-}
-
-.mega-arrow-right {
-  background: linear-gradient(to left, var(--menu-bg) 60%, transparent);
-}
-
-/* -----------------------------------------------
-   SCROLLABLE TRACK (holds menu items)
-   ----------------------------------------------- */
-.mega-track {
+.navbar__track {
   flex: 1;
   overflow-x: auto;
   overflow-y: hidden;
   scroll-behavior: smooth;
   display: flex;
-  align-items: center;
   height: 100%;
-  min-width: 0;
-
-  /* Hide scrollbar everywhere */
   scrollbar-width: none;
-  -ms-overflow-style: none;
 }
 
-.mega-track::-webkit-scrollbar {
+.navbar__track::-webkit-scrollbar {
   display: none;
-  width: 0;
-  height: 0;
 }
 
-.mega-items {
+.navbar__items {
   display: flex;
   align-items: center;
-  gap: 0;
   height: 100%;
   min-width: max-content;
-  padding: 0 4px;
 }
 
-/* -----------------------------------------------
-   MENU ITEMS
-   ----------------------------------------------- */
-.mega-item {
+.navbar__item {
   position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
   height: 100%;
-  padding: 0 20px;
+  padding: 0 1.25rem;
   background: transparent;
   border: none;
   cursor: pointer;
   white-space: nowrap;
-  transition: color 200ms ease, background-color 200ms ease;
-
-  /* Bold h3-style text */
-  font-family: var(--font-head, "WF Visual Sans", sans-serif);
-  font-size: 14px;
-  font-weight: var(--weight-bold, 700);
+  color: var(--navbar-item-color, #9ca3af);
+  font-family: var(--font-head);
+  font-size: 0.875rem;
+  font-weight: 700;
   letter-spacing: 0.01em;
-  line-height: 1;
-
-  /* Default: light grey */
-  color: var(--menu-item-color);
+  transition: all 200ms ease;
 }
 
-.mega-item:hover {
-  color: var(--menu-item-hover);
+.navbar__item:hover {
+  color: var(--navbar-item-hover, #539bf5);
   background: rgba(83, 155, 245, 0.06);
 }
 
-.mega-item:active {
-  background: rgba(83, 155, 245, 0.1);
-}
-
-/* Active state: very light gray */
-.mega-item.active {
-  color: var(--menu-item-active);
+.navbar__item--active {
+  color: var(--navbar-item-active, #e5e7eb);
   background: rgba(255, 255, 255, 0.04);
 }
 
-/* Active indicator underline */
-.mega-item.active::after {
+.navbar__item--active::after {
   content: "";
   position: absolute;
   bottom: 0;
-  left: 12px;
-  right: 12px;
+  left: 0.75rem;
+  right: 0.75rem;
   height: 2px;
-  background: var(--menu-item-hover);
+  background: var(--navbar-item-hover, #539bf5);
   border-radius: 2px 2px 0 0;
-  animation: megaUnderline 200ms var(--menu-transition-ease) both;
+  animation: navbarUnderline 200ms ease-out;
 }
 
-@keyframes megaUnderline {
-  from {
-    transform: scaleX(0);
-  }
-  to {
-    transform: scaleX(1);
-  }
+@keyframes navbarUnderline {
+  from { transform: scaleX(0); }
+  to { transform: scaleX(1); }
 }
 
-/* Optional badge on menu items */
-.mega-item .mega-badge {
-  margin-left: 8px;
-  padding: 1px 6px;
-  font-size: 10px;
-  font-weight: 600;
-  line-height: 1.5;
-  border-radius: 10px;
-  background: var(--color-primary, #539bf5);
-  color: #fff;
-}
-
-/* -----------------------------------------------
-   DROPDOWN PANELS
-   ----------------------------------------------- */
-.mega-panel {
+/* Single Menu Panel */
+.menu {
   position: fixed;
-  top: var(--menu-height);
+  top: var(--navbar-height, 3.35rem);
   left: 0;
   right: 0;
   height: 0;
   overflow: hidden;
-  background: var(--menu-panel-bg);
+  background: var(--menu-bg, #2d333b);
   border-bottom: 1px solid transparent;
-  z-index: calc(var(--menu-z) - 1);
-  will-change: height, opacity;
-  transition:
-    height 350ms cubic-bezier(0.4, 0, 0.2, 1), /* fallback */
-    height 350ms linear(0, 0.264 3.7%, 0.49 7.4%, 0.692 11.3%, 0.864 15.3%, 0.937 17.3%, 1.005 19.4%, 1.065 21.5%, 1.12 23.7%, 1.167 25.9%, 1.206 28.1%, 1.24 30.4%, 1.267 32.8%, 1.283 34.6%, 1.296 36.4%, 1.305 38.3%, 1.311 40.2%, 1.314 42.2%, 1.313 44.2%, 1.309 46.4%, 1.301 48.6%, 1.282 52.5%, 1.252 56.9%, 1.217 61.3%, 1.105 74.4%, 1.074 78.6%, 1.048 82.5%, 1.026 86.9%, 1.011 91.1%, 1.002 95.4%, 1),
-    opacity 350ms cubic-bezier(0.4, 0, 0.2, 1),
-    border-color 0s linear 350ms;
+  z-index: 8999;
+  transition: height 350ms cubic-bezier(0.4, 0, 0.2, 1),
+              opacity 300ms ease,
+              border-color 0s linear 350ms;
   opacity: 0;
 }
 
-.mega-panel.open {
-  height: var(--menu-panel-max);
+.menu--open {
+  height: var(--menu-height, 20rem);
   opacity: 1;
-  border-bottom-color: var(--menu-panel-border);
-  transition:
-    height 350ms cubic-bezier(0.4, 0, 0.2, 1),
-    height 350ms linear(0, 0.264 3.7%, 0.49 7.4%, 0.692 11.3%, 0.864 15.3%, 0.937 17.3%, 1.005 19.4%, 1.065 21.5%, 1.12 23.7%, 1.167 25.9%, 1.206 28.1%, 1.24 30.4%, 1.267 32.8%, 1.283 34.6%, 1.296 36.4%, 1.305 38.3%, 1.311 40.2%, 1.314 42.2%, 1.313 44.2%, 1.309 46.4%, 1.301 48.6%, 1.282 52.5%, 1.252 56.9%, 1.217 61.3%, 1.105 74.4%, 1.074 78.6%, 1.048 82.5%, 1.026 86.9%, 1.011 91.1%, 1.002 95.4%, 1),
-    opacity 350ms cubic-bezier(0.4, 0, 0.2, 1),
-    border-color 0s linear 0s;
+  border-bottom-color: var(--menu-border, #444c56);
+  transition: height 350ms cubic-bezier(0.4, 0, 0.2, 1),
+              opacity 300ms ease,
+              border-color 0s linear 0s;
 }
 
-/* Fixed: use body class instead of :has() */
-body.mega-menu-open .mega-nav {
-  height: 45px;
-  transition: height 350ms ease;
-}
-
-.mega-panel-inner {
-  padding: 20px 24px;
+.menu__content {
+  padding: 1.5rem;
   opacity: 0;
-  transform: translateY(-8px);
-  transition:
-    opacity 250ms ease 50ms,
-    transform 250ms var(--menu-transition-ease) 50ms;
+  transform: translateY(-12px);
+  transition: opacity 280ms ease 180ms,
+              transform 280ms cubic-bezier(0.16, 1, 0.3, 1) 180ms;
 }
 
-.mega-panel.open .mega-panel-inner {
+.menu--open .menu__content {
   opacity: 1;
   transform: translateY(0);
 }
 
-/* -----------------------------------------------
-   PANEL LAYOUTS — shared helpers
-   ----------------------------------------------- */
-.panel-grid {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 12px;
+/* Menu Sections */
+.menu__section {
+  margin-bottom: 1.5rem;
 }
 
-.panel-row {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-}
-
-.panel-section-title {
-  font-family: var(--font-head, sans-serif);
-  font-size: 11px;
+.menu__section-title {
+  font-family: var(--font-head);
+  font-size: 0.6875rem;
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.06em;
-  color: var(--color-text-muted, #636e7b);
-  margin-bottom: 10px;
-  padding-bottom: 6px;
-  border-bottom: 1px solid var(--menu-panel-border);
+  color: var(--menu-title-color, #636e7b);
+  margin-bottom: 0.625rem;
+  padding-bottom: 0.375rem;
+  border-bottom: 1px solid var(--menu-border, #444c56);
 }
 
-/* -----------------------------------------------
-   PANEL CARD (reusable clickable block)
-   ----------------------------------------------- */
-.panel-card {
+/* Menu Grid & Cards */
+.menu__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 0.75rem;
+}
+
+.menu__card {
   display: flex;
   align-items: center;
-  gap: 12px;
-  padding: 12px 14px;
+  gap: 0.75rem;
+  padding: 0.75rem;
   background: rgba(255, 255, 255, 0.03);
   border: 1px solid transparent;
-  border-radius: var(--radius-md, 0.5rem);
+  border-radius: 0.5rem;
   cursor: pointer;
   transition: all 200ms ease;
   text-align: left;
   width: 100%;
-  color: var(--color-text, #adbac7);
-  font-size: 13px;
+  color: var(--menu-text, #adbac7);
 }
 
-.panel-card:hover {
+.menu__card:hover {
   background: rgba(83, 155, 245, 0.06);
-  border-color: var(--menu-panel-border);
+  border-color: var(--menu-border, #444c56);
   transform: translateX(2px);
 }
 
-.panel-card:active {
-  transform: translateX(0);
-  background: rgba(83, 155, 245, 0.1);
-}
-
-.panel-card-icon {
+.menu__card-icon {
   width: 36px;
   height: 36px;
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: var(--radius-md, 0.5rem);
+  border-radius: 0.5rem;
   flex-shrink: 0;
-  font-size: 16px;
+  font-size: 1rem;
 }
 
-.panel-card-icon.blue {
+.menu__card-icon--blue {
   background: rgba(83, 155, 245, 0.12);
-  color: var(--color-primary, #539bf5);
+  color: #539bf5;
 }
 
-.panel-card-icon.green {
-  background: rgba(87, 171, 90, 0.12);
-  color: var(--color-success, #57ab5a);
-}
-
-.panel-card-icon.orange {
-  background: rgba(198, 144, 38, 0.12);
-  color: var(--color-warning, #c69026);
-}
-
-.panel-card-icon.red {
-  background: rgba(229, 83, 75, 0.12);
-  color: var(--color-danger, #e5534b);
-}
-
-.panel-card-icon.purple {
-  background: rgba(130, 80, 223, 0.12);
-  color: #8250df;
-}
-
-.panel-card-body {
+.menu__card-body {
   flex: 1;
   min-width: 0;
 }
 
-.panel-card-title {
-  font-size: 13px;
+.menu__card-title {
+  font-size: 0.8125rem;
   font-weight: 600;
-  color: var(--color-text, #adbac7);
-  margin: 0 0 2px 0;
-  line-height: 1.3;
+  margin: 0 0 0.125rem 0;
 }
 
-.panel-card-desc {
-  font-size: 11px;
-  color: var(--color-text-muted, #636e7b);
-  margin: 0;
-  line-height: 1.3;
-}
-
-.panel-card-chevron {
-  color: var(--color-text-muted, #636e7b);
-  font-size: 12px;
-  opacity: 0;
-  transition: opacity 200ms ease;
-}
-
-.panel-card:hover .panel-card-chevron {
-  opacity: 1;
-}
-
-/* -----------------------------------------------
-   PANEL — STATS ROW
-   ----------------------------------------------- */
-.stats-row {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 10px;
-}
-
-.stat-block {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 10px 12px;
-  background: rgba(255, 255, 255, 0.02);
-  border: 1px solid rgba(255, 255, 255, 0.04);
-  border-radius: var(--radius-md, 0.5rem);
-  transition: background 200ms ease;
-}
-
-.stat-block:hover {
-  background: rgba(255, 255, 255, 0.04);
-}
-
-.stat-block-icon {
-  width: 32px;
-  height: 32px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 8px;
-  font-size: 14px;
-  flex-shrink: 0;
-}
-
-.stat-block-value {
-  font-size: 18px;
-  font-weight: 700;
-  color: var(--color-text, #adbac7);
-  line-height: 1;
-  margin: 0 0 2px 0;
-  font-family: var(--font-head, sans-serif);
-}
-
-.stat-block-label {
-  font-size: 10px;
-  color: var(--color-text-muted, #636e7b);
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
+.menu__card-description {
+  font-size: 0.6875rem;
+  color: var(--menu-text-muted, #636e7b);
   margin: 0;
 }
 
-/* -----------------------------------------------
-   PANEL — TOOL LIST (settings, help, etc.)
-   ----------------------------------------------- */
-.tool-row {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 10px 14px;
-  background: transparent;
-  border: none;
-  border-radius: var(--radius-md, 0.5rem);
-  cursor: pointer;
+/* Search Styles */
+.search__input {
   width: 100%;
-  text-align: left;
-  color: var(--color-text, #adbac7);
-  font-size: 13px;
-  transition: all 150ms ease;
+  height: 56px;
+  padding: 0 1.5rem 0 3.75rem;
+  background: rgba(255, 255, 255, 0.05);
+  border: 2px solid rgba(255, 255, 255, 0.08);
+  border-radius: 28px;
+  font-size: 1.0625rem;
+  color: var(--menu-text, #adbac7);
+  transition: all 280ms cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.tool-row:hover {
-  background: rgba(255, 255, 255, 0.04);
+.search__input:focus {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: #539bf5;
+  box-shadow: 0 0 0 4px rgba(83, 155, 245, 0.12),
+              0 8px 24px rgba(0, 0, 0, 0.12);
+  transform: translateY(-1px);
 }
 
-.tool-row-icon {
-  width: 28px;
-  height: 28px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 6px;
-  background: rgba(83, 155, 245, 0.08);
-  color: var(--color-primary, #539bf5);
-  font-size: 13px;
-  flex-shrink: 0;
-}
-
-.tool-row-text {
-  flex: 1;
-  font-weight: 500;
-}
-
-.tool-row-hint {
-  font-size: 11px;
-  color: var(--color-text-muted, #636e7b);
-  font-family: var(--font-mono, monospace);
-}
-
-.tool-row-chevron {
-  font-size: 11px;
-  color: var(--color-text-muted, #636e7b);
-  opacity: 0;
-  transition: opacity 150ms ease;
-}
-
-.tool-row:hover .tool-row-chevron {
-  opacity: 1;
-}
-
-/* -----------------------------------------------
-   PANEL — PROFILE
-   ----------------------------------------------- */
-.profile-banner {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  padding: 16px;
-  background: linear-gradient(135deg, rgba(83, 155, 245, 0.08), rgba(83, 155, 245, 0.02));
-  border: 1px solid rgba(83, 155, 245, 0.15);
-  border-radius: var(--radius-lg, 0.75rem);
-}
-
-.profile-banner-avatar {
-  width: 52px;
-  height: 52px;
-  border-radius: 50%;
-  border: 2px solid var(--color-primary, #539bf5);
-  flex-shrink: 0;
-  object-fit: cover;
-}
-
-.profile-banner-name {
-  font-size: 16px;
-  font-weight: 600;
-  color: var(--color-text, #adbac7);
-  margin: 0 0 2px 0;
-}
-
-.profile-banner-role {
-  font-size: 12px;
-  color: var(--color-text-secondary, #768390);
-  margin: 0;
-}
-
-/* -----------------------------------------------
-   BODY OFFSET (push content below fixed navbar)
-   ----------------------------------------------- */
-body {
-  padding-top: var(--menu-height);
-}
-
-/* Hide the OLD bottom navbar and sidebars */
-.navbar {
-  display: none !important;
-}
-
-#leftSidebar,
-#rightSidebar {
-  display: none !important;
-}
-
-#overlay {
-  display: none !important;
-}
-
-/* Remove the old sidebar margins on #mainArea */
-#mainArea {
-  margin-left: 0 !important;
-  margin-right: 0 !important;
-}
-
-/* -----------------------------------------------
-   RESPONSIVE — MOBILE FIRST
-   ----------------------------------------------- */
-
-/* Small phones (320px+) — base styles above handle this */
-
-/* Larger phones (480px+) */
-@media (min-width: 480px) {
-  .mega-item {
-    padding: 0 24px;
-    font-size: 14px;
-  }
-
-  .stats-row {
-    grid-template-columns: repeat(4, 1fr);
-  }
-
-  .panel-grid {
+/* Responsive */
+@media (min-width: 768px) {
+  .menu__grid {
     grid-template-columns: repeat(2, 1fr);
   }
 }
 
-/* Tablets (768px+) */
-@media (min-width: 768px) {
-  .mega-item {
-    padding: 0 28px;
-    font-size: 15px;
-  }
-
-  .panel-grid {
-    grid-template-columns: repeat(3, 1fr);
-  }
-
-  .mega-panel-inner {
-    padding: 24px 32px;
-  }
-}
-
-/* Desktop (1024px+) */
 @media (min-width: 1024px) {
-  .mega-item {
-    padding: 0 32px;
-  }
-
-  .panel-grid {
+  .menu__grid {
     grid-template-columns: repeat(4, 1fr);
   }
-
-  .mega-panel-inner {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 28px 40px;
-  }
 }
 
-/* -----------------------------------------------
-   ACCESSIBILITY
-   ----------------------------------------------- */
-.mega-item:focus-visible,
-.panel-card:focus-visible,
-.tool-row:focus-visible,
-.mega-arrow:focus-visible {
-  outline: 2px solid var(--color-primary, #539bf5);
-  outline-offset: -2px;
+/* Body states */
+body.menu-open {
+  padding-top: 45px;
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .mega-panel,
-  .mega-panel-inner,
-  .mega-overlay,
-  .mega-item::after {
-    transition-duration: 0.01ms !important;
-    animation-duration: 0.01ms !important;
-  }
-}
-
-/* -----------------------------------------------
-   LIGHT THEME OVERRIDES
-   ----------------------------------------------- */
-[data-theme="light"] {
-  --menu-bg: #ffffff;
-  --menu-border: #d0d7de;
-  --menu-item-color: #656d76;
-  --menu-item-hover: #0969da;
-  --menu-item-active: #1f2328;
-  --menu-panel-bg: #ffffff;
-  --menu-panel-border: #d0d7de;
-}
-
-[data-theme="light"] .mega-overlay {
-  background: rgba(0, 0, 0, 0.12);
-}
-
-[data-theme="light"] .mega-arrow-left {
-  background: linear-gradient(to right, #ffffff 60%, transparent);
-}
-
-[data-theme="light"] .mega-arrow-right {
-  background: linear-gradient(to left, #ffffff 60%, transparent);
-}
-
-[data-theme="light"] .panel-card:hover {
-  background: rgba(9, 105, 218, 0.04);
-}
-
-[data-theme="light"] .stat-block {
-  background: rgba(0, 0, 0, 0.02);
-  border-color: rgba(0, 0, 0, 0.06);
-}
-
-[data-theme="light"] .tool-row:hover {
-  background: rgba(0, 0, 0, 0.04);
-}
-
-[data-theme="light"] .profile-banner {
-  background: linear-gradient(135deg, rgba(9, 105, 218, 0.06), rgba(9, 105, 218, 0.02));
-  border-color: rgba(9, 105, 218, 0.15);
-}
-
-/* -----------------------------------------------
-   PRINT — hide nav entirely
-   ----------------------------------------------- */
-@media print {
-  .mega-nav,
-  .mega-overlay,
-  .mega-panel {
-    display: none !important;
-  }
-
-  body {
-    padding-top: 0;
-  }
-}
-
-
-
-
-
-
-
-
-/* ================================================
-   ENHANCED ANIMATIONS & SEARCH
-   ================================================ */
-
-/* -----------------------------------------------
-   PANEL ANIMATIONS — Refined
-   Panel opens first, then content fades in
-   ----------------------------------------------- */
-.mega-panel {
-  position: fixed;
-  top: var(--menu-height);
-  left: 0;
-  right: 0;
-  height: 0;
-  overflow: hidden;
-  background: var(--menu-panel-bg);
-  border-bottom: 1px solid transparent;
-  z-index: calc(var(--menu-z) - 1);
-  will-change: height, opacity;
-  transition:
-    height 350ms cubic-bezier(0.4, 0, 0.2, 1),
-    height 350ms linear(0, 0.264 3.7%, 0.49 7.4%, 0.692 11.3%, 0.864 15.3%, 0.937 17.3%, 1.005 19.4%, 1.065 21.5%, 1.12 23.7%, 1.167 25.9%, 1.206 28.1%, 1.24 30.4%, 1.267 32.8%, 1.283 34.6%, 1.296 36.4%, 1.305 38.3%, 1.311 40.2%, 1.314 42.2%, 1.313 44.2%, 1.309 46.4%, 1.301 48.6%, 1.282 52.5%, 1.252 56.9%, 1.217 61.3%, 1.105 74.4%, 1.074 78.6%, 1.048 82.5%, 1.026 86.9%, 1.011 91.1%, 1.002 95.4%, 1),
-    opacity 300ms ease,
-    border-color 0s linear 350ms;
-  opacity: 0;
-}
-
-.mega-panel.open {
-  height: var(--menu-panel-max);
-  opacity: 1;
-  border-bottom-color: var(--menu-panel-border);
-  transition:
-    height 350ms cubic-bezier(0.4, 0, 0.2, 1),
-    height 350ms linear(0, 0.264 3.7%, 0.49 7.4%, 0.692 11.3%, 0.864 15.3%, 0.937 17.3%, 1.005 19.4%, 1.065 21.5%, 1.12 23.7%, 1.167 25.9%, 1.206 28.1%, 1.24 30.4%, 1.267 32.8%, 1.283 34.6%, 1.296 36.4%, 1.305 38.3%, 1.311 40.2%, 1.314 42.2%, 1.313 44.2%, 1.309 46.4%, 1.301 48.6%, 1.282 52.5%, 1.252 56.9%, 1.217 61.3%, 1.105 74.4%, 1.074 78.6%, 1.048 82.5%, 1.026 86.9%, 1.011 91.1%, 1.002 95.4%, 1),
-    opacity 300ms ease,
-    border-color 0s linear 0s;
-}
-
-/* Content fades in AFTER panel opens */
-.mega-panel-inner {
-  opacity: 0;
-  transform: translateY(-12px);
-  transition: 
-    opacity 200ms ease,
-    transform 200ms cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-.mega-panel.open .mega-panel-inner {
-  opacity: 1;
-  transform: translateY(0);
-  transition: 
-    opacity 280ms ease 180ms,
-    transform 280ms cubic-bezier(0.16, 1, 0.3, 1) 180ms;
-}
-
-/* SWAPPING MODE: fast content swap when panel stays open */
-.mega-panel.swapping .mega-panel-inner {
-  opacity: 0;
-  transform: scale(0.98) translateY(-4px);
-  transition: 
-    opacity 140ms ease,
-    transform 140ms ease;
-}
-
-.mega-panel.open.swapping .mega-panel-inner {
-  opacity: 1;
-  transform: scale(1) translateY(0);
-  transition: 
-    opacity 180ms ease 80ms,
-    transform 180ms cubic-bezier(0.16, 1, 0.3, 1) 80ms;
-}
-
-/* Navbar expands when panel opens */
-body.mega-menu-open .mega-nav {
+body.menu-open .navbar {
   height: 45px;
   transition: height 350ms cubic-bezier(0.4, 0, 0.2, 1);
 }
-
-/* -----------------------------------------------
-   SEARCH PANEL — Apple + GitHub Fusion
-   ----------------------------------------------- */
-#panelSearch .mega-panel-inner {
-  max-width: 720px;
-  margin: 0 auto;
-}
-
-.search-container {
-  position: relative;
-}
-
-/* Search Input */
-.search-input-wrapper {
-  position: relative;
-  margin-bottom: 24px;
-  opacity: 0;
-  transform: scale(0.94) translateY(-8px);
-  animation: searchInputReveal 400ms cubic-bezier(0.16, 1, 0.3, 1) 200ms forwards;
-}
-
-@keyframes searchInputReveal {
-  to {
-    opacity: 1;
-    transform: scale(1) translateY(0);
-  }
-}
-
-.search-input {
-  width: 100%;
-  height: 56px;
-  padding: 0 24px 0 60px;
-  background: rgba(255, 255, 255, 0.05);
-  border: 2px solid rgba(255, 255, 255, 0.08);
-  border-radius: 28px;
-  font-size: 17px;
-  font-weight: 400;
-  color: var(--color-text, #adbac7);
-  font-family: var(--font-text);
-  transition: all 280ms cubic-bezier(0.4, 0, 0.2, 1);
-  outline: none;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-}
-
-.search-input::placeholder {
-  color: var(--color-text-muted, #636e7b);
-  font-weight: 400;
-}
-
-.search-input:focus {
-  background: rgba(255, 255, 255, 0.08);
-  border-color: var(--color-primary, #539bf5);
-  box-shadow: 
-    0 0 0 4px rgba(83, 155, 245, 0.12),
-    0 8px 24px rgba(0, 0, 0, 0.12);
-  transform: translateY(-1px);
-}
-
-.search-icon {
-  position: absolute;
-  left: 22px;
-  top: 50%;
-  transform: translateY(-50%);
-  color: var(--color-text-muted, #636e7b);
-  font-size: 20px;
-  pointer-events: none;
-  transition: color 200ms ease;
-}
-
-.search-input:focus ~ .search-icon {
-  color: var(--color-primary, #539bf5);
-}
-
-.search-clear {
-  position: absolute;
-  right: 16px;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.08);
-  border: none;
-  color: var(--color-text-muted);
-  cursor: pointer;
-  display: none;
-  align-items: center;
-  justify-content: center;
-  transition: all 150ms ease;
-}
-
-.search-input:not(:placeholder-shown) ~ .search-clear {
-  display: flex;
-}
-
-.search-clear:hover {
-  background: rgba(255, 255, 255, 0.12);
-  color: var(--color-text);
-}
-
-/* Search Results Container */
-.search-results {
-  max-height: 280px;
-  overflow-y: auto;
-  padding-right: 4px;
-  scrollbar-width: thin;
-  scrollbar-color: rgba(255, 255, 255, 0.1) transparent;
-}
-
-.search-results::-webkit-scrollbar {
-  width: 6px;
-}
-
-.search-results::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-.search-results::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.1);
-  border-radius: 3px;
-}
-
-.search-results::-webkit-scrollbar-thumb:hover {
-  background: rgba(255, 255, 255, 0.15);
-}
-
-/* Search Result Item */
-.search-result-item {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-  padding: 12px 16px;
-  background: rgba(255, 255, 255, 0.03);
-  border: 1px solid rgba(255, 255, 255, 0.06);
-  border-radius: 12px;
-  margin-bottom: 8px;
-  cursor: pointer;
-  transition: all 220ms cubic-bezier(0.4, 0, 0.2, 1);
-  opacity: 0;
-  transform: translateX(-12px);
-  animation: searchResultSlide 300ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
-}
-
-.search-result-item:nth-child(1) { animation-delay: 80ms; }
-.search-result-item:nth-child(2) { animation-delay: 130ms; }
-.search-result-item:nth-child(3) { animation-delay: 180ms; }
-.search-result-item:nth-child(4) { animation-delay: 230ms; }
-.search-result-item:nth-child(5) { animation-delay: 280ms; }
-.search-result-item:nth-child(6) { animation-delay: 330ms; }
-.search-result-item:nth-child(7) { animation-delay: 380ms; }
-.search-result-item:nth-child(8) { animation-delay: 430ms; }
-
-@keyframes searchResultSlide {
-  to {
-    opacity: 1;
-    transform: translateX(0);
-  }
-}
-
-.search-result-item:hover {
-  background: rgba(83, 155, 245, 0.1);
-  border-color: rgba(83, 155, 245, 0.3);
-  transform: translateX(4px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-}
-
-.search-result-item:active {
-  transform: translateX(2px) scale(0.99);
-}
-
-.search-result-icon {
-  width: 40px;
-  height: 40px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: rgba(83, 155, 245, 0.12);
-  border-radius: 10px;
-  font-size: 18px;
-  flex-shrink: 0;
-  color: var(--color-primary, #539bf5);
-}
-
-.search-result-content {
-  flex: 1;
-  min-width: 0;
-}
-
-.search-result-name {
-  font-size: 14px;
-  font-weight: 600;
-  color: var(--color-text, #adbac7);
-  margin-bottom: 2px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.search-result-name mark {
-  background: rgba(83, 155, 245, 0.25);
-  color: var(--color-primary, #539bf5);
-  padding: 1px 4px;
-  border-radius: 3px;
-  font-weight: 700;
-}
-
-.search-result-path {
-  font-size: 12px;
-  color: var(--color-text-muted, #636e7b);
-  font-family: var(--font-mono, monospace);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.search-result-type {
-  font-size: 10px;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  color: var(--color-text-muted, #636e7b);
-  padding: 4px 8px;
-  background: rgba(255, 255, 255, 0.04);
-  border-radius: 6px;
-  flex-shrink: 0;
-}
-
-/* Empty State */
-.search-empty {
-  text-align: center;
-  padding: 48px 24px;
-  color: var(--color-text-muted, #636e7b);
-  font-size: 14px;
-}
-
-.search-empty-icon {
-  font-size: 48px;
-  opacity: 0.3;
-  margin-bottom: 16px;
-}
-
-/* Loading State */
-.search-loading {
-  text-align: center;
-  padding: 32px;
-  color: var(--color-text-muted);
-}
-
-.search-loading-spinner {
-  width: 32px;
-  height: 32px;
-  border: 3px solid rgba(83, 155, 245, 0.2);
-  border-top-color: var(--color-primary);
-  border-radius: 50%;
-  animation: searchSpin 800ms linear infinite;
-  margin: 0 auto 12px;
-}
-
-@keyframes searchSpin {
-  to { transform: rotate(360deg); }
-}
-
-/* Light theme adjustments */
-[data-theme="light"] .search-input {
-  background: rgba(0, 0, 0, 0.04);
-  border-color: rgba(0, 0, 0, 0.1);
-}
-
-[data-theme="light"] .search-input:focus {
-  background: rgba(0, 0, 0, 0.06);
-  box-shadow: 
-    0 0 0 4px rgba(9, 105, 218, 0.12),
-    0 8px 24px rgba(0, 0, 0, 0.08);
-}
-
-[data-theme="light"] .search-result-item {
-  background: rgba(0, 0, 0, 0.02);
-  border-color: rgba(0, 0, 0, 0.08);
-}
-
-[data-theme="light"] .search-result-item:hover {
-  background: rgba(9, 105, 218, 0.06);
-  border-color: rgba(9, 105, 218, 0.2);
-}
 </style>
-
-
 
 <!-------
      Progress Loading Bar
@@ -1374,303 +565,54 @@ body.mega-menu-open .mega-nav {
   </div>
 
 
-
-
-<!-------
-         Top NAVBar
-                  ----------->
-<!-- ====================================================
-     MEGA MENU — place right after <body>
-     ==================================================== -->
+<!-- Keep your existing navbar structure but remove all panels -->
 <div id="megaOverlay" class="mega-overlay" aria-hidden="true"></div>
-
-<nav class="mega-nav" role="navigation" aria-label="Main navigation">
-
-  <!-- Left scroll arrow -->
-  <button
-    id="megaArrowLeft"
-    class="mega-arrow mega-arrow-left disabled"
-    aria-label="Scroll menu left"
-    aria-disabled="true"
-  >
-    <svg viewBox="0 0 16 16"><path d="M9.78 12.78a.75.75 0 0 1-1.06 0L4.47 8.53a.75.75 0 0 1 0-1.06l4.25-4.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042L6.06 8l3.72 3.72a.75.75 0 0 1 0 1.06Z"/></svg>
-  </button>
-
-  <!-- Scrollable track -->
-  <div id="megaTrack" class="mega-track" role="menubar">
-    <div class="mega-items">
-
-      <button class="mega-item" data-panel="panelNavigate" role="menuitem" aria-haspopup="true" aria-expanded="false">
-        Navigate
-      </button>
-
-      <button class="mega-item" data-panel="panelFiles" role="menuitem" aria-haspopup="true" aria-expanded="false">
-        Files
-      </button>
-
-<button class="mega-item" data-panel="panelSearch" role="menuitem" aria-haspopup="true" aria-expanded="false">
-  Search
-</button>
-
-      <button class="mega-item" data-panel="panelStats" role="menuitem" aria-haspopup="true" aria-expanded="false">
-        Stats
-      </button>
-
-      <button class="mega-item" data-panel="panelTools" role="menuitem" aria-haspopup="true" aria-expanded="false">
-        Tools
-      </button>
-
-      <button class="mega-item" data-panel="panelProfile" role="menuitem" aria-haspopup="true" aria-expanded="false">
-        Profile
-      </button>
-
-    </div>
-  </div>
-
-  <!-- Right scroll arrow -->
-  <button
-    id="megaArrowRight"
-    class="mega-arrow mega-arrow-right"
-    aria-label="Scroll menu right"
-    aria-disabled="false"
-  >
-    <svg viewBox="0 0 16 16"><path d="M6.22 3.22a.75.75 0 0 1 1.06 0l4.25 4.25a.75.75 0 0 1 0 1.06l-4.25 4.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042L9.94 8 6.22 4.28a.75.75 0 0 1 0-1.06Z"/></svg>
-  </button>
-
-</nav>
-
-<!-- =============================================
-     PANELS (slide down beneath the nav)
-     ============================================= -->
-
-<!-- NAVIGATE -->
-<div id="panelNavigate" class="mega-panel" role="region" aria-label="Navigation panel">
-  <div class="mega-panel-inner">
-    <div class="panel-section-title">Go To</div>
-    <div class="panel-grid">
-
-      <button class="panel-card" data-menu-action="go-repos">
-        <div class="panel-card-icon blue"><i class="fas fa-layer-group"></i></div>
-        <div class="panel-card-body">
-          <div class="panel-card-title">Repositories</div>
-          <div class="panel-card-desc">Browse your repos</div>
-        </div>
-        <span class="panel-card-chevron"><i class="fas fa-chevron-right"></i></span>
-      </button>
-
-      <button class="panel-card" data-menu-action="go-root">
-        <div class="panel-card-icon green"><i class="fas fa-home"></i></div>
-        <div class="panel-card-body">
-          <div class="panel-card-title">Root</div>
-          <div class="panel-card-desc">Go to root directory</div>
-        </div>
-        <span class="panel-card-chevron"><i class="fas fa-chevron-right"></i></span>
-      </button>
-
-      <button class="panel-card" data-menu-action="go-code">
-        <div class="panel-card-icon purple"><i class="fas fa-code"></i></div>
-        <div class="panel-card-body">
-          <div class="panel-card-title">Code</div>
-          <div class="panel-card-desc">File explorer view</div>
-        </div>
-        <span class="panel-card-chevron"><i class="fas fa-chevron-right"></i></span>
-      </button>
-
-      <button class="panel-card" data-menu-action="go-repos">
-        <div class="panel-card-icon orange"><i class="fas fa-code-branch"></i></div>
-        <div class="panel-card-body">
-          <div class="panel-card-title">Branches</div>
-          <div class="panel-card-desc">Manage branches</div>
-        </div>
-        <span class="panel-card-chevron"><i class="fas fa-chevron-right"></i></span>
-      </button>
-
-    </div>
-  </div>
-</div>
-
-<!-- FILES -->
-<div id="panelFiles" class="mega-panel" role="region" aria-label="File actions panel">
-  <div class="mega-panel-inner">
-    <div class="panel-section-title">Quick Actions</div>
-    <div class="panel-grid">
-
-      <button class="panel-card" data-menu-action="new-file">
-        <div class="panel-card-icon green"><i class="fas fa-file-circle-plus"></i></div>
-        <div class="panel-card-body">
-          <div class="panel-card-title">New File</div>
-          <div class="panel-card-desc">Create a new file</div>
-        </div>
-        <span class="panel-card-chevron"><i class="fas fa-chevron-right"></i></span>
-      </button>
-
-      <button class="panel-card" data-menu-action="upload">
-        <div class="panel-card-icon blue"><i class="fas fa-upload"></i></div>
-        <div class="panel-card-body">
-          <div class="panel-card-title">Upload</div>
-          <div class="panel-card-desc">Upload files</div>
-        </div>
-        <span class="panel-card-chevron"><i class="fas fa-chevron-right"></i></span>
-      </button>
-
-      <button class="panel-card" data-menu-action="import">
-        <div class="panel-card-icon purple"><i class="fas fa-download"></i></div>
-        <div class="panel-card-body">
-          <div class="panel-card-title">Import</div>
-          <div class="panel-card-desc">Import from URL</div>
-        </div>
-        <span class="panel-card-chevron"><i class="fas fa-chevron-right"></i></span>
-      </button>
-
-      <button class="panel-card" data-menu-action="new-folder">
-        <div class="panel-card-icon orange"><i class="fas fa-folder-plus"></i></div>
-        <div class="panel-card-body">
-          <div class="panel-card-title">New Folder</div>
-          <div class="panel-card-desc">Create a folder</div>
-        </div>
-        <span class="panel-card-chevron"><i class="fas fa-chevron-right"></i></span>
-      </button>
-
-    </div>
-  </div>
-</div>
-
-<!-- STATS -->
-<div id="panelStats" class="mega-panel" role="region" aria-label="Statistics panel">
-  <div class="mega-panel-inner">
-    <div class="panel-section-title">Overview</div>
-    <div class="stats-row">
-
-      <div class="stat-block">
-        <div class="stat-block-icon panel-card-icon blue"><i class="fas fa-file"></i></div>
-        <div>
-          <div class="stat-block-value" id="megaStatFiles">0</div>
-          <div class="stat-block-label">Files</div>
-        </div>
-      </div>
-
-      <div class="stat-block">
-        <div class="stat-block-icon panel-card-icon green"><i class="fas fa-code-commit"></i></div>
-        <div>
-          <div class="stat-block-value" id="megaStatCommits">0</div>
-          <div class="stat-block-label">Commits</div>
-        </div>
-      </div>
-
-      <div class="stat-block">
-        <div class="stat-block-icon panel-card-icon orange"><i class="fas fa-database"></i></div>
-        <div>
-          <div class="stat-block-value" id="megaStatStorage">0 KB</div>
-          <div class="stat-block-label">Storage</div>
-        </div>
-      </div>
-
-      <div class="stat-block">
-        <div class="stat-block-icon panel-card-icon red"><i class="fas fa-code-branch"></i></div>
-        <div>
-          <div class="stat-block-value" id="megaStatBranches">1</div>
-          <div class="stat-block-label">Branches</div>
-        </div>
-      </div>
-
-    </div>
-  </div>
-</div>
-
-<!-- TOOLS -->
-<div id="panelTools" class="mega-panel" role="region" aria-label="Tools panel">
-  <div class="mega-panel-inner">
-    <div class="panel-section-title">Settings & Tools</div>
-
-    <button class="tool-row" data-menu-action="toggle-theme">
-      <div class="tool-row-icon"><i class="fas fa-moon mega-theme-icon"></i></div>
-      <span class="tool-row-text mega-theme-label">Dark Mode</span>
-      <span class="tool-row-hint"></span>
-      <span class="tool-row-chevron"><i class="fas fa-chevron-right"></i></span>
+<nav class="navbar" role="navigation" aria-label="Main navigation">
+  <div class="navbar__container">
+    <button class="navbar__arrow navbar__arrow--left" disabled>
+      <svg viewBox="0 0 16 16"><path d="M9.78 12.78a.75.75 0 0 1-1.06 0L4.47 8.53a.75.75 0 0 1 0-1.06l4.25-4.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042L6.06 8l3.72 3.72a.75.75 0 0 1 0 1.06Z"/></svg>
     </button>
-
-    <button class="tool-row" data-menu-action="help">
-      <div class="tool-row-icon"><i class="fas fa-question-circle"></i></div>
-      <span class="tool-row-text">Help & Docs</span>
-      <span class="tool-row-hint"></span>
-      <span class="tool-row-chevron"><i class="fas fa-chevron-right"></i></span>
-    </button>
-
-    <button class="tool-row" data-menu-action="settings">
-      <div class="tool-row-icon"><i class="fas fa-cog"></i></div>
-      <span class="tool-row-text">Preferences</span>
-      <span class="tool-row-hint"></span>
-      <span class="tool-row-chevron"><i class="fas fa-chevron-right"></i></span>
-    </button>
-
-  </div>
-</div>
-
-<!-- PROFILE -->
-<div id="panelProfile" class="mega-panel" role="region" aria-label="Profile panel">
-  <div class="mega-panel-inner">
-
-    <div class="profile-banner">
-      <img src="https://dev.wuaze.com/banner.png" alt="Profile" class="profile-banner-avatar" />
-      <div>
-        <div class="profile-banner-name">GitDev</div>
-        <div class="profile-banner-role">GitHub File Manager</div>
-      </div>
-    </div>
-
-    <div style="margin-top: 16px;">
-      <div class="panel-section-title">Repository</div>
-      <div class="stats-row">
-        <div class="stat-block">
-          <div class="stat-block-icon panel-card-icon blue"><i class="fas fa-layer-group"></i></div>
-          <div>
-            <div class="stat-block-value" id="megaRepoCount">0</div>
-            <div class="stat-block-label">Repos</div>
-          </div>
-        </div>
-        <div class="stat-block">
-          <div class="stat-block-icon panel-card-icon green"><i class="fas fa-file"></i></div>
-          <div>
-            <div class="stat-block-value" id="megaProfileFiles">0</div>
-            <div class="stat-block-label">Files</div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-  </div>
-</div>
-
-<!-- SEARCH PANEL -->
-<div id="panelSearch" class="mega-panel" role="region" aria-label="Search panel">
-  <div class="mega-panel-inner">
-    <div class="search-container">
-      
-      <div class="search-input-wrapper">
-        <input 
-          type="text" 
-          id="megaSearchInput" 
-          class="search-input" 
-          placeholder="Search files and content..." 
-          autocomplete="off"
-          spellcheck="false"
-        />
-        <i class="fas fa-search search-icon"></i>
-        <button id="megaSearchClear" class="search-clear" aria-label="Clear search">
-          <i class="fas fa-times"></i>
+    
+    <div class="navbar__track">
+      <div class="navbar__items">
+        <button class="navbar__item" data-tab="navigate">
+          <span class="navbar__item-label">Navigate</span>
+        </button>
+        <button class="navbar__item" data-tab="files">
+          <span class="navbar__item-label">Files</span>
+        </button>
+        <button class="navbar__item" data-tab="search">
+          <span class="navbar__item-label">Search</span>
+        </button>
+        <button class="navbar__item" data-tab="stats">
+          <span class="navbar__item-label">Stats</span>
+        </button>
+        <button class="navbar__item" data-tab="tools">
+          <span class="navbar__item-label">Tools</span>
+        </button>
+        <button class="navbar__item" data-tab="profile">
+          <span class="navbar__item-label">Profile</span>
         </button>
       </div>
-
-      <div id="megaSearchResults" class="search-results">
-        <div class="search-empty">
-          <div class="search-empty-icon">🔍</div>
-          Start typing to search files...
-        </div>
-      </div>
-
     </div>
+    
+    <button class="navbar__arrow navbar__arrow--right">
+      <svg viewBox="0 0 16 16"><path d="M6.22 3.22a.75.75 0 0 1 1.06 0l4.25 4.25a.75.75 0 0 1 0 1.06l-4.25 4.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042L9.94 8 6.22 4.28a.75.75 0 0 1 0-1.06Z"/></svg>
+    </button>
+  </div>
+</nav>
+
+<!-- SINGLE DYNAMIC PANEL CONTAINER -->
+<div id="menuPanel" class="menu" role="region" aria-label="Menu panel">
+  <div class="menu__content" data-tab-content>
+    <!-- Content will be injected here dynamically -->
   </div>
 </div>
+
+
+
+
+
 
 <div class="topBox">
     <!-- B R E A D C R U M B S -->
@@ -1682,10 +624,6 @@ body.mega-menu-open .mega-nav {
     </div>
   </div>
 </div>
-
-
-
-
 
 
 <!--  P A G E  W R A P P E R 
@@ -1915,638 +853,409 @@ body.mega-menu-open .mega-nav {
 ===================================================-->
 
 
+
 <script>
-/* ================================================
-   MEGA MENU CONTROLLER — Enhanced Edition
-   ================================================ */
-
-(function () {
-  "use strict";
-
-  /* STATE */
-  let activePanel = null;
-  let isPanelOpen = false;
-  let isAnimating = false;
-  let searchTimeout = null;
-
-  /* CONFIG */
-  const SCROLL_STEP = 180;
-  const SCROLL_CHECK_DEBOUNCE = 50;
-  const SEARCH_DELAY = 300;
-
-  /* DOM REFS */
-  let track, arrowLeft, arrowRight, overlay;
-  let allItems = [];
-  let allPanels = [];
-
-  /* ============================================
-     INIT
-     ============================================ */
-  function init() {
-    track = document.getElementById("megaTrack");
-    arrowLeft = document.getElementById("megaArrowLeft");
-    arrowRight = document.getElementById("megaArrowRight");
-    overlay = document.getElementById("megaOverlay");
-    allItems = Array.from(document.querySelectorAll(".mega-item"));
-    allPanels = Array.from(document.querySelectorAll(".mega-panel"));
-
-    if (!track || !arrowLeft || !arrowRight) {
-      console.warn("Mega-menu: missing DOM elements");
-      return;
-    }
-
-    setupArrows();
-    setupMenuItems();
-    setupOverlay();
-    setupKeyboard();
-    setupSearch();
-    initTouchScroll();
-    syncStats();
-
-    console.log("✅ Mega-menu initialized");
+class MegaMenu {
+  constructor() {
+    // Core elements
+    this.navbar = document.querySelector('.navbar');
+    this.track = document.querySelector('.navbar__track');
+    this.items = document.querySelectorAll('.navbar__item');
+    this.arrows = {
+      left: document.querySelector('.navbar__arrow--left'),
+      right: document.querySelector('.navbar__arrow--right')
+    };
+    this.overlay = document.getElementById('megaOverlay');
+    this.panel = document.getElementById('menuPanel');
+    this.contentContainer = this.panel.querySelector('[data-tab-content]');
+    
+    // State
+    this.state = {
+      isOpen: false,
+      activeTab: null,
+      isAnimating: false,
+      scrollPosition: 0
+    };
+    
+    // Configuration
+    this.config = {
+      scrollStep: 180,
+      animationDuration: 350,
+      searchDelay: 300
+    };
+    
+    // Panel content templates (dynamically loaded)
+    this.templates = new Map();
+    
+    // Initialize
+    this.init();
   }
-
-  /* ============================================
-     ARROW SCROLL CONTROLS
-     ============================================ */
-  function setupArrows() {
-    arrowLeft.addEventListener("click", () => scrollTrack(-SCROLL_STEP));
-    arrowRight.addEventListener("click", () => scrollTrack(SCROLL_STEP));
-
-    let scrollTimer;
-    track.addEventListener("scroll", () => {
-      clearTimeout(scrollTimer);
-      scrollTimer = setTimeout(updateArrows, SCROLL_CHECK_DEBOUNCE);
-    });
-
-    updateArrows();
-    window.addEventListener("resize", updateArrows);
+  
+  init() {
+    this.setupEventListeners();
+    this.loadTemplates();
+    this.setupKeyboardNavigation();
+    this.updateArrows();
+    
+    // Mutation observer for responsive changes
+    this.setupObservers();
+    
+    console.log('🚀 Mega Menu initialized');
   }
-
-  function scrollTrack(delta) {
-    track.scrollBy({ left: delta, behavior: "smooth" });
+  
+  loadTemplates() {
+    // Define all panel content
+    this.templates.set('navigate', this.getNavigateTemplate());
+    this.templates.set('files', this.getFilesTemplate());
+    this.templates.set('search', this.getSearchTemplate());
+    this.templates.set('stats', this.getStatsTemplate());
+    this.templates.set('tools', this.getToolsTemplate());
+    this.templates.set('profile', this.getProfileTemplate());
   }
-
-  function updateArrows() {
-    const scrollLeft = Math.round(track.scrollLeft);
-    const maxScroll = track.scrollWidth - track.clientWidth;
-
-    arrowLeft.classList.toggle("disabled", scrollLeft <= 1);
-    arrowLeft.setAttribute("aria-disabled", scrollLeft <= 1);
-
-    arrowRight.classList.toggle("disabled", scrollLeft >= maxScroll - 1);
-    arrowRight.setAttribute("aria-disabled", scrollLeft >= maxScroll - 1);
-  }
-
-  /* ============================================
-     MENU ITEMS
-     ============================================ */
-  function setupMenuItems() {
-    allItems.forEach((item) => {
-      item.addEventListener("click", () => {
-        const panelId = item.getAttribute("data-panel");
-        const action = item.getAttribute("data-action");
-
-        if (action) {
-          handleDirectAction(action);
-        } else if (panelId) {
-          togglePanel(panelId, item);
+  
+  setupEventListeners() {
+    // Menu items
+    this.items.forEach(item => {
+      item.addEventListener('click', (e) => this.handleItemClick(e));
+      item.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          this.handleItemClick(e);
         }
       });
     });
-  }
-
-  function togglePanel(panelId, triggerItem) {
-    if (isAnimating) return;
-
-    const targetPanel = document.getElementById(panelId);
-    if (!targetPanel) return;
-
-    // Clicking the same open panel → close
-    if (activePanel === panelId && isPanelOpen) {
-      closeAllPanels();
-      return;
-    }
-
-    // Panel already open → swap content
-    if (isPanelOpen && activePanel !== panelId) {
-      swapPanelContent(panelId, triggerItem);
-      return;
-    }
-
-    // Otherwise → full open animation
-    openPanel(panelId, triggerItem);
-  }
-
-  function openPanel(panelId, triggerItem) {
-    isAnimating = true;
-
-    const targetPanel = document.getElementById(panelId);
-
-    // Close all
-    allPanels.forEach((p) => p.classList.remove("open", "swapping"));
-    allItems.forEach((i) => {
-      i.classList.remove("active");
-      i.setAttribute("aria-expanded", "false");
+    
+    // Arrows
+    this.arrows.left.addEventListener('click', () => this.scrollTrack(-this.config.scrollStep));
+    this.arrows.right.addEventListener('click', () => this.scrollTrack(this.config.scrollStep));
+    
+    // Track scrolling
+    this.track.addEventListener('scroll', () => this.throttle(this.updateArrows, 50));
+    
+    // Overlay
+    this.overlay.addEventListener('click', () => this.close());
+    
+    // Panel actions (delegated)
+    this.panel.addEventListener('click', (e) => {
+      const action = e.target.closest('[data-action]');
+      if (action) this.handlePanelAction(action.dataset.action);
     });
-
-    // Open target
-    targetPanel.classList.add("open");
-    triggerItem.classList.add("active");
-    triggerItem.setAttribute("aria-expanded", "true");
-    activePanel = panelId;
-    isPanelOpen = true;
-
-    // Show overlay & blur
-    if (overlay) overlay.classList.add("active");
-    blurMainContent();
-    document.body.classList.add("mega-menu-open");
-
-    // If search panel, focus input
-    if (panelId === "panelSearch") {
+    
+    // Window resize
+    window.addEventListener('resize', () => this.throttle(this.updateArrows, 100));
+    
+    // Escape key
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && this.state.isOpen) {
+        this.close();
+      }
+    });
+  }
+  
+  setupKeyboardNavigation() {
+    document.addEventListener('keydown', (e) => {
+      if (!this.state.isOpen) return;
+      
+      switch(e.key) {
+        case 'ArrowLeft':
+          this.navigateTab(-1);
+          break;
+        case 'ArrowRight':
+          this.navigateTab(1);
+          break;
+        case 'Tab':
+          if (e.shiftKey) {
+            this.focusPreviousTab();
+          } else {
+            this.focusNextTab();
+          }
+          e.preventDefault();
+          break;
+      }
+    });
+  }
+  
+  setupObservers() {
+    // Watch for DOM changes that might affect layout
+    const observer = new MutationObserver(() => {
+      this.updateArrows();
+    });
+    
+    observer.observe(this.track, { 
+      childList: true, 
+      subtree: true 
+    });
+  }
+  
+  handleItemClick(event) {
+    if (this.state.isAnimating) return;
+    
+    const item = event.currentTarget;
+    const tab = item.dataset.tab;
+    
+    if (this.state.activeTab === tab && this.state.isOpen) {
+      this.close();
+    } else {
+      this.open(tab, item);
+    }
+  }
+  
+  open(tab, triggerItem) {
+    this.state.isAnimating = true;
+    this.state.activeTab = tab;
+    
+    // Update UI state
+    this.items.forEach(item => {
+      item.classList.remove('navbar__item--active');
+      item.setAttribute('aria-expanded', 'false');
+    });
+    
+    triggerItem.classList.add('navbar__item--active');
+    triggerItem.setAttribute('aria-expanded', 'true');
+    
+    // Get and render content
+    const content = this.templates.get(tab);
+    this.renderContent(content);
+    
+    // Animate panel open
+    this.panel.classList.add('menu--open');
+    this.overlay.classList.add('active');
+    this.navbar.classList.add('navbar--expanded');
+    
+    // Add body class
+    document.body.classList.add('menu-open');
+    
+    // Focus management
+    this.setupPanelFocus();
+    
+    // Special handling for search
+    if (tab === 'search') {
       setTimeout(() => {
-        const input = document.getElementById("megaSearchInput");
+        const input = this.panel.querySelector('.search__input');
         if (input) input.focus();
       }, 400);
     }
-
+    
+    // Update state
     setTimeout(() => {
-      isAnimating = false;
-    }, 450);
+      this.state.isOpen = true;
+      this.state.isAnimating = false;
+    }, this.config.animationDuration);
   }
-
-  function swapPanelContent(newPanelId, triggerItem) {
-    isAnimating = true;
-
-    const currentPanel = document.getElementById(activePanel);
-    const newPanel = document.getElementById(newPanelId);
-
-    // Add swapping class for fast fade
-    currentPanel.classList.add("swapping");
-
+  
+  close() {
+    if (this.state.isAnimating || !this.state.isOpen) return;
+    
+    this.state.isAnimating = true;
+    
+    // Animate panel close
+    this.panel.classList.remove('menu--open');
+    this.overlay.classList.remove('active');
+    this.navbar.classList.remove('navbar--expanded');
+    this.items.forEach(item => {
+      item.classList.remove('navbar__item--active');
+      item.setAttribute('aria-expanded', 'false');
+    });
+    
+    // Remove body class
+    document.body.classList.remove('menu-open');
+    
+    // Clear content with animation
+    this.contentContainer.style.opacity = '0';
+    
+    // Update state
     setTimeout(() => {
-      // Switch panels
-      currentPanel.classList.remove("open", "swapping");
-      newPanel.classList.add("open", "swapping");
-
-      // Update active item
-      allItems.forEach((i) => {
-        i.classList.remove("active");
-        i.setAttribute("aria-expanded", "false");
-      });
-      triggerItem.classList.add("active");
-      triggerItem.setAttribute("aria-expanded", "true");
-
-      activePanel = newPanelId;
-
-      // If switching to search, focus input
-      if (newPanelId === "panelSearch") {
-        setTimeout(() => {
-          const input = document.getElementById("megaSearchInput");
-          if (input) input.focus();
-        }, 260);
-      }
-
-      // Remove swapping class
+      this.state.isOpen = false;
+      this.state.activeTab = null;
+      this.state.isAnimating = false;
+      this.contentContainer.style.opacity = '1';
+      
+      // Focus back to active menu item
+      const activeItem = document.querySelector('.navbar__item--active');
+      if (activeItem) activeItem.focus();
+    }, this.config.animationDuration);
+  }
+  
+  renderContent(template) {
+    // Animate content out
+    this.contentContainer.style.opacity = '0';
+    this.contentContainer.style.transform = 'translateY(-10px)';
+    
+    // Update content after a brief delay
+    setTimeout(() => {
+      this.contentContainer.innerHTML = template;
+      
+      // Animate content in
       setTimeout(() => {
-        newPanel.classList.remove("swapping");
-        isAnimating = false;
-      }, 260);
-    }, 140);
+        this.contentContainer.style.opacity = '1';
+        this.contentContainer.style.transform = 'translateY(0)';
+      }, 50);
+      
+      // Initialize any dynamic content
+      this.initDynamicContent(this.state.activeTab);
+    }, 200);
   }
-
-  function closeAllPanels() {
-    if (isAnimating) return;
-    isAnimating = true;
-
-    allPanels.forEach((p) => p.classList.remove("open", "swapping"));
-    allItems.forEach((i) => {
-      i.classList.remove("active");
-      i.setAttribute("aria-expanded", "false");
-    });
-
-    activePanel = null;
-    isPanelOpen = false;
-
-    if (overlay) overlay.classList.remove("active");
-    unblurMainContent();
-    document.body.classList.remove("mega-menu-open");
-
-    setTimeout(() => {
-      isAnimating = false;
-    }, 400);
-  }
-
-  function blurMainContent() {
-    const mainArea = document.getElementById("mainArea");
-    if (mainArea) {
-      mainArea.style.filter = "blur(4px) brightness(0.85)";
-      mainArea.style.transition = "filter 350ms cubic-bezier(0.4, 0, 0.2, 1)";
-      mainArea.style.pointerEvents = "none";
+  
+  initDynamicContent(tab) {
+    switch(tab) {
+      case 'search':
+        this.initSearch();
+        break;
+      case 'stats':
+        this.updateStats();
+        break;
+      case 'profile':
+        this.updateProfile();
+        break;
     }
   }
-
-  function unblurMainContent() {
-    const mainArea = document.getElementById("mainArea");
-    if (mainArea) {
-      mainArea.style.filter = "";
-      mainArea.style.pointerEvents = "";
+  
+  // Template generators (example - you'd customize these)
+  getNavigateTemplate() {
+    return `
+      <div class="menu__section">
+        <h3 class="menu__section-title">Go To</h3>
+        <div class="menu__grid">
+          <button class="menu__card" data-action="go-repos">
+            <div class="menu__card-icon menu__card-icon--blue">
+              <i class="fas fa-layer-group"></i>
+            </div>
+            <div class="menu__card-body">
+              <div class="menu__card-title">Repositories</div>
+              <div class="menu__card-description">Browse your repos</div>
+            </div>
+            <span class="menu__card-chevron"><i class="fas fa-chevron-right"></i></span>
+          </button>
+          <!-- Add more cards... -->
+        </div>
+      </div>
+    `;
+  }
+  
+  getSearchTemplate() {
+    return `
+      <div class="search">
+        <div class="search__container">
+          <div class="search__input-wrapper">
+            <input type="text" class="search__input" placeholder="Search files and content..." />
+            <i class="fas fa-search search__icon"></i>
+            <button class="search__clear" aria-label="Clear search">
+              <i class="fas fa-times"></i>
+            </button>
+          </div>
+          <div class="search__results">
+            <div class="search__empty">
+              <div class="search__empty-icon">🔍</div>
+              Start typing to search files...
+            </div>
+          </div>
+        </div>
+      </div>
+    `;
+  }
+  
+  // Utility methods
+  scrollTrack(delta) {
+    this.track.scrollBy({ left: delta, behavior: 'smooth' });
+    this.updateArrows();
+  }
+  
+  updateArrows() {
+    const scrollLeft = this.track.scrollLeft;
+    const maxScroll = this.track.scrollWidth - this.track.clientWidth;
+    
+    this.arrows.left.disabled = scrollLeft <= 1;
+    this.arrows.right.disabled = scrollLeft >= maxScroll - 1;
+  }
+  
+  navigateTab(direction) {
+    const activeIndex = Array.from(this.items).findIndex(
+      item => item.classList.contains('navbar__item--active')
+    );
+    
+    const newIndex = (activeIndex + direction + this.items.length) % this.items.length;
+    const newItem = this.items[newIndex];
+    
+    if (newItem) {
+      this.open(newItem.dataset.tab, newItem);
     }
   }
-
-  /* ============================================
-     DIRECT ACTIONS (items without panels)
-     ============================================ */
-  function handleDirectAction(action) {
-    closeAllPanels();
-
-    switch (action) {
-      case "search":
-        // Open search panel
-        const searchBtn = document.querySelector('[data-panel="panelSearch"]');
-        if (searchBtn) {
-          setTimeout(() => togglePanel("panelSearch", searchBtn), 100);
-        }
-        break;
-      default:
-        console.log("Direct action:", action);
-    }
+  
+  focusNextTab() {
+    // Focus management logic
   }
-
-  /* ============================================
-     PANEL ACTIONS (delegated clicks)
-     ============================================ */
-  document.addEventListener("click", (e) => {
-    const actionBtn = e.target.closest("[data-menu-action]");
-    if (!actionBtn) return;
-
-    const action = actionBtn.getAttribute("data-menu-action");
-    handlePanelAction(action);
-    closeAllPanels();
-  });
-
-  function handlePanelAction(action) {
-    switch (action) {
-      case "go-repos":
-        navigateToPage("repo");
-        break;
-      case "go-root":
-        navigateToPage("explorer");
-        if (typeof navigateToRoot === "function") navigateToRoot();
-        break;
-      case "go-code":
-        navigateToPage("explorer");
-        break;
-      case "new-file":
-        showModal("createFileModal");
-        break;
-      case "upload":
-        if (typeof showUploadModal === "function") showUploadModal();
-        break;
-      case "import":
-        if (typeof showImportModal === "function") showImportModal();
-        break;
-      case "new-folder":
-        if (typeof showCreateFolderModal === "function") showCreateFolderModal();
-        break;
-      case "toggle-theme":
-        toggleThemeHelper();
-        break;
-      case "help":
-        if (typeof showHelp === "function") showHelp();
-        break;
-      default:
-        console.log("Panel action:", action);
-    }
+  
+  focusPreviousTab() {
+    // Focus management logic
   }
-
-  function navigateToPage(pageName) {
-    document.querySelectorAll(".pages").forEach((p) => {
-      p.classList.remove("show");
-      p.classList.add("hide");
-    });
-
-    const target = document.querySelector(`[data-page="${pageName}"]`);
-    if (target) {
-      target.classList.remove("hide");
-      target.classList.add("show");
-    }
+  
+  setupPanelFocus() {
+    // Set up focus trap and initial focus
+    const firstFocusable = this.panel.querySelector('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])');
+    if (firstFocusable) firstFocusable.focus();
   }
-
-  function showModal(modalId) {
-    const modal = document.getElementById(modalId);
-    if (!modal) return;
-    modal.classList.remove("hidden");
-    modal.style.display = "flex";
+  
+  handlePanelAction(action) {
+    // Handle actions from panel content
+    console.log('Panel action:', action);
+    // Your action handlers here
+    this.close();
   }
-
-  /* ============================================
-     OVERLAY & KEYBOARD
-     ============================================ */
-  function setupOverlay() {
-    if (overlay) {
-      overlay.addEventListener("click", closeAllPanels);
-    }
-  }
-
-  function setupKeyboard() {
-    document.addEventListener("keydown", (e) => {
-      if (e.key === "Escape" && isPanelOpen) {
-        closeAllPanels();
-      }
-    });
-  }
-
-  /* ============================================
-     SEARCH FUNCTIONALITY
-     ============================================ */
-  function setupSearch() {
-    const input = document.getElementById("megaSearchInput");
-    const clearBtn = document.getElementById("megaSearchClear");
-
+  
+  initSearch() {
+    const input = this.panel.querySelector('.search__input');
+    const clearBtn = this.panel.querySelector('.search__clear');
+    
     if (!input) return;
-
-    input.addEventListener("input", (e) => {
-      clearTimeout(searchTimeout);
-      searchTimeout = setTimeout(() => performSearch(e.target.value), SEARCH_DELAY);
+    
+    let timeout;
+    input.addEventListener('input', (e) => {
+      clearTimeout(timeout);
+      timeout = setTimeout(() => {
+        this.performSearch(e.target.value);
+      }, this.config.searchDelay);
     });
-
-    input.addEventListener("keydown", (e) => {
-      if (e.key === "Enter") {
-        e.preventDefault();
-        clearTimeout(searchTimeout);
-        performSearch(e.target.value);
-      }
-    });
-
+    
     if (clearBtn) {
-      clearBtn.addEventListener("click", () => {
-        input.value = "";
+      clearBtn.addEventListener('click', () => {
+        input.value = '';
         input.focus();
-        performSearch("");
+        this.performSearch('');
       });
     }
   }
-
-  function performSearch(query) {
-    const container = document.getElementById("megaSearchResults");
-    if (!container) return;
-
-    if (!query.trim()) {
-      container.innerHTML = `
-        <div class="search-empty">
-          <div class="search-empty-icon">🔍</div>
-          Start typing to search files...
-        </div>
-      `;
-      return;
-    }
-
-    try {
-      const currentRepo = localStorage.getItem("currentRepository");
-      if (!currentRepo) {
-        container.innerHTML = `
-          <div class="search-empty">
-            <div class="search-empty-icon">📁</div>
-            No repository selected
-          </div>
-        `;
-        return;
+  
+  performSearch(query) {
+    // Your search logic here
+  }
+  
+  updateStats() {
+    // Update stats dynamically
+  }
+  
+  updateProfile() {
+    // Update profile dynamically
+  }
+  
+  throttle(func, limit) {
+    let inThrottle;
+    return function() {
+      const args = arguments;
+      const context = this;
+      if (!inThrottle) {
+        func.apply(context, args);
+        inThrottle = true;
+        setTimeout(() => inThrottle = false, limit);
       }
-
-      const repoData = JSON.parse(localStorage.getItem(`repo_${currentRepo}`) || "{}");
-      const files = repoData.files || {};
-      const results = [];
-
-      // Search file paths and content
-      Object.keys(files).forEach((path) => {
-        const file = files[path];
-        const lowerQuery = query.toLowerCase();
-        const lowerPath = path.toLowerCase();
-        const pathMatch = lowerPath.includes(lowerQuery);
-        const contentMatch = file.content && file.content.toLowerCase().includes(lowerQuery);
-
-        if (pathMatch || contentMatch) {
-          results.push({
-            path,
-            name: path.split("/").pop(),
-            type: pathMatch ? "path" : "content",
-            file,
-          });
-        }
-      });
-
-      displaySearchResults(results, query);
-    } catch (e) {
-      console.error("Search error:", e);
-      container.innerHTML = `
-        <div class="search-empty">
-          <div class="search-empty-icon">⚠️</div>
-          Search error occurred
-        </div>
-      `;
-    }
-  }
-
-  function displaySearchResults(results, query) {
-    const container = document.getElementById("megaSearchResults");
-
-    if (results.length === 0) {
-      container.innerHTML = `
-        <div class="search-empty">
-          <div class="search-empty-icon">🤷</div>
-          No results found for "<strong>${escapeHtml(query)}</strong>"
-        </div>
-      `;
-      return;
-    }
-
-    const html = results
-      .map(
-        (result, index) => `
-        <div class="search-result-item" data-file-path="${escapeHtml(result.path)}">
-          <div class="search-result-icon">${getFileIcon(result.name)}</div>
-          <div class="search-result-content">
-            <div class="search-result-name">${highlightMatch(escapeHtml(result.name), query)}</div>
-            <div class="search-result-path">${escapeHtml(result.path)}</div>
-          </div>
-          <span class="search-result-type">${result.type}</span>
-        </div>
-      `
-      )
-      .join("");
-
-    container.innerHTML = html;
-
-    // Add click handlers
-    container.querySelectorAll(".search-result-item").forEach((item) => {
-      item.addEventListener("click", function () {
-        const filePath = this.getAttribute("data-file-path");
-        openSearchResult(filePath);
-        closeAllPanels();
-      });
-    });
-  }
-
-  function openSearchResult(filePath) {
-    // Integrate with your existing file opening logic
-    navigateToPage("file");
-    if (typeof loadFileEditor === "function") {
-      loadFileEditor(filePath);
-    }
-    console.log("Opening file:", filePath);
-  }
-
-  function highlightMatch(text, query) {
-    const regex = new RegExp(`(${escapeRegex(query)})`, "gi");
-    return text.replace(regex, "<mark>$1</mark>");
-  }
-
-  function getFileIcon(filename) {
-    const ext = filename.split(".").pop().toLowerCase();
-    const icons = {
-      js: "📜",
-      jsx: "⚛️",
-      ts: "📘",
-      tsx: "⚛️",
-      html: "🌐",
-      css: "🎨",
-      scss: "🎨",
-      json: "📋",
-      md: "📝",
-      txt: "📄",
-      py: "🐍",
-      java: "☕",
-      php: "🐘",
-      rb: "💎",
-      go: "🐹",
-      rs: "🦀",
-      c: "🔧",
-      cpp: "🔧",
-      svg: "🎨",
-      png: "🖼️",
-      jpg: "🖼️",
-      gif: "🖼️",
     };
-    return icons[ext] || "📄";
   }
+}
 
-  function escapeHtml(text) {
-    const div = document.createElement("div");
-    div.textContent = text;
-    return div.innerHTML;
-  }
-
-  function escapeRegex(text) {
-    return text.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-  }
-
-  /* ============================================
-     THEME TOGGLE
-     ============================================ */
-  function toggleThemeHelper() {
-    const html = document.documentElement;
-    const current = html.getAttribute("data-theme");
-    const next = current === "dark" ? "light" : "dark";
-    html.setAttribute("data-theme", next);
-
-    try {
-      localStorage.setItem("theme", next);
-    } catch (e) {}
-
-    const icons = document.querySelectorAll(".mega-theme-icon, #themeIcon, #sidebarThemeIcon");
-    icons.forEach((icon) => {
-      icon.className = next === "dark" ? "fas fa-moon" : "fas fa-sun";
-    });
-
-    const labels = document.querySelectorAll(".mega-theme-label");
-    labels.forEach((lbl) => {
-      lbl.textContent = next === "dark" ? "Dark Mode" : "Light Mode";
-    });
-  }
-
-  /* ============================================
-     STATS SYNC
-     ============================================ */
-  function syncStats() {
-    try {
-      const repos = JSON.parse(localStorage.getItem("repositories") || "[]");
-      const currentRepo = localStorage.getItem("currentRepository");
-      const repoData = currentRepo ? JSON.parse(localStorage.getItem(`repo_${currentRepo}`) || "{}") : {};
-      const files = repoData.files || {};
-      const fileCount = Object.keys(files).length;
-
-      let commitCount = 0;
-      Object.values(files).forEach((f) => {
-        commitCount += f.commits ? f.commits.length : 0;
-      });
-
-      const storageBytes = new Blob([JSON.stringify(files)]).size;
-      const storageKB = Math.round(storageBytes / 1024);
-
-      setTextById("megaStatFiles", fileCount);
-      setTextById("megaStatCommits", commitCount);
-      setTextById("megaStatStorage", `${storageKB} KB`);
-      setTextById("megaStatBranches", "1");
-      setTextById("megaRepoCount", repos.length);
-      setTextById("megaProfileFiles", fileCount);
-    } catch (e) {
-      console.warn("Stats sync error:", e);
-    }
-  }
-
-  function setTextById(id, text) {
-    const el = document.getElementById(id);
-    if (el) el.textContent = text;
-  }
-
-  /* ============================================
-     TOUCH SCROLL
-     ============================================ */
-  function initTouchScroll() {
-    let startX = 0;
-    let scrollStart = 0;
-
-    track.addEventListener(
-      "touchstart",
-      (e) => {
-        startX = e.touches[0].clientX;
-        scrollStart = track.scrollLeft;
-      },
-      { passive: true }
-    );
-
-    track.addEventListener(
-      "touchmove",
-      (e) => {
-        const dx = startX - e.touches[0].clientX;
-        track.scrollLeft = scrollStart + dx;
-      },
-      { passive: true }
-    );
-
-    track.addEventListener("touchend", updateArrows, { passive: true });
-  }
-
-  /* ============================================
-     BOOT
-     ============================================ */
-  if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", init);
-  } else {
-    init();
-  }
-
-  /* Expose API */
-  window.megaMenu = {
-    close: closeAllPanels,
-    syncStats,
-    toggleTheme: toggleThemeHelper,
-  };
-})();
+// Initialize
+document.addEventListener('DOMContentLoaded', () => {
+  window.megaMenu = new MegaMenu();
+});
 </script>
-
-
 
 <!-- Modals -------------------------->
 <div id="createFileModal" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 hidden items-center justify-center p-4">
