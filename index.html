@@ -283,277 +283,1810 @@ html {
 
 
 <style>
-/* Renamed classes to match new structure */
+/* ================================================
+   NAVBAR + MENU SYSTEM
+   Single container panel with data-tab content
+   Mobile-first · Clean naming
+   ================================================ */
+
+/* -----------------------------------------------
+   CSS CUSTOM PROPERTIES
+   ----------------------------------------------- */
+:root {
+  --navbar-height: 3.35rem;
+  --navbar-height-active: 45px;
+  --navbar-z: 9000;
+  --navbar-bg: var(--card, #303030);
+  --navbar-border: var(--cardBorder, #444444);
+  --menu-item-color: #9ca3af;
+  --menu-item-hover: var(--color-primary, #539bf5);
+  --menu-item-active: #e5e7eb;
+  --menu-arrow-size: 2.85rem;
+  --menu-panel-max: 20rem;
+  --menu-panel-bg: var(--color-bg-secondary, #2d333b);
+  --menu-panel-border: var(--color-border, #444c56);
+  --menu-speed: 350ms;
+  --menu-ease: cubic-bezier(0.4, 0, 0.2, 1);
+  --menu-spring: cubic-bezier(0.16, 1, 0.3, 1);
+  --menu-bounce: linear(
+    0, 0.264 3.7%, 0.49 7.4%, 0.692 11.3%, 0.864 15.3%,
+    0.937 17.3%, 1.005 19.4%, 1.065 21.5%, 1.12 23.7%,
+    1.167 25.9%, 1.206 28.1%, 1.24 30.4%, 1.267 32.8%,
+    1.283 34.6%, 1.296 36.4%, 1.305 38.3%, 1.311 40.2%,
+    1.314 42.2%, 1.313 44.2%, 1.309 46.4%, 1.301 48.6%,
+    1.282 52.5%, 1.252 56.9%, 1.217 61.3%, 1.105 74.4%,
+    1.074 78.6%, 1.048 82.5%, 1.026 86.9%, 1.011 91.1%,
+    1.002 95.4%, 1
+  );
+}
+
+/* -----------------------------------------------
+   OVERLAY
+   ----------------------------------------------- */
+.menu-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: calc(var(--navbar-z) - 1);
+  background: rgba(0, 0, 0, 0.25);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition:
+    opacity var(--menu-speed) var(--menu-ease),
+    visibility 0s linear var(--menu-speed);
+}
+
+.menu-overlay.active {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  transition:
+    opacity var(--menu-speed) var(--menu-ease),
+    visibility 0s linear 0s;
+}
+
+/* -----------------------------------------------
+   NAVBAR
+   ----------------------------------------------- */
 .navbar {
   position: fixed;
   top: 0;
   left: 0;
   right: 0;
-  height: var(--navbar-height, 3.35rem);
-  background: var(--navbar-bg, #303030);
-  border-bottom: 1px solid var(--navbar-border, #444);
-  z-index: 9000;
+  height: var(--navbar-height);
+  background: var(--navbar-bg);
+  border-bottom: 1px solid var(--navbar-border);
+  z-index: var(--navbar-z);
   display: flex;
   align-items: center;
+  user-select: none;
+  -webkit-user-select: none;
+  transition: height var(--menu-speed) var(--menu-ease);
 }
 
-.navbar__container {
-  display: flex;
-  align-items: center;
-  width: 100%;
-  height: 100%;
+body.menu-active .navbar {
+  height: var(--navbar-height-active);
 }
 
-.navbar__arrow {
+/* -----------------------------------------------
+   SCROLL ARROWS
+   ----------------------------------------------- */
+.navbar-arrow {
   flex-shrink: 0;
-  width: 2.85rem;
+  width: var(--menu-arrow-size);
   height: 100%;
-  background: transparent;
-  border: none;
-  color: var(--navbar-arrow-color, #9ca3af);
-  cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
+  background: transparent;
+  border: none;
+  color: var(--menu-item-color);
+  cursor: pointer;
+  padding: 0;
+  transition: color 200ms ease, opacity 200ms ease;
+  position: relative;
+  z-index: 2;
 }
 
-.navbar__arrow:not(:disabled):hover {
-  color: var(--navbar-arrow-hover, #539bf5);
+.navbar-arrow:hover:not(.disabled) {
+  color: var(--menu-item-hover);
 }
 
-.navbar__arrow:disabled {
+.navbar-arrow.disabled {
+  color: var(--color-text-muted, #636e7b);
   opacity: 0.3;
-  cursor: not-allowed;
+  cursor: default;
+  pointer-events: none;
 }
 
-.navbar__track {
+.navbar-arrow svg {
+  width: 16px;
+  height: 16px;
+  fill: currentColor;
+  flex-shrink: 0;
+}
+
+.navbar-arrow[data-dir="left"] {
+  background: linear-gradient(to right, var(--navbar-bg) 60%, transparent);
+}
+
+.navbar-arrow[data-dir="right"] {
+  background: linear-gradient(to left, var(--navbar-bg) 60%, transparent);
+}
+
+/* -----------------------------------------------
+   SCROLLABLE TRACK
+   ----------------------------------------------- */
+.navbar-track {
   flex: 1;
   overflow-x: auto;
   overflow-y: hidden;
   scroll-behavior: smooth;
   display: flex;
-  height: 100%;
-  scrollbar-width: none;
-}
-
-.navbar__track::-webkit-scrollbar {
-  display: none;
-}
-
-.navbar__items {
-  display: flex;
   align-items: center;
   height: 100%;
-  min-width: max-content;
+  min-width: 0;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
 }
 
-.navbar__item {
+.navbar-track::-webkit-scrollbar {
+  display: none;
+  width: 0;
+  height: 0;
+}
+
+.navbar-items {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  height: 100%;
+  min-width: max-content;
+  padding: 0 4px;
+}
+
+/* -----------------------------------------------
+   MENU ITEMS
+   ----------------------------------------------- */
+.menu-item {
   position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
   height: 100%;
-  padding: 0 1.25rem;
+  padding: 0 20px;
   background: transparent;
   border: none;
   cursor: pointer;
   white-space: nowrap;
-  color: var(--navbar-item-color, #9ca3af);
-  font-family: var(--font-head);
-  font-size: 0.875rem;
-  font-weight: 700;
+  transition: color 200ms ease, background-color 200ms ease;
+  font-family: var(--font-head, "WF Visual Sans", sans-serif);
+  font-size: 14px;
+  font-weight: var(--weight-bold, 700);
   letter-spacing: 0.01em;
-  transition: all 200ms ease;
+  line-height: 1;
+  color: var(--menu-item-color);
 }
 
-.navbar__item:hover {
-  color: var(--navbar-item-hover, #539bf5);
+.menu-item:hover {
+  color: var(--menu-item-hover);
   background: rgba(83, 155, 245, 0.06);
 }
 
-.navbar__item--active {
-  color: var(--navbar-item-active, #e5e7eb);
+.menu-item:active {
+  background: rgba(83, 155, 245, 0.1);
+}
+
+.menu-item.active {
+  color: var(--menu-item-active);
   background: rgba(255, 255, 255, 0.04);
 }
 
-.navbar__item--active::after {
+.menu-item.active::after {
   content: "";
   position: absolute;
   bottom: 0;
-  left: 0.75rem;
-  right: 0.75rem;
+  left: 12px;
+  right: 12px;
   height: 2px;
-  background: var(--navbar-item-hover, #539bf5);
+  background: var(--menu-item-hover);
   border-radius: 2px 2px 0 0;
-  animation: navbarUnderline 200ms ease-out;
+  animation: underlineReveal 200ms var(--menu-ease) both;
 }
 
-@keyframes navbarUnderline {
+@keyframes underlineReveal {
   from { transform: scaleX(0); }
   to { transform: scaleX(1); }
 }
 
-/* Single Menu Panel */
-.menu {
+.menu-item .badge {
+  margin-left: 8px;
+  padding: 1px 6px;
+  font-size: 10px;
+  font-weight: 600;
+  line-height: 1.5;
+  border-radius: 10px;
+  background: var(--color-primary, #539bf5);
+  color: #fff;
+}
+
+/* -----------------------------------------------
+   SINGLE PANEL CONTAINER — menu.open
+   ----------------------------------------------- */
+.menu-open {
   position: fixed;
-  top: var(--navbar-height, 3.35rem);
+  top: var(--navbar-height);
   left: 0;
   right: 0;
   height: 0;
   overflow: hidden;
-  background: var(--menu-bg, #2d333b);
+  background: var(--menu-panel-bg);
   border-bottom: 1px solid transparent;
-  z-index: 8999;
-  transition: height 350ms cubic-bezier(0.4, 0, 0.2, 1),
-              opacity 300ms ease,
-              border-color 0s linear 350ms;
+  z-index: calc(var(--navbar-z) - 1);
+  will-change: height, opacity;
   opacity: 0;
+  transition:
+    height var(--menu-speed) var(--menu-ease),
+    height var(--menu-speed) var(--menu-bounce),
+    opacity 300ms ease,
+    border-color 0s linear var(--menu-speed);
 }
 
-.menu--open {
-  height: var(--menu-height, 20rem);
+.menu-open.active {
+  height: var(--menu-panel-max);
   opacity: 1;
-  border-bottom-color: var(--menu-border, #444c56);
-  transition: height 350ms cubic-bezier(0.4, 0, 0.2, 1),
-              opacity 300ms ease,
-              border-color 0s linear 0s;
+  border-bottom-color: var(--menu-panel-border);
+  transition:
+    height var(--menu-speed) var(--menu-ease),
+    height var(--menu-speed) var(--menu-bounce),
+    opacity 300ms ease,
+    border-color 0s linear 0s;
 }
 
-.menu__content {
-  padding: 1.5rem;
+/* Inner content wrapper */
+.menu-open-inner {
+  padding: 20px 24px;
   opacity: 0;
   transform: translateY(-12px);
-  transition: opacity 280ms ease 180ms,
-              transform 280ms cubic-bezier(0.16, 1, 0.3, 1) 180ms;
+  transition:
+    opacity 200ms ease,
+    transform 200ms var(--menu-ease);
 }
 
-.menu--open .menu__content {
+.menu-open.active .menu-open-inner {
   opacity: 1;
   transform: translateY(0);
+  transition:
+    opacity 280ms ease 180ms,
+    transform 280ms var(--menu-spring) 180ms;
 }
 
-/* Menu Sections */
-.menu__section {
-  margin-bottom: 1.5rem;
+/* Content swap animation */
+.menu-open.swapping .menu-open-inner {
+  opacity: 0;
+  transform: scale(0.98) translateY(-4px);
+  transition:
+    opacity 120ms ease,
+    transform 120ms ease;
 }
 
-.menu__section-title {
-  font-family: var(--font-head);
-  font-size: 0.6875rem;
+.menu-open.active.swap-in .menu-open-inner {
+  opacity: 1;
+  transform: scale(1) translateY(0);
+  transition:
+    opacity 180ms ease 60ms,
+    transform 180ms var(--menu-spring) 60ms;
+}
+
+/* -----------------------------------------------
+   TAB CONTENT — one visible at a time
+   ----------------------------------------------- */
+.menu-tab {
+  display: none;
+}
+
+.menu-tab.active {
+  display: block;
+}
+
+/* -----------------------------------------------
+   PANEL LAYOUTS — shared helpers
+   ----------------------------------------------- */
+.panel-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 12px;
+}
+
+.panel-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.panel-section-title {
+  font-family: var(--font-head, sans-serif);
+  font-size: 11px;
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.06em;
-  color: var(--menu-title-color, #636e7b);
-  margin-bottom: 0.625rem;
-  padding-bottom: 0.375rem;
-  border-bottom: 1px solid var(--menu-border, #444c56);
+  color: var(--color-text-muted, #636e7b);
+  margin-bottom: 10px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid var(--menu-panel-border);
 }
 
-/* Menu Grid & Cards */
-.menu__grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 0.75rem;
-}
-
-.menu__card {
+/* -----------------------------------------------
+   PANEL CARD
+   ----------------------------------------------- */
+.panel-card {
   display: flex;
   align-items: center;
-  gap: 0.75rem;
-  padding: 0.75rem;
+  gap: 12px;
+  padding: 12px 14px;
   background: rgba(255, 255, 255, 0.03);
   border: 1px solid transparent;
-  border-radius: 0.5rem;
+  border-radius: var(--radius-md, 0.5rem);
   cursor: pointer;
   transition: all 200ms ease;
   text-align: left;
   width: 100%;
-  color: var(--menu-text, #adbac7);
+  color: var(--color-text, #adbac7);
+  font-size: 13px;
 }
 
-.menu__card:hover {
+.panel-card:hover {
   background: rgba(83, 155, 245, 0.06);
-  border-color: var(--menu-border, #444c56);
+  border-color: var(--menu-panel-border);
   transform: translateX(2px);
 }
 
-.menu__card-icon {
+.panel-card:active {
+  transform: translateX(0);
+  background: rgba(83, 155, 245, 0.1);
+}
+
+.panel-card-icon {
   width: 36px;
   height: 36px;
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: 0.5rem;
+  border-radius: var(--radius-md, 0.5rem);
   flex-shrink: 0;
-  font-size: 1rem;
+  font-size: 16px;
 }
 
-.menu__card-icon--blue {
+.panel-card-icon.blue {
   background: rgba(83, 155, 245, 0.12);
-  color: #539bf5;
+  color: var(--color-primary, #539bf5);
 }
 
-.menu__card-body {
+.panel-card-icon.green {
+  background: rgba(87, 171, 90, 0.12);
+  color: var(--color-success, #57ab5a);
+}
+
+.panel-card-icon.orange {
+  background: rgba(198, 144, 38, 0.12);
+  color: var(--color-warning, #c69026);
+}
+
+.panel-card-icon.red {
+  background: rgba(229, 83, 75, 0.12);
+  color: var(--color-danger, #e5534b);
+}
+
+.panel-card-icon.purple {
+  background: rgba(130, 80, 223, 0.12);
+  color: #8250df;
+}
+
+.panel-card-body {
   flex: 1;
   min-width: 0;
 }
 
-.menu__card-title {
-  font-size: 0.8125rem;
+.panel-card-title {
+  font-size: 13px;
   font-weight: 600;
-  margin: 0 0 0.125rem 0;
+  color: var(--color-text, #adbac7);
+  margin: 0 0 2px 0;
+  line-height: 1.3;
 }
 
-.menu__card-description {
-  font-size: 0.6875rem;
-  color: var(--menu-text-muted, #636e7b);
+.panel-card-desc {
+  font-size: 11px;
+  color: var(--color-text-muted, #636e7b);
+  margin: 0;
+  line-height: 1.3;
+}
+
+.panel-card-chevron {
+  color: var(--color-text-muted, #636e7b);
+  font-size: 12px;
+  opacity: 0;
+  transition: opacity 200ms ease;
+}
+
+.panel-card:hover .panel-card-chevron {
+  opacity: 1;
+}
+
+/* -----------------------------------------------
+   STATS ROW
+   ----------------------------------------------- */
+.stats-row {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+}
+
+.stat-block {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.04);
+  border-radius: var(--radius-md, 0.5rem);
+  transition: background 200ms ease;
+}
+
+.stat-block:hover {
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.stat-block-icon {
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  font-size: 14px;
+  flex-shrink: 0;
+}
+
+.stat-block-value {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--color-text, #adbac7);
+  line-height: 1;
+  margin: 0 0 2px 0;
+  font-family: var(--font-head, sans-serif);
+}
+
+.stat-block-label {
+  font-size: 10px;
+  color: var(--color-text-muted, #636e7b);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
   margin: 0;
 }
 
-/* Search Styles */
-.search__input {
+/* -----------------------------------------------
+   TOOL LIST
+   ----------------------------------------------- */
+.tool-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 14px;
+  background: transparent;
+  border: none;
+  border-radius: var(--radius-md, 0.5rem);
+  cursor: pointer;
+  width: 100%;
+  text-align: left;
+  color: var(--color-text, #adbac7);
+  font-size: 13px;
+  transition: all 150ms ease;
+}
+
+.tool-row:hover {
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.tool-row-icon {
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 6px;
+  background: rgba(83, 155, 245, 0.08);
+  color: var(--color-primary, #539bf5);
+  font-size: 13px;
+  flex-shrink: 0;
+}
+
+.tool-row-text {
+  flex: 1;
+  font-weight: 500;
+}
+
+.tool-row-hint {
+  font-size: 11px;
+  color: var(--color-text-muted, #636e7b);
+  font-family: var(--font-mono, monospace);
+}
+
+.tool-row-chevron {
+  font-size: 11px;
+  color: var(--color-text-muted, #636e7b);
+  opacity: 0;
+  transition: opacity 150ms ease;
+}
+
+.tool-row:hover .tool-row-chevron {
+  opacity: 1;
+}
+
+/* -----------------------------------------------
+   PROFILE
+   ----------------------------------------------- */
+.profile-banner {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 16px;
+  background: linear-gradient(135deg, rgba(83, 155, 245, 0.08), rgba(83, 155, 245, 0.02));
+  border: 1px solid rgba(83, 155, 245, 0.15);
+  border-radius: var(--radius-lg, 0.75rem);
+}
+
+.profile-banner-avatar {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  border: 2px solid var(--color-primary, #539bf5);
+  flex-shrink: 0;
+  object-fit: cover;
+}
+
+.profile-banner-name {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--color-text, #adbac7);
+  margin: 0 0 2px 0;
+}
+
+.profile-banner-role {
+  font-size: 12px;
+  color: var(--color-text-secondary, #768390);
+  margin: 0;
+}
+
+/* -----------------------------------------------
+   SEARCH
+   ----------------------------------------------- */
+.menu-tab[data-tab="search"] .menu-open-inner-search {
+  max-width: 720px;
+  margin: 0 auto;
+}
+
+.search-container {
+  position: relative;
+}
+
+.search-input-wrapper {
+  position: relative;
+  margin-bottom: 24px;
+  opacity: 0;
+  transform: scale(0.94) translateY(-8px);
+  animation: searchReveal 400ms var(--menu-spring) 200ms forwards;
+}
+
+@keyframes searchReveal {
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+/* Re-trigger animation when tab becomes active */
+.menu-tab.active .search-input-wrapper {
+  animation: searchReveal 400ms var(--menu-spring) 200ms forwards;
+}
+
+.search-input {
   width: 100%;
   height: 56px;
-  padding: 0 1.5rem 0 3.75rem;
+  padding: 0 24px 0 60px;
   background: rgba(255, 255, 255, 0.05);
   border: 2px solid rgba(255, 255, 255, 0.08);
   border-radius: 28px;
-  font-size: 1.0625rem;
-  color: var(--menu-text, #adbac7);
-  transition: all 280ms cubic-bezier(0.4, 0, 0.2, 1);
+  font-size: 17px;
+  font-weight: 400;
+  color: var(--color-text, #adbac7);
+  font-family: var(--font-text);
+  transition: all 280ms var(--menu-ease);
+  outline: none;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
 }
 
-.search__input:focus {
+.search-input::placeholder {
+  color: var(--color-text-muted, #636e7b);
+  font-weight: 400;
+}
+
+.search-input:focus {
   background: rgba(255, 255, 255, 0.08);
-  border-color: #539bf5;
-  box-shadow: 0 0 0 4px rgba(83, 155, 245, 0.12),
-              0 8px 24px rgba(0, 0, 0, 0.12);
+  border-color: var(--color-primary, #539bf5);
+  box-shadow:
+    0 0 0 4px rgba(83, 155, 245, 0.12),
+    0 8px 24px rgba(0, 0, 0, 0.12);
   transform: translateY(-1px);
 }
 
-/* Responsive */
-@media (min-width: 768px) {
-  .menu__grid {
+.search-icon {
+  position: absolute;
+  left: 22px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--color-text-muted, #636e7b);
+  font-size: 20px;
+  pointer-events: none;
+  transition: color 200ms ease;
+}
+
+.search-input:focus ~ .search-icon {
+  color: var(--color-primary, #539bf5);
+}
+
+.search-clear {
+  position: absolute;
+  right: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.08);
+  border: none;
+  color: var(--color-text-muted);
+  cursor: pointer;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  transition: all 150ms ease;
+}
+
+.search-input:not(:placeholder-shown) ~ .search-clear {
+  display: flex;
+}
+
+.search-clear:hover {
+  background: rgba(255, 255, 255, 0.12);
+  color: var(--color-text);
+}
+
+.search-results {
+  max-height: 280px;
+  overflow-y: auto;
+  padding-right: 4px;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.1) transparent;
+}
+
+.search-results::-webkit-scrollbar {
+  width: 6px;
+}
+
+.search-results::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.search-results::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 3px;
+}
+
+.search-results::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.15);
+}
+
+.search-result-item {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 12px 16px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 12px;
+  margin-bottom: 8px;
+  cursor: pointer;
+  transition: all 220ms var(--menu-ease);
+  opacity: 0;
+  transform: translateX(-12px);
+  animation: resultSlide 300ms var(--menu-spring) forwards;
+}
+
+.search-result-item:nth-child(1) { animation-delay: 80ms; }
+.search-result-item:nth-child(2) { animation-delay: 130ms; }
+.search-result-item:nth-child(3) { animation-delay: 180ms; }
+.search-result-item:nth-child(4) { animation-delay: 230ms; }
+.search-result-item:nth-child(5) { animation-delay: 280ms; }
+.search-result-item:nth-child(6) { animation-delay: 330ms; }
+.search-result-item:nth-child(7) { animation-delay: 380ms; }
+.search-result-item:nth-child(8) { animation-delay: 430ms; }
+
+@keyframes resultSlide {
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.search-result-item:hover {
+  background: rgba(83, 155, 245, 0.1);
+  border-color: rgba(83, 155, 245, 0.3);
+  transform: translateX(4px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.search-result-item:active {
+  transform: translateX(2px) scale(0.99);
+}
+
+.search-result-icon {
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(83, 155, 245, 0.12);
+  border-radius: 10px;
+  font-size: 18px;
+  flex-shrink: 0;
+  color: var(--color-primary, #539bf5);
+}
+
+.search-result-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.search-result-name {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--color-text, #adbac7);
+  margin-bottom: 2px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.search-result-name mark {
+  background: rgba(83, 155, 245, 0.25);
+  color: var(--color-primary, #539bf5);
+  padding: 1px 4px;
+  border-radius: 3px;
+  font-weight: 700;
+}
+
+.search-result-path {
+  font-size: 12px;
+  color: var(--color-text-muted, #636e7b);
+  font-family: var(--font-mono, monospace);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.search-result-type {
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--color-text-muted, #636e7b);
+  padding: 4px 8px;
+  background: rgba(255, 255, 255, 0.04);
+  border-radius: 6px;
+  flex-shrink: 0;
+}
+
+.search-empty {
+  text-align: center;
+  padding: 48px 24px;
+  color: var(--color-text-muted, #636e7b);
+  font-size: 14px;
+}
+
+.search-empty-icon {
+  font-size: 48px;
+  opacity: 0.3;
+  margin-bottom: 16px;
+}
+
+.search-loading-spinner {
+  width: 32px;
+  height: 32px;
+  border: 3px solid rgba(83, 155, 245, 0.2);
+  border-top-color: var(--color-primary);
+  border-radius: 50%;
+  animation: searchSpin 800ms linear infinite;
+  margin: 0 auto 12px;
+}
+
+@keyframes searchSpin {
+  to { transform: rotate(360deg); }
+}
+
+/* -----------------------------------------------
+   BODY OFFSET
+   ----------------------------------------------- */
+body {
+  padding-top: var(--navbar-height);
+}
+
+/* Hide legacy nav/sidebar stuff */
+#leftSidebar,
+#rightSidebar,
+#overlay {
+  display: none !important;
+}
+
+#mainArea {
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+}
+
+/* -----------------------------------------------
+   RESPONSIVE
+   ----------------------------------------------- */
+@media (min-width: 480px) {
+  .menu-item {
+    padding: 0 24px;
+    font-size: 14px;
+  }
+
+  .stats-row {
+    grid-template-columns: repeat(4, 1fr);
+  }
+
+  .panel-grid {
     grid-template-columns: repeat(2, 1fr);
   }
 }
 
-@media (min-width: 1024px) {
-  .menu__grid {
-    grid-template-columns: repeat(4, 1fr);
+@media (min-width: 768px) {
+  .menu-item {
+    padding: 0 28px;
+    font-size: 15px;
+  }
+
+  .panel-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .menu-open-inner {
+    padding: 24px 32px;
   }
 }
 
-/* Body states */
-body.menu-open {
-  padding-top: 45px;
+@media (min-width: 1024px) {
+  .menu-item {
+    padding: 0 32px;
+  }
+
+  .panel-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+
+  .menu-open-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 28px 40px;
+  }
 }
 
-body.menu-open .navbar {
-  height: 45px;
-  transition: height 350ms cubic-bezier(0.4, 0, 0.2, 1);
+/* -----------------------------------------------
+   ACCESSIBILITY
+   ----------------------------------------------- */
+.menu-item:focus-visible,
+.panel-card:focus-visible,
+.tool-row:focus-visible,
+.navbar-arrow:focus-visible {
+  outline: 2px solid var(--color-primary, #539bf5);
+  outline-offset: -2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .menu-open,
+  .menu-open-inner,
+  .menu-overlay,
+  .menu-item::after,
+  .search-input-wrapper,
+  .search-result-item {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+  }
+}
+
+/* -----------------------------------------------
+   LIGHT THEME
+   ----------------------------------------------- */
+[data-theme="light"] {
+  --navbar-bg: #ffffff;
+  --navbar-border: #d0d7de;
+  --menu-item-color: #656d76;
+  --menu-item-hover: #0969da;
+  --menu-item-active: #1f2328;
+  --menu-panel-bg: #ffffff;
+  --menu-panel-border: #d0d7de;
+}
+
+[data-theme="light"] .menu-overlay {
+  background: rgba(0, 0, 0, 0.12);
+}
+
+[data-theme="light"] .navbar-arrow[data-dir="left"] {
+  background: linear-gradient(to right, #ffffff 60%, transparent);
+}
+
+[data-theme="light"] .navbar-arrow[data-dir="right"] {
+  background: linear-gradient(to left, #ffffff 60%, transparent);
+}
+
+[data-theme="light"] .panel-card:hover {
+  background: rgba(9, 105, 218, 0.04);
+}
+
+[data-theme="light"] .stat-block {
+  background: rgba(0, 0, 0, 0.02);
+  border-color: rgba(0, 0, 0, 0.06);
+}
+
+[data-theme="light"] .tool-row:hover {
+  background: rgba(0, 0, 0, 0.04);
+}
+
+[data-theme="light"] .profile-banner {
+  background: linear-gradient(135deg, rgba(9, 105, 218, 0.06), rgba(9, 105, 218, 0.02));
+  border-color: rgba(9, 105, 218, 0.15);
+}
+
+[data-theme="light"] .search-input {
+  background: rgba(0, 0, 0, 0.04);
+  border-color: rgba(0, 0, 0, 0.1);
+}
+
+[data-theme="light"] .search-input:focus {
+  background: rgba(0, 0, 0, 0.06);
+  box-shadow:
+    0 0 0 4px rgba(9, 105, 218, 0.12),
+    0 8px 24px rgba(0, 0, 0, 0.08);
+}
+
+[data-theme="light"] .search-result-item {
+  background: rgba(0, 0, 0, 0.02);
+  border-color: rgba(0, 0, 0, 0.08);
+}
+
+[data-theme="light"] .search-result-item:hover {
+  background: rgba(9, 105, 218, 0.06);
+  border-color: rgba(9, 105, 218, 0.2);
+}
+
+/* -----------------------------------------------
+   PRINT
+   ----------------------------------------------- */
+@media print {
+  .navbar,
+  .menu-overlay,
+  .menu-open {
+    display: none !important;
+  }
+
+  body {
+    padding-top: 0;
+  }
 }
 </style>
+
+
+<!-- Progress Loading Bar -->
+<div id="pageProgress" class="ph-progress page-progress">
+  <div class="progress-bar">
+    <div class="ph-fill progress-fill"></div>
+  </div>
+</div>
+
+
+<!-- Overlay -->
+<div class="menu-overlay" aria-hidden="true"></div>
+
+
+<!-- ====== NAVBAR ====== -->
+<nav class="navbar" role="navigation" aria-label="Main navigation">
+
+  <!-- Left scroll arrow -->
+  <button class="navbar-arrow disabled" data-dir="left" aria-label="Scroll menu left" aria-disabled="true">
+    <svg viewBox="0 0 16 16"><path d="M9.78 12.78a.75.75 0 0 1-1.06 0L4.47 8.53a.75.75 0 0 1 0-1.06l4.25-4.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042L6.06 8l3.72 3.72a.75.75 0 0 1 0 1.06Z"/></svg>
+  </button>
+
+  <!-- Scrollable track -->
+  <div class="navbar-track" role="menubar">
+    <div class="navbar-items">
+      <button class="menu-item" data-tab="navigate" role="menuitem" aria-haspopup="true" aria-expanded="false">Navigate</button>
+      <button class="menu-item" data-tab="files" role="menuitem" aria-haspopup="true" aria-expanded="false">Files</button>
+      <button class="menu-item" data-tab="search" role="menuitem" aria-haspopup="true" aria-expanded="false">Search</button>
+      <button class="menu-item" data-tab="stats" role="menuitem" aria-haspopup="true" aria-expanded="false">Stats</button>
+      <button class="menu-item" data-tab="tools" role="menuitem" aria-haspopup="true" aria-expanded="false">Tools</button>
+      <button class="menu-item" data-tab="profile" role="menuitem" aria-haspopup="true" aria-expanded="false">Profile</button>
+    </div>
+  </div>
+
+  <!-- Right scroll arrow -->
+  <button class="navbar-arrow" data-dir="right" aria-label="Scroll menu right" aria-disabled="false">
+    <svg viewBox="0 0 16 16"><path d="M6.22 3.22a.75.75 0 0 1 1.06 0l4.25 4.25a.75.75 0 0 1 0 1.06l-4.25 4.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042L9.94 8 6.22 4.28a.75.75 0 0 1 0-1.06Z"/></svg>
+  </button>
+
+</nav>
+
+
+<!-- ====== SINGLE PANEL CONTAINER ====== -->
+<div class="menu-open" role="region" aria-label="Menu panel">
+  <div class="menu-open-inner">
+
+    <!-- TAB: Navigate -->
+    <div class="menu-tab" data-tab="navigate">
+      <div class="panel-section-title">Go To</div>
+      <div class="panel-grid">
+        <button class="panel-card" data-action="go-repos">
+          <div class="panel-card-icon blue"><i class="fas fa-layer-group"></i></div>
+          <div class="panel-card-body">
+            <div class="panel-card-title">Repositories</div>
+            <div class="panel-card-desc">Browse your repos</div>
+          </div>
+          <span class="panel-card-chevron"><i class="fas fa-chevron-right"></i></span>
+        </button>
+        <button class="panel-card" data-action="go-root">
+          <div class="panel-card-icon green"><i class="fas fa-home"></i></div>
+          <div class="panel-card-body">
+            <div class="panel-card-title">Root</div>
+            <div class="panel-card-desc">Go to root directory</div>
+          </div>
+          <span class="panel-card-chevron"><i class="fas fa-chevron-right"></i></span>
+        </button>
+        <button class="panel-card" data-action="go-code">
+          <div class="panel-card-icon purple"><i class="fas fa-code"></i></div>
+          <div class="panel-card-body">
+            <div class="panel-card-title">Code</div>
+            <div class="panel-card-desc">File explorer view</div>
+          </div>
+          <span class="panel-card-chevron"><i class="fas fa-chevron-right"></i></span>
+        </button>
+        <button class="panel-card" data-action="go-branches">
+          <div class="panel-card-icon orange"><i class="fas fa-code-branch"></i></div>
+          <div class="panel-card-body">
+            <div class="panel-card-title">Branches</div>
+            <div class="panel-card-desc">Manage branches</div>
+          </div>
+          <span class="panel-card-chevron"><i class="fas fa-chevron-right"></i></span>
+        </button>
+      </div>
+    </div>
+
+    <!-- TAB: Files -->
+    <div class="menu-tab" data-tab="files">
+      <div class="panel-section-title">Quick Actions</div>
+      <div class="panel-grid">
+        <button class="panel-card" data-action="new-file">
+          <div class="panel-card-icon green"><i class="fas fa-file-circle-plus"></i></div>
+          <div class="panel-card-body">
+            <div class="panel-card-title">New File</div>
+            <div class="panel-card-desc">Create a new file</div>
+          </div>
+          <span class="panel-card-chevron"><i class="fas fa-chevron-right"></i></span>
+        </button>
+        <button class="panel-card" data-action="upload">
+          <div class="panel-card-icon blue"><i class="fas fa-upload"></i></div>
+          <div class="panel-card-body">
+            <div class="panel-card-title">Upload</div>
+            <div class="panel-card-desc">Upload files</div>
+          </div>
+          <span class="panel-card-chevron"><i class="fas fa-chevron-right"></i></span>
+        </button>
+        <button class="panel-card" data-action="import">
+          <div class="panel-card-icon purple"><i class="fas fa-download"></i></div>
+          <div class="panel-card-body">
+            <div class="panel-card-title">Import</div>
+            <div class="panel-card-desc">Import from URL</div>
+          </div>
+          <span class="panel-card-chevron"><i class="fas fa-chevron-right"></i></span>
+        </button>
+        <button class="panel-card" data-action="new-folder">
+          <div class="panel-card-icon orange"><i class="fas fa-folder-plus"></i></div>
+          <div class="panel-card-body">
+            <div class="panel-card-title">New Folder</div>
+            <div class="panel-card-desc">Create a folder</div>
+          </div>
+          <span class="panel-card-chevron"><i class="fas fa-chevron-right"></i></span>
+        </button>
+      </div>
+    </div>
+
+    <!-- TAB: Search -->
+    <div class="menu-tab" data-tab="search">
+      <div class="menu-open-inner-search">
+        <div class="search-container">
+          <div class="search-input-wrapper">
+            <input
+              type="text"
+              id="menuSearchInput"
+              class="search-input"
+              placeholder="Search files and content..."
+              autocomplete="off"
+              spellcheck="false"
+            />
+            <i class="fas fa-search search-icon"></i>
+            <button id="menuSearchClear" class="search-clear" aria-label="Clear search">
+              <i class="fas fa-times"></i>
+            </button>
+          </div>
+          <div id="menuSearchResults" class="search-results">
+            <div class="search-empty">
+              <div class="search-empty-icon">🔍</div>
+              Start typing to search files...
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB: Stats -->
+    <div class="menu-tab" data-tab="stats">
+      <div class="panel-section-title">Overview</div>
+      <div class="stats-row">
+        <div class="stat-block">
+          <div class="stat-block-icon panel-card-icon blue"><i class="fas fa-file"></i></div>
+          <div>
+            <div class="stat-block-value" id="menuStatFiles">0</div>
+            <div class="stat-block-label">Files</div>
+          </div>
+        </div>
+        <div class="stat-block">
+          <div class="stat-block-icon panel-card-icon green"><i class="fas fa-code-commit"></i></div>
+          <div>
+            <div class="stat-block-value" id="menuStatCommits">0</div>
+            <div class="stat-block-label">Commits</div>
+          </div>
+        </div>
+        <div class="stat-block">
+          <div class="stat-block-icon panel-card-icon orange"><i class="fas fa-database"></i></div>
+          <div>
+            <div class="stat-block-value" id="menuStatStorage">0 KB</div>
+            <div class="stat-block-label">Storage</div>
+          </div>
+        </div>
+        <div class="stat-block">
+          <div class="stat-block-icon panel-card-icon red"><i class="fas fa-code-branch"></i></div>
+          <div>
+            <div class="stat-block-value" id="menuStatBranches">1</div>
+            <div class="stat-block-label">Branches</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB: Tools -->
+    <div class="menu-tab" data-tab="tools">
+      <div class="panel-section-title">Settings & Tools</div>
+      <button class="tool-row" data-action="toggle-theme">
+        <div class="tool-row-icon"><i class="fas fa-moon menu-theme-icon"></i></div>
+        <span class="tool-row-text menu-theme-label">Dark Mode</span>
+        <span class="tool-row-hint"></span>
+        <span class="tool-row-chevron"><i class="fas fa-chevron-right"></i></span>
+      </button>
+      <button class="tool-row" data-action="help">
+        <div class="tool-row-icon"><i class="fas fa-question-circle"></i></div>
+        <span class="tool-row-text">Help & Docs</span>
+        <span class="tool-row-hint"></span>
+        <span class="tool-row-chevron"><i class="fas fa-chevron-right"></i></span>
+      </button>
+      <button class="tool-row" data-action="settings">
+        <div class="tool-row-icon"><i class="fas fa-cog"></i></div>
+        <span class="tool-row-text">Preferences</span>
+        <span class="tool-row-hint"></span>
+        <span class="tool-row-chevron"><i class="fas fa-chevron-right"></i></span>
+      </button>
+    </div>
+
+    <!-- TAB: Profile -->
+    <div class="menu-tab" data-tab="profile">
+      <div class="profile-banner">
+        <img src="https://dev.wuaze.com/banner.png" alt="Profile" class="profile-banner-avatar" />
+        <div>
+          <div class="profile-banner-name">GitDev</div>
+          <div class="profile-banner-role">GitHub File Manager</div>
+        </div>
+      </div>
+      <div style="margin-top: 16px;">
+        <div class="panel-section-title">Repository</div>
+        <div class="stats-row">
+          <div class="stat-block">
+            <div class="stat-block-icon panel-card-icon blue"><i class="fas fa-layer-group"></i></div>
+            <div>
+              <div class="stat-block-value" id="menuRepoCount">0</div>
+              <div class="stat-block-label">Repos</div>
+            </div>
+          </div>
+          <div class="stat-block">
+            <div class="stat-block-icon panel-card-icon green"><i class="fas fa-file"></i></div>
+            <div>
+              <div class="stat-block-value" id="menuProfileFiles">0</div>
+              <div class="stat-block-label">Files</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+
+<script>
+/* ================================================
+   MENU CONTROLLER
+   Single container, data-tab content switching
+   ================================================ */
+(function () {
+  "use strict";
+
+  /* ---- STATE ---- */
+  let activeTab = null;
+  let isOpen = false;
+  let isAnimating = false;
+  let searchTimeout = null;
+
+  /* ---- CONFIG ---- */
+  const SCROLL_STEP = 180;
+  const SCROLL_DEBOUNCE = 50;
+  const SEARCH_DELAY = 300;
+  const OPEN_DURATION = 450;
+  const SWAP_OUT_DURATION = 120;
+  const SWAP_IN_DURATION = 200;
+  const CLOSE_DURATION = 400;
+
+  /* ---- DOM CACHE ---- */
+  const $ = (sel, ctx) => (ctx || document).querySelector(sel);
+  const $$ = (sel, ctx) => Array.from((ctx || document).querySelectorAll(sel));
+
+  let track, arrowLeft, arrowRight, overlay, panel;
+  let menuItems = [];
+  let menuTabs = [];
+
+  /* ============================================
+     INIT
+     ============================================ */
+  function init() {
+    track     = $(".navbar-track");
+    arrowLeft = $(".navbar-arrow[data-dir='left']");
+    arrowRight= $(".navbar-arrow[data-dir='right']");
+    overlay   = $(".menu-overlay");
+    panel     = $(".menu-open");
+    menuItems = $$(".menu-item");
+    menuTabs  = $$(".menu-tab");
+
+    if (!track || !panel) {
+      console.warn("Menu: missing DOM elements");
+      return;
+    }
+
+    bindArrows();
+    bindMenuItems();
+    bindOverlay();
+    bindKeyboard();
+    bindActions();
+    bindSearch();
+    bindTouch();
+    syncStats();
+
+    console.log("✅ Menu initialized (single-container mode)");
+  }
+
+  /* ============================================
+     ARROWS
+     ============================================ */
+  function bindArrows() {
+    if (arrowLeft)  arrowLeft.addEventListener("click", () => scrollTrack(-SCROLL_STEP));
+    if (arrowRight) arrowRight.addEventListener("click", () => scrollTrack(SCROLL_STEP));
+
+    let timer;
+    track.addEventListener("scroll", () => {
+      clearTimeout(timer);
+      timer = setTimeout(refreshArrows, SCROLL_DEBOUNCE);
+    });
+
+    refreshArrows();
+    window.addEventListener("resize", refreshArrows);
+  }
+
+  function scrollTrack(delta) {
+    track.scrollBy({ left: delta, behavior: "smooth" });
+  }
+
+  function refreshArrows() {
+    if (!arrowLeft || !arrowRight) return;
+    const sl = Math.round(track.scrollLeft);
+    const max = track.scrollWidth - track.clientWidth;
+
+    arrowLeft.classList.toggle("disabled", sl <= 1);
+    arrowLeft.setAttribute("aria-disabled", sl <= 1);
+
+    arrowRight.classList.toggle("disabled", sl >= max - 1);
+    arrowRight.setAttribute("aria-disabled", sl >= max - 1);
+  }
+
+  /* ============================================
+     MENU ITEMS → SINGLE PANEL, SWAP TABS
+     ============================================ */
+  function bindMenuItems() {
+    menuItems.forEach(item => {
+      item.addEventListener("click", () => {
+        const tab = item.dataset.tab;
+        if (!tab) return;
+
+        if (activeTab === tab && isOpen) {
+          closeMenu();
+        } else if (isOpen && activeTab !== tab) {
+          swapTab(tab);
+        } else {
+          openMenu(tab);
+        }
+      });
+    });
+  }
+
+  /* ---- OPEN ---- */
+  function openMenu(tab) {
+    if (isAnimating) return;
+    isAnimating = true;
+
+    setActiveItem(tab);
+    setActiveTab(tab);
+
+    panel.classList.add("active");
+    overlay.classList.add("active");
+    document.body.classList.add("menu-active");
+    blurMain(true);
+
+    activeTab = tab;
+    isOpen = true;
+
+    if (tab === "search") focusSearch();
+
+    setTimeout(() => { isAnimating = false; }, OPEN_DURATION);
+  }
+
+  /* ---- SWAP (panel stays open, content swaps) ---- */
+  function swapTab(newTab) {
+    if (isAnimating) return;
+    isAnimating = true;
+
+    /* Phase 1: fade out current content */
+    panel.classList.add("swapping");
+    panel.classList.remove("swap-in");
+
+    setTimeout(() => {
+      /* Phase 2: switch tab, fade in new content */
+      setActiveItem(newTab);
+      setActiveTab(newTab);
+
+      panel.classList.remove("swapping");
+      panel.classList.add("swap-in");
+
+      activeTab = newTab;
+
+      if (newTab === "search") focusSearch();
+
+      /* Phase 3: clean up swap-in class */
+      setTimeout(() => {
+        panel.classList.remove("swap-in");
+        isAnimating = false;
+      }, SWAP_IN_DURATION);
+    }, SWAP_OUT_DURATION);
+  }
+
+  /* ---- CLOSE ---- */
+  function closeMenu() {
+    if (isAnimating) return;
+    isAnimating = true;
+
+    panel.classList.remove("active", "swapping", "swap-in");
+    overlay.classList.remove("active");
+    document.body.classList.remove("menu-active");
+    blurMain(false);
+
+    clearActiveItems();
+    activeTab = null;
+    isOpen = false;
+
+    setTimeout(() => { isAnimating = false; }, CLOSE_DURATION);
+  }
+
+  /* ---- HELPERS ---- */
+  function setActiveItem(tab) {
+    menuItems.forEach(item => {
+      const match = item.dataset.tab === tab;
+      item.classList.toggle("active", match);
+      item.setAttribute("aria-expanded", match ? "true" : "false");
+    });
+  }
+
+  function clearActiveItems() {
+    menuItems.forEach(item => {
+      item.classList.remove("active");
+      item.setAttribute("aria-expanded", "false");
+    });
+  }
+
+  function setActiveTab(tab) {
+    menuTabs.forEach(t => {
+      t.classList.toggle("active", t.dataset.tab === tab);
+    });
+  }
+
+  function blurMain(on) {
+    const main = document.getElementById("mainArea");
+    if (!main) return;
+    if (on) {
+      main.style.filter = "blur(4px) brightness(0.85)";
+      main.style.transition = "filter 350ms cubic-bezier(0.4, 0, 0.2, 1)";
+      main.style.pointerEvents = "none";
+    } else {
+      main.style.filter = "";
+      main.style.pointerEvents = "";
+    }
+  }
+
+  function focusSearch() {
+    setTimeout(() => {
+      const input = document.getElementById("menuSearchInput");
+      if (input) input.focus();
+    }, 400);
+  }
+
+  /* ============================================
+     OVERLAY + KEYBOARD
+     ============================================ */
+  function bindOverlay() {
+    if (overlay) overlay.addEventListener("click", closeMenu);
+  }
+
+  function bindKeyboard() {
+    document.addEventListener("keydown", e => {
+      if (e.key === "Escape" && isOpen) closeMenu();
+    });
+  }
+
+  /* ============================================
+     PANEL ACTIONS (delegated)
+     ============================================ */
+  function bindActions() {
+    document.addEventListener("click", e => {
+      const btn = e.target.closest("[data-action]");
+      if (!btn) return;
+
+      const action = btn.dataset.action;
+      handleAction(action);
+      closeMenu();
+    });
+  }
+
+  function handleAction(action) {
+    switch (action) {
+      case "go-repos":
+        navigatePage("repo");
+        break;
+      case "go-root":
+        navigatePage("explorer");
+        if (typeof navigateToRoot === "function") navigateToRoot();
+        break;
+      case "go-code":
+        navigatePage("explorer");
+        break;
+      case "go-branches":
+        navigatePage("repo");
+        break;
+      case "new-file":
+        showModal("createFileModal");
+        break;
+      case "upload":
+        if (typeof showUploadModal === "function") showUploadModal();
+        break;
+      case "import":
+        if (typeof showImportModal === "function") showImportModal();
+        break;
+      case "new-folder":
+        if (typeof showCreateFolderModal === "function") showCreateFolderModal();
+        break;
+      case "toggle-theme":
+        toggleTheme();
+        break;
+      case "help":
+        if (typeof showHelp === "function") showHelp();
+        break;
+      case "settings":
+        console.log("Open settings");
+        break;
+      default:
+        console.log("Action:", action);
+    }
+  }
+
+  function navigatePage(pageName) {
+    document.querySelectorAll(".pages").forEach(p => {
+      p.classList.remove("show");
+      p.classList.add("hide");
+    });
+    const target = document.querySelector(`[data-page="${pageName}"]`);
+    if (target) {
+      target.classList.remove("hide");
+      target.classList.add("show");
+    }
+  }
+
+  function showModal(id) {
+    const modal = document.getElementById(id);
+    if (!modal) return;
+    modal.classList.remove("hidden");
+    modal.style.display = "flex";
+  }
+
+  /* ============================================
+     SEARCH
+     ============================================ */
+  function bindSearch() {
+    const input = document.getElementById("menuSearchInput");
+    const clearBtn = document.getElementById("menuSearchClear");
+    if (!input) return;
+
+    input.addEventListener("input", e => {
+      clearTimeout(searchTimeout);
+      searchTimeout = setTimeout(() => runSearch(e.target.value), SEARCH_DELAY);
+    });
+
+    input.addEventListener("keydown", e => {
+      if (e.key === "Enter") {
+        e.preventDefault();
+        clearTimeout(searchTimeout);
+        runSearch(e.target.value);
+      }
+    });
+
+    if (clearBtn) {
+      clearBtn.addEventListener("click", () => {
+        input.value = "";
+        input.focus();
+        runSearch("");
+      });
+    }
+  }
+
+  function runSearch(query) {
+    const container = document.getElementById("menuSearchResults");
+    if (!container) return;
+
+    if (!query.trim()) {
+      container.innerHTML = `
+        <div class="search-empty">
+          <div class="search-empty-icon">🔍</div>
+          Start typing to search files...
+        </div>`;
+      return;
+    }
+
+    try {
+      const currentRepo = localStorage.getItem("currentRepository");
+      if (!currentRepo) {
+        container.innerHTML = `
+          <div class="search-empty">
+            <div class="search-empty-icon">📁</div>
+            No repository selected
+          </div>`;
+        return;
+      }
+
+      const repoData = JSON.parse(localStorage.getItem(`repo_${currentRepo}`) || "{}");
+      const files = repoData.files || {};
+      const results = [];
+      const lq = query.toLowerCase();
+
+      Object.keys(files).forEach(path => {
+        const file = files[path];
+        const lp = path.toLowerCase();
+        const pathMatch = lp.includes(lq);
+        const contentMatch = file.content && file.content.toLowerCase().includes(lq);
+
+        if (pathMatch || contentMatch) {
+          results.push({
+            path,
+            name: path.split("/").pop(),
+            type: pathMatch ? "path" : "content",
+            file,
+          });
+        }
+      });
+
+      renderResults(results, query);
+    } catch (e) {
+      console.error("Search error:", e);
+      container.innerHTML = `
+        <div class="search-empty">
+          <div class="search-empty-icon">⚠️</div>
+          Search error occurred
+        </div>`;
+    }
+  }
+
+  function renderResults(results, query) {
+    const container = document.getElementById("menuSearchResults");
+
+    if (results.length === 0) {
+      container.innerHTML = `
+        <div class="search-empty">
+          <div class="search-empty-icon">🤷</div>
+          No results found for "<strong>${esc(query)}</strong>"
+        </div>`;
+      return;
+    }
+
+    container.innerHTML = results.map(r => `
+      <div class="search-result-item" data-file-path="${esc(r.path)}">
+        <div class="search-result-icon">${fileIcon(r.name)}</div>
+        <div class="search-result-content">
+          <div class="search-result-name">${highlight(esc(r.name), query)}</div>
+          <div class="search-result-path">${esc(r.path)}</div>
+        </div>
+        <span class="search-result-type">${r.type}</span>
+      </div>
+    `).join("");
+
+    container.querySelectorAll(".search-result-item").forEach(item => {
+      item.addEventListener("click", function () {
+        const filePath = this.dataset.filePath;
+        openFile(filePath);
+        closeMenu();
+      });
+    });
+  }
+
+  function openFile(filePath) {
+    navigatePage("file");
+    if (typeof loadFileEditor === "function") loadFileEditor(filePath);
+    console.log("Opening file:", filePath);
+  }
+
+  function highlight(text, query) {
+    const re = new RegExp(`(${escRe(query)})`, "gi");
+    return text.replace(re, "<mark>$1</mark>");
+  }
+
+  function fileIcon(name) {
+    const ext = name.split(".").pop().toLowerCase();
+    const map = {
+      js:"📜", jsx:"⚛️", ts:"📘", tsx:"⚛️", html:"🌐", css:"🎨",
+      scss:"🎨", json:"📋", md:"📝", txt:"📄", py:"🐍", java:"☕",
+      php:"🐘", rb:"💎", go:"🐹", rs:"🦀", c:"🔧", cpp:"🔧",
+      svg:"🎨", png:"🖼️", jpg:"🖼️", gif:"🖼️"
+    };
+    return map[ext] || "📄";
+  }
+
+  function esc(text) {
+    const d = document.createElement("div");
+    d.textContent = text;
+    return d.innerHTML;
+  }
+
+  function escRe(text) {
+    return text.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  }
+
+  /* ============================================
+     THEME TOGGLE
+     ============================================ */
+  function toggleTheme() {
+    const html = document.documentElement;
+    const next = html.getAttribute("data-theme") === "dark" ? "light" : "dark";
+    html.setAttribute("data-theme", next);
+    try { localStorage.setItem("theme", next); } catch (e) {}
+
+    $$(".menu-theme-icon, #themeIcon, #sidebarThemeIcon").forEach(icon => {
+      icon.className = next === "dark" ? "fas fa-moon" : "fas fa-sun";
+    });
+
+    $$(".menu-theme-label").forEach(lbl => {
+      lbl.textContent = next === "dark" ? "Dark Mode" : "Light Mode";
+    });
+  }
+
+  /* ============================================
+     STATS SYNC
+     ============================================ */
+  function syncStats() {
+    try {
+      const repos = JSON.parse(localStorage.getItem("repositories") || "[]");
+      const currentRepo = localStorage.getItem("currentRepository");
+      const repoData = currentRepo
+        ? JSON.parse(localStorage.getItem(`repo_${currentRepo}`) || "{}")
+        : {};
+      const files = repoData.files || {};
+      const fileCount = Object.keys(files).length;
+
+      let commitCount = 0;
+      Object.values(files).forEach(f => {
+        commitCount += f.commits ? f.commits.length : 0;
+      });
+
+      const storageBytes = new Blob([JSON.stringify(files)]).size;
+      const storageKB = Math.round(storageBytes / 1024);
+
+      setText("menuStatFiles", fileCount);
+      setText("menuStatCommits", commitCount);
+      setText("menuStatStorage", `${storageKB} KB`);
+      setText("menuStatBranches", "1");
+      setText("menuRepoCount", repos.length);
+      setText("menuProfileFiles", fileCount);
+    } catch (e) {
+      console.warn("Stats sync error:", e);
+    }
+  }
+
+  function setText(id, val) {
+    const el = document.getElementById(id);
+    if (el) el.textContent = val;
+  }
+
+  /* ============================================
+     TOUCH SCROLL
+     ============================================ */
+  function bindTouch() {
+    let startX = 0;
+    let scrollStart = 0;
+
+    track.addEventListener("touchstart", e => {
+      startX = e.touches[0].clientX;
+      scrollStart = track.scrollLeft;
+    }, { passive: true });
+
+    track.addEventListener("touchmove", e => {
+      const dx = startX - e.touches[0].clientX;
+      track.scrollLeft = scrollStart + dx;
+    }, { passive: true });
+
+    track.addEventListener("touchend", refreshArrows, { passive: true });
+  }
+
+  /* ============================================
+     BOOT
+     ============================================ */
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", init);
+  } else {
+    init();
+  }
+
+  /* ---- PUBLIC API ---- */
+  window.menu = {
+    close: closeMenu,
+    open: openMenu,
+    swap: swapTab,
+    syncStats,
+    toggleTheme,
+  };
+})();
+</script>
+
+
+
 
 <!-------
      Progress Loading Bar
@@ -563,52 +2096,6 @@ body.menu-open .navbar {
       <div class="ph-fill progress-fill"></div>
     </div>
   </div>
-
-
-<!-- Keep your existing navbar structure but remove all panels -->
-<div id="megaOverlay" class="mega-overlay" aria-hidden="true"></div>
-<nav class="navbar" role="navigation" aria-label="Main navigation">
-  <div class="navbar__container">
-    <button class="navbar__arrow navbar__arrow--left" disabled>
-      <svg viewBox="0 0 16 16"><path d="M9.78 12.78a.75.75 0 0 1-1.06 0L4.47 8.53a.75.75 0 0 1 0-1.06l4.25-4.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042L6.06 8l3.72 3.72a.75.75 0 0 1 0 1.06Z"/></svg>
-    </button>
-    
-    <div class="navbar__track">
-      <div class="navbar__items">
-        <button class="navbar__item" data-tab="navigate">
-          <span class="navbar__item-label">Navigate</span>
-        </button>
-        <button class="navbar__item" data-tab="files">
-          <span class="navbar__item-label">Files</span>
-        </button>
-        <button class="navbar__item" data-tab="search">
-          <span class="navbar__item-label">Search</span>
-        </button>
-        <button class="navbar__item" data-tab="stats">
-          <span class="navbar__item-label">Stats</span>
-        </button>
-        <button class="navbar__item" data-tab="tools">
-          <span class="navbar__item-label">Tools</span>
-        </button>
-        <button class="navbar__item" data-tab="profile">
-          <span class="navbar__item-label">Profile</span>
-        </button>
-      </div>
-    </div>
-    
-    <button class="navbar__arrow navbar__arrow--right">
-      <svg viewBox="0 0 16 16"><path d="M6.22 3.22a.75.75 0 0 1 1.06 0l4.25 4.25a.75.75 0 0 1 0 1.06l-4.25 4.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042L9.94 8 6.22 4.28a.75.75 0 0 1 0-1.06Z"/></svg>
-    </button>
-  </div>
-</nav>
-
-<!-- SINGLE DYNAMIC PANEL CONTAINER -->
-<div id="menuPanel" class="menu" role="region" aria-label="Menu panel">
-  <div class="menu__content" data-tab-content>
-    <!-- Content will be injected here dynamically -->
-  </div>
-</div>
-
 
 
 
@@ -853,934 +2340,6 @@ body.menu-open .navbar {
 ===================================================-->
 
 
-
-<script>
-/* ================================================
-   MEGA MENU CONTROLLER — Enhanced Single Container Edition
-   ================================================ */
-
-(function () {
-  "use strict";
-
-  /* STATE */
-  let activePanel = null;
-  let isPanelOpen = false;
-  let isAnimating = false;
-  let searchTimeout = null;
-  
-  /* SINGLE CONTAINER REFERENCE */
-  let singlePanelContainer = null;
-  let singlePanelInner = null;
-
-  /* CONFIG */
-  const SCROLL_STEP = 180;
-  const SCROLL_CHECK_DEBOUNCE = 50;
-  const SEARCH_DELAY = 300;
-
-  /* DOM REFS */
-  let track, arrowLeft, arrowRight, overlay;
-  let allItems = [];
-  
-  /* PANEL TEMPLATES */
-  const panelTemplates = new Map();
-
-  /* ============================================
-     INIT
-     ============================================ */
-  function init() {
-    track = document.getElementById("megaTrack");
-    arrowLeft = document.getElementById("megaArrowLeft");
-    arrowRight = document.getElementById("megaArrowRight");
-    overlay = document.getElementById("megaOverlay");
-    allItems = Array.from(document.querySelectorAll(".mega-item"));
-
-    if (!track || !arrowLeft || !arrowRight) {
-      console.warn("Mega-menu: missing DOM elements");
-      return;
-    }
-
-    // Create single panel container
-    createSinglePanelContainer();
-    
-    // Load all panel templates
-    loadPanelTemplates();
-
-    setupArrows();
-    setupMenuItems();
-    setupOverlay();
-    setupKeyboard();
-    setupSearch();
-    initTouchScroll();
-    syncStats();
-
-    console.log("✅ Mega-menu initialized with single container");
-  }
-
-  /* ============================================
-     CREATE SINGLE PANEL CONTAINER
-     ============================================ */
-  function createSinglePanelContainer() {
-    // Remove all existing panels
-    const existingPanels = document.querySelectorAll('.mega-panel');
-    existingPanels.forEach(panel => panel.remove());
-    
-    // Create single container
-    singlePanelContainer = document.createElement('div');
-    singlePanelContainer.id = 'megaPanel';
-    singlePanelContainer.className = 'mega-panel';
-    singlePanelContainer.setAttribute('role', 'region');
-    singlePanelContainer.setAttribute('aria-label', 'Menu panel');
-    
-    // Create inner content div
-    singlePanelInner = document.createElement('div');
-    singlePanelInner.className = 'mega-panel-inner';
-    singlePanelInner.setAttribute('data-tab-content', '');
-    
-    singlePanelContainer.appendChild(singlePanelInner);
-    
-    // Insert after navbar
-    const navbar = document.querySelector('.mega-nav');
-    if (navbar && navbar.parentNode) {
-      navbar.parentNode.insertBefore(singlePanelContainer, navbar.nextSibling);
-    } else {
-      document.body.appendChild(singlePanelContainer);
-    }
-  }
-
-  /* ============================================
-     LOAD PANEL TEMPLATES
-     ============================================ */
-  function loadPanelTemplates() {
-    // Navigate Panel
-    panelTemplates.set('panelNavigate', `
-      <div class="panel-section-title">Go To</div>
-      <div class="panel-grid">
-        <button class="panel-card" data-menu-action="go-repos">
-          <div class="panel-card-icon blue"><i class="fas fa-layer-group"></i></div>
-          <div class="panel-card-body">
-            <div class="panel-card-title">Repositories</div>
-            <div class="panel-card-desc">Browse your repos</div>
-          </div>
-          <span class="panel-card-chevron"><i class="fas fa-chevron-right"></i></span>
-        </button>
-        <button class="panel-card" data-menu-action="go-root">
-          <div class="panel-card-icon green"><i class="fas fa-home"></i></div>
-          <div class="panel-card-body">
-            <div class="panel-card-title">Root</div>
-            <div class="panel-card-desc">Go to root directory</div>
-          </div>
-          <span class="panel-card-chevron"><i class="fas fa-chevron-right"></i></span>
-        </button>
-        <button class="panel-card" data-menu-action="go-code">
-          <div class="panel-card-icon purple"><i class="fas fa-code"></i></div>
-          <div class="panel-card-body">
-            <div class="panel-card-title">Code</div>
-            <div class="panel-card-desc">File explorer view</div>
-          </div>
-          <span class="panel-card-chevron"><i class="fas fa-chevron-right"></i></span>
-        </button>
-        <button class="panel-card" data-menu-action="go-repos">
-          <div class="panel-card-icon orange"><i class="fas fa-code-branch"></i></div>
-          <div class="panel-card-body">
-            <div class="panel-card-title">Branches</div>
-            <div class="panel-card-desc">Manage branches</div>
-          </div>
-          <span class="panel-card-chevron"><i class="fas fa-chevron-right"></i></span>
-        </button>
-      </div>
-    `);
-
-    // Files Panel
-    panelTemplates.set('panelFiles', `
-      <div class="panel-section-title">Quick Actions</div>
-      <div class="panel-grid">
-        <button class="panel-card" data-menu-action="new-file">
-          <div class="panel-card-icon green"><i class="fas fa-file-circle-plus"></i></div>
-          <div class="panel-card-body">
-            <div class="panel-card-title">New File</div>
-            <div class="panel-card-desc">Create a new file</div>
-          </div>
-          <span class="panel-card-chevron"><i class="fas fa-chevron-right"></i></span>
-        </button>
-        <button class="panel-card" data-menu-action="upload">
-          <div class="panel-card-icon blue"><i class="fas fa-upload"></i></div>
-          <div class="panel-card-body">
-            <div class="panel-card-title">Upload</div>
-            <div class="panel-card-desc">Upload files</div>
-          </div>
-          <span class="panel-card-chevron"><i class="fas fa-chevron-right"></i></span>
-        </button>
-        <button class="panel-card" data-menu-action="import">
-          <div class="panel-card-icon purple"><i class="fas fa-download"></i></div>
-          <div class="panel-card-body">
-            <div class="panel-card-title">Import</div>
-            <div class="panel-card-desc">Import from URL</div>
-          </div>
-          <span class="panel-card-chevron"><i class="fas fa-chevron-right"></i></span>
-        </button>
-        <button class="panel-card" data-menu-action="new-folder">
-          <div class="panel-card-icon orange"><i class="fas fa-folder-plus"></i></div>
-          <div class="panel-card-body">
-            <div class="panel-card-title">New Folder</div>
-            <div class="panel-card-desc">Create a folder</div>
-          </div>
-          <span class="panel-card-chevron"><i class="fas fa-chevron-right"></i></span>
-        </button>
-      </div>
-    `);
-
-    // Stats Panel
-    panelTemplates.set('panelStats', `
-      <div class="panel-section-title">Overview</div>
-      <div class="stats-row">
-        <div class="stat-block">
-          <div class="stat-block-icon panel-card-icon blue"><i class="fas fa-file"></i></div>
-          <div>
-            <div class="stat-block-value" id="megaStatFiles">0</div>
-            <div class="stat-block-label">Files</div>
-          </div>
-        </div>
-        <div class="stat-block">
-          <div class="stat-block-icon panel-card-icon green"><i class="fas fa-code-commit"></i></div>
-          <div>
-            <div class="stat-block-value" id="megaStatCommits">0</div>
-            <div class="stat-block-label">Commits</div>
-          </div>
-        </div>
-        <div class="stat-block">
-          <div class="stat-block-icon panel-card-icon orange"><i class="fas fa-database"></i></div>
-          <div>
-            <div class="stat-block-value" id="megaStatStorage">0 KB</div>
-            <div class="stat-block-label">Storage</div>
-          </div>
-        </div>
-        <div class="stat-block">
-          <div class="stat-block-icon panel-card-icon red"><i class="fas fa-code-branch"></i></div>
-          <div>
-            <div class="stat-block-value" id="megaStatBranches">1</div>
-            <div class="stat-block-label">Branches</div>
-          </div>
-        </div>
-      </div>
-    `);
-
-    // Tools Panel
-    panelTemplates.set('panelTools', `
-      <div class="panel-section-title">Settings & Tools</div>
-      <button class="tool-row" data-menu-action="toggle-theme">
-        <div class="tool-row-icon"><i class="fas fa-moon mega-theme-icon"></i></div>
-        <span class="tool-row-text mega-theme-label">Dark Mode</span>
-        <span class="tool-row-hint"></span>
-        <span class="tool-row-chevron"><i class="fas fa-chevron-right"></i></span>
-      </button>
-      <button class="tool-row" data-menu-action="help">
-        <div class="tool-row-icon"><i class="fas fa-question-circle"></i></div>
-        <span class="tool-row-text">Help & Docs</span>
-        <span class="tool-row-hint"></span>
-        <span class="tool-row-chevron"><i class="fas fa-chevron-right"></i></span>
-      </button>
-      <button class="tool-row" data-menu-action="settings">
-        <div class="tool-row-icon"><i class="fas fa-cog"></i></div>
-        <span class="tool-row-text">Preferences</span>
-        <span class="tool-row-hint"></span>
-        <span class="tool-row-chevron"><i class="fas fa-chevron-right"></i></span>
-      </button>
-    `);
-
-    // Profile Panel
-    panelTemplates.set('panelProfile', `
-      <div class="profile-banner">
-        <img src="https://dev.wuaze.com/banner.png" alt="Profile" class="profile-banner-avatar" />
-        <div>
-          <div class="profile-banner-name">GitDev</div>
-          <div class="profile-banner-role">GitHub File Manager</div>
-        </div>
-      </div>
-      <div style="margin-top: 16px;">
-        <div class="panel-section-title">Repository</div>
-        <div class="stats-row">
-          <div class="stat-block">
-            <div class="stat-block-icon panel-card-icon blue"><i class="fas fa-layer-group"></i></div>
-            <div>
-              <div class="stat-block-value" id="megaRepoCount">0</div>
-              <div class="stat-block-label">Repos</div>
-            </div>
-          </div>
-          <div class="stat-block">
-            <div class="stat-block-icon panel-card-icon green"><i class="fas fa-file"></i></div>
-            <div>
-              <div class="stat-block-value" id="megaProfileFiles">0</div>
-              <div class="stat-block-label">Files</div>
-            </div>
-          </div>
-        </div>
-      </div>
-    `);
-
-    // Search Panel
-    panelTemplates.set('panelSearch', `
-      <div class="search-container">
-        <div class="search-input-wrapper">
-          <input 
-            type="text" 
-            id="megaSearchInput" 
-            class="search-input" 
-            placeholder="Search files and content..." 
-            autocomplete="off"
-            spellcheck="false"
-          />
-          <i class="fas fa-search search-icon"></i>
-          <button id="megaSearchClear" class="search-clear" aria-label="Clear search">
-            <i class="fas fa-times"></i>
-          </button>
-        </div>
-        <div id="megaSearchResults" class="search-results">
-          <div class="search-empty">
-            <div class="search-empty-icon">🔍</div>
-            Start typing to search files...
-          </div>
-        </div>
-      </div>
-    `);
-  }
-
-  /* ============================================
-     ARROW SCROLL CONTROLS
-     ============================================ */
-  function setupArrows() {
-    arrowLeft.addEventListener("click", () => scrollTrack(-SCROLL_STEP));
-    arrowRight.addEventListener("click", () => scrollTrack(SCROLL_STEP));
-
-    let scrollTimer;
-    track.addEventListener("scroll", () => {
-      clearTimeout(scrollTimer);
-      scrollTimer = setTimeout(updateArrows, SCROLL_CHECK_DEBOUNCE);
-    });
-
-    updateArrows();
-    window.addEventListener("resize", updateArrows);
-  }
-
-  function scrollTrack(delta) {
-    track.scrollBy({ left: delta, behavior: "smooth" });
-  }
-
-  function updateArrows() {
-    const scrollLeft = Math.round(track.scrollLeft);
-    const maxScroll = track.scrollWidth - track.clientWidth;
-
-    arrowLeft.classList.toggle("disabled", scrollLeft <= 1);
-    arrowLeft.setAttribute("aria-disabled", scrollLeft <= 1);
-
-    arrowRight.classList.toggle("disabled", scrollLeft >= maxScroll - 1);
-    arrowRight.setAttribute("aria-disabled", scrollLeft >= maxScroll - 1);
-  }
-
-  /* ============================================
-     MENU ITEMS
-     ============================================ */
-  function setupMenuItems() {
-    allItems.forEach((item) => {
-      item.addEventListener("click", () => {
-        const panelId = item.getAttribute("data-panel");
-        const action = item.getAttribute("data-action");
-
-        if (action) {
-          handleDirectAction(action);
-        } else if (panelId) {
-          togglePanel(panelId, item);
-        }
-      });
-      
-      // Add keyboard support
-      item.addEventListener("keydown", (e) => {
-        if (e.key === "Enter" || e.key === " ") {
-          e.preventDefault();
-          const panelId = item.getAttribute("data-panel");
-          if (panelId) togglePanel(panelId, item);
-        }
-      });
-    });
-  }
-
-  function togglePanel(panelId, triggerItem) {
-    if (isAnimating) return;
-
-    // Clicking the same open panel → close
-    if (activePanel === panelId && isPanelOpen) {
-      closeAllPanels();
-      return;
-    }
-
-    // Panel already open → swap content
-    if (isPanelOpen && activePanel !== panelId) {
-      swapPanelContent(panelId, triggerItem);
-      return;
-    }
-
-    // Otherwise → full open animation
-    openPanel(panelId, triggerItem);
-  }
-
-  function openPanel(panelId, triggerItem) {
-    isAnimating = true;
-
-    // Close all active states
-    allItems.forEach((i) => {
-      i.classList.remove("active");
-      i.setAttribute("aria-expanded", "false");
-    });
-
-    // Set active states
-    triggerItem.classList.add("active");
-    triggerItem.setAttribute("aria-expanded", "true");
-    activePanel = panelId;
-    isPanelOpen = true;
-
-    // Load and render panel content
-    loadPanelContent(panelId);
-
-    // Add open class for animation
-    singlePanelContainer.classList.add("open");
-    
-    // Show overlay & blur
-    if (overlay) overlay.classList.add("active");
-    blurMainContent();
-    document.body.classList.add("mega-menu-open");
-
-    // If search panel, focus input after animation
-    if (panelId === "panelSearch") {
-      setTimeout(() => {
-        const input = document.getElementById("megaSearchInput");
-        if (input) input.focus();
-      }, 400);
-    }
-
-    setTimeout(() => {
-      isAnimating = false;
-    }, 450);
-  }
-
-  function loadPanelContent(panelId) {
-    const template = panelTemplates.get(panelId);
-    if (!template) {
-      console.error(`No template found for panel: ${panelId}`);
-      return;
-    }
-
-    // Add swapping class for smooth transition
-    singlePanelInner.classList.add("swapping");
-    
-    // Clear and set new content
-    singlePanelInner.innerHTML = template;
-    
-    // Update panel aria-label
-    const label = getPanelLabel(panelId);
-    singlePanelContainer.setAttribute('aria-label', label);
-    
-    // Initialize dynamic content based on panel type
-    setTimeout(() => {
-      singlePanelInner.classList.remove("swapping");
-      
-      // Initialize specific panel features
-      if (panelId === "panelSearch") {
-        setupSearch();
-      } else if (panelId === "panelStats") {
-        syncStats();
-      }
-    }, 150);
-  }
-
-  function getPanelLabel(panelId) {
-    const labels = {
-      'panelNavigate': 'Navigation panel',
-      'panelFiles': 'File actions panel',
-      'panelSearch': 'Search panel',
-      'panelStats': 'Statistics panel',
-      'panelTools': 'Tools panel',
-      'panelProfile': 'Profile panel'
-    };
-    return labels[panelId] || 'Menu panel';
-  }
-
-  function swapPanelContent(newPanelId, triggerItem) {
-    isAnimating = true;
-
-    // Update active item
-    allItems.forEach((i) => {
-      i.classList.remove("active");
-      i.setAttribute("aria-expanded", "false");
-    });
-    triggerItem.classList.add("active");
-    triggerItem.setAttribute("aria-expanded", "true");
-
-    // Load new content
-    loadPanelContent(newPanelId);
-    activePanel = newPanelId;
-
-    // If switching to search, focus input
-    if (newPanelId === "panelSearch") {
-      setTimeout(() => {
-        const input = document.getElementById("megaSearchInput");
-        if (input) input.focus();
-      }, 260);
-    }
-
-    setTimeout(() => {
-      isAnimating = false;
-    }, 260);
-  }
-
-  function closeAllPanels() {
-    if (isAnimating) return;
-    isAnimating = true;
-
-    // Remove active states
-    allItems.forEach((i) => {
-      i.classList.remove("active");
-      i.setAttribute("aria-expanded", "false");
-    });
-
-    // Close panel
-    singlePanelContainer.classList.remove("open");
-    activePanel = null;
-    isPanelOpen = false;
-
-    // Hide overlay & unblur
-    if (overlay) overlay.classList.remove("active");
-    unblurMainContent();
-    document.body.classList.remove("mega-menu-open");
-
-    setTimeout(() => {
-      isAnimating = false;
-    }, 400);
-  }
-
-  function blurMainContent() {
-    const mainArea = document.getElementById("mainArea");
-    if (mainArea) {
-      mainArea.style.filter = "blur(4px) brightness(0.85)";
-      mainArea.style.transition = "filter 350ms cubic-bezier(0.4, 0, 0.2, 1)";
-      mainArea.style.pointerEvents = "none";
-    }
-  }
-
-  function unblurMainContent() {
-    const mainArea = document.getElementById("mainArea");
-    if (mainArea) {
-      mainArea.style.filter = "";
-      mainArea.style.pointerEvents = "";
-    }
-  }
-
-  /* ============================================
-     DIRECT ACTIONS (items without panels)
-     ============================================ */
-  function handleDirectAction(action) {
-    closeAllPanels();
-
-    switch (action) {
-      case "search":
-        // Open search panel
-        const searchBtn = document.querySelector('[data-panel="panelSearch"]');
-        if (searchBtn) {
-          setTimeout(() => togglePanel("panelSearch", searchBtn), 100);
-        }
-        break;
-      default:
-        console.log("Direct action:", action);
-    }
-  }
-
-  /* ============================================
-     PANEL ACTIONS (delegated clicks)
-     ============================================ */
-  function setupPanelActions() {
-    // Delegate clicks from the single panel container
-    singlePanelContainer.addEventListener("click", (e) => {
-      const actionBtn = e.target.closest("[data-menu-action]");
-      if (!actionBtn) return;
-
-      const action = actionBtn.getAttribute("data-menu-action");
-      handlePanelAction(action);
-      closeAllPanels();
-    });
-  }
-
-  function handlePanelAction(action) {
-    switch (action) {
-      case "go-repos":
-        navigateToPage("repo");
-        break;
-      case "go-root":
-        navigateToPage("explorer");
-        if (typeof navigateToRoot === "function") navigateToRoot();
-        break;
-      case "go-code":
-        navigateToPage("explorer");
-        break;
-      case "new-file":
-        showModal("createFileModal");
-        break;
-      case "upload":
-        if (typeof showUploadModal === "function") showUploadModal();
-        break;
-      case "import":
-        if (typeof showImportModal === "function") showImportModal();
-        break;
-      case "new-folder":
-        if (typeof showCreateFolderModal === "function") showCreateFolderModal();
-        break;
-      case "toggle-theme":
-        toggleThemeHelper();
-        break;
-      case "help":
-        if (typeof showHelp === "function") showHelp();
-        break;
-      default:
-        console.log("Panel action:", action);
-    }
-  }
-
-  function navigateToPage(pageName) {
-    document.querySelectorAll(".pages").forEach((p) => {
-      p.classList.remove("show");
-      p.classList.add("hide");
-    });
-
-    const target = document.querySelector(`[data-page="${pageName}"]`);
-    if (target) {
-      target.classList.remove("hide");
-      target.classList.add("show");
-    }
-  }
-
-  function showModal(modalId) {
-    const modal = document.getElementById(modalId);
-    if (!modal) return;
-    modal.classList.remove("hidden");
-    modal.style.display = "flex";
-  }
-
-  /* ============================================
-     OVERLAY & KEYBOARD
-     ============================================ */
-  function setupOverlay() {
-    if (overlay) {
-      overlay.addEventListener("click", closeAllPanels);
-    }
-  }
-
-  function setupKeyboard() {
-    document.addEventListener("keydown", (e) => {
-      if (e.key === "Escape" && isPanelOpen) {
-        closeAllPanels();
-      }
-    });
-  }
-
-  /* ============================================
-     SEARCH FUNCTIONALITY
-     ============================================ */
-  function setupSearch() {
-    const input = document.getElementById("megaSearchInput");
-    const clearBtn = document.getElementById("megaSearchClear");
-
-    if (!input) return;
-
-    // Clear existing listeners
-    const newInput = input.cloneNode(true);
-    input.parentNode.replaceChild(newInput, input);
-    
-    const newClearBtn = clearBtn ? clearBtn.cloneNode(true) : null;
-    if (clearBtn && newClearBtn) {
-      clearBtn.parentNode.replaceChild(newClearBtn, clearBtn);
-    }
-
-    // Setup new listeners
-    newInput.addEventListener("input", (e) => {
-      clearTimeout(searchTimeout);
-      searchTimeout = setTimeout(() => performSearch(e.target.value), SEARCH_DELAY);
-    });
-
-    newInput.addEventListener("keydown", (e) => {
-      if (e.key === "Enter") {
-        e.preventDefault();
-        clearTimeout(searchTimeout);
-        performSearch(e.target.value);
-      }
-    });
-
-    if (newClearBtn) {
-      newClearBtn.addEventListener("click", () => {
-        newInput.value = "";
-        newInput.focus();
-        performSearch("");
-      });
-    }
-  }
-
-  function performSearch(query) {
-    const container = document.getElementById("megaSearchResults");
-    if (!container) return;
-
-    if (!query.trim()) {
-      container.innerHTML = `
-        <div class="search-empty">
-          <div class="search-empty-icon">🔍</div>
-          Start typing to search files...
-        </div>
-      `;
-      return;
-    }
-
-    try {
-      const currentRepo = localStorage.getItem("currentRepository");
-      if (!currentRepo) {
-        container.innerHTML = `
-          <div class="search-empty">
-            <div class="search-empty-icon">📁</div>
-            No repository selected
-          </div>
-        `;
-        return;
-      }
-
-      const repoData = JSON.parse(localStorage.getItem(`repo_${currentRepo}`) || "{}");
-      const files = repoData.files || {};
-      const results = [];
-
-      // Search file paths and content
-      Object.keys(files).forEach((path) => {
-        const file = files[path];
-        const lowerQuery = query.toLowerCase();
-        const lowerPath = path.toLowerCase();
-        const pathMatch = lowerPath.includes(lowerQuery);
-        const contentMatch = file.content && file.content.toLowerCase().includes(lowerQuery);
-
-        if (pathMatch || contentMatch) {
-          results.push({
-            path,
-            name: path.split("/").pop(),
-            type: pathMatch ? "path" : "content",
-            file,
-          });
-        }
-      });
-
-      displaySearchResults(results, query);
-    } catch (e) {
-      console.error("Search error:", e);
-      container.innerHTML = `
-        <div class="search-empty">
-          <div class="search-empty-icon">⚠️</div>
-          Search error occurred
-        </div>
-      `;
-    }
-  }
-
-  function displaySearchResults(results, query) {
-    const container = document.getElementById("megaSearchResults");
-
-    if (results.length === 0) {
-      container.innerHTML = `
-        <div class="search-empty">
-          <div class="search-empty-icon">🤷</div>
-          No results found for "<strong>${escapeHtml(query)}</strong>"
-        </div>
-      `;
-      return;
-    }
-
-    const html = results
-      .map(
-        (result, index) => `
-        <div class="search-result-item" data-file-path="${escapeHtml(result.path)}">
-          <div class="search-result-icon">${getFileIcon(result.name)}</div>
-          <div class="search-result-content">
-            <div class="search-result-name">${highlightMatch(escapeHtml(result.name), query)}</div>
-            <div class="search-result-path">${escapeHtml(result.path)}</div>
-          </div>
-          <span class="search-result-type">${result.type}</span>
-        </div>
-      `
-      )
-      .join("");
-
-    container.innerHTML = html;
-
-    // Add click handlers
-    container.querySelectorAll(".search-result-item").forEach((item) => {
-      item.addEventListener("click", function () {
-        const filePath = this.getAttribute("data-file-path");
-        openSearchResult(filePath);
-        closeAllPanels();
-      });
-    });
-  }
-
-  function openSearchResult(filePath) {
-    // Integrate with your existing file opening logic
-    navigateToPage("file");
-    if (typeof loadFileEditor === "function") {
-      loadFileEditor(filePath);
-    }
-    console.log("Opening file:", filePath);
-  }
-
-  function highlightMatch(text, query) {
-    const regex = new RegExp(`(${escapeRegex(query)})`, "gi");
-    return text.replace(regex, "<mark>$1</mark>");
-  }
-
-  function getFileIcon(filename) {
-    const ext = filename.split(".").pop().toLowerCase();
-    const icons = {
-      js: "📜",
-      jsx: "⚛️",
-      ts: "📘",
-      tsx: "⚛️",
-      html: "🌐",
-      css: "🎨",
-      scss: "🎨",
-      json: "📋",
-      md: "📝",
-      txt: "📄",
-      py: "🐍",
-      java: "☕",
-      php: "🐘",
-      rb: "💎",
-      go: "🐹",
-      rs: "🦀",
-      c: "🔧",
-      cpp: "🔧",
-      svg: "🎨",
-      png: "🖼️",
-      jpg: "🖼️",
-      gif: "🖼️",
-    };
-    return icons[ext] || "📄";
-  }
-
-  function escapeHtml(text) {
-    const div = document.createElement("div");
-    div.textContent = text;
-    return div.innerHTML;
-  }
-
-  function escapeRegex(text) {
-    return text.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-  }
-
-  /* ============================================
-     THEME TOGGLE
-     ============================================ */
-  function toggleThemeHelper() {
-    const html = document.documentElement;
-    const current = html.getAttribute("data-theme");
-    const next = current === "dark" ? "light" : "dark";
-    html.setAttribute("data-theme", next);
-
-    try {
-      localStorage.setItem("theme", next);
-    } catch (e) {}
-
-    const icons = document.querySelectorAll(".mega-theme-icon, #themeIcon, #sidebarThemeIcon");
-    icons.forEach((icon) => {
-      icon.className = next === "dark" ? "fas fa-moon" : "fas fa-sun";
-    });
-
-    const labels = document.querySelectorAll(".mega-theme-label");
-    labels.forEach((lbl) => {
-      lbl.textContent = next === "dark" ? "Dark Mode" : "Light Mode";
-    });
-  }
-
-  /* ============================================
-     STATS SYNC
-     ============================================ */
-  function syncStats() {
-    try {
-      const repos = JSON.parse(localStorage.getItem("repositories") || "[]");
-      const currentRepo = localStorage.getItem("currentRepository");
-      const repoData = currentRepo ? JSON.parse(localStorage.getItem(`repo_${currentRepo}`) || "{}") : {};
-      const files = repoData.files || {};
-      const fileCount = Object.keys(files).length;
-
-      let commitCount = 0;
-      Object.values(files).forEach((f) => {
-        commitCount += f.commits ? f.commits.length : 0;
-      });
-
-      const storageBytes = new Blob([JSON.stringify(files)]).size;
-      const storageKB = Math.round(storageBytes / 1024);
-
-      setTextById("megaStatFiles", fileCount);
-      setTextById("megaStatCommits", commitCount);
-      setTextById("megaStatStorage", `${storageKB} KB`);
-      setTextById("megaStatBranches", "1");
-      setTextById("megaRepoCount", repos.length);
-      setTextById("megaProfileFiles", fileCount);
-    } catch (e) {
-      console.warn("Stats sync error:", e);
-    }
-  }
-
-  function setTextById(id, text) {
-    const el = document.getElementById(id);
-    if (el) el.textContent = text;
-  }
-
-  /* ============================================
-     TOUCH SCROLL
-     ============================================ */
-  function initTouchScroll() {
-    let startX = 0;
-    let scrollStart = 0;
-
-    track.addEventListener(
-      "touchstart",
-      (e) => {
-        startX = e.touches[0].clientX;
-        scrollStart = track.scrollLeft;
-      },
-      { passive: true }
-    );
-
-    track.addEventListener(
-      "touchmove",
-      (e) => {
-        const dx = startX - e.touches[0].clientX;
-        track.scrollLeft = scrollStart + dx;
-      },
-      { passive: true }
-    );
-
-    track.addEventListener("touchend", updateArrows, { passive: true });
-  }
-
-  /* ============================================
-     BOOT
-     ============================================ */
-  if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", init);
-  } else {
-    init();
-  }
-
-  /* Expose API */
-  window.megaMenu = {
-    close: closeAllPanels,
-    syncStats,
-    toggleTheme: toggleThemeHelper,
-    openPanel: (panelId) => {
-      const item = document.querySelector(`[data-panel="${panelId}"]`);
-      if (item) togglePanel(panelId, item);
-    }
-  };
-})();
-</script>
 
 <!-- Modals -------------------------->
 <div id="createFileModal" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 hidden items-center justify-center p-4">
