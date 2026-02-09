@@ -154,7 +154,7 @@
       //  PUSH New Content
       //  to Sleeve
       setTimeout(() => {
-        panel.classList.remove("s amwap-in");
+        panel.classList.remove("swap-in");
         isAnimating = false;
       }, SWAP_IN_DURATION);
     }, SWAP_OUT_DURATION);
